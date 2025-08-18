@@ -1,0 +1,1118 @@
+<div class="sticky top-0 z-50 bg-white shadow-md bg-gray-50 overflow-x-hidden">
+  <!-- Mobile Nav Overlay & Drawer -->
+  <div
+    id="mobileNavOverlay"
+    class="fixed inset-0 bg-opacity-40 z-40 hidden lg:hidden transition-opacity duration-300"
+    [class.hidden]="!isMobileMenuOpen"
+    (click)="isMobileMenuOpen = false"
+  ></div>
+
+  <!-- Mobile Navigation Drawer -->
+  <nav
+    id="mobileNavDrawer"
+    class="fixed top-0 left-0 h-full w-4/5 max-w-xs bg-white shadow-lg z-45 transform transition-transform duration-300 lg:hidden flex flex-col"
+    [class.-translate-x-full]="!isMobileMenuOpen"
+    [class.translate-x-0]="isMobileMenuOpen"
+  >
+    <!-- Mobile Header -->
+    <div
+      class="flex items-center justify-between px-4 py-4 border-b border-gray-200"
+    >
+      <div class="flex items-center space-x-2">
+        <img
+          src="assets/img/logo1.png"
+          alt="Ojasvi Logo"
+          class="h-8 w-auto object-contain"
+        />
+        <div class="flex flex-col leading-tight">
+          <span class="text-lg text-[#5a8f69] font-semibold">Ojasvi</span>
+          <span class="text-xs font-[Pacifico,sans-serif] text-[#ffc200]"
+            >From Garden To Glow</span
+          >
+        </div>
+      </div>
+      <button
+        (click)="isMobileMenuOpen = false"
+        class="text-gray-500 hover:text-[#5a8f69] p-2"
+      >
+        <i class="ri-close-line text-xl"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Menu Items -->
+
+    <!-- User Profile -->
+    <div
+      *ngIf="isLogged"
+      class="flex flex-col items-center p-6 border-b border-gray-200"
+    >
+      <div
+        class="d-flex justify-content-center align-items-center"
+        style="height: 100%; width: 100%"
+      >
+        <div
+          class="profile-photo-container position-relative d-flex justify-content-center align-items-center profile-image"
+        >
+          <img
+            [src]="imagePreview || 'assets/img/user.jpg'"
+            alt="Profile Photo"
+            class="profile-photo"
+            (error)="setDefaultImage($event)"
+            style="
+              width: 100px;
+              height: 100px;
+              border-radius: 50%;
+              object-fit: cover;
+              border: 3px solid #5a8f69;
+            "
+          />
+
+          <button
+            class="edit-photo-btn"
+            style="
+              width: 30px;
+              height: 30px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border: none;
+              cursor: pointer;
+              position: absolute;
+              bottom: 5px;
+              right: 5px;
+              background-color: white;
+              border-radius: 50%;
+              box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+              overflow: hidden;
+            "
+            (click)="openprofileModal()"
+          >
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 18 18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M13.2543 2.52944L13.2541 2.52967L12.5371 3.25402L14.6921 5.40906L15.4183 4.6828L13.2543 2.52944ZM13.2543 2.52944C13.3951 2.38636 13.5629 2.27275 13.748 2.19523C13.9331 2.11772 14.1318 2.07785 14.3324 2.07797V2.07814M13.2543 2.52944L14.3324 2.07814M14.3324 2.07814L14.3383 2.0778M14.3324 2.07814L14.3383 2.0778M14.3383 2.0778C14.5397 2.06613 14.7411 2.10019 14.9275 2.17745C15.1138 2.2547 15.2803 2.37314 15.4144 2.52388L15.4143 2.52398M14.3383 2.0778L15.4143 2.52398M15.4143 2.52398L15.4183 2.52802M15.4143 2.52398L15.4183 2.52802M15.4183 2.52802C15.7035 2.81405 15.8636 3.20149 15.8636 3.60541M15.4183 2.52802L15.8636 3.60541M15.8636 3.60541C15.8636 4.00929 15.7036 4.39669 15.4184 4.6827L15.8636 3.60541ZM15.3711 1.10425L15.3328 1.19664L1.30183 16.9629C1.36117 16.9874 1.42478 17 1.489 17V17.1H1.48906H4.42302C4.50036 17.1 4.57697 17.0848 4.64843 17.0552L4.61015 16.9628L4.64843 17.0552C4.71988 17.0256 4.7848 16.9822 4.83948 16.9275C4.83949 16.9274 4.83949 16.9274 4.8395 16.9274L16.2513 5.51563L16.2514 5.51551C16.7577 5.00758 17.0416 4.31944 17.0408 3.60229C17.0399 2.8852 16.7544 2.19778 16.2471 1.69104C15.9967 1.43947 15.699 1.24003 15.3711 1.10425ZM13.8592 6.24194L4.17915 15.922H2.07801V13.8192L11.7083 4.09109L13.8592 6.24194Z"
+                fill="#5a8f69"
+                stroke="#5a8f69"
+                stroke-width="0.2"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <h2 class="text-base sm:text-lg font-semibold">
+        {{ user.NAME || "User" }}
+      </h2>
+      <p
+        class="text-xs sm:text-sm text-gray-500"
+        *ngIf="
+          user.email != '' && user.email != undefined && user.email != undefined
+        "
+      >
+        {{ user.email || "No email provided" }}
+      </p>
+    </div>
+    <!-- Navigation Menu -->
+    <div class="flex-1 overflow-y-auto py-4">
+      <nav class="px-2 space-y-1">
+        <!-- Section: My Profile -->
+        <div *ngIf="isLogged">
+          <a
+            href="#"
+            (click)="
+              goToProfileSection('dashboard-section'); $event.preventDefault()
+            "
+            [class]="
+              'sidebar-link flex items-center px-4 py-3 text-xs sm:text-sm font-medium rounded-md ' +
+              (isSectionActive('dashboard-section')
+                ? 'active text-gray-800'
+                : 'text-gray-600')
+            "
+          >
+            <div class="w-5 h-5 mr-3 flex items-center justify-center">
+              <i class="ri-dashboard-line"></i>
+            </div>
+            Dashboard
+          </a>
+
+          <a
+            href="#"
+            (click)="
+              goToProfileSection('addresses-section'); $event.preventDefault()
+            "
+            [class]="
+              'sidebar-link flex items-center px-4 py-3 text-xs sm:text-sm font-medium rounded-md ' +
+              (isSectionActive('addresses-section')
+                ? 'active text-gray-800'
+                : 'text-gray-600')
+            "
+          >
+            <div class="w-5 h-5 mr-3 flex items-center justify-center">
+              <i class="ri-map-pin-line"></i>
+            </div>
+            Saved Addresses
+          </a>
+          <a
+            href="#"
+            (click)="
+              goToProfileSection('orders-section'); $event.preventDefault()
+            "
+            [class]="
+              'sidebar-link flex items-center px-4 py-3 text-xs sm:text-sm font-medium rounded-md ' +
+              (isSectionActive('orders-section')
+                ? 'active text-gray-800'
+                : 'text-gray-600')
+            "
+          >
+            <div class="w-5 h-5 mr-3 flex items-center justify-center">
+              <i class="ri-shopping-bag-line"></i>
+            </div>
+            My Orders
+          </a>
+          <a
+            href="#"
+            (click)="
+              goToProfileSection('wishlist-section'); $event.preventDefault()
+            "
+            [class]="
+              'sidebar-link flex items-center px-4 py-3 text-xs sm:text-sm font-medium rounded-md ' +
+              (isSectionActive('wishlist-section')
+                ? 'active text-gray-800'
+                : 'text-gray-600')
+            "
+          >
+            <div class="w-5 h-5 mr-3 flex items-center justify-center">
+              <i class="ri-heart-line"></i>
+            </div>
+            Wishlist
+          </a>
+        </div>
+        <!-- <div
+          class="h-1 bg-gradient-to-r from-green-400 via-yellow-300 to-orange-400 rounded"
+        ></div> -->
+        <div *ngIf="isLogged" class="flex items-center justify-center my-3">
+          <div class="flex-grow border-t border-orange-300"></div>
+          <div class="px-2 text-green-600 text-sm">
+            <i class="ri-leaf-line"></i>
+          </div>
+          <div class="flex-grow border-t border-orange-300"></div>
+        </div>
+        <!-- <div
+          class="h-1 rounded-full mx-4 my-3 bg-gradient-to-r from-green-400 via-yellow-300 to-orange-400"
+        ></div> -->
+        <!-- <div
+          class="border-t border-dashed border-green-300 shadow-sm mx-4 my-3"
+        ></div> -->
+
+        <a
+          routerLink="/home"
+          (click)="closeMobileMenu()"
+          class="sidebar-link flex items-center px-4 py-3 text-xs sm:text-sm font-medium rounded-md text-gray-600"
+        >
+          <div class="w-5 h-5 mr-3 flex items-center justify-center">
+            <i class="ri-home-4-line"></i>
+          </div>
+          Home
+        </a>
+        <a
+          routerLink="/about-us"
+          (click)="closeMobileMenu()"
+          class="sidebar-link flex items-center px-4 py-3 text-xs sm:text-sm font-medium rounded-md text-gray-600"
+        >
+          <div class="w-5 h-5 mr-3 flex items-center justify-center">
+            <i class="ri-user-3-line"></i>
+          </div>
+          About us
+        </a>
+        <a
+          routerLink="/product-list"
+          (click)="closeMobileMenu()"
+          class="sidebar-link flex items-center px-4 py-3 text-xs sm:text-sm font-medium rounded-md text-gray-600"
+        >
+          <div class="w-5 h-5 mr-3 flex items-center justify-center">
+            <i class="ri-shopping-bag-3-line"></i>
+          </div>
+          Products
+        </a>
+        <a
+          routerLink="/contact-us"
+          (click)="closeMobileMenu()"
+          class="sidebar-link flex items-center px-4 py-3 text-xs sm:text-sm font-medium rounded-md text-gray-600"
+        >
+          <div class="w-5 h-5 mr-3 flex items-center justify-center">
+            <i class="ri-phone-line"></i>
+          </div>
+          Contact us
+        </a>
+
+        <!-- <a
+          routerLink="/home"
+          routerLinkActive="!text-[#3e6b4b] !bg-gray-50"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="isMobileMenuOpen = false"
+          [class]="
+            'sidebar-link flex items-center px-4 py-3 text-xs sm:text-sm font-medium rounded-md ' +
+            (isSectionActive('home') ? 'active text-gray-800' : 'text-gray-600')
+          "
+        >
+          Home
+        </a> -->
+      </nav>
+    </div>
+    <!-- Logout Button -->
+    <div class="p-4 border-t border-gray-200">
+      <div *ngIf="isLogged" class="space-y-2">
+        <button
+          (click)="openModal()"
+          class="w-full bg-[#5a8f69] text-white py-2.5 px-4 rounded-button flex items-center justify-center font-medium hover:bg-opacity-90 transition-all whitespace-nowrap text-xs sm:text-base"
+        >
+          <div class="w-5 h-5 mr-2 flex items-center justify-center">
+            <i class="ri-logout-box-line"></i>
+          </div>
+          Logout
+        </button>
+      </div>
+      <div *ngIf="!isLogged" class="space-y-2">
+        <button
+          (click)="goToLogin(); isMobileMenuOpen = false"
+          class="w-full bg-[#5a8f69] text-white py-3 px-4 rounded-md font-medium hover:bg-[#4a7a5a] transition-colors"
+        >
+          Login
+        </button>
+      </div>
+    </div>
+
+    <!-- <ul class="flex-1 flex flex-col gap-1 px-4 py-4">
+      <li>
+        <a
+          routerLink="/home"
+          routerLinkActive="!text-[#3e6b4b] !bg-gray-50"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="isMobileMenuOpen = false"
+          class="block py-3 px-3 text-gray-800 hover:text-[#5a8f69] hover:bg-gray-50 font-medium rounded-md transition-colors"
+        >
+          HOME
+        </a>
+      </li>
+      <li>
+        <a
+          routerLink="/about-us"
+          routerLinkActive="!text-[#3e6b4b] !bg-gray-50"
+          (click)="isMobileMenuOpen = false"
+          class="block py-3 px-3 text-gray-800 hover:text-[#5a8f69] hover:bg-gray-50 font-medium rounded-md transition-colors"
+        >
+          ABOUT US
+        </a>
+      </li>
+      <li>
+        <a
+          routerLink="/product-list"
+          routerLinkActive="!text-[#3e6b4b] !bg-gray-50"
+          (click)="isMobileMenuOpen = false"
+          class="block py-3 px-3 text-gray-800 hover:text-[#5a8f69] hover:bg-gray-50 font-medium rounded-md transition-colors"
+        >
+          PRODUCTS
+        </a>
+      </li>
+      <li>
+        <a
+          routerLink="/contact-us"
+          routerLinkActive="!text-[#3e6b4b] !bg-gray-50"
+          (click)="isMobileMenuOpen = false"
+          class="block py-3 px-3 text-gray-800 hover:text-[#5a8f69] hover:bg-gray-50 font-medium rounded-md transition-colors"
+        >
+          CONTACT US
+        </a>
+      </li>
+    </ul> -->
+
+    <!-- Mobile User Actions -->
+    <!-- <div class="border-t border-gray-200 px-4 py-4">
+      <div *ngIf="!isLogged" class="space-y-2">
+        <button
+          (click)="goToLogin(); isMobileMenuOpen = false"
+          class="w-full bg-[#5a8f69] text-white py-3 px-4 rounded-md font-medium hover:bg-[#4a7a5a] transition-colors"
+        >
+          Login
+        </button>
+      </div>
+
+      <div *ngIf="isLogged" class="space-y-2">
+        <a
+          routerLink="/profile"
+          (click)="isMobileMenuOpen = false"
+          class="flex items-center justify-center py-3 px-4 text-gray-700 hover:text-[#5a8f69] font-medium rounded-md transition-colors"
+        >
+          <i class="ri-user-line mr-2"></i>
+          Profile
+        </a>
+        <a
+          routerLink="/favorites"
+          (click)="isMobileMenuOpen = false"
+          class="flex items-center justify-center py-3 px-4 text-gray-700 hover:text-[#5a8f69] font-medium rounded-md transition-colors"
+        >
+          <i class="ri-heart-line mr-2"></i>
+          Favorites
+        </a>
+      </div>
+    </div> -->
+  </nav>
+
+  <!-- Main Header -->
+  <div>
+    <div class="container mx-auto px-4 py-2">
+      <div class="flex items-center justify-between gap-4">
+        <!-- Logo Section -->
+        <a href="/" class="flex items-center space-x-2 flex-shrink-0">
+          <img
+            src="assets/img/logo1.png"
+            alt="Ojasvi Logo"
+            class="h-12 sm:h-16 md:h-20 w-auto object-contain"
+          />
+          <div
+            class="flex flex-col leading-tight hidden sm:block logo-text-container"
+          >
+            <span
+              class="text-lg sm:text-xl md:text-2xl text-[#5a8f69] font-semibold"
+            >
+              Ojasvi Derma Care
+            </span>
+            <span
+              class="text-xs sm:text-sm font-[Pacifico,sans-serif] text-[#ffc200]"
+            >
+              From Garden To Glow
+            </span>
+          </div>
+        </a>
+
+        <!-- Desktop Menu (visible >= 990px) -->
+        <div
+          class="nav-links hidden space-x-6 items-center ml-6 text-sm font-medium"
+          style="font-weight: 700 !important"
+        >
+          <a
+            routerLink="/home"
+            routerLinkActive="!text-[#3e6b4b] "
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="text-gray-800 hover:text-[#3e6b4b] transition-colors duration-200 font-weight: 700;"
+          >
+            HOME
+          </a>
+
+          <a
+            routerLink="/about-us"
+            routerLinkActive="!text-[#3e6b4b] "
+            class="text-gray-800 hover:text-[#3e6b4b] transition-colors duration-200 font-weight: 700;"
+          >
+            ABOUT US
+          </a>
+
+          <a
+            routerLink="/product-list"
+            routerLinkActive="!text-[#3e6b4b] "
+            class="text-gray-800 hover:text-[#3e6b4b] transition-colors duration-200 font-weight: 700;"
+          >
+            PRODUCTS
+          </a>
+
+          <a
+            routerLink="/contact-us"
+            routerLinkActive="!text-[#3e6b4b] "
+            class="text-gray-800 hover:text-[#3e6b4b] transition-colors duration-200 font-weight: 700;"
+          >
+            CONTACT US
+          </a>
+          <a
+            (click)="isSearchModalOpen = true"
+            class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+          >
+            <i class="ri-search-line text-xl text-gray-600"></i>
+          </a>
+        </div>
+
+        <!-- Right Side Actions -->
+        <div class="flex items-center space-x-2 sm:space-x-4">
+          <!-- Search Button -->
+          <!-- <button
+            (click)="isSearchModalOpen = true"
+            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+          >
+            <i class="ri-search-line text-lg sm:text-xl text-gray-600"></i>
+          </button> -->
+
+          <!-- User Actions -->
+          <div class="flex items-center space-x-2 sm:space-x-3">
+            <!-- Login Button (Desktop) -->
+            <button
+              *ngIf="!isLogged"
+              (click)="goToLogin()"
+              class="hidden desktop-login-btn items-center text-gray-700 font-semibold hover:text-[#5a8f69] transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                class="mr-1"
+              >
+                <path
+                  d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M12 14C8.13401 14 5 17.134 5 21H19C19 17.134 15.866 14 12 14Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <span>Login</span>
+            </button>
+
+            <!-- User Profile (Logged in) -->
+            <a
+              *ngIf="isLogged"
+              routerLink="/profile"
+              (click)="isMobileMenuOpen = false"
+              class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-gray-700 hover:text-[#5a8f69] transition-colors"
+            >
+              <i class="ri-user-line text-lg sm:text-xl"></i>
+            </a>
+
+            <!-- Favorites (Logged in) -->
+            <a
+              *ngIf="isLogged"
+              routerLink="/favorites"
+              (click)="isMobileMenuOpen = false"
+              class="relative text-gray-700 hover:text-[#5a8f69]"
+            >
+              <i class="ri-heart-line text-xl"></i>
+              <span
+                class="absolute -top-1 -right-2 bg-[#5a8f69] text-white text-xs rounded-full px-1.5"
+                >{{ favouriteCount }}</span
+              >
+            </a>
+
+            <!-- Cart (Logged in) -->
+            <button
+              *ngIf="isLogged"
+              (click)="isCartVisible = true; isMobileMenuOpen = false"
+              class="relative w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-gray-700 hover:text-[#5a8f69] transition-colors"
+            >
+              <i class="ri-shopping-cart-line text-lg sm:text-xl"></i>
+              <span
+                class="absolute -top-1 -right-1 bg-[#5a8f69] text-white text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center"
+              >
+                {{ cartCount }}
+              </span>
+            </button>
+          </div>
+
+          <!-- Mobile Menu Button -->
+          <button
+            (click)="isMobileMenuOpen = !isMobileMenuOpen"
+            class="lg:hidden w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-gray-700 hover:text-[#5a8f69] transition-colors"
+          >
+            <i class="ri-menu-line text-xl sm:text-2xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Modal -->
+  <div
+    *ngIf="isSearchModalOpen"
+    class="fixed inset-0 z-50 flex items-start justify-center bg-black bg-opacity-40 pt-16 sm:pt-20 px-4"
+  >
+    <div
+      class="bg-white w-full max-w-2xl mx-auto rounded-lg shadow-lg p-4 sm:p-6 relative"
+    >
+      <!-- Close Button -->
+      <button
+        (click)="searchModalOpen()"
+        class="absolute top-2 right-2 sm:top-4 sm:right-4 text-gray-600 hover:text-red-500 transition-colors"
+      >
+        <i class="ri-close-line text-2xl"></i>
+      </button>
+
+      <!-- Search Input + Select -->
+      <div class="flex items-center border rounded-md overflow-hidden w-full">
+        <!-- Search Icon -->
+        <span class="px-3 text-gray-500">
+          <i class="ri-search-line"></i>
+        </span>
+
+        <!-- Search Input -->
+        <!-- <input
+          type="text"
+          [(ngModel)]="searchText"
+          (keyup)="keyup($event)"
+          (keydown.enter)="onEnterKey($event)"
+          (ngModelChange)="onSearchChange($event)"
+          placeholder="Search for products..."
+          class="flex-1 px-2 py-2 sm:py-3 focus:outline-none text-sm"
+        /> -->
+
+        <!-- Select Wrapper -->
+        <!-- <div class="relative w-24 sm:w-32 md:w-36 flex-shrink-0">
+          <select
+            (change)="onCategoryChange($event)"
+            [(ngModel)]="selectedOption"
+            class="w-full bg-gray-100 border-l py-2 px-2 sm:px-3 text-xs sm:text-sm focus:outline-none appearance-none truncate"
+          >
+            <option value="A">All</option>
+            <option value="C">Categories</option>
+            <option value="P">Products</option>
+          </select>
+
+          <div
+            class="pointer-events-none absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-xs"
+          >
+            ▼
+          </div>
+        </div> -->
+      </div>
+
+      <!-- Search Results -->
+      <div class="mt-4 max-h-64 sm:max-h-80 overflow-y-auto pr-2">
+        <!-- Categories Section -->
+        <div
+          *ngIf="selectedOption === 'A' && categoryList.length > 0"
+          class="mb-4"
+        >
+          <h3 class="mb-3 text-sm sm:text-base font-semibold text-gray-700">
+            Categories
+          </h3>
+          <div class="space-y-2">
+            <div
+              *ngFor="let category of categoryList"
+              class="flex items-center gap-3 bg-gray-50 px-3 py-2 rounded-md shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+              (click)="goToProductList(category.ID)"
+            >
+              <img
+                [src]="IMAGEuRL + 'categoryImage/' + category.IMAGE"
+                [alt]="category.CATEGORY_NAME"
+                class="w-8 h-8 sm:w-10 sm:h-10 object-cover rounded-md"
+              />
+              <span class="text-sm text-gray-700 font-medium">{{
+                category.CATEGORY_NAME
+              }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Products Section -->
+        <div
+          *ngIf="selectedOption === 'A' && productList.length > 0"
+          class="mb-4"
+        >
+          <h3 class="mb-3 text-sm sm:text-base font-semibold text-gray-700">
+            Products
+          </h3>
+          <div class="space-y-2">
+            <div
+              *ngFor="let product of productList"
+              class="flex flex-col gap-1 bg-gray-50 px-3 py-2 rounded-md shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+              (click)="goToProductDetails(product.ID)"
+            >
+              <div class="text-xs text-gray-500 font-semibold">
+                {{ product.CATEGORY_NAME }}
+              </div>
+              <div class="flex items-center gap-3">
+                <img
+                  [src]="IMAGEuRL + 'productImages/' + product.IMAGE"
+                  [alt]="product.NAME"
+                  class="w-8 h-8 sm:w-10 sm:h-10 object-cover rounded-md"
+                />
+                <span class="text-sm text-gray-700 font-medium">{{
+                  product.NAME
+                }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- No Results -->
+        <div
+          *ngIf="categoryList.length === 0 && productList.length === 0"
+          class="flex flex-col items-center justify-center p-6 text-center"
+        >
+          <img
+            src="assets/img/nodata.png"
+            alt="No Data"
+            class="w-16 h-16 sm:w-24 sm:h-24 mb-3 opacity-80"
+          />
+          <p class="text-gray-600 text-sm">No categories or products found</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Login Modal -->
+  <button
+    style="display: none"
+    id="loginmodaltrack"
+    data-bs-toggle="modal"
+    data-bs-target="#loginmodal"
+  >
+    data
+  </button>
+
+  <!-- Cart Drawer -->
+  <div *ngIf="isCartVisible">
+    <app-cart-drawer [(visible)]="isCartVisible"></app-cart-drawer>
+  </div>
+</div>
+<!-- Confirmation Modal -->
+<div
+  *ngIf="showLogoutModal"
+  class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
+>
+  <div class="bg-white rounded-lg p-6 w-[90%] max-w-sm text-center shadow-xl">
+    <div class="text-green-500 text-4xl mb-2">
+      <i class="ri-question-line"></i>
+    </div>
+    <h2 class="text-xl font-semibold mb-2">Confirmation</h2>
+    <p class="text-sm text-gray-600 mb-6">Are you sure you want to proceed?</p>
+    <div class="flex justify-center gap-4">
+      <button
+        (click)="closeLogoutModal()"
+        class="bg-gray-200 px-4 py-2 rounded font-medium hover:bg-gray-300 transition"
+      >
+        No
+      </button>
+      <button
+        (click)="proceedLogout()"
+        class="bg-[#5a8f69] text-white px-4 py-2 rounded font-medium hover:bg-opacity-90 transition"
+      >
+        Yes
+      </button>
+    </div>
+  </div>
+</div>
+<!-- Login Modal -->
+<button
+  style="display: none"
+  id="loginmodaltrack"
+  data-bs-toggle="modal"
+  data-bs-target="#loginmodal"
+>
+  data
+</button>
+
+<div
+  class="modal fade"
+  id="loginmodal"
+  tabindex="-1"
+  aria-labelledby="loginmodalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered"
+    style="margin: auto; justify-content: center !important"
+  >
+    <div
+      class="modal-content p-3 rounded-3"
+      style="padding: 0px !important; border: none !important"
+    >
+      <!-- <div class="modal-body"> -->
+      <div class="popup" style="position: relative">
+        <button
+          type="button"
+          class="btn-close position-absolute end-0 top-0 m-3"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          style="font-size: 12px"
+        ></button>
+        <div
+          class="auth-card frosted-glass shadow-sm p-4 rounded-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-8 relative overflow-hidden"
+        >
+          <button
+            type="button"
+            class="btn-close position-absolute end-0 top-0 m-3"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+            style="font-size: 12px"
+          ></button>
+          <div
+            class="d-flex align-items-center justify-content-center mb-3"
+            style="gap: 12px"
+          >
+            <img
+              src="assets/img/logo1.png"
+              alt="Logo"
+              class="img-fluid"
+              style="
+                height: 60px;
+                width: 60px;
+                min-width: 45px;
+                margin-top: 8px;
+              "
+            />
+            <div
+              class="d-flex flex-column justify-content-center"
+              style="margin-left: -10px !important"
+            >
+              <div class="fw-bold ojtext" (click)="goBack()">
+                Ojasvi Derma Care
+              </div>
+              <div class="subtext">From Garden To Glow</div>
+            </div>
+          </div>
+          <div class="logo-header text-center">
+            <!-- <h2 class="welcome-text">Welcome to PockIT!</h2> -->
+            <h3
+              class="login-text"
+              style="
+                margin-bottom: 0px;
+                font-family: 'Poppins', sans-serif;
+                font-weight: 600;
+                font-size: 22px;
+                color: rgb(90 143 105);
+                text-align: center;
+              "
+            >
+              Login
+            </h3>
+          </div>
+          <form
+            id="loginForm"
+            class="auth-form"
+            #loginSubmit="ngForm"
+            (ngSubmit)="loginotpverification(loginSubmit)"
+          >
+            <div style="color: red; margin-bottom: 15px">
+              {{ statusCode }}
+            </div>
+
+            <div class="form-group mb-3">
+              <label *ngIf="mobileNumberorEmail" style="text-align: left">
+                {{
+                  inputType === "initial"
+                    ? "Email or Mobile Number"
+                    : inputType === "mobile"
+                    ? "Mobile Number"
+                    : "Email"
+                }}
+              </label>
+
+              <div class="input-field">
+                <div
+                  class="unique-country-selector-wrapper flex items-center gap-x-2"
+                >
+                  <!-- Country code block -->
+                  <div
+                    *ngIf="inputType === 'mobile'"
+                    class="unique-country-code-selector flex items-center cursor-pointer px-2 py-1 border rounded"
+                    (click)="toggleCountryDropdown(); $event.stopPropagation()"
+                  >
+                    <span>{{ selectedCountryCode }}</span>
+                    <svg
+                      width="10"
+                      height="6"
+                      viewBox="0 0 10 6"
+                      fill="none"
+                      class="ml-1"
+                    >
+                      <path d="M1 1L5 5L9 1" stroke="#666" stroke-width="1.5" />
+                    </svg>
+
+                    <!-- Country dropdown -->
+                    <div
+                      class="unique-country-dropdown-container absolute z-10"
+                      *ngIf="showCountryDropdown && inputType === 'mobile'"
+                    >
+                      <div
+                        class="unique-country-dropdown bg-white shadow rounded mt-2 p-2 max-h-48 overflow-y-auto"
+                      >
+                        <div class="unique-search-box mb-2">
+                          <input
+                            type="text"
+                            placeholder="Search country..."
+                            [(ngModel)]="searchQuery"
+                            (input)="filterCountries($event)"
+                            (click)="$event.stopPropagation()"
+                            autocomplete="off"
+                            class="form-control customeclass"
+                          />
+                        </div>
+                        <div class="unique-country-list">
+                          <div
+                            class="unique-country-item px-2 py-1 hover:bg-gray-100 cursor-pointer"
+                            *ngFor="let country of filteredCountryCodes"
+                            (click)="
+                              selectCountry(country); $event.stopPropagation()
+                            "
+                          >
+                            {{ country.label }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Input field -->
+                  <input
+                    [type]="inputType === 'email' ? 'email' : 'text'"
+                    class="form-control flex-grow customeclass"
+                    placeholder="{{ getPlaceholder() }}"
+                    [(ngModel)]="mobileNumberorEmail"
+                    name="identifier"
+                    #identifier="ngModel"
+                    (input)="onIdentifierInput($event)"
+                    [pattern]="
+                      inputType === 'mobile'
+                        ? commonFunction.mobpattern
+                        : inputType === 'email'
+                        ? emailPattern
+                        : ''
+                    "
+                    [maxlength]="inputType === 'mobile' ? 10 : 128"
+                    [minlength]="inputType === 'mobile' ? 10 : null"
+                    (keypress)="
+                      inputType === 'mobile'
+                        ? commonFunction.onlynum($event)
+                        : null
+                    "
+                    autocomplete="off"
+                    required
+                  />
+                </div>
+
+                <!-- Error messages -->
+                <div
+                  *ngIf="identifier.errors?.['required'] && (identifier.touched)"
+                  class="error-message"
+                >
+                  Please enter
+                  {{
+                    inputType === "email"
+                      ? "your email address"
+                      : inputType === "mobile"
+                      ? "your mobile number"
+                      : "email or mobile number"
+                  }}.
+                </div>
+
+                <div
+                  *ngIf="identifier.errors?.['pattern'] && (identifier.touched)"
+                  class="error-message"
+                >
+                  Please enter a valid
+                  {{
+                    inputType === "email" ? "email address" : "mobile number"
+                  }}.
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group mb-3">
+              <label *ngIf="data.PASSWORD" style="text-align: left"
+                >Password</label
+              >
+              <div class="input-field">
+                <input
+                  type="password"
+                  placeholder="Enter Password"
+                  required
+                  name="password"
+                  [(ngModel)]="data.PASSWORD"
+                  #password="ngModel"
+                  autocomplete="off"
+                  maxlength="128"
+                  class="form-control customeclass"
+                />
+
+                <div
+                  *ngIf="(password.errors?.['required'] && (password.touched ))"
+                  class="error-message"
+                >
+                  Please enter password.
+                </div>
+              </div>
+            </div>
+            <!-- <div class="text-right mb-2" style="font-size: 13px;"> -->
+            <!-- <a class="text-right mb-2" style="font-size: 13px;"  (click)="forgotpassModal()">Forgot Password?</a> -->
+            <!-- </div> -->
+
+            <div class="flex justify-center">
+              <button
+                class="text-center mb-2 hover:text-[rgb(90,143,105)] footertexts1"
+                (click)="$event.preventDefault();forgotpassModal()"
+              >
+                Forgot Password
+              </button>
+              <span>&nbsp;|&nbsp;</span>
+              <button
+                class="text-center mb-2 hover:text-[rgb(90,143,105)]"
+                style="font-size: 13px"
+                (click)="$event.preventDefault();goBack(); isGuest = true"
+              >
+                Continue as a guest
+              </button>
+            </div>
+
+            <button
+              type="submit"
+              style="
+                background-color: rgb(90, 143, 105);
+                z-index: unset;
+                margin-top: 10px;
+              "
+              class="btn btn-primary btn-block w-100 mb-2 footertexts"
+              [disabled]="isloginSendOTP"
+            >
+              <span
+                *ngIf="isloginSendOTP"
+                class="spinner-border spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              {{ isloginSendOTP ? "Signing In..." : "Login" }}
+            </button>
+            <div class="auth-links text-center">
+              <p class="mb-1 footertexts">
+                Don't have an account?
+                <a
+                  (click)="showRegisterModal()"
+                  style="
+                    color: rgb(90, 143, 105);
+                    font-weight: 500;
+                    cursor: pointer;
+                  "
+                  >Register</a
+                >
+              </p>
+              <!-- <p style="margin-top: 10px; position: relative">
+              <a (click)="onshowMap()">Continue as a guest</a>
+            </p> -->
+            </div>
+          </form>
+        </div>
+        <!-- </div> -->
+      </div>
+      <!-- </div> -->
+    </div>
+  </div>
+</div>
+
+<!-- Logout Confirmation Modal -->
+<div
+  class="modal fade"
+  id="logoutModal"
+  tabindex="-1"
+  aria-labelledby="logoutModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="logoutModalLabel">Logout</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body text-sm">Are you sure you want to log out?</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn bg-[#5a8f69] hover:bg-[#5a7a5a] text-white"
+          (click)="confirmLogout()"
+          data-bs-dismiss="modal"
+        >
+          Logout
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Photo Selection Modal -->
+<div
+  class="modal-overlay photo-modal"
+  *ngIf="showModal"
+  (click)="closeModal()"
+  style="z-index: 9999"
+>
+  <div class="modal-dialog" (click)="$event.stopPropagation()">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Select Photo</h5>
+        <button type="button" class="btn-close" (click)="closeModal()">
+          <!-- × -->
+        </button>
+      </div>
+      <div class="modal-body-photo">
+        <div class="photo-option" (click)="openCamera()">
+          <i class="ri-camera-line"></i>
+          <span>Camera</span>
+        </div>
+        <div class="photo-option" (click)="fileInput.click()">
+          <i class="ri-image-line"></i>
+          <span>Upload File</span>
+          <input
+            type="file"
+            #fileInput
+            accept=".png, .jpg, .jpeg"
+            (change)="fileChangeEvent($event)"
+            hidden
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Capture Photo Modal -->
+<div class="modal fade" id="CapturePhotoModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Take a Picture</h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="closeCapturePhotoModal()"
+        ></button>
+      </div>
+      <div class="modal-body-photo text-center">
+        <div class="video-container">
+          <video
+            #videoElement
+            autoplay
+            playsinline
+            muted
+            style="width: 100%; border-radius: 8px"
+          ></video>
+        </div>
+        <canvas #canvasElement style="display: none"></canvas>
+
+        <button class="capture-btn" (click)="captureImage()">
+          <i class="ri-camera-line"></i> Capture Photo
+        </button>
+
+        <img
+          [src]="capturedImage"
+          *ngIf="capturedImage"
+          class="captured-photo"
+          alt="Captured photo"
+        />
+      </div>
+    </div>
+  </div>
+</div>

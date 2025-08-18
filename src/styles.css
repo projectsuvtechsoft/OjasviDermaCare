@@ -1,0 +1,17 @@
+/* You can add global styles to this file, and also import other style files */
+:root {
+  --primary-color: rgb(90, 143, 105);
+}
+
+.toast-container {
+  position: fixed !important;
+  z-index: 999999 !important;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+}

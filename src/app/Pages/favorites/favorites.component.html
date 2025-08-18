@@ -1,0 +1,485 @@
+<!-- <app-header ></app-header> -->
+
+<div class="min-h-screen">
+  <div
+    id="toastMessage"
+    style="
+      position: fixed;
+      top: 40px;
+      right: 20px;
+      background-color: white;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+      padding: 10px 12px;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+      display: none;
+      z-index: 9999;
+      width: 360px;
+      font-family: sans-serif;
+    "
+  >
+    <div class="flex items-center space-x-3">
+      <img
+        id="toastImage"
+        src=""
+        alt="Product"
+        style="width: 52px; height: 52px; object-fit: cover; border-radius: 6px"
+      />
+      <div>
+        <p
+          id="toastProductName"
+          style="font-weight: 600; margin-bottom: 2px; font-size: 16px"
+        >
+          Product Name
+        </p>
+        <p style="font-size: 13px; color: black">Successfully added to cart</p>
+      </div>
+    </div>
+  </div>
+  <div class="flex min-h-screen">
+    <!-- Main Content -->
+    <div class="flex-1">
+      <!-- Header Background Pattern -->
+      <!-- <div
+          class="h-40 bg-gradient-to-r from-gray-200 to-gray-300 relative overflow-hidden"
+        >
+          <div
+            class="absolute inset-0"
+            style="
+              background-image: url('https://readdy.ai/api/search-image?query=abstract%20geometric%20pattern%20with%20hexagons%20in%20light%20teal%20and%20gray%20colors%2C%20subtle%20modern%20tech%20background%2C%20professional%2C%20clean%20design&width=1200&height=300&seq=2&orientation=landscape');
+              background-size: cover;
+              opacity: 0.3;
+            "
+          ></div>
+        </div> -->
+
+      <!-- Main Content Container -->
+      <div class="" >
+        <div id="wishlist-section" class="page-section" style="display: block">
+          <div class="bg-white rounded-lg shadow-sm p-6 mb-8" style="padding-top: 0px;">
+            <div style="padding-bottom: 1.5rem; text-align: center;" >
+              <h2 class="text-3xl font-bold text-gray-900 mb-2">
+                <!-- <div
+                    class="w-5 h-5 mr-2 flex items-center justify-center text-[#5a8f69]"
+                  >
+                    <i class="ri-eye-line"></i>
+                  </div> -->
+                Your Favorite Products
+              </h2>
+
+              <div>
+                <p class="text-gray-600">Here are the products you've liked.</p>
+              </div>
+              <!-- <a href="#" class="text-[#5a8f69] text-sm hover:underline"
+                  >View All</a
+                > -->
+            </div>
+
+             <div
+              class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+            >
+              <div *ngFor="let product of products;
+              trackBy: trackByProductId;
+              let i = index"
+              class="product-card bg-white rounded-lg shadow-sm overflow-hidden"
+            >
+              <div class="relative">
+               
+                <div class="w-full h-48 md:h-60 bg-white flex items-center justify-center overflow-hidden">
+                  <img
+                    *ngIf="initImageIndex(product.ID) === undefined || true"
+                    [src]="producctImageurl + getImageArray(product)[imageIndices[product.ID]]"
+                    [alt]="product.NAME"
+                    class="max-h-full max-w-full object-contain"
+                  />
+                </div>
+
+              <div
+                class="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex space-x-1"
+              >
+                <ng-container
+                  *ngFor="let img of getImageArray(product); let idx = index"
+                >
+                  <span
+                    class="w-2.5 h-2.5 rounded-full cursor-pointer"
+                    [ngClass]="{
+                      'bg-[#5a8f69]': imageIndices[product.ID] === idx,
+                      'bg-gray-300': imageIndices[product.ID] !== idx
+                    }"
+                    (click)="goToImage(product.ID, idx)"
+                  ></span>
+                </ng-container>
+              </div>
+
+
+               <div class="absolute top-3 right-3 flex space-x-2">
+            
+              <button
+                  class="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm"
+                  [ngClass]="{'text-green-500': product.isLiked, 'text-gray-600 hover:text-[#5a8f69]': !product.isLiked}"
+                  (click)="toggleLike(product)"
+                >
+                  <i [class]="product.isLiked ? 'ri-heart-fill' : 'ri-heart-line'"></i>
+                </button>
+              
+              </div>
+              <div class="absolute top-3 left-3">
+                <span
+                  class="text-white text-xs px-2 py-1 rounded"
+                  [ngClass]="{
+                    'bg-[#5a8f69]/90': product.IS_NEW_ARRIVAL === 1,
+                    'bg-secondary/90': product.IS_BEST_SELLER === 1,
+                    'bg-green-500/90': product.IS_POPULAR === 1,
+                    
+                  }"
+                  >{{
+                    product.IS_NEW_ARRIVAL == "1"
+                      ? "New"
+                      : product.IS_BEST_SELLER == "1"
+                      ? "Best Seller"
+                      : product.IS_POPULAR == "1"
+                      ? "Popular"
+                      : ""
+                  }}</span
+                >
+              </div>
+              </div>
+              <div class="p-4">
+                <span class="text-xs text-gray-500">{{product.CATEGORY_NAME}}</span>
+                <h3 class="text-lg font-medium text-gray-900 mt-1">
+                  {{product.NAME}}
+                </h3>
+                <p class="text-sm text-gray-600 mt-2 line-clamp-2">
+                 {{product.DESCRIPTION}}
+                </p>
+                <div class="flex items-center justify-between mt-4" style="margin-top: 10px !important;">
+                <div>
+                   <span
+                class="text-[#5a8f69] font-medium"
+                 *ngIf="product.IS_VERIENT_AVAILABLE == 0"
+                  >
+                    ${{ product.RATE }}
+                  </span>
+                 <span class="text-[#5a8f69] font-medium"
+                   *ngIf="product.IS_VERIENT_AVAILABLE == 1">
+                    ${{ variantRateMap[product.ID] || '0' }}</span>
+                 
+                </div>
+                 <select
+                  *ngIf="product.IS_VERIENT_AVAILABLE == 1"
+                  class="sm:w-auto border border-green-400 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-300"
+                  [(ngModel)]="selectedVariantMap[product.ID]"
+                  (ngModelChange)="change($event, product.ID)"
+                  style="width: 80px; height: 32px; font-size: 10px; padding: 2px !important;"
+                >
+                  <option value="" disabled>Select Variant</option>
+                  <option *ngFor="let item of variantMap[product.ID] || []" [value]="item.VARIENT_ID">
+                    {{ item.SIZE }} {{ item.UNIT_NAME }}
+                  </option>
+
+                </select>
+                <div class="flex items-center">
+                  <div
+                    class="flex text-yellow-400"
+                    [innerHTML]="getStarIcons(product.RATE)"
+                  ></div>
+                 
+                </div>
+              </div>
+               <div class="mt-4 flex space-x-2 btn-row" style="margin-top: 15px !important;">
+                <button style="font-size: 15px !important;"
+                  class="flex-1 bg-[#5a8f69] text-white py-2 rounded-button font-medium  transition-colors !rounded-button whitespace-nowrap add-to-cart-btn"
+                  (click)="addToCart(product)"
+                   [disabled]="product.IS_UPCOMING == 1 || product.IS_VERIENT_AVAILABLE == 0"
+                id="addToCartBtn"
+                [ngClass]="{
+                  'hover:bg-green-700 cursor-pointer': product.IS_UPCOMING != 1 || product.IS_VERIENT_AVAILABLE == 1,
+                  'bg-gray-400 cursor-not-allowed': product.IS_UPCOMING == 1 || product.IS_VERIENT_AVAILABLE == 0 
+                }"
+                >
+                  Add to Cart
+                </button>
+                <a style="font-size: 15px !important;"
+                  [routerLink]="
+                      selectedVariantMap[product.ID] 
+                        ? ['/product_details', product.ID, selectedVariantMap[product.ID]] 
+                        : ['/product_details', product.ID]
+                    "
+                  class="product-details-link details-btn bg-gray-100 text-gray-800 px-4 py-2 rounded-button font-medium hover:bg-gray-200 transition-colors whitespace-nowrap mrgLeft"
+                  >Details</a
+                >
+              </div>
+              </div>
+            </div>
+             
+            </div>
+             <div class="mt-10 flex justify-center">
+          <nav class="flex items-center space-x-2">
+            <a
+              class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 text-gray-600 hover:bg-gray-50 cursor-pointer"
+              [class.pointer-events-none]="currentPage === 1"
+              [class.opacity-50]="currentPage === 1"
+              (click)="
+                scrollToSection('product-grids');
+                setCurrentPage(currentPage - 1)
+              "
+            >
+              <i class="ri-arrow-left-s-line"></i>
+            </a>
+            <a
+              *ngFor="let page of pagesArray"
+              class="w-10 h-10 flex items-center justify-center rounded-full cursor-pointer"
+              [ngClass]="{
+                'bg-[#5a8f69] text-white': page === currentPage,
+                'border border-gray-300 text-gray-600 hover:bg-gray-50':
+                  page !== currentPage
+              }"
+              (click)="scrollToSection('product-grids'); setCurrentPage(page)"
+              >{{ page }}</a
+            >
+
+            <a
+              class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 text-gray-600 hover:bg-gray-50 cursor-pointer"
+              [class.pointer-events-none]="currentPage === totalPages"
+              [class.opacity-50]="currentPage === totalPages"
+              (click)="
+                scrollToSection('product-grids');
+                setCurrentPage(currentPage + 1)
+              "
+            >
+              <i class="ri-arrow-right-s-line"></i>
+            </a>
+          </nav>
+        </div>
+            <!-- </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay -->
+  <div
+    id="cartOverlay"
+    class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"
+  ></div>
+
+  <script id="dashboard-interactions">
+    document.addEventListener("DOMContentLoaded", function () {
+      // Sidebar link active state
+      const sidebarLinks = document.querySelectorAll(".sidebar-link");
+
+      sidebarLinks.forEach((link) => {
+        link.addEventListener("click", function (e) {
+          // Remove active class from all links
+          sidebarLinks.forEach((l) => l.classList.remove("active"));
+
+          // Add active class to clicked link
+          this.classList.add("active");
+        });
+      });
+    });
+    function showSection(id) {
+      // Hide all content sections
+      document.querySelectorAll(".page-section").forEach((section) => {
+        section.style.display = "none";
+      });
+
+      // Show the target section
+      const target = document.getElementById(id);
+      if (target) {
+        target.style.display = "block";
+      }
+
+      // Update active sidebar link
+      document.querySelectorAll(".sidebar-link").forEach((link) => {
+        link.classList.remove("active", "text-gray-800");
+        link.classList.add("text-gray-600");
+      });
+
+      const clickedLink = Array.from(
+        document.querySelectorAll(".sidebar-link")
+      ).find((link) => link.getAttribute("onclick")?.includes(id));
+
+      if (clickedLink) {
+        clickedLink.classList.add("active");
+        clickedLink.classList.remove("text-gray-600");
+        clickedLink.classList.add("text-gray-800");
+      }
+    }
+
+    // Show dashboard by default on load
+    document.addEventListener("DOMContentLoaded", function () {
+      showSection("wishlist-section");
+    });
+  </script>
+  <script id="cartScript">
+    document.addEventListener("DOMContentLoaded", function () {
+      const cartButton = document.getElementById("cartButton");
+      const cartSidebar = document.getElementById("cartSidebar");
+      const cartOverlay = document.getElementById("cartOverlay");
+      const closeCart = document.getElementById("closeCart");
+      const continueShopping = document.getElementById("continueShopping");
+
+      function openCart() {
+        cartSidebar.classList.remove("translate-x-full");
+        cartOverlay.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeCartSidebar() {
+        cartSidebar.classList.add("translate-x-full");
+        cartOverlay.classList.add("hidden");
+        document.body.style.overflow = "auto";
+      }
+
+      cartButton.addEventListener("click", openCart);
+      closeCart.addEventListener("click", closeCartSidebar);
+      continueShopping.addEventListener("click", closeCartSidebar);
+      cartOverlay.addEventListener("click", closeCartSidebar);
+
+      // Cart quantity controls
+      const decreaseButtons = document.querySelectorAll(".cart-qty-decrease");
+      const increaseButtons = document.querySelectorAll(".cart-qty-increase");
+
+      decreaseButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+          const input = this.nextElementSibling;
+          let value = parseInt(input.value);
+          if (value > 1) {
+            input.value = value - 1;
+          }
+        });
+      });
+
+      increaseButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+          const input = this.previousElementSibling;
+          let value = parseInt(input.value);
+          input.value = value + 1;
+        });
+      });
+    });
+  </script>
+  <script id="addToCartHideScript">
+    document.addEventListener("DOMContentLoaded", function () {
+      let addedToCart = JSON.parse(
+        sessionStorage.getItem("addedToCartProducts") || "[]"
+      );
+      document.querySelectorAll(".add-to-cart-btn").forEach(function (btn) {
+        const pid = btn.getAttribute("data-product-id");
+        const btnRow = btn.closest(".btn-row");
+        const detailsBtn = btnRow ? btnRow.querySelector(".details-btn") : null;
+        function showDetailsFullWidth() {
+          if (btnRow) btnRow.classList.remove("space-x-2");
+          if (detailsBtn) {
+            detailsBtn.classList.add("flex-1", "w-full");
+            detailsBtn.classList.remove("px-4");
+            detailsBtn.style.textAlign = "center";
+            detailsBtn.style.display = "block";
+          }
+        }
+        if (addedToCart.includes(pid)) {
+          btn.style.display = "none";
+          showDetailsFullWidth();
+        }
+        btn.addEventListener("click", function () {
+          if (!addedToCart.includes(pid)) {
+            addedToCart.push(pid);
+            sessionStorage.setItem(
+              "addedToCartProducts",
+              JSON.stringify(addedToCart)
+            );
+          }
+          btn.style.display = "none";
+          showDetailsFullWidth();
+        });
+      });
+    });
+  </script>
+  <script id="productDetailsScript">
+    document.addEventListener("DOMContentLoaded", function () {
+      const productDetailsPage = document.getElementById("productDetailsPage");
+      const backToProducts = document.getElementById("backToProducts");
+
+      const detailsLinks = document.querySelectorAll(".product-details-link");
+      detailsLinks.forEach((link) => {
+        link.addEventListener("click", function (e) {
+          // ✅ Only prevent default if not explicitly marked for navigation
+          if (this.dataset.allowNavigation !== "true") {
+            e.preventDefault();
+
+            const productId = this.getAttribute("data-product");
+            const product = products[productId];
+            document.getElementById("detailsName").textContent = product.name;
+            document.getElementById("detailsCategory").textContent =
+              product.category;
+            document.getElementById("detailsPrice").textContent = product.price;
+            document.getElementById("detailsDescription").textContent =
+              product.description;
+            document.getElementById("detailsMainImage").src = product.image;
+            document.getElementById("detailsMainImage").alt = product.name;
+
+            productDetailsPage.classList.remove("hidden");
+            document.body.style.overflow = "hidden";
+          }
+          // else allow default browser navigation
+        });
+      });
+
+      backToProducts.addEventListener("click", function () {
+        productDetailsPage.classList.add("hidden");
+        document.body.style.overflow = "auto";
+      });
+    });
+
+    function showToast(productImage = "", productName = "") {
+      const toast = document.getElementById("toastMessage");
+      const image = document.getElementById("toastImage");
+      const name = document.getElementById("toastProductName");
+
+      image.src = productImage;
+      name.textContent = productName;
+
+      toast.style.display = "block";
+
+      // Auto-hide after 3 seconds
+      setTimeout(() => {
+        toast.style.display = "none";
+      }, 3000);
+    }
+  </script>
+
+  <!-- Newsletter Section -->
+  <!-- <section class="newsletter-section py-16 text-white">
+      <div class="container mx-auto px-4">
+        <div class="max-w-3xl mx-auto text-center">
+          <h2 class="text-3xl font-bold mb-4">Subscribe to Our Newsletter</h2>
+          <p class="text-white/90 mb-8">
+            Stay updated with our latest products, offers, and Ayurvedic
+            wellness tips.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+            <input
+              type="email"
+              placeholder="Your email address"
+              class="flex-1 px-4 py-3 rounded-button border-none focus:outline-none focus:ring-2 focus:ring-white/50 text-gray-800"
+            />
+            <button
+              class="bg-secondary text-white px-6 py-3 rounded-button font-medium hover:bg-secondary/90 transition-colors !rounded-button whitespace-nowrap"
+              style="background-color: rgb(233 180 76)"
+            >
+              Subscribe
+            </button>
+          </div>
+        </div>
+      </div>
+    </section> -->
+</div>
+<div *ngIf="viewCart">
+  <app-cart-drawer
+    [visible]="viewCart"
+    (visibleChange)="onCartDrawerClose($event)"
+  ></app-cart-drawer>
+</div>

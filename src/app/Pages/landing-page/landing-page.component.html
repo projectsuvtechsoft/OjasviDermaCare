@@ -1,0 +1,727 @@
+<!-- <app-header></app-header> -->
+<!-- SECTION -->
+<section
+  id="hero"
+  class="hero section relative"
+  style="
+    margin: 0px;
+    border-radius: 17px;
+    padding: 0px;
+    height: auto;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+  "
+>
+  <!-- Carousel Container -->
+  <div *ngIf="carouselItems.length > 0" class="relative">
+    <!-- Owl Carousel -->
+    <div
+      class="owl-carousel owl-theme hero-carousel-container h-full"
+      style="height: auto !important; min-height: auto"
+    >
+      <div class="carousel-item relative" *ngFor="let item of carouselItems">
+        <!-- Background Image -->
+        <img
+          loading="lazy"
+          [src]="IMAGEuRL + 'websiteBanner/' + item.IMG_URL"
+          [alt]="item.NAME"
+          style="
+            width: 100%;
+            height: auto;
+            display: block;
+            background-size: 100% 100%;
+          "
+        />
+
+        <!-- Fixed Content on Top of Each Slide -->
+        <div
+          class="absolute top-0 left-0 w-full h-full flex flex-col justify-center items-start p-10 z-10"
+        >
+          <h3
+            class="text-red-600 text-2xl font-bold mb-2 widths-50 fontsizee"
+            *ngIf="
+              carouselItems != undefined &&
+              item?.NAME !== undefined &&
+              item?.NAME !== null &&
+              item?.NAME !== ''
+            "
+            [style.color]="item?.COLOR_CODE_NAME"
+          >
+            {{ item?.NAME }}
+          </h3>
+         <h6
+            class="text-lg widths-50 fontsizee1 hidesubtitle"
+            *ngIf="
+              carouselItems != undefined &&
+              item?.SUB_TITLE !== undefined &&
+              item?.SUB_TITLE !== null &&
+              item?.SUB_TITLE !== ''
+            "
+            [style.color]="item?.COLOR_CODE_T1 ? item.COLOR_CODE_T1 : '#ffffff'"
+            style="margin-top: 10px !important"
+          >
+            {{ item?.SUB_TITLE }}
+          </h6>
+          <button
+            (click)="goToProductList()"
+            class="bg-[#5a8f69] hover:bg-opacity-90 text-white px-8 py-4 rounded-lg text-lg font-semibold mb-4 buttonwidd"
+          >
+            Explore Products
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Welcome Message -->
+<section class="py-16 bg-white" style="padding-top: 30px; padding-bottom: 40px">
+  <div class="max-w-6xl mx-auto px-4 text-center">
+    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
+      From Garden To Glow
+    </h2>
+    <p
+      class="text-lg text-gray-600 max-w-4xl mx-auto leading-relaxed"
+      style="margin-bottom: 10px; line-height: 1.5rem !important"
+    >
+      Welcome to the home of Ojasvi - a place to find skin/hair care products
+      crafted with care from the finest of the ingredients sourced from nature
+      to heal, soothe and rejuvenate.
+    </p>
+    <p
+      class="text-lg text-gray-600 max-w-4xl mx-auto leading-relaxed"
+      style="margin-bottom: 10px; line-height: 1.5rem !important"
+    >
+      Years of using chemical based cosmetics are known to disrupt body
+      functions due to its hormone disrupting nature.
+    </p>
+    <p
+      class="text-lg text-gray-600 max-w-4xl mx-auto leading-relaxed"
+      style="line-height: 1.5rem !important"
+    >
+      At Ojasvi, our luxurious products incorporate flowers, herbs, oils known
+      to ancient cultures from around the world - from Ayurvedic practices of
+      India to the native herbal medicines practiced in the western hemisphere.
+      ingredients are carefully extracted and blended to retain the full power
+      to restore your skin and hair to its natural state.
+    </p>
+  </div>
+</section>
+<section class="ojasvi-philosophy">
+  <h2>The Ojasvi Philosophy</h2>
+
+  <blockquote>
+    <!-- Herbs have the strength and vitality to bestow your body, mind and soul with the wealth of health. The radiate out on like the rays of light at dawn -->
+    ucchuṣmā oṣadhīnāṃ gāvo goṣṭhādīverate |<br />
+    dhanagṃ saṃśyantīnāmātmānaṃ tavā pūruṣa ||
+
+    <br />
+    <em style="font-size: 14px; font-weight: normal"
+      >— Yajurveda (Oshadhi Suktam) ~1500 BCE</em
+    >
+    <br />
+    <p class="text-base text-gray-700 leading-relaxed">
+      Herbs have the strength and vitality to bestow your body, mind and soul
+      with the wealth of health. The radiate out on like the rays of light at
+      dawn
+    </p>
+  </blockquote>
+
+  <ul class="testimonials-track flex bg-green-50">
+    <li
+      class="testimonial-card flex-shrink-0 w-[400px] bg-white rounded-lg shadow-lg p-6 mx-3 hover:shadow-xl transition-shadow"
+    >
+      <strong>East Meets West</strong><br />
+      Our formulations blend Ayurvedic principles with Western herbal wisdom.
+    </li>
+    <!-- <li
+      class="testimonial-card flex-shrink-0 w-[400px] bg-white rounded-lg shadow-lg p-6 mx-3 hover:shadow-xl transition-shadow"
+    >
+      <strong>Whole Plant Infusion</strong><br />Slow-infused at room
+      temperature for two weeks, in darkness, to preserve the integrity of
+      delicate, beneficial phytonutrients.
+    </li> -->
+    <li
+      class="testimonial-card flex-shrink-0 w-[400px] bg-white rounded-lg shadow-lg p-6 mx-3 hover:shadow-xl transition-shadow"
+    >
+      <strong>Handcrafted Quality:</strong><br />Made in small batches to ensure
+      exceptional quality, potency and integrity.
+    </li>
+    <li
+      class="testimonial-card flex-shrink-0 w-[400px] bg-white rounded-lg shadow-lg p-6 mx-3 hover:shadow-xl transition-shadow"
+    >
+      <strong>Rooted in Tradition, Designed for Modern Life:</strong
+      ><br />Drawing on collective ancestral knowledge to address today's
+      skincare challenges.
+    </li>
+    <li
+      class="testimonial-card flex-shrink-0 w-[400px] bg-white rounded-lg shadow-lg p-6 mx-3 hover:shadow-xl transition-shadow"
+    >
+      <strong>Naturally Clean:</strong><br />
+      No additives. No preservatives. Just what pure botanical nourishment your
+      skin needs - nothing more.
+    </li>
+  </ul>
+  <div class="text-right pr-6 mt-2">
+    <a
+      href="/product-list"
+      class="text-green-700 font-semibold hover:underline"
+    >
+      Explore Our Products →
+    </a>
+  </div>
+</section>
+
+<section
+  class="py-20 bg-white"
+  style="padding-bottom: 0px !important; padding-top: 49px"
+>
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="text-center mb-12" style="margin-bottom: 8px !important">
+      <h2
+        class="serif text-4xl font-bold text-gray-800 mb-4"
+        style="margin-bottom: 8px !important"
+      >
+        Featured Categories
+      </h2>
+      <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+        Discover our top Ayurvedic picks curated just for you
+      </p>
+    </div>
+    <!-- Tab Navigation -->
+    <div class="flex justify-center mb-12">
+      <div class="flex space-x-8 border-b border-gray-200">
+        <button
+          *ngFor="
+            let tab of ['popular', 'bestseller', 'newarrival', 'upcoming']
+          "
+          (click)="switchTab(tab)"
+          [ngClass]="{
+            'tab-button px-6 py-3 text-lg font-medium transition-colors border-b-2': true,
+            'text-[#5a8f69] border-[#5a8f69]': activeTab === tab,
+            'text-gray-600 border-transparent hover:text-[#5a8f69]':
+              activeTab !== tab
+          }"
+        >
+          <span *ngIf="tab == 'popular'"> Popular</span>
+          <span *ngIf="tab == 'bestseller'">Best Seller</span>
+          <span *ngIf="tab == 'newarrival'">New Arrival</span>
+          <span *ngIf="tab == 'upcoming'">Upcoming</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tab Content -->
+    <div
+      *ngFor="let tab of ['popular', 'bestseller', 'newarrival', 'upcoming']"
+    >
+      <div *ngIf="activeTab === tab" class="relative">
+        <!-- Navigation Buttons -->
+        <button
+          (click)="prev(tab)"
+          class="carousel-prev absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
+        >
+          <i class="ri-arrow-left-s-line text-gray-600"></i>
+        </button>
+        <button
+          (click)="next(tab)"
+          class="carousel-next absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
+        >
+          <i class="ri-arrow-right-s-line text-gray-600"></i>
+        </button>
+
+        <!-- Carousel Items -->
+        <div class="carousel-container overflow-hidden">
+          <div class="flex transition-transform duration-300 ease-in-out">
+            <div
+              *ngFor="let product of getVisibleProducts(tab)"
+              class="flex-shrink-0 w-1/2 sm:w-1/3 md:w-1/4 px-2"
+            >
+              <div
+                class="product-card bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden transition-all hover:translate-y-[-4px] hover:shadow-lg"
+              >
+                <!-- image container -->
+                <div class="aspect-square relative overflow-hidden">
+                  <img
+                    *ngIf="initImageIndex(product.ID) === undefined || true"
+                    [src]="
+                      producctImageurl +
+                      getImageArray(product)[imageIndices[product.ID]]
+                    "
+                    [alt]="product.NAME"
+                    class="w-full h-full object-cover object-top"
+                  />
+
+                  <!-- Dot Indicators on image -->
+                  <div
+                    *ngIf="getImageArray(product).length > 1"
+                    class="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex gap-2"
+                  >
+                    <ng-container
+                      *ngFor="
+                        let image of getImageArray(product);
+                        let i = index
+                      "
+                    >
+                      <button
+                        class="w-2.5 h-2.5 rounded-full transition-colors duration-300"
+                        [ngClass]="{
+                          'bg-[#5a8f69]': imageIndices[product.ID] === i,
+                          'bg-gray-300': imageIndices[product.ID] !== i
+                        }"
+                        (click)="setImage(product.ID, i)"
+                      ></button>
+                    </ng-container>
+                  </div>
+                </div>
+
+                <!-- product content -->
+                <div
+                  class="p-4"
+                  style="padding: 12px 15px 15px 15px !important"
+                >
+                  <p
+                    class="text-sm text-gray-600 mb-3 clamp-text"
+                    [attr.title]="product?.CATEGORY_NAME"
+                    style="margin-bottom: 5px !important"
+                  >
+                    {{ product?.CATEGORY_NAME }}
+                  </p>
+                  <h3
+                    class="clamp-text prodnam"
+                    [attr.title]="product?.NAME"
+                    style="margin-bottom: 20px !important"
+                  >
+                    {{ product?.NAME }}
+                  </h3>
+
+                 <div class="flex items-center justify-between">
+                    <a (click)="addtodetail(product)"
+                      [routerLink]="['/product_details', product.ID , getFirstVariantId(product)]"
+                      class="bg-[#5a8f69] text-white px-4 py-2 rounded text-sm hover:bg-opacity-90 transition-colors proBTN"
+                      style="width: 100% !important; text-align: center"
+                      >View Details</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- What Our Customers Say -->
+<section class="py-16 bg-white" style="padding-top: 49px">
+  <div class="max-w-7xl mx-auto px-6 py-4" style="background-color: #f5fdf7">
+    <div class="text-center mb-12" style="margin-bottom: 28px !important">
+      <h2
+        class="font-serif text-4xl font-bold text-gray-800 mb-4"
+        style="margin-bottom: 8px !important"
+      >
+        What Our Customers Say
+      </h2>
+      <p class="text-gray-600 text-lg">
+        Real experiences from our wellness community
+      </p>
+    </div>
+
+    <div
+      *ngIf="euserID"
+      class="w-[40%] sm:w-[30%] md:w-[20%] lg:w-[10%] left-0 top-1/3 z-50 origin-left bg-[#4c7c5b] hover:bg-opacity-90 transition-colors text-gray-800 px-2 py-2 mb-3 rounded-r-full shadow-md flex items-center space-x-1 cursor-pointer"
+    >
+      <span
+        class="text-sm font-medium text-white"
+        data-bs-toggle="modal"
+        data-bs-target="#reviewModal"
+      >
+        Write a Review
+      </span>
+    </div>
+
+    <div class="carousel-container overflow-visible relative">
+      <div
+        class="flex transition-transform duration-500 ease-in-out"
+        [style.transform]="'translateX(-' + currentSlide * 100 + '%)'"
+      >
+        <div
+          *ngFor="let data of ReviewData; let index = index"
+          class="testimonial-card flex-shrink-0 w-full sm:w-1/2 md:w-1/2 lg:w-1/3 px-3"
+        >
+          <div class="bg-white rounded-lg shadow-none p-6">
+            <div class="flex items-center mb-4">
+              <div
+                class="w-12 h-12 bg-gray-300 rounded-full mr-4 overflow-hidden"
+              >
+                <img
+                  *ngIf="data.PROFILE_URL; else defaultImg"
+                  [src]="Imgurl + data.PROFILE_URL"
+                  alt="User"
+                  class="w-full h-full object-cover"
+                />
+                <ng-template #defaultImg>
+                  <img
+                    src="assets/img/user.jpg"
+                    alt="User"
+                    class="w-full h-full object-cover"
+                  />
+                </ng-template>
+              </div>
+              <div>
+                <h4 class="font-semibold text-gray-800">
+                  {{ data.CUSTOMER_NAME }}
+                </h4>
+                <p
+                  class="text-gray-600 text-sm"
+                  *ngIf="data.COUNTRY_NAME && data.STATE_NAME"
+                >
+                  {{ data.COUNTRY_NAME }}, {{ data.STATE_NAME }}
+                </p>
+              </div>
+            </div>
+
+            <div class="flex mb-2">
+              <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
+                <i
+                  class="ri-star-fill text-yellow-400 text-base mr-1"
+                  *ngIf="star <= data.RATINGS"
+                ></i>
+              </ng-container>
+            </div>
+            <div class="tooltip-container" #tooltipContainer>
+              <p #reviewText class="text-sm text-gray-700 italic line-clamp-3">
+                {{ data.REVIEW }}
+              </p>
+
+              <span class="custom-tooltip" *ngIf="shouldShowTooltip[index]">
+                {{ data.REVIEW }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button
+        *ngIf="showNavigation"
+        (click)="prevSlide()"
+        class="absolute left-0 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-gray-100 p-2 rounded-full shadow hover:bg-gray-200 z-10"
+      >
+        <i class="ri-arrow-left-s-line text-gray-600"></i>
+      </button>
+      <button
+        *ngIf="showNavigation"
+        (click)="nextSlide()"
+        class="absolute right-0 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-gray-100 p-2 rounded-full shadow hover:bg-gray-200 z-10"
+      >
+        <i class="ri-arrow-right-s-line text-gray-600"></i>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Review Modal -->
+<div
+  class="modal fade"
+  id="reviewModal"
+  tabindex="-1"
+  aria-labelledby="reviewModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="width: 100%">
+      <div class="modal-header">
+        <h5 class="modal-title" id="reviewModalLabel">Add Your Review</h5>
+        <button
+          type="button"
+          #closeBtn
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <div class="modal-body">
+        <form (ngSubmit)="submitReview()">
+          <div class="mb-3">
+            <label class="form-label">Ratings</label>
+            <div>
+              <i
+                *ngFor="let star of [1, 2, 3, 4, 5]"
+                class="bi bi-star-fill fs-4"
+                [ngClass]="{
+                  'text-warning': reviewForm.rating >= star,
+                  'text-secondary': reviewForm.rating < star
+                }"
+                (click)="setRating(star)"
+                style="cursor: pointer; padding-right: 5px"
+              ></i>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Review</label>
+            <textarea
+              class="form-control"
+              rows="3"
+              placeholder="Write your review here..."
+              [(ngModel)]="reviewForm.text"
+              name="reviewText"
+              required
+            ></textarea>
+          </div>
+
+          <div class="modal-footer" style="padding-bottom: 0px">
+            <button
+              type="submit"
+              class="bg-[#4c7c5b] hover:bg-opacity-90 transition-colors text-white px-3 py-1.5 rounded shadow-md flex items-center space-x-1 cursor-pointer"
+            >
+              Submit
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <section class="py-16 bg-green-50" style="padding-top: 49px;">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-12" style="margin-bottom: 28px !important;">
+      <h2 class="font-serif text-4xl font-bold text-gray-800 mb-4" style="margin-bottom: 8px !important;">
+        Your 3-Step Ayurvedic Routine
+      </h2>
+      <p class="text-gray-600 text-lg">Simple steps to radiant, healthy skin</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="text-center">
+        <div class="w-20 h-20 bg-[#5a8f69] rounded-full flex items-center justify-center mx-auto mb-6 relative">
+          <span class="text-white font-bold text-2xl">1</span>
+          <div class="hidden md:block absolute -right-8 top-1/2 transform -translate-y-1/2">
+            <div class="w-16 h-0.5 bg-gray-300 relative">
+              <div class="absolute right-0 top-1/2 transform -translate-y-1/2 w-2 h-2 bg-gray-300 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+        <div class="w-12 h-12 flex items-center justify-center mx-auto mb-4">
+          <i class="ri-drop-line text-[#5a8f69] text-3xl"></i>
+        </div>
+        <h3 class="font-serif text-xl font-semibold mb-3">Cleanse</h3>
+        <p class="text-gray-600">
+          Gently remove impurities with our herbal cleansers
+        </p>
+      </div>
+
+      <div class="text-center">
+        <div class="w-20 h-20 bg-[#5a8f69] rounded-full flex items-center justify-center mx-auto mb-6 relative">
+          <span class="text-white font-bold text-2xl">2</span>
+          <div class="hidden md:block absolute -right-8 top-1/2 transform -translate-y-1/2">
+            <div class="w-16 h-0.5 bg-gray-300 relative">
+              <div class="absolute right-0 top-1/2 transform -translate-y-1/2 w-2 h-2 bg-gray-300 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+        <div class="w-12 h-12 flex items-center justify-center mx-auto mb-4">
+          <i class="ri-heart-pulse-line text-[#5a8f69] text-3xl"></i>
+        </div>
+        <h3 class="font-serif text-xl font-semibold mb-3">Nourish</h3>
+        <p class="text-gray-600">
+          Feed your skin with nutrient-rich oils and serums
+        </p>
+      </div>
+
+      <div class="text-center">
+        <div class="w-20 h-20 bg-[#5a8f69] rounded-full flex items-center justify-center mx-auto mb-6">
+          <span class="text-white font-bold text-2xl">3</span>
+        </div>
+        <div class="w-12 h-12 flex items-center justify-center mx-auto mb-4">
+          <i class="ri-sun-line text-[#5a8f69] text-3xl"></i>
+        </div>
+        <h3 class="font-serif text-xl font-semibold mb-3">Glow</h3>
+        <p class="text-gray-600">
+          Reveal your natural radiance with our finishing treatments
+        </p>
+      </div>
+    </div>
+  </div>
+</section> -->
+<!-- <section class="py-12 px-4 bg-green-50">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-10">
+      <h2 class="font-serif text-3xl sm:text-4xl font-bold text-gray-800 mb-2">
+        Your 3-Step Ayurvedic Routine
+      </h2>
+      <p class="text-gray-600 text-base sm:text-lg">
+        Simple steps to radiant, healthy skin
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
+      <div class="text-center">
+        <div
+          class="w-20 h-20 bg-[#5a8f69] rounded-full flex items-center justify-center mx-auto mb-4 relative"
+        >
+          <span class="text-white font-bold text-2xl">1</span>
+          <div
+            class="hidden md:block absolute -right-8 top-1/2 transform -translate-y-1/2"
+          >
+            <div class="w-16 h-0.5 bg-gray-300 relative">
+              <div
+                class="absolute right-0 top-1/2 transform -translate-y-1/2 w-2 h-2 bg-gray-300 rounded-full"
+              ></div>
+            </div>
+          </div>
+        </div>
+        <div class="w-12 h-12 flex items-center justify-center mx-auto mb-3">
+          <i class="ri-drop-line text-[#5a8f69] text-3xl"></i>
+        </div>
+        <h3 class="font-serif text-lg font-semibold mb-2">Cleanse</h3>
+        <p class="text-gray-600 text-sm sm:text-base px-4 sm:px-0">
+          Gently remove impurities with our herbal cleansers
+        </p>
+      </div>
+
+      <div class="text-center">
+        <div
+          class="w-20 h-20 bg-[#5a8f69] rounded-full flex items-center justify-center mx-auto mb-4 relative"
+        >
+          <span class="text-white font-bold text-2xl">2</span>
+          <div
+            class="hidden md:block absolute -right-8 top-1/2 transform -translate-y-1/2"
+          >
+            <div class="w-16 h-0.5 bg-gray-300 relative">
+              <div
+                class="absolute right-0 top-1/2 transform -translate-y-1/2 w-2 h-2 bg-gray-300 rounded-full"
+              ></div>
+            </div>
+          </div>
+        </div>
+        <div class="w-12 h-12 flex items-center justify-center mx-auto mb-3">
+          <i class="ri-heart-pulse-line text-[#5a8f69] text-3xl"></i>
+        </div>
+        <h3 class="font-serif text-lg font-semibold mb-2">Nourish</h3>
+        <p class="text-gray-600 text-sm sm:text-base px-4 sm:px-0">
+          Feed your skin with nutrient-rich oils and serums
+        </p>
+      </div>
+
+      <div class="text-center">
+        <div
+          class="w-20 h-20 bg-[#5a8f69] rounded-full flex items-center justify-center mx-auto mb-4"
+        >
+          <span class="text-white font-bold text-2xl">3</span>
+        </div>
+        <div class="w-12 h-12 flex items-center justify-center mx-auto mb-3">
+          <i class="ri-sun-line text-[#5a8f69] text-3xl"></i>
+        </div>
+        <h3 class="font-serif text-lg font-semibold mb-2">Glow</h3>
+        <p class="text-gray-600 text-sm sm:text-base px-4 sm:px-0">
+          Reveal your natural radiance with our finishing treatments
+        </p>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+<!-- Newsletter Section -->
+<section class="newsletter-section py-16 text-white">
+  <div class="container mx-auto px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="text-3xl font-bold mb-4">Subscribe to Our Newsletter</h2>
+      <p class="text-white/90 mb-8">
+        Stay updated with our latest products, offers, and Ayurvedic wellness
+        tips.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+        <input
+          type="text"
+          [(ngModel)]="emailaddress"
+          maxlength="40"
+          name="emailad"
+          placeholder="Enter your email address"
+          class="flex-1 px-4 py-3 rounded-button border-none focus:outline-none focus:ring-2 focus:ring-white/50 text-gray-800"
+        />
+        <button
+          *ngIf="!loadingRecords"
+          (click)="SubsribeToNewsLetter()"
+          class="text-white px-6 py-3 rounded-button font-medium hover:bg-secondary/90 transition-colors !rounded-button whitespace-nowrap"
+          style="background-color: rgb(233 180 76)"
+        >
+          Subscribe
+        </button>
+        <button
+          *ngIf="loadingRecords"
+          class="text-white px-6 py-3 rounded-button font-medium hover:bg-secondary/90 transition-colors !rounded-button whitespace-nowrap"
+          style="background-color: rgb(233 180 76)"
+        >
+          Subscribe &nbsp;
+          <div
+            class="spinner-border text-warning"
+            role="status"
+            style="
+              font-size: 10px !important;
+              height: 15px;
+              width: 15px;
+              color: white !important;
+            "
+          >
+            <span class="sr-only">Loading...</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script id="category-hover">
+  document.addEventListener("DOMContentLoaded", function () {
+    const categoryCards = document.querySelectorAll(".category-card");
+
+    categoryCards.forEach((card) => {
+      card.addEventListener("mouseenter", function () {
+        this.style.transform = "scale(1.05)";
+      });
+
+      card.addEventListener("mouseleave", function () {
+        this.style.transform = "scale(1)";
+      });
+    });
+  });
+</script>
+
+<script id="smooth-scroll">
+  document.addEventListener("DOMContentLoaded", function () {
+    document.documentElement.style.scrollBehavior = "smooth";
+
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: "0px 0px -50px 0px",
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = "1";
+          entry.target.style.transform = "translateY(0)";
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll("section").forEach((section) => {
+      section.style.opacity = "0";
+      section.style.transform = "translateY(20px)";
+      section.style.transition = "opacity 0.6s ease, transform 0.6s ease";
+      observer.observe(section);
+    });
+  });
+</script>

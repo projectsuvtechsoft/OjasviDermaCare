@@ -1,0 +1,39 @@
+      .form-input:focus {
+        outline: none;
+        border-color: rgb(90, 143, 105);
+        box-shadow: 0 0 0 3px rgba(90, 143, 105, 0.1);
+      }
+      .contact-section {
+        background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+      }
+
+
+      .hero-bg {
+        background-image: url("https://readdy.ai/api/search-image?query=serene%20ayurvedic%20spa%20environment%20with%20soft%20natural%20lighting%2C%20gentle%20green%20botanical%20elements%2C%20peaceful%20meditation%20space%20with%20organic%20textures%2C%20minimalist%20wellness%20sanctuary%2C%20clean%20white%20background%20with%20subtle%20green%20accents%2C%20calming%20nature%20inspired%20setting&width=1920&height=800&seq=hero-contact&orientation=landscape");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+         z-index: 1;
+      }
+
+
+              .hero-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.4); /* Black with 40% opacity (adjust as needed) */
+    z-index: 2;
+    pointer-events: none;
+}
+
+@media (max-width: 500px) {
+.px-20 {
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+}
+
+.text-center {
+    text-align: justify !important;
+}
+}
+      
