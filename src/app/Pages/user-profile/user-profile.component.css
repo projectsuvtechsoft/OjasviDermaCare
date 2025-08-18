@@ -1,0 +1,611 @@
+:where([class^="ri-"])::before {
+  content: "\f3c2";
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background-color: #f9fafb;
+}
+
+.sidebar-link.active {
+  background-color: rgba(90, 143, 105, 0.1);
+  color: #5a8f69;
+  border-left: 3px solid #5a8f69;
+}
+
+.card-header span.text-truncate {
+  max-width: 60%;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stepper .circle {
+  width: 25px;
+  height: 25px;
+  line-height: 25px;
+  border-radius: 50%;
+  background-color: #ccc;
+  color: white;
+  font-size: 12px;
+  margin: auto;
+}
+
+.stepper .step small {
+  font-size: 10px;
+  display: block;
+  margin-top: 4px;
+}
+
+.stepper .step.active .circle {
+  background-color: #5a8f69;
+}
+
+.stepper .border-top {
+  border-top: 2px solid #ccc;
+  margin-top: 12px;
+}
+
+.stepper .step.active ~ .border-top {
+  border-color: #5a8f69;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.step-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 40px; /* adjust to match visual alignment */
+  margin-top: 4px;
+}
+
+.date {
+  font-size: 10px;
+  color: #666;
+  line-height: 1;
+}
+
+.order-card {
+  border: 1px solid #d4d4d4;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  background-color: #f9f9f9;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.order-heading {
+  color: #5a8f69;
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.order-address {
+  color: #333;
+  line-height: 1.8;
+  font-size: 12px;
+}
+
+.address-type {
+  color: #333;
+  font-size: 11px;
+}
+.product-name {
+  max-width: 300px;
+  word-break: break-word;
+  display: inline-block;
+  white-space: normal;
+}
+.product-name {
+  display: inline-block;
+  white-space: normal;
+  word-break: break-word;
+  max-width: 300px;
+}
+
+@media (max-width: 768px) {
+  .product-name {
+    max-width: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-name {
+    max-width: 80px;
+  }
+}
+
+.sidebar-link:hover:not(.active) {
+  background-color: rgba(90, 143, 105, 0.05);
+}
+
+input:focus {
+  outline: none;
+  border-color: #5a8f69;
+}
+
+.newsletter-section {
+  background-image: linear-gradient(
+      to right,
+      rgba(90, 143, 105, 0.9),
+      rgba(90, 143, 105, 0.7)
+    ),
+    url("https://readdy.ai/api/search-image?query=Natural%20botanical%20background%20with%20green%20leaves%2C%20herbs%20and%20plants%2C%20soft%20focus%2C%20gentle%20lighting%2C%20earthy%20tones%2C%20ayurvedic%20ingredients%2C%20clean%20and%20minimal%2C%20professional%20product%20photography%20style&width=1200&height=300&seq=newsletter&orientation=landscape");
+  background-size: cover;
+  background-position: center;
+}
+
+/* Responsive custom styles for sidebar overlay */
+@media (max-width: 1023px) {
+  .sidebar-responsive {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 80vw;
+    max-width: 320px;
+    z-index: 100;
+    background: #fff;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .sidebar-responsive.open {
+    transform: translateX(0);
+  }
+}
+
+@media (min-width: 1024px) {
+  .sidebar-responsive {
+    position: relative;
+    transform: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .main-content-responsive {
+    padding-left: 0 !important;
+  }
+}
+
+.modal-content {
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border: none;
+}
+
+.modal-header {
+  font-weight: bold;
+  border-bottom: 1px solid #e9ecef;
+  background-color: #f8f9fa;
+  border-radius: 12px 12px 0 0;
+}
+
+.modal-header .btn-close {
+  background-color: #5a8f69;
+  opacity: 0.8;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+}
+
+.modal-header .btn-close:hover {
+  opacity: 1;
+  background-color: #5a8f69;
+}
+
+.modal-btn {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: none;
+  background: #f8f9fa;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  border-radius: 8px;
+  transition: 0.3s;
+  color: #333;
+}
+
+.modal-btn:hover {
+  background: #5a8f69;
+  color: white;
+}
+
+.modal-btn i {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+/* Photo modal specific styles */
+#photoModal .modal-content {
+  border: 2px solid #5a8f69;
+}
+
+#photoModal .modal-header {
+  background-color: #5a8f69;
+  color: white;
+}
+
+#photoModal .modal-header .btn-close {
+  background-color: white;
+  color: #5a8f69;
+}
+
+#photoModal .modal-body-photo {
+  padding: 20px;
+}
+
+#photoModal .modal-body-photo div {
+  padding: 15px 10px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+}
+
+#photoModal .modal-body-photo div:hover {
+  background-color: #f0f8f0;
+  color: #5a8f69;
+}
+
+#photoModal .modal-body-photo div i {
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+/* Capture photo modal styles */
+#CapturePhotoModal .modal-content {
+  border: 2px solid #5a8f69;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+#CapturePhotoModal .modal-header {
+  background-color: #5a8f69;
+  color: white;
+  border-radius: 10px 10px 0 0;
+}
+
+#CapturePhotoModal .modal-header .btn-close {
+  background-color: white;
+  color: #5a8f69;
+}
+
+#CapturePhotoModal .modal-body-photo {
+  padding: 20px;
+  text-align: center;
+}
+
+.capture-btn {
+  margin-top: 15px;
+  background: #5a8f69;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(90, 143, 105, 0.3);
+}
+
+.capture-btn:hover {
+  background: #4a7a5a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(90, 143, 105, 0.4);
+}
+
+.captured-photo {
+  width: 100%;
+  max-width: 320px;
+  border-radius: 8px;
+  margin-top: 15px;
+  border: 2px solid #5a8f69;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Video element styling */
+video {
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  background-color: #000;
+}
+
+/* Modal backdrop improvements */
+.modal-open {
+  overflow: hidden;
+}
+
+.modal-open::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(5px);
+  z-index: 1040;
+}
+
+/* Modal body improvements */
+.modal-body-photo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Profile card styles (restored) */
+.profile-card {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 450px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+  overflow: hidden;
+}
+
+.profile-card .profile-image {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  border: 3px solid #5a8f69;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-card .profile-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.profile-card .profile-details {
+  flex: 1;
+  margin-left: 10px;
+}
+
+.profile-card .profile-details .user-name {
+  font-weight: bold;
+  font-size: 14px;
+  color: #000;
+}
+
+.profile-card .profile-details .user-info {
+  font-size: 12px;
+  color: #666;
+}
+
+.profile-card .profile-details .user-info span {
+  font-weight: bold;
+  color: #333;
+}
+
+.profile-card .profile-arrow {
+  color: #666;
+  font-size: 12px;
+}
+
+/* Photo option styling */
+.photo-option {
+  padding: 15px 20px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  margin-bottom: 10px;
+  border: 1px solid #e9ecef;
+  background-color: #f8f9fa;
+}
+
+.photo-option:hover {
+  background-color: #5a8f69;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(90, 143, 105, 0.3);
+}
+
+.photo-option i {
+  margin-right: 12px;
+  font-size: 20px;
+}
+
+.photo-option span {
+  font-size: 16px;
+}
+
+/* Video container styling */
+.video-container {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto 20px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal overlay for photo selection modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  backdrop-filter: blur(5px);
+}
+
+.modal-overlay .modal-dialog {
+  max-width: 400px;
+  width: 100%;
+  margin: 0;
+}
+
+/* Ensure modal content has proper styling */
+.modal-overlay .modal-content {
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border: none;
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* Only apply styles to the modal with class 'photo-modal' */
+.photo-modal .modal-dialog {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+  padding: 0;
+  max-width: 320px;
+  margin: auto;
+  text-align: center;
+}
+
+.photo-modal .modal-header {
+  background-color: #f9f9f9;
+  padding: 10px 16px;
+  border-bottom: 1px solid #e0e0e0;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.photo-modal .modal-title {
+  margin: 0;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.photo-modal .btn-close {
+  background-color: #5a8f69;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+}
+
+.photo-modal .modal-body-photo {
+  padding: 20px;
+}
+
+.photo-modal .photo-option {
+  background-color: #f4f6f8;
+  padding: 12px 20px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.photo-modal .photo-option:hover {
+  background-color: #e8f0ea;
+}
+
+:host ::ng-deep .photo-modal .modal-content {
+  background-color: white;
+  border-radius: 8px;
+  max-width: 800px;
+  width: 100% !important;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.order-card {
+  font-size: 12px;
+  border-radius: 8px;
+  transition: box-shadow 0.2s ease;
+  background-color: #fff;
+}
+
+.order-card:hover {
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+.order-status {
+  font-size: 11px;
+  border-radius: 0px 6px 0px 8px;
+}
+
+.status-pending {
+  background-color: #17a2b8;
+}
+
+.status-packaging {
+  background-color: #0d6efd;
+}
+
+.status-dispatched {
+  background-color: #198754;
+}
+
+.status-delivered {
+  background-color: #28a745;
+}
+
+.status-cancelled {
+  background-color: #dc3545;
+}
+
+@media (max-width: 767px) {
+  .hide-on-mobile {
+    display: none;
+  }
+}

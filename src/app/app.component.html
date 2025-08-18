@@ -1,0 +1,21 @@
+<!-- <app-common-loader *ngIf="isLoading" class="overlay-loader"></app-common-loader> -->
+
+<!-- Header only when not on /login -->
+<app-header *ngIf="showHeader"></app-header>
+
+<div *ngIf="!isLoading">
+  <!-- Router Outlet always present -->
+  <router-outlet></router-outlet>
+</div>
+
+<!-- Footer only when not on /login -->
+<app-footer *ngIf="showFooter"></app-footer>
+<!-- <app-login *ngIf="!showHeader"></app-login> -->
+<div class="popup-overlay" *ngIf="showPopup">
+  <div class="popup-container">
+    <button class="close-button" (click)="closePopup()">&times;</button>
+    <img [src]="popupImageSrc" alt="Festive Offer" class="popup-image">
+  </div>
+</div>
+
+

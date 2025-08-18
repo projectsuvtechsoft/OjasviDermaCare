@@ -1,0 +1,90 @@
+:where([class^="ri-"])::before {
+  content: "\f3c2";
+}
+.playfair {
+  font-family: "Playfair Display", serif;
+}
+.open-sans {
+  font-family: "Open Sans", sans-serif;
+}
+.hero-bg {
+  background-image: url("https://readdy.ai/api/search-image?query=soft%20botanical%20texture%20background%20with%20delicate%20leaves%20and%20flowers%20in%20muted%20green%20tones%2C%20elegant%20ayurvedic%20herbs%20pattern%2C%20very%20subtle%20and%20light%2C%20perfect%20for%20text%20overlay%2C%20minimalist%20natural%20design%2C%20high%20quality%20botanical%20illustration&width=1920&height=1080&seq=hero-bg&orientation=landscape");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.quote-bg {
+  background-image: url("https://readdy.ai/api/search-image?query=light%20floral%20background%20with%20delicate%20flowers%20and%20leaves%2C%20soft%20botanical%20pattern%2C%20very%20light%20and%20subtle%2C%20perfect%20for%20text%20overlay%2C%20ayurvedic%20inspired%20design%2C%20elegant%20natural%20elements%2C%20muted%20colors&width=1920&height=600&seq=quote-bg&orientation=landscape");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.founder-img {
+  background-image: url("https://readdy.ai/api/search-image?query=professional%20portrait%20of%20a%20confident%20woman%20scientist%20in%20her%2040s%2C%20PhD%20researcher%2C%20warm%20smile%2C%20professional%20attire%2C%20soft%20natural%20lighting%2C%20clean%20background%2C%20elegant%20and%20approachable%2C%20high%20quality%20professional%20headshot&width=400&height=500&seq=founder-img&orientation=portrait");
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+.ingredient-card {
+  transition: all 0.3s ease;
+}
+.ingredient-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 0.8s ease forwards;
+}
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+ul {
+  list-style: disc;
+}
+
+ul > li {
+  font-size: 13px;
+}
+
+@media (max-width: 500px) {
+  .fontsizee {
+    font-size: 30px !important;
+  }
+  .fontsizeeAd {
+    font-size: 16px !important;
+  }
+  .text-4xl {
+    font-size: 2rem !important;
+    line-height: 2rem !important;
+  }
+
+  .marginPH {
+    margin-top: 0px !important;
+    margin-bottom: 65px !important;
+  }
+  .text-sm {
+    font-size: 1.15rem !important;
+  }
+}
+@media (min-width: 501px) {
+  .fontsizee {
+    font-size: 36px !important;
+  }
+  .fontsizeeAd {
+    font-size: 18px !important;
+  }
+}
+
+.paddingc {
+  padding: 20px !important;
+}

@@ -1,0 +1,244 @@
+:where([class^="ri-"])::before {
+  content: "\f3c2";
+}
+body {
+  font-family: "Poppins", sans-serif;
+}
+h1,
+h2,
+h3,
+h4,
+.serif {
+  font-family: "Playfair Display", serif;
+}
+.logo {
+  font-family: "Playfair Display", serif;
+  font-weight: 700;
+}
+.hero-section {
+  background-image: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.9) 40%,
+      rgba(255, 255, 255, 0.7) 60%,
+      rgba(255, 255, 255, 0.2) 80%,
+      rgba(255, 255, 255, 0) 100%
+    ),
+    url("https://readdy.ai/api/search-image?query=Beautiful%20natural%20botanical%20scene%20with%20ayurvedic%20herbs%20and%20plants%2C%20soft%20green%20leaves%2C%20earthy%20tones%2C%20natural%20ingredients%20for%20skincare%2C%20professional%20product%20photography%20style%2C%20clean%20background%2C%20soft%20lighting%2C%20high-end%20cosmetic%20product%20presentation&width=1200&height=600&seq=hero1&orientation=landscape");
+  background-size: cover;
+  background-position: center;
+}
+.category-card {
+  transition: all 0.3s ease;
+}
+.category-card:hover {
+  transform: translateY(-5px);
+}
+.product-card {
+  transition: all 0.3s ease;
+}
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+.custom-checkbox {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.custom-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+.hidden {
+  display: none;
+}
+.checkmark {
+  height: 18px;
+  width: 18px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.custom-checkbox input:checked ~ .checkmark {
+  background-color: #5a8f69;
+  border-color: #5a8f69;
+}
+.checkmark:after {
+  content: "";
+  display: none;
+}
+.custom-checkbox input:checked ~ .checkmark:after {
+  display: block;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  margin-bottom: 2px;
+}
+.custom-range {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 5px;
+  outline: none;
+}
+.custom-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: #5a8f69;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.custom-range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: #5a8f69;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+.custom-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+.custom-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #e5e7eb;
+  transition: 0.4s;
+  border-radius: 24px;
+}
+.switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+input:checked + .switch-slider {
+  background-color: #5a8f69;
+}
+input:checked + .switch-slider:before {
+  transform: translateX(20px);
+}
+.newsletter-section {
+  background-image: linear-gradient(
+      to right,
+      rgba(90, 143, 105, 0.9),
+      rgba(90, 143, 105, 0.7)
+    ),
+    url("https://readdy.ai/api/search-image?query=Natural%20botanical%20background%20with%20green%20leaves%2C%20herbs%20and%20plants%2C%20soft%20focus%2C%20gentle%20lighting%2C%20earthy%20tones%2C%20ayurvedic%20ingredients%2C%20clean%20and%20minimal%2C%20professional%20product%20photography%20style&width=1200&height=300&seq=newsletter&orientation=landscape");
+  background-size: cover;
+  background-position: center;
+}
+.quick-view-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+.modal-content {
+  background-color: white;
+  border-radius: 8px;
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+
+
+@media (max-width: 425px) {
+  .product-card img {
+    height: 160px !important;
+    min-height: 120px;
+  }
+  .product-card .p-4 {
+    padding: 0.75rem !important;
+  }
+  .product-card .absolute.top-3.left-3 span,
+  .product-card .absolute.top-3.left-3 .badge {
+    font-size: 0.7rem !important;
+    padding: 0.1rem 0.4rem !important;
+  }
+  .product-card .absolute.top-3.right-3 button {
+    width: 2rem !important;
+    height: 2rem !important;
+  }
+}
+@media (max-width: 639px) {
+  .product-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+@media (min-width: 1024px) {
+  .product-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+@media (min-width: 1536px) {
+  .product-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+@media (max-width: 1023px) {
+  .filter-bar-responsive {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 1rem !important;
+  }
+  .filter-bar-responsive > * {
+    width: 100% !important;
+  }
+  .filter-bar-responsive .flex.items-center.space-x-4 {
+    justify-content: flex-start !important;
+    gap: 1rem !important;
+  }
+}
+@media (max-width: 639px) {
+  .filter-bar-responsive .flex.items-center.space-x-4 {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.5rem !important;
+  }
+}
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}

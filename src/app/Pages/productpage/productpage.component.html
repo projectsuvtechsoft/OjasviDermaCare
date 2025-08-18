@@ -1,0 +1,1125 @@
+<!-- <app-header></app-header> -->
+<div class="min-h-screen">
+  <div
+    id="toastMessage"
+    style="
+      position: fixed;
+      top: 40px;
+      right: 20px;
+      background-color: white;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+      padding: 10px 12px;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+      display: none;
+      z-index: 9999;
+      width: 360px;
+      font-family: sans-serif;
+    "
+  >
+    <div class="flex items-center space-x-3">
+      <img
+        id="toastImage"
+        src=""
+        alt="Product"
+        style="width: 52px; height: 52px; object-fit: cover; border-radius: 6px"
+      />
+      <div>
+        <p
+          id="toastProductName"
+          style="font-weight: 600; margin-bottom: 2px; font-size: 16px"
+        >
+          Product Name
+        </p>
+        <p style="font-size: 13px; color: black">Successfully added to cart</p>
+      </div>
+    </div>
+  </div>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16"
+      *ngFor="let data of propertyyData"
+    >
+      <div class="space-y-4" *ngFor="let data of propertyyData; let i = index">
+        <!-- MAIN IMAGE (selected or default first image) -->
+        <div
+          class="relative overflow-hidden rounded-lg"
+          style="
+            justify-content: center;
+            background-color: rgb(255 255 255) !important;
+            align-items: center;
+            display: flex;
+          "
+        >
+          <img
+            [src]="
+              getImageUrl(
+                selectedImages[i] || getImages(data)[0]?.PHOTO_URL || ''
+              )
+            "
+            [alt]="data.NAME"
+            class="w-full image-zoom imgHeight"
+          />
+        </div>
+
+        <!-- THUMBNAILS (click to update main image) -->
+        <div class="flex space-x-2" *ngIf="getImages(data).length > 1">
+          <img
+            *ngFor="let img of getImages(data)"
+            [src]="getImageUrl(img.PHOTO_URL || '')"
+            alt="Thumbnail"
+            class="w-20 h-20 object-cover rounded cursor-pointer border-2 border-transparent hover:border-primary thumbnail"
+            (click)="changeMainImage(img.PHOTO_URL, i)"
+          />
+        </div>
+
+        <!-- DISPLAY ALL IMAGES BELOW -->
+        <!-- <div class="flex flex-wrap gap-2 pt-4">
+    <img
+      *ngFor="let img of getImages(data)"
+      [src]="getImageUrl(img.PHOTO_URL || '')"
+      alt="All Images"
+      class="w-28 h-28 object-cover border rounded"
+    />
+  </div> -->
+      </div>
+
+      <!-- <div class="space-y-6" *ngFor="let data of propertyyData">
+        <div class="sticky-cart">
+          <div class="space-y-4">
+            <h1 class="text-3xl font-bold text-gray-900">
+              {{ data.NAME }}
+            </h1>
+            
+            <div class="flex items-center space-x-4">
+              <span
+                class="text-3xl font-bold text-[#5a8f69]"
+                *ngIf="data.IS_VERIENT_AVAILABLE == 1"
+                >${{ selectedPrice }}</span
+              >
+              <span
+                class="text-3xl font-bold text-[#5a8f69]"
+                *ngIf="data.IS_VERIENT_AVAILABLE == 0"
+                >${{ data.RATE }}</span
+              >
+
+              
+              <span
+                class="bg-red-100 text-red-800 px-2 py-1 rounded text-sm"
+                *ngIf="data.DISCOUNT != null"
+                >{{ data.DISCOUNT }}</span
+              >
+            </div>
+            <p class="text-gray-600">
+              {{ data.DESCRIPTION }}
+            </p>
+
+          
+            <div class="flex items-center space-x-2 mb-4">
+              <span class="text-gray-700 font-medium">Varient:</span>
+
+             
+              <select
+                *ngIf="data.IS_VERIENT_AVAILABLE == 1"
+                class="border border-green-400 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-300"
+                [(ngModel)]="selectedVariantId"
+                (ngModelChange)="change($event)"
+              >
+                <option value="" disabled selected>Select size</option>
+                <option *ngFor="let item of varient" [value]="item.ID">
+                  {{ item.SIZE }} {{ item.UNIT_NAME }}
+                </option>
+              </select>
+
+       
+              <select
+                *ngIf="data.IS_VERIENT_AVAILABLE == 0"
+                class="border border-green-400 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-300"
+                [(ngModel)]="selectedVariantId1"
+                (ngModelChange)="change($event)"
+              >
+                <option value="" disabled *ngIf="!selectedVariantId1">Select size</option>
+                <option *ngFor="let item of propertyyData" [value]="item.ID">
+                  {{ item.SIZE }} {{ item.UNIT_NAME }}
+                </option>
+              </select>
+            </div>
+
+            <div class="space-y-4">
+              <div class="flex items-center space-x-4">
+                <span class="text-gray-700 font-medium">Quantity:</span>
+                <div class="flex items-center border rounded">
+                  <button
+                    class="px-3 py-2 hover:bg-gray-100 !rounded-button"
+                    (click)="decreaseQuantity()"
+                  >
+                    -
+                  </button>
+                  <span class="px-4 py-2 border-x">{{ quantity }}</span>
+
+                  <button
+                    class="px-3 py-2 hover:bg-gray-100 !rounded-button"
+                    (click)="increaseQuantity()"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
+            <button
+  (click)="addToCart(data)"
+  [disabled]="
+    data.IS_VERIENT_AVAILABLE == 0 || 
+    (data.IS_VERIENT_AVAILABLE == 1 && (selectedVariantStock == 0 || selectedVariantStock == null) )
+  "
+  id="addToCartBtn"
+  class="w-auto bg-[#5a8f69] text-white py-3 px-6 rounded-button font-medium transition whitespace-nowrap"
+  [ngClass]="{
+    'hover:bg-green-700 cursor-pointer':
+      data.IS_VERIENT_AVAILABLE == 1 && selectedVariantStock > 0,
+    'bg-gray-400 cursor-not-allowed':
+      data.IS_VERIENT_AVAILABLE == 0 || (selectedVariantStock == 0 || selectedVariantStock == null)
+  }"
+>
+  Add to Cart : ${{ totalPrice }}
+</button>
+
+
+             
+            </div>
+          </div>
+        </div>
+      </div> -->
+      <!-- vaishnavi -->
+      <div
+        id="top"
+        class="space-y-6 px-4 sm:px-6 lg:px-0"
+        *ngFor="let data of propertyyData"
+      >
+        <div class="sticky-cart">
+          <div class="space-y-4">
+            <!-- Product Name -->
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">
+              {{ data.NAME }}
+            </h1>
+
+            <!-- Price + Discount -->
+            <div class="flex flex-wrap items-center gap-3 sm:space-x-4">
+              <!-- <span
+                class="text-2xl sm:text-3xl font-bold text-[#5a8f69]"
+                *ngIf="data.IS_VERIENT_AVAILABLE == 1"
+              >
+                ${{ selectedPrice }}
+              </span> -->
+              <span
+                class="text-2xl sm:text-3xl font-bold text-[#5a8f69]"
+                *ngIf="data.IS_VERIENT_AVAILABLE == 0"
+              >
+                ${{ data.RATE }}
+              </span>
+              <span
+                class="text-2xl sm:text-3xl font-bold text-[#5a8f69]"
+                *ngIf="data.IS_VERIENT_AVAILABLE == 1"
+              >
+                ${{ variantRateMap[data.ID] || "0" }}</span
+              >
+              <span
+                class="bg-red-100 text-red-800 px-2 py-1 rounded text-sm"
+                *ngIf="data.DISCOUNT != null"
+              >
+                {{ data.DISCOUNT }}
+              </span>
+            </div>
+
+            <!-- Description -->
+            <p class="text-gray-600 text-sm sm:text-base">
+              {{ data.DESCRIPTION }}
+            </p>
+
+            <!-- Variant Dropdown -->
+            <div
+              *ngIf="data.IS_VERIENT_AVAILABLE == 1"
+              class="flex flex-col sm:flex-row sm:items-center sm:space-x-2 space-y-2 sm:space-y-0 mb-4"
+            >
+              <span class="text-gray-700 font-medium">Variant:</span>
+
+              <!-- With Variant -->
+              <select
+                *ngIf="data.IS_VERIENT_AVAILABLE == 1"
+                class="w-full sm:w-auto border border-green-400 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-300"
+                [(ngModel)]="selectedVariantMap[data.ID]"
+                (ngModelChange)="change($event, data.ID, true)"
+              >
+                <option value="" disabled>Select Variant</option>
+                <option
+                  *ngFor="let item of variantMap[data.ID] || []"
+                  [value]="item.VARIENT_ID"
+                >
+                  {{ item.SIZE }} {{ item.UNIT_NAME }}
+                </option>
+              </select>
+              <!-- Without Variant -->
+              <select
+                *ngIf="data.IS_VERIENT_AVAILABLE == 0"
+                class="w-full sm:w-auto border border-green-400 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-300"
+                [(ngModel)]="selectedVariantId1"
+                (ngModelChange)="change($event, data.ID, true)"
+              >
+                <option value="" disabled *ngIf="!selectedVariantId1">
+                  Select Variant
+                </option>
+                <option *ngFor="let item of propertyyData" [value]="item.ID">
+                  {{ item.SIZE }} {{ item.UNIT_NAME }}
+                </option>
+              </select>
+            </div>
+
+            <!-- Quantity Selector -->
+            <div
+              class="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0"
+            >
+              <span class="text-gray-700 font-medium">Quantity:</span>
+              <div class="flex items-center border rounded w-fit">
+                <button
+                  class="px-3 py-2 hover:bg-gray-100"
+                  (click)="decreaseQuantity()"
+                >
+                  -
+                </button>
+                <span class="px-4 py-2 border-x">{{ quantity }}</span>
+                <button
+                  class="px-3 py-2 hover:bg-gray-100"
+                  (click)="increaseQuantity()"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            <!-- Add to Cart Button -->
+            <div>
+              <button
+                (click)="addToCart(data, true)"
+                [disabled]="
+                  data.IS_UPCOMING == 1 ||
+                  data.IS_VERIENT_AVAILABLE == 0 ||
+                  (selectedVariantStock == 0 || selectedVariantStock == null || selectedVariantStock < 0)
+                "
+                id="addToCartBtn"
+                class="w-full sm:w-auto bg-[#5a8f69] text-white py-3 px-6 rounded font-medium transition"
+                [ngClass]="{
+                  'hover:bg-green-700 cursor-pointer':
+                    data.IS_UPCOMING != 1 &&
+                    data.IS_VERIENT_AVAILABLE == 1 &&
+                    selectedVariantStock > 0,
+                  'bg-gray-400 cursor-not-allowed':
+                    (data.IS_UPCOMING == 1 || data.IS_VERIENT_AVAILABLE == 0) ||
+                    (selectedVariantStock == 0 || selectedVariantStock == null || selectedVariantStock < 0)
+                }"
+              >
+                Add to Cart: ${{ totalPrice }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button
+      style="display: none"
+      id="loginmodaltrack"
+      data-bs-toggle="modal"
+      data-bs-target="#loginmodal"
+    >
+      data
+    </button>
+
+    <div
+      class="modal fade"
+      id="loginmodal"
+      tabindex="-1"
+      aria-labelledby="loginmodalLabel"
+      aria-hidden="true"
+    >
+      <div
+        class="modal-dialog modal-dialog-centered"
+        style="width: 300px; margin: auto"
+      >
+        <div
+          class="modal-content p-3 rounded-3"
+          style="padding: 0px !important; border: none !important"
+        >
+          <div class="modal-body">
+            <div class="popup">
+              <header
+                style="
+                  justify-content: end;
+                  display: flex;
+                  padding: 9px 10px;
+                  cursor: pointer;
+                "
+              >
+                <div
+                  class="close"
+                  data-bs-dismiss="modal"
+                  #closelogin
+                  aria-label="Close"
+                  style="display: none"
+                >
+                  <i class="fa-solid fa-xmark"></i>
+                </div>
+                <div class="close" data-bs-dismiss="modal" aria-label="Close">
+                  <i class="fa-solid fa-xmark"></i>
+                </div>
+              </header>
+              <hr
+                style="margin-top: 0px !important; color: #808080ad !important"
+              />
+              <div class="content">
+                <div style="justify-content: center; display: flex">
+                  <img src="assets/img/login.png" alt="login" />
+                </div>
+                <button
+                  class="book-btn btn bg-[rgb(90 143 105)] mt-3 w-100 w-md-auto"
+                  (click)="openlogin()"
+                >
+                  Sign In To Continue &nbsp;
+                  <i class="fa-solid fa-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="border-b mb-8">
+      <nav class="flex space-x-8">
+        <button
+          class="tab-button py-4 px-2 border-b-2 border-transparent hover:text-[#5a8f69] transition active"
+          (click)="showTab($event, 'description')"
+        >
+          Description
+        </button>
+        <button
+          class="tab-button py-4 px-2 border-b-2 border-transparent hover:text-[#5a8f69] transition"
+          (click)="showTab($event, 'ingredients')"
+        >
+          Ingredients
+        </button>
+        <!-- <button
+            class="tab-button py-4 px-2 border-b-2 border-transparent hover:text-[#5a8f69] transition"
+            onclick="showTab('usage')"
+          >
+            How to Use
+          </button> -->
+        <button
+          class="tab-button py-4 px-2 border-b-2 border-transparent hover:text-[#5a8f69] transition"
+          (click)="showTab($event, 'reviews')"
+        >
+          Reviews
+        </button>
+        <button
+          class="tab-button py-4 px-2 border-b-2 border-transparent hover:text-[#5a8f69] transition"
+          (click)="showTab($event, 'faq')"
+        >
+          FAQ
+        </button>
+      </nav>
+    </div>
+
+    <!-- <div id="description" class="tab-content active">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6 mb-12" *ngFor="let data of propertyyData">
+      <div class="order-1 md:order-1 md:col-span-9" style="padding-left: 30px;">
+        <h3 class="text-2xl font-bold mb-4">{{ data.NAME }}</h3>
+        <p class="text-gray-600 mb-4" style="text-align: justify;">
+          {{ data.DESCRIPTION }}
+        </p>
+      </div>
+
+      <div  class="order-2 md:order-2 md:col-span-3 flex justify-center items-center">
+        <img
+          [src]="getImageUrl(getImages(data)[0]?.PHOTO_URL || '')"
+          [alt]="data.NAME + ' First Image'"
+          class="h-64 rounded-lg"
+        />
+      </div>
+    </div>
+
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="text-center p-6 bg-gray-50 rounded-lg">
+          <div
+            class="w-12 h-12 bg-[#5a8f69] text-white rounded-full flex items-center justify-center mx-auto mb-4"
+          >
+            <i class="ri-leaf-line text-xl"></i>
+          </div>
+          <h4 class="font-semibold mb-2">Reduces Acne</h4>
+          <p class="text-sm text-gray-600">
+            Natural antibacterial properties help fight acne-causing bacteria
+          </p>
+        </div>
+        <div class="text-center p-6 bg-gray-50 rounded-lg">
+          <div
+            class="w-12 h-12 bg-[#5a8f69] text-white rounded-full flex items-center justify-center mx-auto mb-4"
+          >
+            <i class="ri-drop-line text-xl"></i>
+          </div>
+          <h4 class="font-semibold mb-2">Deep Hydration</h4>
+          <p class="text-sm text-gray-600">
+            Provides long-lasting moisture without clogging pores
+          </p>
+        </div>
+        <div class="text-center p-6 bg-gray-50 rounded-lg">
+          <div
+            class="w-12 h-12 bg-[#5a8f69] text-white rounded-full flex items-center justify-center mx-auto mb-4"
+          >
+            <i class="ri-sun-line text-xl"></i>
+          </div>
+          <h4 class="font-semibold mb-2">Brightens Skin</h4>
+          <p class="text-sm text-gray-600">
+            Turmeric helps reduce dark spots and evens skin tone
+          </p>
+        </div>
+        <div class="text-center p-6 bg-gray-50 rounded-lg">
+          <div
+            class="w-12 h-12 bg-[#5a8f69] text-white rounded-full flex items-center justify-center mx-auto mb-4"
+          >
+            <i class="ri-shield-check-line text-xl"></i>
+          </div>
+          <h4 class="font-semibold mb-2">Natural Protection</h4>
+          <p class="text-sm text-gray-600">
+            Antioxidants protect skin from environmental damage
+          </p>
+        </div>
+      </div>
+    </div> -->
+    <div id="description" class="tab-content active px-4 md:px-8">
+      <!-- Product Description Grid -->
+      <div
+        class="grid grid-cols-1 md:grid-cols-12 gap-6 mb-12"
+        *ngFor="let data of propertyyData"
+      >
+        <!-- Text Section -->
+        <div class="md:col-span-9 order-2 md:order-1">
+          <!-- <h3 class="text-xl sm:text-2xl font-bold mb-4">{{ data.NAME }}</h3> -->
+          <p class="text-gray-600 mb-4 text-justify text-sm sm:text-base">
+            {{ data.DESCRIPTION }}
+          </p>
+        </div>
+
+        <!-- Image Section -->
+        <!-- <div class="md:col-span-3 order-1 md:order-2 flex justify-center items-center">
+      <img
+        [src]="getImageUrl(getImages(data)[0]?.PHOTO_URL || '')"
+        [alt]="data.NAME + ' First Image'"
+        class="w-full max-w-[220px] h-auto rounded-lg"
+      />
+    </div> -->
+      </div>
+
+      <!-- Features Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="text-center p-6 bg-gray-50 rounded-lg">
+          <div
+            class="w-12 h-12 bg-[#5a8f69] text-white rounded-full flex items-center justify-center mx-auto mb-4"
+          >
+            <i class="ri-leaf-line text-xl"></i>
+          </div>
+          <h4 class="font-semibold mb-2 text-base sm:text-lg">Reduces Acne</h4>
+          <p class="text-sm text-gray-600">
+            Natural antibacterial properties help fight acne-causing bacteria
+          </p>
+        </div>
+
+        <div class="text-center p-6 bg-gray-50 rounded-lg">
+          <div
+            class="w-12 h-12 bg-[#5a8f69] text-white rounded-full flex items-center justify-center mx-auto mb-4"
+          >
+            <i class="ri-drop-line text-xl"></i>
+          </div>
+          <h4 class="font-semibold mb-2 text-base sm:text-lg">
+            Deep Hydration
+          </h4>
+          <p class="text-sm text-gray-600">
+            Provides long-lasting moisture without clogging pores
+          </p>
+        </div>
+
+        <div class="text-center p-6 bg-gray-50 rounded-lg">
+          <div
+            class="w-12 h-12 bg-[#5a8f69] text-white rounded-full flex items-center justify-center mx-auto mb-4"
+          >
+            <i class="ri-sun-line text-xl"></i>
+          </div>
+          <h4 class="font-semibold mb-2 text-base sm:text-lg">
+            Brightens Skin
+          </h4>
+          <p class="text-sm text-gray-600">
+            Turmeric helps reduce dark spots and evens skin tone
+          </p>
+        </div>
+
+        <div class="text-center p-6 bg-gray-50 rounded-lg">
+          <div
+            class="w-12 h-12 bg-[#5a8f69] text-white rounded-full flex items-center justify-center mx-auto mb-4"
+          >
+            <i class="ri-shield-check-line text-xl"></i>
+          </div>
+          <h4 class="font-semibold mb-2 text-base sm:text-lg">
+            Natural Protection
+          </h4>
+          <p class="text-sm text-gray-600">
+            Antioxidants protect skin from environmental damage
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div id="ingredients" class="tab-content" *ngFor="let data of ingrdeient">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-gray-50 p-6 rounded-lg hover:shadow-md transition">
+          <div
+            class="w-16 h-20 rounded-full flex items-center justify-center mb-2"
+          >
+            <div class="w-15 h-20 flex items-center justify-center">
+              <img
+                [src]="getLogoUrl(data.LOGO)"
+                alt="Ingredient Logo"
+                class="w-15 h-20 object-contain"
+              />
+            </div>
+          </div>
+          <h4 class="font-semibold mb-2">{{ data.NAME }}</h4>
+          <p class="text-sm text-gray-600">
+            {{ data.DESCRIPTION }}
+          </p>
+        </div>
+        <!-- <div class="bg-gray-50 p-6 rounded-lg hover:shadow-md transition">
+            <div
+              class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-4"
+            >
+              <div class="w-8 h-8 flex items-center justify-center">
+                <i class="ri-contrast-2-line text-2xl text-yellow-600"></i>
+              </div>
+            </div>
+            <h4 class="font-semibold mb-2">Turmeric</h4>
+            <p class="text-sm text-gray-600">
+              Natural antiseptic that brightens skin, reduces inflammation, and
+              helps fade dark spots and blemishes.
+            </p>
+          </div>
+          <div class="bg-gray-50 p-6 rounded-lg hover:shadow-md transition">
+            <div
+              class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4"
+            >
+              <div class="w-8 h-8 flex items-center justify-center">
+                <i class="ri-plant-line text-2xl text-green-600"></i>
+              </div>
+            </div>
+            <h4 class="font-semibold mb-2">Aloe Vera</h4>
+            <p class="text-sm text-gray-600">
+              Soothes and hydrates skin while providing cooling relief from
+              irritation and inflammation.
+            </p>
+          </div>
+          <div class="bg-gray-50 p-6 rounded-lg hover:shadow-md transition">
+            <div
+              class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4"
+            >
+              <div class="w-8 h-8 flex items-center justify-center">
+                <i class="ri-drop-line text-2xl text-purple-600"></i>
+              </div>
+            </div>
+            <h4 class="font-semibold mb-2">Coconut Oil</h4>
+            <p class="text-sm text-gray-600">
+              Natural moisturizer that penetrates deep into skin, providing
+              lasting hydration without greasiness.
+            </p>
+          </div>
+          <div class="bg-gray-50 p-6 rounded-lg hover:shadow-md transition">
+            <div
+              class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4"
+            >
+              <div class="w-8 h-8 flex items-center justify-center">
+                <i class="ri-flower-line text-2xl text-orange-600"></i>
+              </div>
+            </div>
+            <h4 class="font-semibold mb-2">Sandalwood</h4>
+            <p class="text-sm text-gray-600">
+              Calms sensitive skin, reduces redness, and provides a natural glow
+              with its cooling properties.
+            </p>
+          </div>
+          <div class="bg-gray-50 p-6 rounded-lg hover:shadow-md transition">
+            <div
+              class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4"
+            >
+              <div class="w-8 h-8 flex items-center justify-center">
+                <i class="ri-water-flash-line text-2xl text-blue-600"></i>
+              </div>
+            </div>
+            <h4 class="font-semibold mb-2">Rose Water</h4>
+            <p class="text-sm text-gray-600">
+              Natural toner that balances skin pH, tightens pores, and provides
+              gentle hydration.
+            </p>
+          </div> -->
+      </div>
+    </div>
+
+    <div id="usage" class="tab-content">
+      <div class="max-w-4xl mx-auto">
+        <h3 class="text-2xl font-bold text-center mb-8">How to Use</h3>
+        <div class="relative">
+          <div class="absolute top-16 left-0 right-0 h-0.5 bg-gray-200"></div>
+          <div class="relative grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="text-center">
+              <div
+                class="w-16 h-16 bg-[#5a8f69] text-white rounded-full flex items-center justify-center mx-auto mb-4 relative z-10"
+              >
+                <span class="text-xl font-bold">1</span>
+              </div>
+              <h4 class="font-semibold mb-2">Cleanse</h4>
+              <p class="text-sm text-gray-600">
+                Start with clean, dry skin. Wash your face with a gentle
+                cleanser and pat dry.
+              </p>
+            </div>
+            <div class="text-center">
+              <div
+                class="w-16 h-16 bg-[#5a8f69] text-white rounded-full flex items-center justify-center mx-auto mb-4 relative z-10"
+              >
+                <span class="text-xl font-bold">2</span>
+              </div>
+              <h4 class="font-semibold mb-2">Apply</h4>
+              <p class="text-sm text-gray-600">
+                Take a small amount of cream and apply evenly to your face and
+                neck using gentle upward strokes.
+              </p>
+            </div>
+            <div class="text-center">
+              <div
+                class="w-16 h-16 bg-[#5a8f69] text-white rounded-full flex items-center justify-center mx-auto mb-4 relative z-10"
+              >
+                <span class="text-xl font-bold">3</span>
+              </div>
+              <h4 class="font-semibold mb-2">Massage</h4>
+              <p class="text-sm text-gray-600">
+                Gently massage the cream into your skin using circular motions
+                until fully absorbed.
+              </p>
+            </div>
+            <div class="text-center">
+              <div
+                class="w-16 h-16 bg-[#5a8f69] text-white rounded-full flex items-center justify-center mx-auto mb-4 relative z-10"
+              >
+                <span class="text-xl font-bold">4</span>
+              </div>
+              <h4 class="font-semibold mb-2">Enjoy</h4>
+              <p class="text-sm text-gray-600">
+                Use twice daily, morning and evening, for best results. Visible
+                improvements in 2-3 weeks.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="reviews" class="tab-content">
+      <div
+        class="mb-8 relative top-0 right-0 h-full z-50 transform transition-transform duration-300"
+      >
+        <app-common-loader
+          *ngIf="reviewLoading"
+          class="overlay-loader"
+        ></app-common-loader>
+
+        <div
+          class="flex items-center justify-between mb-6"
+          *ngIf="!reviewLoading"
+        >
+          <h3 class="text-2xl font-bold">Customer Reviews</h3>
+          <button
+            class="bg-[#5a8f69] text-white px-6 py-2 rounded-button hover:bg-green-700 transition whitespace-nowrap"
+            data-bs-toggle="modal"
+            data-bs-target="#reviewModal"
+          >
+            Write a Review
+          </button>
+        </div>
+        <div>
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            *ngIf="ReviewData.length > 0"
+          >
+            <div
+              class="bg-gray-50 p-6 rounded-lg"
+              *ngFor="let data of ReviewData"
+            >
+              <div class="flex items-center mb-4">
+                <img
+                  *ngIf="data.PROFILE_URL"
+                  [src]="Imgurl + data.PROFILE_URL"
+                  alt="User"
+                  class="w-12 h-12 rounded-full object-cover mr-4"
+                />
+                <img
+                  [src]="'assets/img/user.jpg'"
+                  alt="User"
+                  class="w-12 h-12 rounded-full object-cover mr-4"
+                />
+                <div>
+                  <h5 class="font-semibold">{{ data.CUSTOMER_NAME }}</h5>
+                  <div class="flex text-yellow-400 text-sm">
+                    <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
+                      <i
+                        class="ri-star-fill text-yellow-400 text-base mr-1"
+                        *ngIf="star <= data.RATINGS"
+                      >
+                      </i>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+              <p class="text-sm text-gray-600 italic line-clamp-3">
+                {{ data.REVIEW }}
+              </p>
+              <!-- <div class="flex items-center mt-4 text-xs text-gray-500">
+              <span>Verified Purchase</span>
+              <span class="mx-2">•</span>
+              <span>2 weeks ago</span>
+            </div> -->
+            </div>
+          </div>
+          <div
+            *ngIf="ReviewData.length === 0"
+            class="text-center text-muted my-4"
+          >
+            <p>No reviews found.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="reviewModal"
+      tabindex="-1"
+      aria-labelledby="reviewModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="width: 100%">
+          <div class="modal-header">
+            <h5 class="modal-title" id="reviewModalLabel">Add Your Review</h5>
+            <button
+              type="button"
+              #closeBtn
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <form (ngSubmit)="submitReview()">
+              <div class="mb-3">
+                <label class="form-label">Ratings</label>
+                <div>
+                  <i
+                    *ngFor="let star of [1, 2, 3, 4, 5]"
+                    class="bi bi-star-fill fs-4"
+                    [ngClass]="{
+                      'text-warning': reviewForm.rating >= star,
+                      'text-secondary': reviewForm.rating < star
+                    }"
+                    (click)="setRating(star)"
+                    style="cursor: pointer; padding-right: 5px"
+                  ></i>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Review</label>
+                <textarea
+                  class="form-control"
+                  rows="3"
+                  placeholder="Write your review here..."
+                  [(ngModel)]="reviewForm.text"
+                  name="reviewText"
+                  required
+                ></textarea>
+              </div>
+
+              <div class="modal-footer" style="padding-bottom: 0px">
+                <button
+                  type="submit"
+                  class="bg-[#4c7c5b] hover:bg-opacity-90 transition-colors text-white px-3 py-1.5 rounded shadow-md flex items-center space-x-1 cursor-pointer"
+                >
+                  Submit
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="faq" class="tab-content">
+      <div class="max-w-3xl mx-auto">
+        <h3 class="text-2xl font-bold mb-8">Frequently Asked Questions</h3>
+        <div class="space-y-4">
+          <div class="border rounded-lg">
+            <button
+              class="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 accordion-trigger"
+              (click)="toggleAccordion($event)"
+            >
+              <span class="font-semibold"
+                >Is this suitable for sensitive skin?</span
+              >
+              <div class="w-5 h-5 flex items-center justify-center">
+                <i class="ri-add-line accordion-icon"></i>
+              </div>
+            </button>
+            <div class="accordion-content px-6 pb-4">
+              <p class="text-gray-600">
+                Yes, our Ayurvedic Neem Face Cream is formulated with natural
+                ingredients that are gentle on sensitive skin. However, we
+                recommend doing a patch test before first use.
+              </p>
+            </div>
+          </div>
+          <div class="border rounded-lg">
+            <button
+              class="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 accordion-trigger"
+              (click)="toggleAccordion($event)"
+            >
+              <span class="font-semibold"
+                >How long does it take to see results?</span
+              >
+              <div class="w-5 h-5 flex items-center justify-center">
+                <i class="ri-add-line accordion-icon"></i>
+              </div>
+            </button>
+            <div class="accordion-content px-6 pb-4">
+              <p class="text-gray-600">
+                Most users notice improvements in their skin within 2-3 weeks of
+                regular use. For best results, use twice daily as part of your
+                skincare routine.
+              </p>
+            </div>
+          </div>
+          <div class="border rounded-lg">
+            <button
+              class="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 accordion-trigger"
+              (click)="toggleAccordion($event)"
+            >
+              <span class="font-semibold"
+                >Can I use this with other skincare products?</span
+              >
+              <div class="w-5 h-5 flex items-center justify-center">
+                <i class="ri-add-line accordion-icon"></i>
+              </div>
+            </button>
+            <div class="accordion-content px-6 pb-4">
+              <p class="text-gray-600">
+                Yes, this cream can be incorporated into your existing skincare
+                routine. Apply after cleansing and before sunscreen during the
+                day.
+              </p>
+            </div>
+          </div>
+          <div class="border rounded-lg">
+            <button
+              class="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 accordion-trigger"
+              (click)="toggleAccordion($event)"
+            >
+              <span class="font-semibold">Is this product cruelty-free?</span>
+              <div class="w-5 h-5 flex items-center justify-center">
+                <i class="ri-add-line accordion-icon"></i>
+              </div>
+            </button>
+            <div class="accordion-content px-6 pb-4">
+              <p class="text-gray-600">
+                Absolutely! We are committed to cruelty-free practices and never
+                test our products on animals. All our products are ethically
+                made.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="mt-16">
+      <h3 class="text-2xl font-bold text-center mb-8">You May Also Like</h3>
+      <div style="display: block">
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-lg font-semibold text-gray-800 flex items-center">
+              Recently Viewed Products
+            </h2>
+            <!-- <a href="#" class="text-[#5a8f69] text-sm hover:underline"
+                >View All</a
+              > -->
+          </div>
+          <!-- Wrapper for horizontal scroll -->
+          <div
+            class="you-may-also-like-scroll overflow-x-auto whitespace-nowrap py-4"
+          >
+            <div class="flex space-x-4 px-2">
+              <!-- Loop through products -->
+              <div
+                *ngFor="
+                  let product of propertyyData1;
+                  trackBy: trackByProductId
+                "
+                class="product-card bg-white rounded-lg shadow-sm overflow-hidden w-72 flex-shrink-0"
+              >
+                <!-- Product image and content -->
+                <div class="relative">
+                  <div
+                    class="w-full md:h-60 bg-white flex items-center justify-center overflow-hidden"
+                  >
+                    <img
+                      *ngIf="initImageIndex(product.ID) === undefined || true"
+                      [src]="
+                        producctImageurl1 +
+                        getImageArray1(product)[imageIndices[product.ID]]
+                      "
+                      [alt]="product.NAME"
+                      class="w-full h-64 object-cover object-top"
+                      style="
+                        height: 100% !important;
+                        min-height: 100% !important;
+                      "
+                    />
+                  </div>
+                  <div class="absolute top-3 right-3 flex space-x-2">
+                    <button
+                      class="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm"
+                      [ngClass]="{
+                        'text-green-500': product.isLiked,
+                        'text-gray-600 hover:text-[#5a8f69]': !product.isLiked
+                      }"
+                      (click)="toggleLike(product)"
+                    >
+                      <i
+                        [class]="
+                          product.isLiked ? 'ri-heart-fill' : 'ri-heart-line'
+                        "
+                      ></i>
+                    </button>
+                  </div>
+                  <div class="absolute top-3 left-3">
+                    <span
+                      class="bg-[#5a8f69]/90 text-white text-xs px-2 py-1 rounded"
+                      >New</span
+                    >
+                  </div>
+                </div>
+                <div class="p-4">
+                  <span class="text-xs text-gray-500">{{
+                    product.CATEGORY_NAME
+                  }}</span>
+                  <h3 class="text-lg font-medium text-gray-900 mt-1">
+                    {{ product.NAME }}
+                  </h3>
+                  <p class="text-sm text-gray-600 mt-2 line-clamp-2">
+                    {{ product.DESCRIPTION }}
+                  </p>
+                  <div class="flex items-center justify-between mt-4">
+                    <!-- <span class="text-[#5a8f69] font-medium">{{RATE}}</span> -->
+                    <span
+                      class="text-[#5a8f69] font-medium"
+                      *ngIf="product.IS_VERIENT_AVAILABLE == 0"
+                    >
+                      ${{ product.RATE }}
+                    </span>
+                    <span
+                      class="text-[#5a8f69] font-medium"
+                      *ngIf="product.IS_VERIENT_AVAILABLE == 1"
+                    >
+                      ${{ variantRateMap1[product.ID] || "0" }}
+                    </span>
+                    <select
+                      *ngIf="product.IS_VERIENT_AVAILABLE == 1"
+                      class="sm:w-auto border border-green-400 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-300"
+                      [(ngModel)]="selectedVariantMap1[product.ID]"
+                      (ngModelChange)="change($event, product.ID, false)"
+                      style="
+                        width: 80px;
+                        height: 32px;
+                        font-size: 10px;
+                        padding: 2px !important;
+                      "
+                    >
+                      <option value="" disabled>Select Variant</option>
+                      <option
+                        *ngFor="let item of variantMap1[product.ID] || []"
+                        [value]="item.VARIENT_ID"
+                      >
+                        {{ item.SIZE }} {{ item.UNIT_NAME }}
+                      </option>
+                    </select>
+                    <!-- <div class="flex items-center">
+                      <div class="flex text-yellow-400">
+                        <i class="ri-star-fill"></i>
+                        <i class="ri-star-fill"></i>
+                        <i class="ri-star-fill"></i>
+                        <i class="ri-star-fill"></i>
+                        <i class="ri-star-half-fill"></i>
+                      </div>
+                      <span class="text-xs text-gray-500 ml-1">(32)</span>
+                    </div> -->
+                  </div>
+                  <div class="mt-4 flex space-x-2 btn-row">
+                    <button
+                      class="flex-1 bg-[#5a8f69] text-white py-2 rounded-button font-medium transition-colors whitespace-nowrap"
+                      (click)="addToCart(product, false)"
+                      [disabled]="product.IS_UPCOMING == 1"
+                      id="addToCartBtn"
+                      [ngClass]="{
+                        'hover:bg-green-700 cursor-pointer':
+                          product.IS_UPCOMING != 1,
+                        'bg-gray-400 cursor-not-allowed':
+                          product.IS_UPCOMING == 1
+                      }"
+                    >
+                      Add to Cart
+                    </button>
+                    <button
+                      (click)="addtodetail(product)"
+                      class="details-btn bg-gray-100 text-gray-800 px-4 py-2 rounded-button font-medium hover:bg-gray-200 transition-colors whitespace-nowrap"
+                    >
+                      Details
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div *ngIf="viewCart">
+  <app-cart-drawer
+    [visible]="viewCart"
+    (visibleChange)="onCartDrawerClose($event)"
+  ></app-cart-drawer>
+</div>
+
+<app-common-loader
+  *ngIf="loadingProducts"
+  class="overlay-loader"
+></app-common-loader>

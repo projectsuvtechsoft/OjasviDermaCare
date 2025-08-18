@@ -1,0 +1,907 @@
+<!-- <app-header></app-header> -->
+<div
+  id="mobileNavOverlay"
+  class="fixed inset-0 bg-black bg-opacity-40 z-50 hidden md:hidden"
+></div>
+<nav
+  id="mobileNavDrawer"
+  class="fixed top-0 left-0 h-full w-4/5 max-w-xs bg-white shadow-lg z-50 transform -translate-x-full transition-transform duration-300 md:hidden flex flex-col"
+>
+  <div class="flex items-center justify-between px-6 py-4 border-b">
+    <span class="text-2xl font-bold text-primary">Ojasvi</span>
+    <button id="closeMobileNav" class="text-gray-500 hover:text-primary">
+      <i class="ri-close-line ri-lg"></i>
+    </button>
+  </div>
+  <ul class="flex-1 flex flex-col gap-2 px-6 py-4 text-lg">
+    <li>
+      <a
+        href="#"
+        class="block py-2 text-gray-800 hover:text-primary font-medium"
+        >Home</a
+      >
+    </li>
+    <li>
+      <a
+        href="#"
+        class="block py-2 text-gray-800 hover:text-primary font-medium"
+        >Skin Care</a
+      >
+    </li>
+    <li>
+      <a
+        href="#"
+        class="block py-2 text-gray-800 hover:text-primary font-medium"
+        >Hair Care</a
+      >
+    </li>
+    <li>
+      <a
+        href="#"
+        class="block py-2 text-gray-800 hover:text-primary font-medium"
+        >New Arrivals</a
+      >
+    </li>
+    <li>
+      <a
+        href="#"
+        class="block py-2 text-gray-800 hover:text-primary font-medium"
+        >Special Offers</a
+      >
+    </li>
+    <li>
+      <a
+        href="#"
+        class="block py-2 text-gray-800 hover:text-primary font-medium"
+        >About Us</a
+      >
+    </li>
+  </ul>
+</nav>
+
+<div
+  id="toastMessage"
+  style="
+    position: fixed;
+    top: 40px;
+    right: 20px;
+    background-color: white;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+    padding: 10px 12px;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    display: none;
+    z-index: 9999;
+    width: 360px;
+    font-family: sans-serif;
+  "
+>
+  <div class="flex items-center space-x-3">
+    <img
+      id="toastImage"
+      src=""
+      alt="Product"
+      style="width: 52px; height: 52px; object-fit: cover; border-radius: 6px"
+    />
+    <div>
+      <p
+        id="toastProductName"
+        style="font-weight: 600; margin-bottom: 2px; font-size: 16px"
+      >
+        Product Name
+      </p>
+      <p style="font-size: 13px; color: black">Successfully added to cart</p>
+    </div>
+  </div>
+</div>
+
+<!-- Hero Section -->
+<section class="hero-section py-16 md:py-24">
+  <div class="container mx-auto px-4">
+    <div class="w-full md:w-1/2 lg:w-2/5">
+      <h1
+        class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-4 fontsizee"
+      >
+        Natural Beauty, Ayurvedic Wisdom
+      </h1>
+      <p class="text-lg text-gray-700 mb-8 fontsizeeAd">
+        Discover the ancient secrets of Ayurveda with our premium botanical
+        skincare and haircare products. Handcrafted with love and tradition.
+      </p>
+      <!-- <div class="flex flex-wrap gap-4">
+            <a
+              href="#"
+              class="bg-[#5a8f69] text-white px-8 py-3 rounded-button font-medium hover:bg-[#5a8f69]/90 transition-colors !rounded-button whitespace-nowrap"
+              >Shop Now</a
+            >
+            <a
+              href="#"
+              class="bg-white border border-gray-300 text-gray-800 px-8 py-3 rounded-button font-medium hover:bg-gray-50 transition-colors !rounded-button whitespace-nowrap"
+              >Learn More</a
+            >
+          </div> -->
+    </div>
+  </div>
+</section>
+
+<!-- <app-common-loader *ngIf="loadingProducts" class="overlay-loader"></app-common-loader> -->
+<section class="py-12 bg-gray-50 paddings">
+  <app-common-loader
+    *ngIf="loadingProducts"
+    class="overlay-loader"
+  ></app-common-loader>
+
+  <div class="container mx-auto px-4">
+    <!-- <h2 class="text-3xl font-bold text-center mb-10">Our Featured Products</h2> -->
+    <div class="flex flex-col lg:flex-row gap-8">
+      <!-- Sidebar Filters: Desktop -->
+      <div class="lg:w-1/4 sidebar-filters-desktop">
+        <div
+          class="bg-white rounded-lg shadow-sm p-6 sticky top-32"
+          style="padding: 0px !important"
+          #desktopFilters
+        >
+          <!-- <h3 class="text-xl font-bold mb-6">Filters</h3> -->
+          <!-- Categories Filter -->
+          <div
+            class="mb-6"
+            style="padding: 15px !important; margin-bottom: 5px !important"
+          >
+            <h4 class="font-medium text-gray-900 mb-3">Categories</h4>
+            <div class="space-y-2">
+              <label
+                class="custom-checkbox flex items-center"
+                *ngFor="let category of categories; let i = index"
+              >
+                <input
+                  name="checkbox{{ i }}"
+                  [disabled]="loadingCategories"
+                  type="checkbox"
+                  [checked]="selectedCategories.includes(category)"
+                  (change)="onCategoryChange($event, category)"
+                />
+                <span class="checkmark mr-2"></span>
+                <span style="font-size: 14px"
+                  >{{ category?.CATEGORY_NAME }}
+                  <span style="font-size: 10px"
+                    >({{ category?.cnt || 0 }})</span
+                  >
+                </span>
+              </label>
+            </div>
+          </div>
+          <hr style="color: #716f6f !important" />
+          <!-- Price Range Filter -->
+          <div
+            class="mb-6"
+            style="padding: 15px !important; margin-bottom: 5px !important"
+          >
+            <h4 class="font-medium text-gray-900 mb-3">Price Range</h4>
+            <input
+              type="range"
+              min="0"
+              max="8000"
+              [(ngModel)]="priceRange"
+              (change)="onPriceChange()"
+              class="custom-range mb-3"
+            />
+
+            <div class="flex justify-between">
+              <span class="text-sm text-gray-600">$0</span>
+              <span class="text-sm text-gray-600">$8000</span>
+            </div>
+          </div>
+          <hr style="color: #716f6f !important" />
+          <!-- Ingredients Filter -->
+          <div
+            class="mb-6"
+            style="padding: 15px !important; margin-bottom: 5px !important"
+          >
+            <h4 class="font-medium text-gray-900 mb-3">Natural Ingredients</h4>
+            <div class="space-y-2">
+              <label
+                class="custom-checkbox flex items-center"
+                *ngFor="let category of visibleIngredients; let i = index"
+              >
+                <input
+                  name="checkbox{{ i }}"
+                  [disabled]="loadingIngredients"
+                  type="checkbox"
+                  [checked]="selectedIngredient.includes(category)"
+                  (change)="onIngredientChange($event, category)"
+                />
+                <span class="checkmark mr-2"></span>
+                <span style="font-size: 14px">{{ category?.NAME }}</span>
+              </label>
+            </div>
+
+            <!-- Load More Button -->
+            <div
+              class="mt-4"
+              *ngIf="visibleIngredients.length < ingredients.length"
+            >
+              <button
+                style="
+                  font-size: 10px;
+                  padding: 7px 13px !important;
+                  background-color: #5a8f69;
+                "
+                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                (click)="loadMore()"
+              >
+                Load More
+              </button>
+            </div>
+          </div>
+          <hr style="color: #716f6f !important" />
+          <button
+            style="padding: 15px !important; margin-top: 15px !important"
+            (click)="clearFilters()"
+            class="w-full bg-gray-100 text-gray-800 py-2 rounded-button font-medium hover:bg-gray-200 transition-colors !rounded-button whitespace-nowrap"
+          >
+            Clear All Filters
+          </button>
+        </div>
+      </div>
+      <!-- Sidebar Filters: Mobile/Tablet Drawer Trigger -->
+      <div
+        class="w-full sidebar-filters-mobile mb-4"
+        style="display: none; margin: 0px !important"
+      >
+        <div
+          id="mobileFiltersDrawer"
+          [class.hidden]="!isDrawerOpen"
+          (click)="onDrawerClick($event)"
+          class="fixed inset-0 z-50 bg-black bg-opacity-40 hidden"
+        >
+          <div
+            class="absolute top-0 left-0 w-4/5 max-w-xs h-full bg-white shadow-lg p-6 overflow-y-auto"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-xl font-bold">Filters</h3>
+              <button
+                id="closeFiltersMobile"
+                (click)="closeMobileFilters()"
+                class="text-gray-500 hover:text-[#5a8f69]"
+              >
+                <i class="ri-close-line ri-lg"></i>
+              </button>
+            </div>
+            <div id="mobileFiltersContent" #mobileContent></div>
+          </div>
+        </div>
+      </div>
+      <!-- Product Grid -->
+      <div class="lg:w-3/4 w-full" id="product-grids">
+        <div
+          style="padding: 15px !important"
+          class="bg-white rounded-lg shadow-sm p-4 mb-6 flex flex-wrap items-center justify-between gap-4 filter-bar-responsive"
+        >
+          <div class="flex items-center flexjustofy">
+            <span
+              class="font-medium visiblenone"
+              style="
+                font-weight: 400;
+                font-size: 15px !important;
+                margin-right: 5px !important;
+              "
+              >Sort By</span
+            >
+            <div class="relative">
+              <select
+                style="
+                  padding: 10px 12px !important;
+                  width: 165px !important;
+                  font-size: 13px !important;
+                "
+                class="appearance-none bg-gray-50 border border-gray-200 rounded-button py-2 px-4 pr-8 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                (change)="onSortChange($event)"
+              >
+                <option value="default" style="font-size: 12px !important">
+                  Default Sorting
+                </option>
+                <option value="RATE:asc" style="font-size: 12px !important">
+                  Price: Low to High
+                </option>
+                <option value="RATE:desc" style="font-size: 12px !important">
+                  Price: High to Low
+                </option>
+                <option
+                  value="CREATED_MODIFIED_DATE:desc"
+                  style="font-size: 12px !important"
+                >
+                  Newest First
+                </option>
+                <option
+                  value="IS_POPULAR:desc"
+                  style="font-size: 12px !important"
+                >
+                  Popularity
+                </option>
+              </select>
+              <div
+                class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none"
+              >
+                <i class="ri-arrow-down-s-line text-gray-400"></i>
+              </div>
+            </div>
+            <div>
+              <!-- <svg id="openFiltersMobile"
+          (click)="openMobileFilters()" xmlns="http://www.w3.org/2000/svg" fill="#000000" width="25px" height="25px" viewBox="0 0 256 256" id="Flat">
+  <path d="M112.00244,237.05762A20.01473,20.01473,0,0,1,92,217.05176V140.63965L27.28564,69.4541A20.00033,20.00033,0,0,1,42.08447,36H213.91553a20.00008,20.00008,0,0,1,14.79931,33.45312L164,140.63965v55.0791a19.95861,19.95861,0,0,1-8.90723,16.6416l-31.999,21.332A19.97037,19.97037,0,0,1,112.00244,237.05762ZM51.12646,60l59.67237,65.63965A19.95228,19.95228,0,0,1,116,139.09277v70.48438l24-15.999V139.09277a19.95374,19.95374,0,0,1,5.2041-13.45605L204.87354,60ZM93.043,141.78711h0ZM213.91553,60h0Z"/>
+</svg> -->
+            </div>
+            <button
+              id="openFiltersMobile"
+              style="padding: 7px 10px !important; font-size: 13px !important"
+              (click)="openMobileFilters()"
+              class="bg-[#5a8f69] text-white py-3 rounded-button font-medium mb-2 visiblenoneFilt"
+            >
+              <i class="ri-filter-3-line mr-2"></i> Filters
+            </button>
+          </div>
+          <div class="flex items-center space-x-4">
+            <span
+              class="font-medium"
+              style="font-weight: 400; font-size: 15px !important"
+              >Showing {{ showTotalProducts == 1 ? totalProducts : 1 }}-{{
+                showTotalProducts == 1
+                  ? productsPerPage + showTotalProducts
+                  : totalProducts
+              }}
+              of {{ totalProducts }} products</span
+            >
+          </div>
+        </div>
+        <div
+          class="grid product-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          <div
+            class="product-card bg-white rounded-lg shadow-sm overflow-hidden"
+            *ngFor="
+              let product of products;
+              trackBy: trackByProductId;
+              let i = index
+            "
+          >
+            <div class="relative">
+              <div
+                class="w-full h-48 md:h-60 bg-white flex items-center justify-center overflow-hidden"
+              >
+                <img
+                  *ngIf="initImageIndex(product.ID) === undefined || true"
+                  [src]="
+                    producctImageurl +
+                    getImageArray(product)[imageIndices[product.ID]]
+                  "
+                  [alt]="product.NAME"
+                  class="max-h-full max-w-full object-contain"
+                />
+              </div>
+
+              <!-- Dots as Indicators -->
+              <div
+                class="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex space-x-1"
+              >
+                <ng-container
+                  *ngFor="let img of getImageArray(product); let idx = index"
+                >
+                  <span
+                    class="w-2.5 h-2.5 rounded-full cursor-pointer"
+                    [ngClass]="{
+                      'bg-[#5a8f69]': imageIndices[product.ID] === idx,
+                      'bg-gray-300': imageIndices[product.ID] !== idx
+                    }"
+                    (click)="goToImage(product.ID, idx)"
+                  ></span>
+                </ng-container>
+              </div>
+              <div class="absolute top-3 right-3 flex space-x-2">
+                <button
+                  class="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm"
+                  [ngClass]="{
+                    'text-green-500': product.isLiked,
+                    'text-gray-600 hover:text-[#5a8f69]': !product.isLiked
+                  }"
+                  (click)="toggleLike(product)"
+                >
+                  <i
+                    [class]="
+                      product.isLiked ? 'ri-heart-fill' : 'ri-heart-line'
+                    "
+                  ></i>
+                </button>
+              </div>
+              <div class="absolute top-3 left-3">
+                <span
+                  class="text-white text-xs px-2 py-1 rounded"
+                  [ngClass]="{
+                    'bg-[#5a8f69]/90': product.IS_NEW_ARRIVAL === 1,
+                    'bg-secondary/90': product.IS_BEST_SELLER === 1,
+                    'bg-green-500/90': product.IS_POPULAR === 1,
+                    
+                  }"
+                  >{{
+                    product.IS_NEW_ARRIVAL == "1"
+                      ? "New"
+                      : product.IS_BEST_SELLER == "1"
+                      ? "Best Seller"
+                      : product.IS_POPULAR == "1"
+                      ? "Popular"
+                      : ""
+                  }}</span
+                >
+              </div>
+            </div>
+            <div class="p-4" style="padding: 8px 17px !important">
+              <span class="text-xs text-gray-500">{{
+                product.CATEGORY_NAME
+              }}</span>
+              <h3
+                class="text-lg font-medium text-gray-900 mt-1"
+                style="margin-top: 0px !important"
+              >
+                {{ product.NAME }}
+              </h3>
+              <p class="text-sm text-gray-600 mt-2 line-clamp-2">
+                {{ product.DESCRIPTION }}
+              </p>
+              <div
+                class="flex items-center justify-between mt-4"
+                style="margin-top: 10px !important"
+              >
+                <div>
+                  <span
+                 class="text-[#5a8f69] font-medium"
+                 *ngIf="product.IS_VERIENT_AVAILABLE == 0"
+                  >
+                    ${{ product.RATE }}
+                  </span>
+                  <span class="text-[#5a8f69] font-medium"
+                   *ngIf="product.IS_VERIENT_AVAILABLE == 1">
+                    ${{ variantRateMap[product.ID] || "0" }}</span
+                  >
+                </div>
+
+                <!-- <select
+                    *ngIf="product.IS_VERIENT_AVAILABLE == 1"
+                    class="sm:w-auto border border-green-400 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-300"
+                    [(ngModel)]="selectedVariantMap[product.ID]"
+                    (ngModelChange)="change($event, product.ID)"
+                    (click)="getvarientDetails(product.ID)"
+                    style="width: 80px; height: 32px; font-size: 10px; padding: 2px !important;"
+                  >
+                    <option value="" disabled>Select Variant</option>
+                    <option *ngFor="let item of variantMap[product.ID] || []" [value]="item.ID">
+                      {{ item.SIZE }} {{ item.UNIT_NAME }}
+                    </option>
+                </select> -->
+                <select
+                  *ngIf="product.IS_VERIENT_AVAILABLE == 1"
+                  class="sm:w-auto border border-green-400 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-300"
+                  [(ngModel)]="selectedVariantMap[product.ID]"
+                  (ngModelChange)="change($event, product.ID)"
+                  style="
+                    width: 80px;
+                    height: 32px;
+                    font-size: 10px;
+                    padding: 2px !important;
+                  "
+                >
+                  <option value="" disabled>Select Variant</option>
+                  <option
+                    *ngFor="let item of variantMap[product.ID] || []"
+                    [value]="item.VARIENT_ID"
+                  >
+                    {{ item.SIZE }} {{ item.UNIT_NAME }}
+                  </option>
+                </select>
+
+                <div class="flex items-center">
+                  <div
+                    class="flex text-yellow-400"
+                    [innerHTML]="getStarIcons(product.RATE)"
+                  ></div>
+                </div>
+              </div>
+              <div
+                class="mt-4 flex space-x-2 btn-row"
+                style="margin-top: 15px !important"
+              >
+                <button
+                  style="font-size: 15px !important"
+                  class="flex-1 bg-[#5a8f69] text-white py-2 rounded-button font-medium transition-colors !rounded-button whitespace-nowrap add-to-cart-btn"
+                  (click)="addToCart(product)"
+                  [disabled]="
+                    product.IS_UPCOMING == 1 ||
+                    product?.CURRENT_STOCK_VARIENT == 0 ||
+                    currentStockMap[product.ID] == 0
+                  "
+                  id="addToCartBtn"
+                  [ngClass]="{
+                    'hover:bg-green-700 cursor-pointer':
+                      product.IS_UPCOMING != 1 &&
+                      product?.CURRENT_STOCK_VARIENT > 0 &&
+                      currentStockMap[product.ID] > 0,
+                    'bg-gray-400 cursor-not-allowed':
+                      product.IS_UPCOMING == 1 ||
+                      product?.CURRENT_STOCK_VARIENT == 0 ||
+                      currentStockMap[product.ID] == 0
+                  }"
+                >
+                  Add to Cart
+                </button>
+                 <a (click)="addtodetail(product)"
+                  style="font-size: 15px !important"
+                  [routerLink]="
+                    selectedVariantMap[product.ID]
+                      ? [
+                          '/product_details',
+                          product.ID,
+                          selectedVariantMap[product.ID]
+                        ]
+                      : ['/product_details', product.ID]
+                  "
+                  class="product-details-link details-btn bg-gray-100 text-gray-800 px-4 py-2 rounded-button font-medium hover:bg-gray-200 transition-colors whitespace-nowrap mrgLeft"
+                  >Details</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <button
+          style="display: none"
+          id="loginmodaltrack"
+          data-bs-toggle="modal"
+          data-bs-target="#loginmodal"
+        >
+          data
+        </button>
+
+        <div
+          class="modal fade"
+          id="loginmodal"
+          tabindex="-1"
+          aria-labelledby="loginmodalLabel"
+          aria-hidden="true"
+        >
+          <div
+            class="modal-dialog modal-dialog-centered"
+            style="width: 300px; margin: auto"
+          >
+            <div
+              class="modal-content p-3 rounded-3"
+              style="padding: 0px !important; border: none !important"
+            >
+              <div class="modal-body">
+                <div class="popup">
+                  <header
+                    style="
+                      justify-content: end;
+                      display: flex;
+                      padding: 9px 10px;
+                      cursor: pointer;
+                    "
+                  >
+                    <div
+                      class="close"
+                      data-bs-dismiss="modal"
+                      #closelogin
+                      aria-label="Close"
+                      style="display: none"
+                    >
+                      <i class="fa-solid fa-xmark"></i>
+                    </div>
+                    <div
+                      class="close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    >
+                      <i class="fa-solid fa-xmark"></i>
+                    </div>
+                  </header>
+                  <hr
+                    style="
+                      margin-top: 0px !important;
+                      color: #808080ad !important;
+                    "
+                  />
+                  <div class="content">
+                    <div style="justify-content: center; display: flex">
+                      <img src="assets/img/login.png" alt="login" />
+                    </div>
+                    <button
+                      class="book-btn btn bg-[rgb(90 143 105)] mt-3 w-100 w-md-auto"
+                      (click)="openlogin()"
+                    >
+                      Sign In To Continue &nbsp;
+                      <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-10 flex justify-center">
+          <nav class="flex items-center space-x-2">
+            <a
+              class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 text-gray-600 hover:bg-gray-50 cursor-pointer"
+              [class.pointer-events-none]="currentPage === 1"
+              [class.opacity-50]="currentPage === 1"
+              (click)="
+                scrollToSection('product-grids');
+                setCurrentPage(currentPage - 1)
+              "
+            >
+              <i class="ri-arrow-left-s-line"></i>
+            </a>
+            <a
+              *ngFor="let page of pagesArray"
+              class="w-10 h-10 flex items-center justify-center rounded-full cursor-pointer"
+              [ngClass]="{
+                'bg-[#5a8f69] text-white': page === currentPage,
+                'border border-gray-300 text-gray-600 hover:bg-gray-50':
+                  page !== currentPage
+              }"
+              (click)="scrollToSection('product-grids'); setCurrentPage(page)"
+              >{{ page }}</a
+            >
+
+            <a
+              class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 text-gray-600 hover:bg-gray-50 cursor-pointer"
+              [class.pointer-events-none]="currentPage === totalPages"
+              [class.opacity-50]="currentPage === totalPages"
+              (click)="
+                scrollToSection('product-grids');
+                setCurrentPage(currentPage + 1)
+              "
+            >
+              <i class="ri-arrow-right-s-line"></i>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Newsletter Section -->
+<section class="newsletter-section py-16 text-white">
+  <div class="container mx-auto px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="text-3xl font-bold mb-4">Subscribe to Our Newsletter</h2>
+      <p class="text-white/90 mb-8">
+        Stay updated with our latest products, offers, and Ayurvedic wellness
+        tips.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+        <input
+          type="text"
+          [(ngModel)]="emailaddress"
+          maxlength="40"
+          name="emailad"
+          placeholder="Enter your email address"
+          class="flex-1 px-4 py-3 rounded-button border-none focus:outline-none focus:ring-2 focus:ring-white/50 text-gray-800"
+        />
+        <button
+          *ngIf="!loadingRecords"
+          (click)="SubsribeToNewsLetter()"
+          class="text-white px-6 py-3 rounded-button font-medium hover:bg-secondary/90 transition-colors !rounded-button whitespace-nowrap"
+          style="background-color: rgb(233 180 76)"
+        >
+          Subscribe
+        </button>
+        <button
+          *ngIf="loadingRecords"
+          class="text-white px-6 py-3 rounded-button font-medium hover:bg-secondary/90 transition-colors !rounded-button whitespace-nowrap"
+          style="background-color: rgb(233 180 76)"
+        >
+          Subscribe &nbsp;
+          <div
+            class="spinner-border text-warning"
+            role="status"
+            style="
+              font-size: 10px !important;
+              height: 15px;
+              width: 15px;
+              color: white !important;
+            "
+          >
+            <span class="sr-only">Loading...</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Quick View Modal -->
+<div class="quick-view-modal" id="quickViewModal">
+  <div class="modal-content p-6">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-2xl font-bold text-gray-900">Product Quick View</h3>
+      <button class="text-gray-500 hover:text-gray-700 close-modal">
+        <i class="ri-close-line ri-lg"></i>
+      </button>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div>
+        <img
+          id="modalProductImage"
+          src=""
+          alt="Product"
+          class="w-full h-auto object-cover rounded-lg"
+        />
+      </div>
+      <div>
+        <span id="modalProductCategory" class="text-sm text-gray-500"></span>
+        <h2
+          id="modalProductName"
+          class="text-2xl font-bold text-gray-900 mt-2"
+        ></h2>
+        <div class="flex items-center mt-2">
+          <div class="flex text-yellow-400">
+            <i class="ri-star-fill"></i>
+            <i class="ri-star-fill"></i>
+            <i class="ri-star-fill"></i>
+            <i class="ri-star-fill"></i>
+            <i class="ri-star-half-fill"></i>
+          </div>
+          <span class="text-sm text-gray-500 ml-2">4.5 (32 reviews)</span>
+        </div>
+        <div class="mt-4">
+          <span
+            id="modalProductPrice"
+            class="text-2xl font-bold text-primary"
+          ></span>
+        </div>
+        <p id="modalProductDescription" class="text-gray-600 mt-4"></p>
+        <div class="mt-6">
+          <h4 class="font-medium text-gray-900 mb-2">Key Benefits:</h4>
+          <ul class="list-disc pl-5 text-gray-600 space-y-1">
+            <li>100% natural ingredients</li>
+            <li>Free from harmful chemicals</li>
+            <li>Suitable for all skin types</li>
+            <li>Cruelty-free and vegan</li>
+          </ul>
+        </div>
+        <div class="mt-6">
+          <h4 class="font-medium text-gray-900 mb-2">Quantity:</h4>
+          <div
+            class="flex items-center border border-gray-300 rounded-button w-32"
+          >
+            <button
+              class="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-primary quantity-decrease"
+            >
+              <i class="ri-subtract-line"></i>
+            </button>
+            <input
+              type="number"
+              value="1"
+              min="1"
+              class="w-12 h-10 text-center border-none focus:outline-none text-gray-700"
+            />
+            <button
+              class="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-primary quantity-increase"
+            >
+              <i class="ri-add-line"></i>
+            </button>
+          </div>
+        </div>
+        <div class="mt-8 flex space-x-4">
+          <button
+            class="flex-1 bg-primary text-white py-3 rounded-button font-medium hover:bg-primary/90 transition-colors !rounded-button whitespace-nowrap"
+          >
+            Add to Cart
+          </button>
+          <button
+            class="bg-gray-100 text-gray-800 px-4 py-3 rounded-button font-medium hover:bg-gray-200 transition-colors !rounded-button whitespace-nowrap"
+          >
+            <i class="ri-heart-line"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button
+  id="backToTop"
+  class="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-[#5a8f69] text-white shadow-lg flex items-center justify-center opacity-0 invisible transition-all duration-300"
+>
+  <i class="ri-arrow-up-line ri-lg"></i>
+</button>
+<!-- Quick View Modal -->
+<div class="quick-view-modal" id="quickViewModal">
+  <div class="modal-content p-6">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-2xl font-bold text-gray-900">Product Quick View</h3>
+      <button class="text-gray-500 hover:text-gray-700 close-modal">
+        <i class="ri-close-line ri-lg"></i>
+      </button>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div>
+        <img
+          id="modalProductImage"
+          src=""
+          alt="Product"
+          class="w-full h-auto object-cover rounded-lg"
+        />
+      </div>
+      <div>
+        <span id="modalProductCategory" class="text-sm text-gray-500"></span>
+        <h2
+          id="modalProductName"
+          class="text-2xl font-bold text-gray-900 mt-2"
+        ></h2>
+        <div class="flex items-center mt-2">
+          <div class="flex text-yellow-400">
+            <i class="ri-star-fill"></i>
+            <i class="ri-star-fill"></i>
+            <i class="ri-star-fill"></i>
+            <i class="ri-star-fill"></i>
+            <i class="ri-star-half-fill"></i>
+          </div>
+          <span class="text-sm text-gray-500 ml-2">4.5 (32 reviews)</span>
+        </div>
+        <div class="mt-4">
+          <span
+            id="modalProductPrice"
+            class="text-2xl font-bold text-[#5a8f69]"
+          ></span>
+        </div>
+        <p id="modalProductDescription" class="text-gray-600 mt-4"></p>
+        <div class="mt-6">
+          <h4 class="font-medium text-gray-900 mb-2">Key Benefits:</h4>
+          <ul class="list-disc pl-5 text-gray-600 space-y-1">
+            <li>100% natural ingredients</li>
+            <li>Free from harmful chemicals</li>
+            <li>Suitable for all skin types</li>
+            <li>Cruelty-free and vegan</li>
+          </ul>
+        </div>
+        <div class="mt-6">
+          <h4 class="font-medium text-gray-900 mb-2">Quantity:</h4>
+          <div
+            class="flex items-center border border-gray-300 rounded-button w-32"
+          >
+            <button
+              class="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-[#5a8f69] quantity-decrease"
+            >
+              <i class="ri-subtract-line"></i>
+            </button>
+            <input
+              type="number"
+              value="1"
+              min="1"
+              class="w-12 h-10 text-center border-none focus:outline-none text-gray-700"
+            />
+            <button
+              class="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-[#5a8f69] quantity-increase"
+            >
+              <i class="ri-add-line"></i>
+            </button>
+          </div>
+        </div>
+        <div class="mt-8 flex space-x-4">
+          <button
+            class="flex-1 bg-[#5a8f69] text-white py-3 rounded-button font-medium hover:bg-[#5a8f69]/90 transition-colors !rounded-button whitespace-nowrap"
+          >
+            Add to Cart
+          </button>
+          <button
+            class="bg-gray-100 text-gray-800 px-4 py-3 rounded-button font-medium hover:bg-gray-200 transition-colors !rounded-button whitespace-nowrap"
+          >
+            <i class="ri-heart-line"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="viewCart">
+  <app-cart-drawer
+    [visible]="viewCart"
+    (visibleChange)="onCartDrawerClose($event)"
+  ></app-cart-drawer>
+</div>
