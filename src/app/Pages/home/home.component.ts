@@ -554,7 +554,12 @@ closeMobileFilters(): void {
       this.getProducts();
     } else {
       const [key, direction] = value.split(':');
-      this.sortKey = key;
+      if(key === 'RATE'){
+        this.sortKey = 'JSON_EXTRACT(VARIENTS, \'$[0].RATE\')';
+      }else{
+        this.sortKey = key;
+      }
+      // this.sortKey = key;
       this.sortDirection = direction;
       this.getProducts();
       // example: call your sorting function
@@ -718,6 +723,8 @@ onPriceChange() {
     if (this.userID) {
       var filter = ` AND CUSTOMER_ID = ${this.userID}`;
     } else {
+      let sessionKey = sessionStorage.getItem('SESSION_KEYS') || '';
+    this.decyptedsessionKey = this.commonFunction.decryptdata(sessionKey);
       var filter = ` AND SESSION_KEY = '${this.decyptedsessionKey}'`;
     }
 

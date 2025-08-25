@@ -1,4 +1,10 @@
-import { Component, ElementRef, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ApiServiceService } from 'src/app/Service/api-service.service';
@@ -44,11 +50,11 @@ export class ProductpageComponent {
     // this.getProductData();
     // this.router.events.subscribe((event) => {
     //   console.log(event);
-      
+
     //   if (event instanceof NavigationEnd) {
-        window.scrollTo(0, 0);
-        // console.log(window);
-        
+    window.scrollTo(0, 0);
+    // console.log(window);
+
     //   }
     // });
     this.route.paramMap.subscribe((paramMap) => {
@@ -133,18 +139,19 @@ export class ProductpageComponent {
   }
 
   ReviewData: any[] = [];
-shouldShowTooltip: boolean[] = [];
+  shouldShowTooltip: boolean[] = [];
 
-@ViewChildren('reviewText') reviewTextElements!: QueryList<ElementRef>;
+  @ViewChildren('reviewText') reviewTextElements!: QueryList<ElementRef>;
 
-getcustomerProductReviews() {
-  this.api.getcustomerProductReviews(` AND PRODUCT_ID = ${this.productId}`).subscribe(
-    (data) => {
-      if (data['code'] === 200) {
-        this.reviewLoading = false;
-        this.ReviewData = data['data'];
+  getcustomerProductReviews() {
+    this.api
+      .getcustomerProductReviews(` AND PRODUCT_ID = ${this.productId}`)
+      .subscribe(
+        (data) => {
+          if (data['code'] === 200) {
+            this.reviewLoading = false;
+            this.ReviewData = data['data'];
 
-         
             this.reviewTextElements.forEach((el, index) => {
               const nativeEl = el.nativeElement;
 
@@ -153,11 +160,11 @@ getcustomerProductReviews() {
 
               this.shouldShowTooltip[index] = isTruncated;
             });
-             }
-    },
-    (err) => console.log(err)
-  );
-}
+          }
+        },
+        (err) => console.log(err)
+      );
+  }
 
   //  changeMainImage(event: Event, src: string): void {
   //   const mainImage = document.getElementById("main-image") as HTMLImageElement;
@@ -775,6 +782,8 @@ getcustomerProductReviews() {
     if (this.userID) {
       var filter = ` AND CUSTOMER_ID = ${this.userID}`;
     } else {
+      let sessionKey = sessionStorage.getItem('SESSION_KEYS') || '';
+      this.decyptedsessionKey = this.commonFunction.decryptdata(sessionKey);
       var filter = ` AND SESSION_KEY = '${this.decyptedsessionKey}'`;
     }
 
