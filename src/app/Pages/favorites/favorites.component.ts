@@ -326,10 +326,19 @@ variantRateMap: { [productId: number]: number } = {};
   sortKey: string | null = 'ID';
   sortDirection: string | null = 'desc';
 
-    setCurrentPage(page: number): void {
-    this.currentPage = page;
-    this.getProducts(); 
+setCurrentPage(page: number): void {
+  if (this.totalPages === 0) {
+    return; 
   }
+
+  if (page < 1 || page > this.totalPages) {
+    return;
+  }
+
+  this.currentPage = page;
+  this.getProducts();
+}
+
 
    onSortChange(event: Event) {
     const value = (event.target as HTMLSelectElement).value;

@@ -643,3 +643,15 @@ tab-content {
 .testimonials-track:hover {
   animation-play-state: paused;
 }
+/* Hide scrollbar for mobile horizontal scroll */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE/Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+html, body {
+  overflow: hidden;   /* disables both vertical & horizontal scroll */
+}
