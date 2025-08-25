@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ApiServiceService } from 'src/app/Service/api-service.service';
@@ -33,6 +33,7 @@ export class ProductpageComponent {
   propertyId: any;
   Imgurl: any;
   varientId: any;
+
   //  vaishnavi
   ngOnInit() {
     this.Imgurl = this.IMAGEuRL + 'CustomerProfile/';
@@ -132,22 +133,32 @@ export class ProductpageComponent {
   }
 
   ReviewData: any[] = [];
+shouldShowTooltip: boolean[] = [];
 
-  getcustomerProductReviews() {
-    this.api
-      .getcustomerProductReviews(` AND PRODUCT_ID = ${this.productId}`)
-      .subscribe(
-        (data) => {
-          if (data['code'] === 200) {
-            this.reviewLoading = false;
-            this.ReviewData = data['data'];
-          }
-        },
-        (err) => {
-          console.log(err);
-        }
-      );
-  }
+@ViewChildren('reviewText') reviewTextElements!: QueryList<ElementRef>;
+
+getcustomerProductReviews() {
+  this.api.getcustomerProductReviews(` AND PRODUCT_ID = ${this.productId}`).subscribe(
+    (data) => {
+      if (data['code'] === 200) {
+        this.reviewLoading = false;
+        this.ReviewData = data['data'];
+
+         
+            this.reviewTextElements.forEach((el, index) => {
+              const nativeEl = el.nativeElement;
+
+              const isTruncated =
+                nativeEl.scrollHeight > nativeEl.clientHeight + 1; // small buffer for precision
+
+              this.shouldShowTooltip[index] = isTruncated;
+            });
+             }
+    },
+    (err) => console.log(err)
+  );
+}
+
   //  changeMainImage(event: Event, src: string): void {
   //   const mainImage = document.getElementById("main-image") as HTMLImageElement;
   //   const target = event.target as HTMLElement;
@@ -477,7 +488,7 @@ export class ProductpageComponent {
         4,
         'id',
         'desc',
-        'AND IS_VERIENT_AVAILABLE = 1',
+        'AND IS_VERIENT_AVAILABLE = 1 AND STATUS=1',
         ''
       )
       .subscribe((data) => {

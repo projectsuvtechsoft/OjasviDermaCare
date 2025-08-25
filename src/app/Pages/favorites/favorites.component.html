@@ -212,9 +212,12 @@
               </div>
               </div>
             </div>
-             
+ 
             </div>
-             <div class="mt-10 flex justify-center">
+                        <div *ngIf=" FavouritesData.length === 0" class="flex justify-center items-center ">
+  <img src="assets/img/nodata.png" alt="No Data" class="w-52 opacity-80" />
+</div>
+             <div class="mt-10 flex justify-center" *ngIf="totalPages > 0">
           <nav class="flex items-center space-x-2">
             <a
               class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 text-gray-600 hover:bg-gray-50 cursor-pointer"

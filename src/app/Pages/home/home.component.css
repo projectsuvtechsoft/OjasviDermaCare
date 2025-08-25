@@ -25,8 +25,12 @@ h4,
     ),
     url(/assets/img/product-listingBanner.png);
   background-size: cover;
-  background-position: center;
+  background-position: right;
+  background-repeat: no-repeat;
 }
+
+/* Tablet */
+
 .category-card {
   transition: all 0.3s ease;
 }
