@@ -727,7 +727,7 @@
     </div>
     <div id="reviews" class="tab-content">
       <div
-        class="mb-8 relative top-0 right-0 h-full z-50 transform transition-transform duration-300"
+        class="mb-8 relative top-0 right-0 h-full "
       >
         <app-common-loader
           *ngIf="reviewLoading"
@@ -754,7 +754,7 @@
           >
             <div
               class="bg-gray-50 p-6 rounded-lg"
-              *ngFor="let data of ReviewData"
+              *ngFor="let data of ReviewData; let index = index"
             >
               <div class="flex items-center mb-4">
                 <img
@@ -781,14 +781,25 @@
                   </div>
                 </div>
               </div>
-              <p class="text-sm text-gray-600 italic line-clamp-3">
+
+<div class="review-tooltip" >
+              <p #reviewText class="text-sm text-gray-700 italic line-clamp-3">
                 {{ data.REVIEW }}
               </p>
+
+              <span class="tooltip-text" >
+                {{ data.REVIEW }}
+              </span>
+            </div>
+
               <!-- <div class="flex items-center mt-4 text-xs text-gray-500">
               <span>Verified Purchase</span>
               <span class="mx-2">•</span>
               <span>2 weeks ago</span>
             </div> -->
+
+
+
             </div>
           </div>
           <div

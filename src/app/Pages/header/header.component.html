@@ -906,7 +906,7 @@
 
                 <div
                   *ngIf="identifier.errors?.['pattern'] && (identifier.touched)"
-                  class="error-message"
+                  class="error-message text-[12px]"
                 >
                   Please enter a valid
                   {{
@@ -935,7 +935,7 @@
 
                 <div
                   *ngIf="(password.errors?.['required'] && (password.touched ))"
-                  class="error-message"
+                  class="error-message  text-[12px]"
                 >
                   Please enter password.
                 </div>
@@ -945,22 +945,22 @@
             <!-- <a class="text-right mb-2" style="font-size: 13px;"  (click)="forgotpassModal()">Forgot Password?</a> -->
             <!-- </div> -->
 
-            <div class="flex justify-center">
-              <button
-                class="text-center mb-2 hover:text-[rgb(90,143,105)] footertexts1"
-                (click)="$event.preventDefault();forgotpassModal()"
-              >
-                Forgot Password
-              </button>
-              <span>&nbsp;|&nbsp;</span>
-              <button
-                class="text-center mb-2 hover:text-[rgb(90,143,105)]"
-                style="font-size: 13px"
-                (click)="$event.preventDefault();goBack(); isGuest = true"
-              >
-                Continue as a guest
-              </button>
-            </div>
+           <div class="flex justify-center text-[12px]">
+  <button
+    class="text-center mb-2 hover:text-[rgb(90,143,105)] footertexts1"
+    (click)="$event.preventDefault();forgotpassModal()"
+  >
+    Forgot Password
+  </button>
+  <span>&nbsp;|&nbsp;</span>
+  <button
+    class="text-center mb-2 hover:text-[rgb(90,143,105)]"
+    (click)="$event.preventDefault();goBack(); isGuest = true"
+  >
+    Continue as a guest
+  </button>
+</div>
+
 
             <button
               type="submit"
