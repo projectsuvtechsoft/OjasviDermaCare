@@ -411,9 +411,11 @@
             [(ngModel)]="addressForm.MOBILE_NO"
             name="MOBILE_NO"
             #MOBILE_NO="ngModel"
+            maxlength="10"
             class="w-full border rounded px-2 py-1 text-sm"
             placeholder="Enter Mobile Number"
             required
+            (keypress)="commonFunction.omit($event)"
           />
           <p
             *ngIf="MOBILE_NO.invalid && (MOBILE_NO.touched || form.submitted)"

@@ -120,7 +120,7 @@ export class CheckoutComponent {
    * @param addressId The ID of the address to edit, or null for a new address.
    */
   openAddressForm(addressId: string | null = null) {
-    console.log('Opening address form for ID:', addressId);
+    // console.log('Opening address form for ID:', addressId);
     this.showAddressForm = true; // Switch to the form view inside the drawer
     if (addressId) {
       this.isEditingAddress = true;
