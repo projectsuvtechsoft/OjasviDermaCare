@@ -497,6 +497,7 @@ export class LandingPageComponent {
     return null;
   }
   addtodetail(product: any) {
+    // window.scrollTo(0, 0);
     this.productService.setProduct(product);
     sessionStorage.setItem('selectedProduct', JSON.stringify(product));
   }

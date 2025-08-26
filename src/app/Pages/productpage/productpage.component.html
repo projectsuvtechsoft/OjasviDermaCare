@@ -1095,13 +1095,17 @@
                     <button
                       class="flex-1 bg-[#5a8f69] text-white py-2 rounded-button font-medium transition-colors whitespace-nowrap"
                       (click)="addToCart(product, false)"
-                      [disabled]="product.IS_UPCOMING == 1"
+                      [disabled]="product.IS_UPCOMING == 1
+                       || selectedVarientrecent[product.ID]['CURRENT_STOCK'] <= 0
+                      "
                       id="addToCartBtn"
                       [ngClass]="{
                         'hover:bg-green-700 cursor-pointer':
-                          product.IS_UPCOMING != 1,
+                          product.IS_UPCOMING != 1 &&
+                          selectedVarientrecent[product.ID]['CURRENT_STOCK'] > 0,
                         'bg-gray-400 cursor-not-allowed':
-                          product.IS_UPCOMING == 1
+                          product.IS_UPCOMING == 1 ||
+                          selectedVarientrecent[product.ID]['CURRENT_STOCK'] <= 0
                       }"
                     >
                       Add to Cart

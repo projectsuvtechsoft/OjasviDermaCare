@@ -298,7 +298,7 @@ export class HomeComponent {
           //  this.products[selectedvarientproductId].CURRENT_STOCK_VARIENT=firstVariant.CURRENT_STOCK
         }
       }
-      console.log('this.variantMap[product.ID]', this.variantMap[product.ID]);
+      // console.log('this.variantMap[product.ID]', this.variantMap[product.ID]);
     }
     // console.log(this.products)
   }

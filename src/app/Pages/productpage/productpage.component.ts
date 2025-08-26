@@ -1,3 +1,4 @@
+import { ViewportScroller } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -32,7 +33,8 @@ export class ProductpageComponent {
     private api: ApiServiceService,
     private cartService: CartService,
     private toastr: ToastrService,
-    private productService: ProductDataService
+    private productService: ProductDataService,
+     private vps: ViewportScroller,
   ) {}
   selectedPrice: any;
   totalPrice: any;
@@ -47,13 +49,14 @@ export class ProductpageComponent {
     this.varientId = Number(this.route.snapshot.paramMap.get('variantId'));
     // this.scrollToSection('top')
     this.getcustomerProductReviews();
+    this.forceTop()
     // this.getProductData();
     // this.router.events.subscribe((event) => {
     //   console.log(event);
 
     //   if (event instanceof NavigationEnd) {
-    window.scrollTo(0, 0);
-    // console.log(window);
+    // window.scrollTo(0, 0);
+    // console.log(window.history,'Window');
 
     //   }
     // });
@@ -73,6 +76,19 @@ export class ProductpageComponent {
       this.getpropertyDetails1();
       let project = sessionStorage.getItem('propertyId');
     });
+
+    
+  }
+    private forceTop() {
+    // 1) window/html/body
+    try { window.scrollTo(0, 0); } catch {}
+    try { this.vps.scrollToPosition([0, 0]); } catch {}
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
+    // 2) Reset any scrollable container inside the app
+    // const sc = this.findScrollableContainer();
+    // if (sc) sc.scrollTop = 0;
   }
   // scrollToSection(sectionId: string) {
   //   const element = document.getElementById(sectionId);
@@ -425,6 +441,7 @@ export class ProductpageComponent {
         this.variantRateMap[productId] = selected.RATE || 0;
         this.selectedVariantStock = selected.CURRENT_STOCK || 0;
         this.selectedPrice = selected.RATE || 0;
+        this.selectedVarientrecent[productId]=selected
         this.updateTotalPrice();
       }
     } else {
@@ -438,9 +455,11 @@ export class ProductpageComponent {
         this.variantRateMap1[productId] = selected.RATE || 0;
         this.variantStockMap[productId] = selected.OPENING_STOCK || 0;
         this.selectedPrice = selected.RATE || 0;
+        this.selectedVarientrecent[productId]=selected
         this.updateTotalPrice();
       }
     }
+    // console.log(this.selectedVarientrecent);
   }
 
   // change(selectedId: string): void {
@@ -484,7 +503,7 @@ export class ProductpageComponent {
 
   variantRateMap: { [productId: number]: number } = {};
   variantRateMap1: { [productId: number]: number } = {};
-
+  selectedVarientrecent:any={}
   getpropertyDetails1() {
     this.show = true;
     this.loadingProducts = true;
@@ -533,12 +552,17 @@ export class ProductpageComponent {
                   (v: any) => v.STATUS === true || v.STATUS === 1
                 ) || [];
               this.variantMap1[product.ID] = Variants;
+              this.selectedVarientrecent[product.ID]=variants[0]
             } else {
               this.variantRateMap1[product.ID] = 0;
+              this.selectedVarientrecent={}
+
             }
           });
           this.show = false;
         }
+        // console.log(this.selectedVarientrecent);
+        
       });
   }
 

@@ -543,19 +543,19 @@
                   (click)="addToCart(product)"
                   [disabled]="
                     product.IS_UPCOMING == 1 ||
-                    product?.CURRENT_STOCK_VARIENT == 0 ||
-                    currentStockMap[product.ID] == 0
+                    product.CURRENT_STOCK_VARIENT <= 0 ||
+                    currentStockMap[product.ID] <= 0
                   "
                   id="addToCartBtn"
                   [ngClass]="{
                     'hover:bg-green-700 cursor-pointer':
                       product.IS_UPCOMING != 1 &&
-                      product?.CURRENT_STOCK_VARIENT > 0 &&
+                      product.CURRENT_STOCK_VARIENT > 0 &&
                       currentStockMap[product.ID] > 0,
                     'bg-gray-400 cursor-not-allowed':
                       product.IS_UPCOMING == 1 ||
-                      product?.CURRENT_STOCK_VARIENT == 0 ||
-                      currentStockMap[product.ID] == 0
+                      product.CURRENT_STOCK_VARIENT <= 0 ||
+                      currentStockMap[product.ID] <= 0
                   }"
                 >
                   Add to Cart
