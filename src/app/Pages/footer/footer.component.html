@@ -4,12 +4,18 @@
     <div class="flex flex-col lg:flex-row lg:justify-between gap-12 mb-12">
       <!-- About (takes more width) -->
       <div class="lg:w-2/3">
-        <h3 class="text-xl font-bold text-gray-900 mb-4" [routerLink]="'/about-us'" style="cursor: pointer;" >About Ojasvi Derma Care</h3>
+        <h3
+          class="text-xl font-bold text-gray-900 mb-4"
+          [routerLink]="'/about-us'"
+          style="cursor: pointer"
+        >
+          About Ojasvi Derma Care
+        </h3>
         <p class="text-gray-600 mb-4">
           <!-- Ojasvi is dedicated to bringing the ancient wisdom of Ayurveda to
           modern skincare and haircare. Our products are handcrafted with love,
           tradition, and the finest natural ingredients. -->
-         <strong>Ojasvi DermaCare</strong>  — where radiance meets rejuvenation.
+          <strong>Ojasvi DermaCare</strong> — where radiance meets rejuvenation.
         </p>
         <div class="flex space-x-4">
           <a
@@ -41,16 +47,16 @@
 
       <!-- Contact (smaller width) -->
       <div class="lg:w-1/3">
-        <h3 class="text-xl font-bold text-gray-900 mb-4"  [routerLink]="'/contact-us'" style="cursor: pointer;"  >Contact Us</h3>
+        <h3
+          class="text-xl font-bold text-gray-900 mb-4"
+          [routerLink]="'/contact-us'"
+          style="cursor: pointer"
+        >
+          Contact Us
+        </h3>
 
-        
         <ul class="space-y-3">
-          <li class="flex items-start">
-            
-           
-
-         
-          </li>
+          <li class="flex items-start"></li>
           <li class="flex items-center">
             <i class="ri-phone-line text-[#5a8f69] mr-3"></i>
             <span class="text-gray-600">650-279-1487</span>
@@ -75,12 +81,18 @@
         </p>
         <div class="flex items-center space-x-4">
           <span class="text-gray-600">We Accept:</span>
-          <div class="flex space-x-3">
-            <i class="ri-visa-fill text-blue-600 text-2xl"></i>
-            <i class="ri-mastercard-fill text-orange-500 text-2xl"></i>
-            <i class="ri-paypal-fill text-blue-800 text-2xl"></i>
-            <i class="ri-amazon-pay-fill text-yellow-500 text-2xl"></i>
-            <i class="ri-apple-fill text-gray-800 text-2xl"></i>
+          <div class="flex space-x-3 items-center">
+            <!-- Square (Image + Text) -->
+            <div class="flex items-center space-x-2">
+              <!-- Square Logo Image -->
+              <img
+                src="assets/img/square logo.jfif"
+                alt="Square Logo"
+                class="h-16 w-16 object-contain rounded"
+              />
+              <!-- Square Text -->
+              <!-- <span class="text-black font-semibold text-xl">Square</span> -->
+            </div>
           </div>
         </div>
       </div>

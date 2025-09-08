@@ -23,6 +23,8 @@ import { LandingPageComponent } from './Pages/landing-page/landing-page.componen
 import { ContactUsComponent } from './Pages/contact-us/contact-us.component';
 import { AboutComponent } from './Pages/about/about.component';
 import { CheckoutComponent } from './Pages/checkout/checkout.component';
+import { ForgotPasswordComponent } from './Pages/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './Pages/reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +42,8 @@ import { CheckoutComponent } from './Pages/checkout/checkout.component';
     ContactUsComponent,
     AboutComponent,
     CheckoutComponent,
+    ForgotPasswordComponent,
+    ResetPasswordComponent,
     
   ],
   imports: [

@@ -170,9 +170,9 @@ export class LoginComponent {
       return; // stop execution if timer is running
     }
 
-    // this.otpSent = false;
-    // this.remainingTime = 30; // reset timer
-    // this.startTimer();
+    this.otpSent = false;
+    this.remainingTime = 60; // reset timer
+    this.startTimer();
     if (this.whichOTP == 'login') {
       this.loginotpverification();
     } else if (this.whichOTP == 'register') {
@@ -191,7 +191,7 @@ export class LoginComponent {
       return;
     }
 
-    const maxDuration = 30; // 30 seconds max
+    const maxDuration = 60; // 30 seconds max
     this.remainingTime = Math.min(this.remainingTime, maxDuration);
 
     this.timerSubscription = interval(1000)
@@ -232,6 +232,8 @@ export class LoginComponent {
     sessionStorage.removeItem('token');
     this.cookie.delete('token');
     this.openRegister = true;
+    this.confirmPass = '';
+    this.pass = '';
   }
 
   showConfirmPasswordError: boolean = false;
@@ -321,6 +323,7 @@ export class LoginComponent {
       return;
     }
 
+    console.log('login', form?.value);
     // Determine type based on input value
     this.type = this.isEmail(this.mobileNumberorEmail) ? 'E' : 'M';
     this.isloginSendOTP = true;
@@ -336,9 +339,10 @@ export class LoginComponent {
       )
       .subscribe({
         next: (successCode: any) => {
+          console.log('in login', successCode.code, successCode);
+
           if (successCode.code == '200') {
             // console.log(this.data, 'iotrriuuiyoio');
-
             this.isloginSendOTP = false;
             this.modalService1.closeModal();
             // this.otpSent = true;
@@ -371,17 +375,22 @@ export class LoginComponent {
             sessionStorage.setItem('IS_GUEST', 'false');
             this.toastr.success('You have login Successfully!', 'success');
             // document.body.style.overflow='';
-            document.body.style.overflow='';
-            document.body.style.overflowX= 'hidden';
+            document.body.style.overflow = '';
+            document.body.style.overflowX = 'hidden';
+            // form?.resetForm();
             this.router.navigate(['/home']);
             // this.openVerify = true;
             // this.stopLoader();
 
             // console.log(this.isLoggedIn, 'this.isLoggedIn');
-          } else if (successCode.code == '400') {
-            // this.statusCode =
-            //   'The user is either not registered or has been deactivated.';
-            // this.stopLoader();
+          } else if (successCode.code == '404') {
+            this.isloginSendOTP = false;
+            this.toastr.error(
+              'Account not found. Please register to continue.',
+              ''
+            );
+            this.stopLoader();
+            // form?.resetForm();
           } else {
             this.isloginSendOTP = false;
             this.toastr.error('OTP Validation Failed...', '');
@@ -459,15 +468,19 @@ export class LoginComponent {
   whichOTP = '';
   registrationSubmitted = false;
   pass: any = '';
+
   save(form?: NgForm) {
     sessionStorage.setItem('USER_NAME', this.data.CUSTOMER_NAME);
     sessionStorage.setItem('emailormobile', this.mobileNumberorEmail);
     sessionStorage.setItem('PASSWORD', this.data.PASSWORD);
 
+    console.log(form?.value, 'reg');
+    // form?.resetForm();
+
     // console.log(form?.value, 'ioug')
 
-    // this.data.COUNTRY_CODE = this.selectedCountryCode;
-
+    this.data.COUNTRY_CODE = this.selectedCountryCode;
+    console.log(this.data.COUNTRY_CODE);
     // this.registrationSubmitted = true;
 
     // console.log('check validation', form);
@@ -481,7 +494,7 @@ export class LoginComponent {
 
       // this.data.TYPE = 'M';
 
-      // this.data.COUNTRY_CODE = this.searchQuery;
+      this.data.COUNTRY_CODE = this.searchQuery;
 
       // this.data.CUSTOMER_CATEGORY_ID = 1;
 
@@ -500,7 +513,7 @@ export class LoginComponent {
       // const registerData = this.data;
 
       // this.loadData();
-
+      //kundan
       if (
         !this.data.CUSTOMER_NAME.trim() &&
         !this.mobileNumberorEmail.trim() &&
@@ -510,7 +523,7 @@ export class LoginComponent {
         return;
       }
 
-      if (
+      else if (
         this.data.CUSTOMER_NAME == '' ||
         this.data.CUSTOMER_NAME == undefined ||
         this.data.CUSTOMER_NAME == null
@@ -518,25 +531,55 @@ export class LoginComponent {
         this.toastr.error('Please enter name.', 'Error');
         return;
       }
-      if (
+      
+      else if (
+        !this.mobileNumberorEmail ||
         this.mobileNumberorEmail == '' ||
         this.mobileNumberorEmail == undefined ||
         this.mobileNumberorEmail == null
       ) {
-        this.toastr.error('Please enter mobile no. or email', 'Error');
+        const fieldName =
+          this.inputType === 'email'
+            ? 'your email addresss'
+            : this.inputType === 'mobile'
+            ? 'your mobile number'
+            : 'email or mobile number';
+
+        this.toastr.error(`Please enter ${fieldName}.`, '');
+        // this.toastr.error('Please enter mobile no. or email', 'Error');
+        // return;
+      } 
+      else if (
+        this.inputType === 'email' &&
+        !this.commonFunction.emailpattern.test(this.mobileNumberorEmail)
+      ) {
+        this.toastr.error(`Please enter valid email address.`, '');
+        return;
+      } 
+      else if (
+        this.inputType === 'mobile' &&
+        !this.commonFunction.mobpattern.test(this.mobileNumberorEmail)
+      ) {
+        this.toastr.error(`Please enter valid Mobile No.`, '');
         return;
       }
-      if (this.pass == '' || this.pass == undefined || this.pass == null) {
+
+      else if (this.pass == '' || this.pass == undefined || this.pass == null) {
         this.toastr.error('Please enter password.', 'Error');
         return;
       }
-      if (!this.confirmPass) {
+
+      
+      else if (!this.confirmPass) {
         this.toastr.error('Please confirm your password.', 'Error');
         return;
       }
 
-      if (this.pass !== this.confirmPass) {
-        this.toastr.error('Passwords do not match.', 'Error');
+      else if (this.pass !== this.confirmPass) {
+        this.toastr.error(
+          'Password and Confirm Password must be the same.',
+          'Error'
+        );
         return;
       }
 
@@ -546,6 +589,9 @@ export class LoginComponent {
         this.type = 'M';
       }
       this.issignUpLoading = true;
+      const temp = this.data.CUSTOMER_NAME;
+      console.log('name', this.data.CUSTOMER_NAME);
+
       this.api
 
         .sendOTP1(this.mobileNumberorEmail, this.type)
@@ -577,9 +623,9 @@ export class LoginComponent {
 
               // this.type = successCode.TYPE;
 
-              // this.remainingTime = 60;
+              this.remainingTime = 60;
 
-              // this.startTimer();
+              this.startTimer();
 
               this.toastr.success('OTP Sent Successfully...', '');
 
@@ -588,21 +634,32 @@ export class LoginComponent {
               this.modalVisible = false;
 
               this.openVerify = true;
+              this.data.CUSTOMER_NAME = temp;
+              console.log('name', this.data.CUSTOMER_NAME);
 
               console.log(this.openVerify, 'openverify');
 
               // this.openRegister = false;
 
               // this.stopLoader();
-            } else if (successCode.code == '400') {
+              // form?.resetForm();
+            } else if (successCode.code == '404') {
               this.statusCode =
                 'The user is either not registered or has been deactivated.';
+              this.toastr.error(
+                'The user is either not registered or has been deactivated.'
+              );
+              this.issignUpLoading = false;
+              this.stopLoader();
+            } else if (successCode.code == '400') {
+              // this.statusCode = 'The User already exists.';
+              this.toastr.error('The User already exists.');
               this.issignUpLoading = false;
               this.stopLoader();
             } else {
               this.isloginSendOTP = false;
               this.issignUpLoading = false;
-              this.toastr.error('OTP Validation Failed...', '');
+              // this.toastr.error('OTP Validation Failed...', '');
 
               this.stopLoader();
             }
@@ -625,7 +682,7 @@ export class LoginComponent {
                 ''
               );
             } else {
-              this.toastr.error('Error sending OTP', '');
+              this.toastr.error('Something went Wrong', '');
             }
 
             this.isloginSendOTP = false;
@@ -799,7 +856,6 @@ export class LoginComponent {
       // );
     }
   }
-
   statusCode: any = '';
   showMap: boolean = false;
   VerifyOTP() {
@@ -835,7 +891,7 @@ export class LoginComponent {
             // console.log('wertyuiko');
             //  this.USER_NAME = this.data.CUSTOMER_NAME
             // this.isverifyOTP = false; // Set true before API call
-            //     console.log(this.isverifyOTP,'this.isverifyOTP')
+            console.log(this.isverifyOTP, 'this.isverifyOTP');
             this.toastr.success('OTP verified successfully...', '');
             this.modalService.dismissAll();
             this.isOk = false;
@@ -848,7 +904,7 @@ export class LoginComponent {
             // this.isverifyOTP = false;
             this.statusCode = '';
           } else {
-            this.toastr.error('Something went wrong. Please try again.');
+            this.toastr.error('Invalid OTP');
           }
           // console.log('successCode.body.code', successCode.body.code);
           this.isverifyOTP = false;
@@ -1133,8 +1189,8 @@ export class LoginComponent {
             }
             // this.renderer.removeClass(document.body, 'modal-open');
             document.body.classList.remove('modal-open');
-            document.body.style.overflow='';
-            document.body.style.overflowX= 'hidden';
+            document.body.style.overflow = '';
+            document.body.style.overflowX = 'hidden';
             // this.openVerify = true;
             // this.stopLoader();
             this.toastr.success('You have login Successfully!', 'success');
@@ -1665,10 +1721,21 @@ export class LoginComponent {
     // if (this.modalVisible) {
     //   this.modalService.dismissAll();
     //   this.modalService.open(this.showlogin, {
-    //     backdrop: "static",
+    //     backdrop: 'static',
     //     keyboard: false,
     //     centered: true,
     //   });
+    // }
+  }
+  openRegistarModal() {
+    // this.modalService1.closeModal();
+
+    this.openVerify = false;
+    this.openRegister = true;
+
+    // const backdrop = document.querySelector('.modal-backdrop');
+    // if (backdrop) {
+    //   backdrop.remove();
     // }
   }
 
@@ -1770,11 +1837,22 @@ export class LoginComponent {
   forgotpass1: boolean = false;
   newPass: string = '';
   forgotpassModal() {
-    this.forgotpass1 = true;
-    this.modalVisible = false;
-    this.openRegister = false;
-    this.forgotpass1 = false;
-    console.log(this.forgotpass1, ' this.forgotpass ');
+    // this.forgotpass1 = true;
+    // this.modalVisible = false;
+    // this.openRegister = false;
+    // // this.forgotpass1 = false;
+
+    // console.log(this.forgotpass1, ' this.forgotpass ');
+
+
+     const loginModalEl = document.getElementById('loginmodal');
+
+    // Check if the modal element exists and hide it using Bootstrap's modal function
+    if (loginModalEl) {
+      // This is the correct way to hide a Bootstrap modal programmatically
+      (window as any).bootstrap.Modal.getInstance(loginModalEl)?.hide();
+    }
+    this.router.navigate(['/forgot-password']);
   }
 
   goBack(): void {

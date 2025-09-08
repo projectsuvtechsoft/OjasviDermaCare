@@ -199,7 +199,7 @@ export class HeaderComponent {
     // console.log(loginModalEl);
     loginModalEl.addEventListener('hidden.bs.modal', () => {
       document.body.style.overflow = ''; // reset to default
-      document.body.style.overflowX= 'hidden';
+      document.body.style.overflowX = 'hidden';
 
       document.body.style.paddingRight = ''; // reset scrollbar padding
     });
@@ -212,7 +212,7 @@ export class HeaderComponent {
       backdrop.remove();
     }
     document.body.style.overflow = '';
-    document.body.style.overflowX= 'hidden';
+    document.body.style.overflowX = 'hidden';
     // console.log(modalInstance, 'modalInstance');
 
     // modalInstance._backdrop._config.rootElement.attributes[1].value='overflow:auto'
@@ -423,12 +423,27 @@ export class HeaderComponent {
   emailPattern: RegExp =
     /^(?!.*\.\..*)(?!.*--.*)(?!.*-\.|-\@|\.-|\@-)[a-zA-Z0-9]([a-zA-Z0-9._%+-]*[a-zA-Z0-9])?@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z]{2,})+$/;
 
+  // forgotpassModal() {
+  //   this.forgotpass1 = true;
+  //   this.modalVisible = false;
+  //   this.openRegister = false;
+  //   this.forgotpass1 = false;
+  //   // console.log(this.forgotpass1, ' this.forgotpass ');
+  //   this.api.changeForgotPasswordBehaviorSubject(true);
+  //   this.router.navigate(['/forgot-password']);
+
+  // }
+
   forgotpassModal() {
-    this.forgotpass1 = true;
-    this.modalVisible = false;
-    this.openRegister = false;
-    this.forgotpass1 = false;
-    console.log(this.forgotpass1, ' this.forgotpass ');
+    // Get a reference to the login modal element
+    const loginModalEl = document.getElementById('loginmodal');
+
+    // Check if the modal element exists and hide it using Bootstrap's modal function
+    if (loginModalEl) {
+      // This is the correct way to hide a Bootstrap modal programmatically
+      (window as any).bootstrap.Modal.getInstance(loginModalEl)?.hide();
+    }
+    this.router.navigate(['/forgot-password']);
   }
 
   selectCountry(country: any) {
@@ -475,7 +490,7 @@ export class HeaderComponent {
     }
     // document.body.style.overflow = 'auto';
     document.body.style.overflow = '';
-   document.body.style.overflowX= 'hidden';
+    document.body.style.overflowX = 'hidden';
     this.router.navigate(['/login']);
     sessionStorage.setItem('IS_REGISTER', 'true');
     this.modalVisible = false;
@@ -761,117 +776,164 @@ export class HeaderComponent {
     // sessionStorage.clear()
     // console.log(document.body.cla);
 
-    if (form && form.invalid) {
-      if (form && form.invalid) {
-        Object.values(form.controls).forEach((control) => {
-          control.markAsTouched(); // This triggers error messages to show
-        });
-        this.loginSubmitted = false;
+    // if (form && form.invalid) {
+    //   if (form && form.invalid) {
+    //     Object.values(form.controls).forEach((control) => {
+    //       control.markAsTouched(); // This triggers error messages to show
+    //     });
+    //     this.loginSubmitted = false;
 
-        return;
-      }
+    //     return;
+    //   }
+    //   return;
+    // }
+
+    if (!this.data.PASSWORD && !this.mobileNumberorEmail) {
+      this.toastr.error('Please Fill All The Required Fields ', '');
       return;
+    } else if (
+      !this.mobileNumberorEmail ||
+      this.mobileNumberorEmail === '' ||
+      this.mobileNumberorEmail == null ||
+      this.mobileNumberorEmail == undefined
+    ) {
+      const fieldName =
+        this.inputType === 'email'
+          ? 'your email address'
+          : this.inputType === 'mobile'
+          ? 'your mobile number'
+          : 'email or mobile number';
+
+      this.toastr.error(`Please enter ${fieldName}.`, '');
+    } else if (
+      this.inputType === 'email' &&
+      !this.commonFunction.emailpattern.test(this.mobileNumberorEmail)
+    ) {
+      this.toastr.error(`Please enter valid email address.`, '');
     }
+    // else if (
+    //   this.inputType === 'mobile' &&
+    //   !this.commonFunction.mobpattern.test(this.mobileNumberorEmail)
+    // ) {
+    //   this.toastr.error(`Please enter valid Mobile No.`, '');
+    // }
+    else if (
+      !this.data.PASSWORD ||
+      this.data.PASSWORD == 0 ||
+      this.data.PASSWORD == null ||
+      this.data.PASSWORD == undefined
+    ) {
+      this.toastr.error('Please Enter Password.', '');
+    } else {
+      // Determine type based on input value
+      this.type = this.isEmail(this.mobileNumberorEmail) ? 'E' : 'M';
+      this.isloginSendOTP = true;
+      this.statusCode = '';
+      // this.whichOTP = 'login';
+      // this.loadData();
 
-    // Determine type based on input value
-    this.type = this.isEmail(this.mobileNumberorEmail) ? 'E' : 'M';
-    this.isloginSendOTP = true;
-    this.statusCode = '';
-    // this.whichOTP = 'login';
-    // this.loadData();
+      this.api
+        .login(
+          (this.USER_NAME = this.mobileNumberorEmail),
+          (this.type = this.type),
+          this.data.PASSWORD
+        )
+        .subscribe({
+          next: (successCode: any) => {
+            if (successCode.code == '200') {
+              this.stopLoader();
+              // form?.resetForm();
+              // console.log(this.data, 'iotrriuuiyoio');
 
-    this.api
-      .login(
-        (this.USER_NAME = this.mobileNumberorEmail),
-        (this.type = this.type),
-        this.data.PASSWORD
-      )
-      .subscribe({
-        next: (successCode: any) => {
-          if (successCode.code == '200') {
-            this.stopLoader();
+              this.isloginSendOTP = false;
+              // this.modalService1.closeModal();
+              // document.body.classList.remove('modal-open');
+              // document
+              //   .querySelectorAll('.modal-backdrop')
+              //   .forEach((el) => el.remove());
+              const loginModalEl: any = document.getElementById('loginmodal');
+              loginModalEl.addEventListener('hidden.bs.modal', () => {
+                document.body.style.overflow = ''; // reset to default
+                document.body.style.overflowX = 'hidden';
+                document.body.style.paddingRight = ''; // reset scrollbar padding
+              });
+              document.body.style.overflow = '';
+              document.body.style.overflowX = 'hidden';
+              const modalInstance =
+                bootstrap.Modal.getInstance(loginModalEl) ||
+                new bootstrap.Modal(loginModalEl);
+              modalInstance.hide();
+              this.renderer.removeClass(document.body, 'modal-open');
+              document.body.classList.remove('modal-open');
+              // const loginModalEl = document.getElementById('loginmodal');
 
-            // console.log(this.data, 'iotrriuuiyoio');
+              document
+                .querySelectorAll('.modal-backdrop')
+                .forEach((el) => el.remove());
+              // this.otpSent = true;
+              // this.showOtpModal = true;
+              // this.USER_ID = successCode.USER_ID;
+              this.USER_NAME = successCode.USER_NAME;
 
-            this.isloginSendOTP = false;
-            // this.modalService1.closeModal();
-            // document.body.classList.remove('modal-open');
-            // document
-            //   .querySelectorAll('.modal-backdrop')
-            //   .forEach((el) => el.remove());
-            const loginModalEl: any = document.getElementById('loginmodal');
-            loginModalEl.addEventListener('hidden.bs.modal', () => {
-              document.body.style.overflow = ''; // reset to default
-            document.body.style.overflowX= 'hidden';
-              document.body.style.paddingRight = ''; // reset scrollbar padding
-            });
-            document.body.style.overflow = '';
-            document.body.style.overflowX= 'hidden';
-            const modalInstance =
-              bootstrap.Modal.getInstance(loginModalEl) ||
-              new bootstrap.Modal(loginModalEl);
-            modalInstance.hide();
-            this.renderer.removeClass(document.body, 'modal-open');
-            document.body.classList.remove('modal-open');
-            // const loginModalEl = document.getElementById('loginmodal');
+              // this.remainingTime = 60;
+              // this.startTimer();
+              // this.toastr.success('OTP Sent Successfully...', '');
+              // this.modalVisible = false;
+              // this.openRegister = false;
+              // sessionStorage.setItem('USER_ID', successCode.data[0]['UserData'][0].ID)
+              sessionStorage.setItem(
+                'userId',
+                this.commonFunction.encryptdata(
+                  successCode.data[0]['UserData'][0].ID
+                )
+              );
+              sessionStorage.setItem('token', successCode.data[0].token);
+              this.cookie.set(
+                'token',
+                successCode.data[0].token,
+                365,
+                '',
+                '',
+                false,
+                'Strict'
+              );
 
-            document
-              .querySelectorAll('.modal-backdrop')
-              .forEach((el) => el.remove());
-            // this.otpSent = true;
-            // this.showOtpModal = true;
-            // this.USER_ID = successCode.USER_ID;
-            this.USER_NAME = successCode.USER_NAME;
+              // this.modalservice.closeModal();
 
-            // this.remainingTime = 60;
-            // this.startTimer();
-            // this.toastr.success('OTP Sent Successfully...', '');
-            // this.modalVisible = false;
-            // this.openRegister = false;
-            // sessionStorage.setItem('USER_ID', successCode.data[0]['UserData'][0].ID)
-            sessionStorage.setItem(
-              'userId',
-              this.commonFunction.encryptdata(
-                successCode.data[0]['UserData'][0].ID
-              )
-            );
-            sessionStorage.setItem('token', successCode.data[0].token);
-            this.cookie.set(
-              'token',
-              successCode.data[0].token,
-              365,
-              '',
-              '',
-              false,
-              'Strict'
-            );
+              this.inputType = 'initial';
 
-            // this.modalservice.closeModal();
+              console.log(this.isLoggedIn, 'this.isLoggedIn');
+              this.toastr.success('You have login Successfully!', 'success');
+            } else if (successCode.code == '404') {
+              // form?.resetForm();
+              this.toastr.error(
+                'Account not found. Please register to continue.',
+                ''
+              );
+              this.isloginSendOTP = false;
+              // this.stopLoader();
+            } else if (successCode.code == '401') {
+              // form?.resetForm();
+              this.toastr.error('Incorrect username or password', '');
+              this.isloginSendOTP = false;
+              // this.stopLoader();
+            } else {
+              this.isloginSendOTP = false;
+              this.toastr.error('OTP Validation Failed...', '');
+              this.stopLoader();
+            }
+          },
+          error: (error) => {
+            if (error.status === 400) {
+            } else {
+              // this.toastr.error('Error sending OTP', '');
+            }
+            // this.isloginSendOTP = false;
 
-            this.inputType = 'initial';
-
-            console.log(this.isLoggedIn, 'this.isLoggedIn');
-            this.toastr.success('You have login Successfully!', 'success');
-          } else if (successCode.code == '400') {
-            // this.statusCode =
-            //   'The user is either not registered or has been deactivated.';
             // this.stopLoader();
-          } else {
-            this.isloginSendOTP = false;
-            this.toastr.error('OTP Validation Failed...', '');
-            this.stopLoader();
-          }
-        },
-        error: (error) => {
-          if (error.status === 400) {
-          } else {
-            // this.toastr.error('Error sending OTP', '');
-          }
-          // this.isloginSendOTP = false;
-
-          // this.stopLoader();
-        },
-      });
+          },
+        });
+    }
   }
 
   //by sanjana
@@ -975,6 +1037,8 @@ export class HeaderComponent {
     this.isMobileMenuOpen = false;
   }
   showLoginModal() {
+    this.mobileNumberorEmail = '';
+    this.data.PASSWORD = '';
     this.renderer.removeClass(document.body, 'modal-open');
     document.body.classList.remove('modal-open');
     // const loginModalEl = document.getElementById('loginmodal');
@@ -1273,13 +1337,13 @@ export class HeaderComponent {
         }
         // else if (
         //   successCode.body.code === 300 &&
-        //   successCode.body.message === 'mobile number already exists.'
+        //   successCode.body.toastr === 'mobile number already exists.'
         // ) {
         //   this.stopLoader();
         //   this.statusCode = 'mobile number already exists.';
         // } else if (
         //   successCode.body.code === 300 &&
-        //   successCode.body.message === 'email ID already exists.'
+        //   successCode.body.toastr === 'email ID already exists.'
         // ) {
         //   this.stopLoader();
         //   this.statusCode = 'email ID already exists.';
@@ -1313,7 +1377,7 @@ export class HeaderComponent {
   fileChangeEvent(event: any) {
     const file = event.target.files[0];
     const maxFileSize = 5 * 1024 * 1024; // 5MB limit
-    // this.message.success('File size should not exceed 5MB.','');
+    // this.toastr.success('File size should not exceed 5MB.','');
 
     if (!file) return;
 
@@ -1485,4 +1549,9 @@ export class HeaderComponent {
   }
   dataList: any = [];
   userId = sessionStorage.getItem('userId');
+  showPassword: boolean = false;
+
+  PasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
 }

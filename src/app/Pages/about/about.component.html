@@ -123,18 +123,28 @@
     </div>
   </div>
 </section>
+
 <!-- Founder Story Section -->
 <section
   class="py-20 bg-gray-50"
-  style="padding-top: 45px !important; padding-bottom: 20px !important"
+  style="padding-top: 35px !important; padding-bottom: 20px !important"
 >
-  <div class="max-w-6xl mx-auto px-6">
-    <div class="grid md:grid-cols-2 gap-12">
+  <div class="max-w-6xl mx-auto px-6 founder">
+    <div class="grid md:grid-cols-2 gap-12 f1">
+      <!-- LEFT CONTENT -->
       <div class="fade-in items-center">
-        <h2 class="playfair text-4xl font-bold text-gray-800 mb-4">
+        <h2 class="playfair text-4xl font-bold text-gray-800 mb-0">
           Story about the founder
+          <div class="w-16 h-1 bg-[#5a8f69] mb-8 mt-2"></div>
         </h2>
-        <div class="w-16 h-1 bg-[#5a8f69] mb-8"></div>
+
+        <!-- IMAGE will appear just below title on mobile -->
+        <div
+          class="founder-img founder-img-responsive rounded-lg shadow-lg bg-cover mt-6 mb-6 block md:hidden"
+          [style.backgroundImage]="'url(assets/img/founder.jfif)'"
+        ></div>
+
+        <!-- Paragraphs -->
         <p
           class="text-sm text-gray-600 leading-relaxed mb-6"
           style="text-align: justify !important"
@@ -147,7 +157,7 @@
           an imprint on Lakshmi’s heart.
         </p>
         <p
-          class="text-sm text-gray-600 leading-relaxed mb-6"
+          class="text-sm text-gray-600 leading-relaxed mb-6 md:mb-4"
           style="text-align: justify !important"
         >
           But as she grew older, her skin and hair began to reject the
@@ -158,7 +168,7 @@
           wouldn’t cause discomfort, but instead, nurtured and healed.
         </p>
         <p
-          class="text-sm text-gray-600 leading-relaxed mb-6"
+          class="text-sm text-gray-600 leading-relaxed mb-6 para"
           style="text-align: justify !important"
         >
           Her journey led her to cultivate a garden—a living sanctuary filled
@@ -171,17 +181,35 @@
           different corners of the world.
         </p>
       </div>
-      <div class="fade-in">
-        <!-- <div
-              class="founder-img h-96 md:h-[500px] rounded-lg shadow-lg"
-            ></div> -->
+
+      <!-- RIGHT IMAGE (desktop only) -->
+      <!-- <div class="fade-in sm:none md:block">
+        <div class="founder-img founder-img-responsive rounded-lg shadow-lg bg-cover mt-20 marginPH"
+          [style.backgroundImage]="'url(assets/img/founder.jfif)'"></div>
+      </div> -->
+      <div class="fade-in d-none d-md-block">
         <div
-          class="founder-img h-96 md:h-[500px] rounded-lg shadow-lg bg-cover mt-20 marginPH"
+          class="founder-img founder-img-responsive rounded-lg shadow-lg bg-cover mt-20 marginPH"
           [style.backgroundImage]="'url(assets/img/founder.jfif)'"
         ></div>
       </div>
     </div>
+
     <div class="grid flex">
+      <p
+        class="text-sm text-gray-600 leading-relaxed mb-6 para1"
+        style="text-align: justify !important"
+      >
+        Her journey led her to cultivate a garden—a living sanctuary filled with
+        wildflowers, roses, hibiscus, and fragrant botanicals. As the seasons
+        changed, so did her understanding of nature’s gifts. Each bloom carried
+        its own essence, its own secret potential, and Lakshmi learned to
+        harness their power in her skincare and haircare creations. Over time,
+        her recipes evolved, blending Ayurvedic traditions with ancient Western
+        herbal knowledge, weaving together wisdom from different corners of the
+        world.
+      </p>
+
       <p
         class="text-sm text-gray-600 leading-relaxed mb-6"
         style="text-align: justify !important"

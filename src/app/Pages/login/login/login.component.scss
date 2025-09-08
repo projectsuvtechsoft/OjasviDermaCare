@@ -4,6 +4,7 @@ select::placeholder {
   font-size: 13px;
   color: #999;
 }
+
 .modal {
   position: fixed;
   top: 0;
@@ -22,6 +23,7 @@ select::placeholder {
   border-radius: 5px;
   width: 450px;
 }
+
 ::ng-deep .custom-modal-container {
   background-color: white;
   padding: 20px;
@@ -170,6 +172,7 @@ select::placeholder {
   font-size: 14px;
   color: #888;
 }
+
 // Add these new styles to your login.component.scss file
 .otp-verification-container {
   padding: 24px;
@@ -554,6 +557,7 @@ select::placeholder {
 .country-list::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
 .unique-country-selector-wrapper {
   display: flex;
   align-items: center;
@@ -595,7 +599,8 @@ select::placeholder {
   }
 
   .unique-country-dropdown-container {
-    position: absolute; /* relative to parent */
+    position: absolute;
+    /* relative to parent */
     top: calc(100% + 5px);
     left: 0;
     z-index: 1000;
@@ -760,6 +765,7 @@ select::placeholder {
       font-weight: 500;
       color: #333;
     }
+
     &.text-muted {
       font-size: 14px;
       color: #666;
@@ -889,6 +895,7 @@ select::placeholder {
     margin-bottom: 24px;
     background: white;
     padding: 10px;
+
     .address-type-options {
       display: flex;
       gap: 12px;
@@ -994,6 +1001,7 @@ select::placeholder {
     }
   }
 }
+
 // Add these styles after your existing styles
 .pincode-field {
   position: relative;
@@ -1098,11 +1106,13 @@ select::placeholder {
     }
   }
 }
+
 .confirm-button-container {
   padding: 16px 20px;
   border-top: 1px solid #eee;
   background: white;
 }
+
 .confirm-button {
   width: 100%;
   padding: 14px;
@@ -1129,7 +1139,8 @@ select::placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: calc(100% - 1rem); /* Ensures vertical centering works */
+  min-height: calc(100% - 1rem);
+  /* Ensures vertical centering works */
 }
 
 ::ng-deep .modal-content {
@@ -1176,11 +1187,33 @@ select::placeholder {
   }
 }
 
+@media (max-width: 350px) {
+  .tabs {
+    font-size: 11px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .fw-bold {
+    color: rgb(90, 143, 105);
+    font-size: 15px !important;
+  }
+
+  .subtext {
+    font-size: 12px !important;
+  }
+
+  .login-text1 {
+    font-size: 18px !important;
+  }
+}
+
 :host ::ng-deep .custom-map-modal .modal-dialog {
   max-width: unset !important;
   margin-right: unset !important;
   margin-left: unset !important;
 }
+
 // .auth-wrapper {
 //   display: flex;
 //   justify-content: center;
@@ -1361,6 +1394,15 @@ select::placeholder {
     padding: 20px;
     max-width: 90%;
   }
+
+  .fw-bold {
+    color: rgb(90, 143, 105);
+    font-size: 14px !important;
+  }
+
+  .subtext {
+    font-size: 13px !important;
+  }
 }
 
 // Tablet View
@@ -1368,6 +1410,15 @@ select::placeholder {
   .auth-card {
     padding: 25px;
     max-width: 90%;
+  }
+
+  .fw-bold {
+    color: rgb(90, 143, 105);
+    font-size: 17px !important;
+  }
+
+  .subtext {
+    font-size: 14px !important;
   }
 }
 
@@ -1377,6 +1428,7 @@ select::placeholder {
     max-width: 380px;
   }
 }
+
 .auth-logos {
   display: flex;
   gap: 5px; // Add some small spacing between the images if needed
@@ -1389,9 +1441,11 @@ select::placeholder {
     object-fit: contain; // This keeps the image aspect ratio safe if necessary
   }
 }
+
 .logo-header {
   padding: 4px;
 }
+
 .user-location-container {
   display: flex;
   justify-content: center;
@@ -1599,12 +1653,14 @@ select::placeholder {
 ::ng-deep .form-control {
   font-size: 12px;
 }
+
 ::ng-deep .dropdown-item {
   font-size: 12px;
 }
 
 ::ng-deep .dropdown-container {
-  position: relative; /* Creates stacking context */
+  position: relative;
+  /* Creates stacking context */
 }
 
 ::ng-deep .unique-country-list {
@@ -1615,12 +1671,15 @@ select::placeholder {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid #ccc;
 }
+
 .finished-time {
   color: rgb(90, 143, 105);
 }
+
 .project-title {
   font-size: 1.5rem;
-  color: #1a73e8; /* Blue shade for a modern look */
+  color: #1a73e8;
+  /* Blue shade for a modern look */
   font-weight: 600;
   text-align: center;
   letter-spacing: 0px;
@@ -1631,6 +1690,7 @@ select::placeholder {
   font-size: 11px;
   font-weight: 500;
 }
+
 .password-wrapper {
   position: relative;
   display: flex;
@@ -1648,7 +1708,8 @@ select::placeholder {
   flex: 1;
   border-radius: 8px;
   outline: none;
-  height: 38px; /* Helps align vertically */
+  height: 35px;
+  /* Helps align vertically */
 }
 
 .password-wrapper i {
@@ -1656,6 +1717,7 @@ select::placeholder {
   color: #5a8f69;
   font-size: 11px;
 }
+
 .fa-solid,
 .fas {
   font-weight: 500 !important;

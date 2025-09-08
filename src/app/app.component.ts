@@ -29,7 +29,7 @@ export class AppComponent {
     this.loaderService.isLoading$.subscribe((loading) => {
       this.isLoading = loading;
     });
-   
+
   }
   needLogeIn: boolean = false;
   isLoading = false; // Loader starts by default
@@ -38,7 +38,7 @@ export class AppComponent {
   showHeader = true;
 
   hideFooter: boolean = false;
-   showPopup: boolean = false; 
+  showPopup: boolean = false;
 
   // The path to your image
   popupImageSrc: string = 'assets/img/New.jpg';
@@ -56,13 +56,25 @@ export class AppComponent {
         const currentUrl = event.urlAfterRedirects;
 
         const loginRoute = '/login';
+        const forgotpasswordroute = '/forgot-password'
+        const resetpassword = '/reset-password'
+        const routesToHide = [loginRoute, forgotpasswordroute, resetpassword];
         const exactHiddenRoutes1 = ['book-common-page'];
         const dynamicPattern =
           /^\/explore\/[^\/]+\/plays\/[^\/]+\/buy-tickets\/[^\/]+$/;
 
-        // Hide header & footer on /login
-        this.showHeader = currentUrl !== loginRoute;
-        this.showFooter = currentUrl !== loginRoute;
+        // // Hide header & footer on /login
+        // this.showHeader = currentUrl !== loginRoute;
+        // this.showFooter = currentUrl !== loginRoute;
+
+        // // Optional: hide footer on other specific/dynamic routes
+        // this.hideFooter = !(
+        //   exactHiddenRoutes1.includes(currentUrl) ||
+        //   dynamicPattern.test(currentUrl)
+        // );
+
+        this.showHeader = !routesToHide.includes(currentUrl);
+        this.showFooter = !routesToHide.includes(currentUrl);
 
         // Optional: hide footer on other specific/dynamic routes
         this.hideFooter = !(
@@ -87,7 +99,7 @@ export class AppComponent {
     this.showPopup = true;
   }
 
-    closePopup(): void {
+  closePopup(): void {
     this.showPopup = false;
   }
   openModal() {

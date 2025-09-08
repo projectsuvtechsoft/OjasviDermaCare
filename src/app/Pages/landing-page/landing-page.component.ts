@@ -439,9 +439,10 @@ export class LandingPageComponent {
     );
   }
 
-  updateResponsiveSettings() {
+  
+updateResponsiveSettings() {
     const width = window.innerWidth;
-
+ 
     if (width >= 1024) {
       this.visibleCards = 3;
     } else if (width >= 768) {
@@ -449,14 +450,14 @@ export class LandingPageComponent {
     } else {
       this.visibleCards = 1;
     }
-
-    this.showNavigation = this.ReviewData?.length > this.visibleCards;
+ 
+    this.showNavigation = (this.ReviewData?.length ?? 0) > this.visibleCards;
     const max = this.maxSlideIndex;
     if (this.currentSlide > max) {
       this.currentSlide = max;
     }
   }
-
+ 
   get maxSlideIndex(): number {
     if (!this.ReviewData?.length || this.visibleCards === 0) return 0;
     return Math.max(
@@ -464,13 +465,13 @@ export class LandingPageComponent {
       Math.ceil(this.ReviewData.length / this.visibleCards) - 1
     );
   }
-
+ 
   nextSlide() {
     if (this.currentSlide < this.maxSlideIndex) {
       this.currentSlide++;
     }
   }
-
+ 
   prevSlide() {
     if (this.currentSlide > 0) {
       this.currentSlide--;
@@ -501,4 +502,7 @@ export class LandingPageComponent {
     this.productService.setProduct(product);
     sessionStorage.setItem('selectedProduct', JSON.stringify(product));
   }
+
+
+  
 }

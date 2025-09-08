@@ -42,6 +42,12 @@ h4,
 }
 
 /* Logo Responsive Adjustments */
+@media (max-width: 450px) {
+  .login-text{
+    font-size:18px!important;
+  }
+}
+/* Logo Responsive Adjustments */
 @media (max-width: 639px) {
   .logo-text {
     display: none;
@@ -751,6 +757,7 @@ select:focus {
 
 .customeclass::placeholder {
   font-size: 12px !important;
+    color: #999;
 }
 
 ::ng-deep .sticky {
@@ -951,4 +958,38 @@ video {
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(5px);
   z-index: 1040;
+}
+
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding-right: 12px;
+}
+
+.password-wrapper input {
+  border: none;
+  padding: 10px;
+  font-size: 13px;
+  line-height: 20px;
+  flex: 1;
+  border-radius: 8px;
+  outline: none;
+  height: 29px;
+  font-size: 13px; /* Helps align vertically */
+}
+
+.password-wrapper i {
+  cursor: pointer;
+  color: #5a8f69;
+  font-size: 11px;
+}
+.fa-solid,
+.fas {
+  font-weight: 500 !important;
+}
+.modal-backdrop.show {
+  opacity: 0.1 !important; /* default is 0.5 */
 }

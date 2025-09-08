@@ -1,171 +1,110 @@
-<div
-  *ngIf="modalVisible"
-  class="min-h-screen bg-[url('https://readdy.ai/api/search-image?query=soft%20and%20elegant%20pattern%20of%20delicate%20ayurvedic%20herbs%20and%20leaves%20in%20very%20light%20sage%20green%20color%20on%20white%20background%2C%20minimal%20and%20modern%20design%2C%20subtle%20botanical%20illustration%2C%20professional%20and%20sophisticated&width=1920&height=1080&seq=1&orientation=landscape')] bg-cover bg-fixed"
->
+<div *ngIf="modalVisible"
+  class="min-h-screen bg-[url('https://readdy.ai/api/search-image?query=soft%20and%20elegant%20pattern%20of%20delicate%20ayurvedic%20herbs%20and%20leaves%20in%20very%20light%20sage%20green%20color%20on%20white%20background%2C%20minimal%20and%20modern%20design%2C%20subtle%20botanical%20illustration%2C%20professional%20and%20sophisticated&width=1920&height=1080&seq=1&orientation=landscape')] bg-cover bg-fixed">
   <!-- <div><i class="bi bi-arrow-left-circle ms-3 pt-3" (click)="back()"></i>Back</div> -->
-  <div
-    class="min-vh-100 d-flex justify-content-center align-items-center"
-    style="background: transparent"
-    *ngIf="modalVisible"
-  >
-    <div class="auth-wrapper w-100" style="max-width: 380px">
+  <div class="min-vh-100 d-flex justify-content-center align-items-center" style="background: transparent"
+    *ngIf="modalVisible">
+    <div class="auth-wrapper w-100" style="max-width: 380px;">
       <div
-        class="auth-card frosted-glass shadow-sm p-4 rounded-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-8 relative overflow-hidden"
-      >
-        <div
-          class="d-flex align-items-center justify-content-center mb-3"
-          style="gap: 12px"
-        >
-          <img
-            src="assets/img/logo1.png"
-            alt="Logo"
-            class="img-fluid"
-            style="height: 60px; width: 60px; min-width: 45px; margin-top: 8px"
-          />
-          <div
-            class="d-flex flex-column justify-content-center"
-            style="margin-left: -10px !important"
-          >
-            <div
-              class="fw-bold"
-              style="
+        class="auth-card frosted-glass shadow-sm p-4 rounded-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-8 relative overflow-hidden">
+        <div class="d-flex align-items-center justify-content-center mb-3" style="gap: 12px">
+          <img src="assets/img/logo1.png" alt="Logo" class="img-fluid"
+            style="height: 60px; width: 60px; min-width: 45px; margin-top: 8px" />
+          <div class="d-flex flex-column justify-content-center" style="margin-left: -10px !important">
+            <div class="fw-bold" style="
                 font-size: 28px;
                 color: rgb(90, 143, 105);
                 text-align: left;
                 line-height: 1.5;
                 cursor: pointer;
-              "
-              (click)="goBack()"
-            >
+              " (click)="goBack()">
               Ojasvi Derma Care
             </div>
-            <div
-              style="
+            <div class="subtext" style="
                 font-family: 'Pacifico', sans-serif;
-                font-size: 15px;
                 color: #ffc200;
                 line-height: 1;
                 text-align: left;
-              "
-            >
+              ">
               From Garden To Glow
             </div>
           </div>
         </div>
         <div class="logo-header text-center">
           <!-- <h2 class="welcome-text">Welcome to PockIT!</h2> -->
-          <h3
-            class="login-text"
-            style="
+          <h3 class="login-text1" style="
               margin-bottom: 0px;
               font-family: 'Poppins', sans-serif;
               font-weight: 600;
               font-size: 22px;
               color: rgb(90 143 105);
               text-align: center;
-            "
-          >
+            ">
             Login
           </h3>
         </div>
-        <form
-          id="loginForm"
-          class="auth-form"
-          #loginSubmit="ngForm"
-          (ngSubmit)="loginotpverification(loginSubmit)"
-        >
+        <form id="loginForm" class="auth-form" #loginSubmit="ngForm" (ngSubmit)="loginotpverification(loginSubmit)">
           <div style="color: red; margin-bottom: 15px">{{ statusCode }}</div>
           <div class="form-group mb-3">
             <label *ngIf="mobileNumberorEmail" style="text-align: left">{{
               inputType === "initial"
-                ? "Email or Mobile Number"
-                : inputType === "mobile"
-                ? "Mobile Number"
-                : "Email"
-            }}</label>
+              ? "Email or Mobile Number"
+              : inputType === "mobile"
+              ? "Mobile Number"
+              : "Email"
+              }}</label>
             <div class="input-field">
               <div class="unique-country-selector-wrapper">
-                <div
-                  *ngIf="inputType === 'mobile'"
-                  class="unique-country-code-selector"
-                  (click)="toggleCountryDropdown(); $event.stopPropagation()"
-                >
+                <div *ngIf="inputType === 'mobile'" class="unique-country-code-selector"
+                  (click)="toggleCountryDropdown(); $event.stopPropagation()">
                   <span>{{ selectedCountryCode }}</span>
                   <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
                     <path d="M1 1L5 5L9 1" stroke="#666" stroke-width="1.5" />
                   </svg>
-                  <div
-                    class="unique-country-dropdown-container"
-                    *ngIf="showCountryDropdown && inputType === 'mobile'"
-                  >
+                  <div class="unique-country-dropdown-container" *ngIf="showCountryDropdown && inputType === 'mobile'">
                     <div class="unique-country-dropdown">
                       <div class="unique-search-box">
-                        <input
-                          type="text"
-                          placeholder="Search country..."
-                          [(ngModel)]="searchQuery"
-                          (input)="filterCountries($event)"
-                          (click)="$event.stopPropagation()"
-                          autocomplete="off"
-                        />
+                        <input type="text" placeholder="Search country..." [(ngModel)]="searchQuery"
+                          (input)="filterCountries($event)" (click)="$event.stopPropagation()" autocomplete="off"
+                          #searchCountry="ngModel" name="searchCountry" />
                       </div>
                       <div class="unique-country-list">
-                        <div
-                          class="unique-country-item"
-                          *ngFor="let country of filteredCountryCodes"
-                          (click)="
+                        <div class="unique-country-item" *ngFor="let country of filteredCountryCodes" (click)="
                             selectCountry(country); $event.stopPropagation()
-                          "
-                        >
+                          ">
                           {{ country.label }}
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <input
-                  [type]="inputType === 'email' ? 'email' : 'text'"
-                  class="form-control"
-                  placeholder="{{ getPlaceholder() }}"
-                  [(ngModel)]="mobileNumberorEmail"
-                  name="identifier"
-                  #identifier="ngModel"
-                  (input)="onIdentifierInput($event)"
-                  [pattern]="
+                <input [type]="inputType === 'email' ? 'email' : 'text'" class="form-control"
+                  placeholder="{{ getPlaceholder() }}" [(ngModel)]="mobileNumberorEmail" name="identifier"
+                  #identifier="ngModel" (input)="onIdentifierInput($event)" [pattern]="
                     inputType === 'mobile'
                       ? commonFunction.mobpattern
                       : inputType === 'email'
                       ? emailPattern
                       : ''
-                  "
-                  [maxlength]="inputType === 'mobile' ? 10 : 128"
-                  [minlength]="inputType === 'mobile' ? 10 : null"
+                  " [maxlength]="inputType === 'mobile' ? 10 : 128" [minlength]="inputType === 'mobile' ? 10 : null"
                   (keypress)="
                     inputType === 'mobile'
                       ? commonFunction.onlynum($event)
                       : null
-                  "
-                  autocomplete="off"
-                  required
-                />
+                  " autocomplete="off" required />
               </div>
-              <div
-                *ngIf="identifier.errors?.['required'] && (identifier.touched || loginSubmitted)"
-                class="error-message"
-              >
+              <div *ngIf="identifier.errors?.['required'] && (identifier.touched || loginSubmitted)"
+                class="error-message">
                 Please enter
                 {{
-                  inputType === "email"
-                    ? "your email address"
-                    : inputType === "mobile"
-                    ? "your mobile number"
-                    : "email or mobile number"
+                inputType === "email"
+                ? "your email address"
+                : inputType === "mobile"
+                ? "your mobile number"
+                : "email or mobile number"
                 }}.
               </div>
-              <div
-                *ngIf="identifier.errors?.['pattern'] && (identifier.touched || loginSubmitted)"
-                class="error-message"
-              >
+              <div *ngIf="identifier.errors?.['pattern'] && (identifier.touched || loginSubmitted)"
+                class="error-message">
                 Please enter a valid
                 {{ inputType === "email" ? "email address" : "mobile number" }}.
               </div>
@@ -201,34 +140,19 @@
           <div class="form-field" style="margin-top: 12px">
             <!-- Confirm Password -->
             <div style="font-size: 0.875em; text-align: left">
-              <label *ngIf="data.PASSWORD" style="text-align: left"
-                >Password</label
-              >
+              <label *ngIf="data.PASSWORD" style="text-align: left">Password</label>
             </div>
 
             <div class="password-wrapper">
-              <input
-                [type]="showLoginPassword ? 'text' : 'password'"
-                placeholder="Enter Password"
-                name="LoginPassword"
-                [(ngModel)]="data.PASSWORD"
-                #LoginPassword="ngModel"
-                maxlength="128"
-                autocomplete="off"
-                required
-                style="border: none"
-              />
-              <i
-                class="fas"
-                [ngClass]="showLoginPassword ? 'fa-eye-slash' : 'fa-eye'"
-                (click)="toggleLoginPasswordVisibility()"
-              ></i>
+              <input [type]="showLoginPassword ? 'text' : 'password'" placeholder="Enter Password" name="LoginPassword"
+                [(ngModel)]="data.PASSWORD" #LoginPassword="ngModel" maxlength="128" autocomplete="off" required
+                style="border: none" />
+              <i class="fas" [ngClass]="showLoginPassword ? 'fa-eye-slash' : 'fa-eye'"
+                (click)="toggleLoginPasswordVisibility()"></i>
             </div>
           </div>
-          <div
-            *ngIf="(LoginPassword.errors?.['required'] && (LoginPassword.touched || registrationSubmitted))"
-            class="error-message"
-          >
+          <div *ngIf="(LoginPassword.errors?.['required'] && (LoginPassword.touched || registrationSubmitted))"
+            class="error-message">
             Please enter password.
           </div>
 
@@ -237,45 +161,29 @@
           <!-- </div> -->
 
           <div class="flex justify-center">
-            <button
-              class="text-center mb-2 hover:text-[rgb(90,143,105)]"
-              style="font-size: 13px"
-              (click)="forgotpassModal()"
-            >
+            <!-- adding margin top -->
+            <button class="text-center mt-1 mb-2 hover:text-[rgb(90,143,105)] tabs" style="font-size: 13px;"
+              (click)="forgotpassModal()">
               Forgot Password
             </button>
             <span>&nbsp;|&nbsp;</span>
-            <button
-              class="text-center mb-2 hover:text-[rgb(90,143,105)]"
-              style="font-size: 13px"
-              (click)="goBack()"
-            >
+            <!-- adding margin top -->
+            <button class="text-center mt-1 mb-2 hover:text-[rgb(90,143,105)] tabs" style="font-size: 13px"
+              (click)="goBack()">
               Continue as a guest
             </button>
           </div>
 
-          <button
-            type="submit"
-            style="background-color: rgb(90, 143, 105); z-index: unset"
-            class="btn btn-primary btn-block w-100 mb-2"
-            [disabled]="isloginSendOTP"
-          >
-            <span
-              *ngIf="isloginSendOTP"
-              class="spinner-border spinner-border-sm me-2"
-              role="status"
-              aria-hidden="true"
-            ></span>
+          <button type="submit" style="background-color: rgb(90, 143, 105); z-index: unset"
+            class="btn btn-primary btn-block w-100 mb-2" [disabled]="isloginSendOTP">
+            <span *ngIf="isloginSendOTP" class="spinner-border spinner-border-sm me-2" role="status"
+              aria-hidden="true"></span>
             {{ isloginSendOTP ? "Login" : "Login" }}
           </button>
           <div class="auth-links text-center">
             <p class="mb-1">
               Don't have an account?
-              <a
-                (click)="showRegisterModal()"
-                style="color: rgb(90, 143, 105); font-weight: 500"
-                >Register</a
-              >
+              <a (click)="showRegisterModal()" style="color: rgb(90, 143, 105); font-weight: 500">Register</a>
             </p>
             <!-- <p style="margin-top: 10px; position: relative">
               <a (click)="onshowMap()">Continue as a guest</a>
@@ -289,93 +197,55 @@
 
 <!-- Forgot Password -->
 
-<div
-  class="min-vh-100 d-flex justify-content-center align-items-center"
-  id="forgotpassModal"
-  style="background: transparent"
-  *ngIf="forgotpass"
->
+<div class="min-vh-100 d-flex justify-content-center align-items-center " id="forgotpassModal"
+  style="background: transparent" *ngIf="forgotpass1">
   <div class="auth-wrapper w-100" style="max-width: 380px">
     <div
-      class="auth-card frosted-glass shadow-sm p-4 rounded-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-8 relative overflow-hidden"
-    >
-      <div
-        class="d-flex align-items-center justify-content-center mb-3"
-        style="gap: 12px"
-      >
-        <img
-          src="assets/img/logo1.png"
-          alt="Logo"
-          class="img-fluid"
-          style="height: 60px; width: 60px; min-width: 45px; margin-top: 8px"
-        />
-        <div
-          class="d-flex flex-column justify-content-center"
-          style="margin-left: -10px !important"
-        >
-          <div
-            class="fw-bold"
-            style="
+      class="auth-card frosted-glass shadow-sm p-4 rounded-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-8 relative overflow-hidden">
+      <div class="d-flex align-items-center justify-content-center mb-3" style="gap: 12px">
+        <img src="assets/img/logo1.png" alt="Logo" class="img-fluid"
+          style="height: 60px; width: 60px; min-width: 45px; margin-top: 8px" />
+        <div class="d-flex flex-column justify-content-center" style="margin-left: -10px !important">
+          <div class="fw-bold" style="
               font-size: 28px;
               color: rgb(90, 143, 105);
               text-align: left;
               line-height: 1.5;
-            "
-          >
+            ">
             Ojasvi Derma Care
           </div>
-          <div
-            style="
+          <div class="subtext" style="
               font-family: 'Pacifico', sans-serif;
-              font-size: 15px;
               color: #ffc200;
               line-height: 1;
               text-align: left;
-            "
-          >
+            ">
             From Garden To Glow
           </div>
         </div>
       </div>
       <div class="logo-header text-center">
-        <!-- <h2 class="welcome-text">Welcome to PockIT!</h2> -->
-        <h3
-          class="login-text"
-          style="
+        <h3 class="login-text" style="
             margin-bottom: 0px;
             font-family: 'Poppins', sans-serif;
             font-weight: 600;
             font-size: 22px;
             color: rgb(90 143 105);
             text-align: center;
-          "
-        >
+          ">
           Reset Password
         </h3>
       </div>
-      <!-- (ngSubmit)="forgotpassModal(forgotpass)" -->
       <form id="forgotpass" class="auth-form" #forgotpass="ngForm">
-        <!-- <div style="color: red; margin-bottom: 15px">{{ statusCode }}</div> -->
 
         <div class="form-group mb-3">
           <label *ngIf="data.PASSWORD" style="text-align: left">Password</label>
           <div class="input-field">
-            <input
-              type="password"
-              placeholder="Enter Password"
-              required
-              name="password"
-              [(ngModel)]="data.PASSWORD"
-              #password="ngModel"
-              autocomplete="off"
-              maxlength="128"
-              class="form-control"
-            />
+            <input type="password" placeholder="Enter Password" required name="password" [(ngModel)]="data.PASSWORD"
+              #password="ngModel" autocomplete="off" maxlength="128" class="form-control" />
 
-            <div
-              *ngIf="(password.errors?.['required'] && (password.touched || registrationSubmitted))"
-              class="error-message"
-            >
+            <div *ngIf="(password.errors?.['required'] && (password.touched || registrationSubmitted))"
+              class="error-message">
               Please enter password.
             </div>
           </div>
@@ -383,47 +253,23 @@
 
         <div class="form-group mb-3">
           <label *ngIf="newPass" style="text-align: left">
-            Confirm Password</label
-          >
+            Confirm Password</label>
           <div class="input-field">
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              required
-              name="newpass"
-              [(ngModel)]="newPass"
-              #newpass="ngModel"
-              autocomplete="off"
-              maxlength="128"
-              class="form-control"
-            />
+            <input type="password" placeholder="Confirm Password" required name="newpass" [(ngModel)]="newPass"
+              #newpass="ngModel" autocomplete="off" maxlength="128" class="form-control" />
 
-            <div
-              *ngIf="(newpass.errors?.['required'] && (newpass.touched || registrationSubmitted))"
-              class="error-message"
-            >
+            <div *ngIf="(newpass.errors?.['required'] && (newpass.touched || registrationSubmitted))"
+              class="error-message">
               Please confirm password.
             </div>
           </div>
         </div>
 
-        <button
-          type="submit"
-          style="background-color: rgb(90, 143, 105); z-index: unset"
-          class="btn btn-primary btn-block w-100 mb-2"
-        >
+        <button type="submit" style="background-color: rgb(90, 143, 105); z-index: unset"
+          class="btn btn-primary btn-block w-100 mb-2">
           {{ "Reset Password" }}
-          <!-- {{ isloginSendOTP ? "Sending OTP..." : "Login" }} -->
         </button>
-        <!-- <div class="auth-links text-center">
-            <p class="mb-1">
-              Don't have an account?
-              <a (click)="showRegisterModal()" style="color: rgb(90, 143, 105); font-weight: 500">Register</a>
-            </p>
-            <p style="margin-top: 10px; position: relative">
-              <a (click)="onshowMap()">Continue as a guest</a>
-            </p>
-          </div> -->
+
       </form>
     </div>
   </div>
@@ -432,95 +278,55 @@
 <div class="auth-card-container" *ngIf="openRegister">
   <div
     class="min-h-screen bg-[url('https://readdy.ai/api/search-image?query=soft%20and%20elegant%20pattern%20of%20delicate%20ayurvedic%20herbs%20and%20leaves%20in%20very%20light%20sage%20green%20color%20on%20white%20background%2C%20minimal%20and%20modern%20design%2C%20subtle%20botanical%20illustration%2C%20professional%20and%20sophisticated&width=1920&height=1080&seq=1&orientation=landscape')] bg-cover bg-fixed d-flex justify-content-center align-items-center"
-    style="min-height: 100vh"
-  >
+    style="min-height: 100vh">
     <div class="auth-wrapper w-100" style="max-width: 380px">
       <div
-        class="auth-card frosted-glass shadow-sm p-4 rounded-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-8 relative overflow-hidden"
-      >
-        <div
-          class="d-flex align-items-center justify-content-center mb-3"
-          style="gap: 12px"
-        >
-          <img
-            src="assets/img/logo1.png"
-            alt="Logo"
-            class="img-fluid"
-            style="height: 60px; width: 60px; min-width: 45px; margin-top: 8px"
-          />
-          <div
-            class="d-flex flex-column justify-content-center"
-            style="margin-left: -10px !important"
-          >
-            <div
-              class="fw-bold"
-              style="
+        class="auth-card frosted-glass shadow-sm p-4 rounded-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-8 relative overflow-hidden">
+        <div class="d-flex align-items-center justify-content-center mb-3" style="gap: 12px">
+          <img src="assets/img/logo1.png" alt="Logo" class="img-fluid"
+            style="height: 60px; width: 60px; min-width: 45px; margin-top: 8px" />
+          <div class="d-flex flex-column justify-content-center" style="margin-left: -10px !important">
+            <div class="fw-bold" style="
                 font-size: 28px;
                 color: rgb(90, 143, 105);
                 text-align: left;
                 line-height: 1.5;
-              "
-            >
+              ">
               Ojasvi Derma Care
             </div>
-            <div
-              style="
+            <div class="subtext" style="
                 font-family: 'Pacifico', sans-serif;
-                font-size: 15px;
                 color: #ffc200;
                 line-height: 1;
                 text-align: left;
-              "
-            >
+              ">
               From Garden To Glow
             </div>
           </div>
         </div>
         <div style="padding: 10px">
           <!-- <h2 class="welcome-text">Welcome to PockIT!</h2> -->
-          <h3
-            class="login-text"
-            style="
+          <h3 class="login-text1" style="
               margin-bottom: 0px;
               margin-bottom: 0px;
+              font-size:22px;
               font-family: 'Poppins', sans-serif;
               font-weight: 600;
-              font-size: 22px;
               color: rgb(90 143 105);
               text-align: center;
-            "
-          >
+            ">
             Register
           </h3>
         </div>
         <div style="color: red; margin-bottom: 15px; text-align: center">
           {{ statusCode }}
         </div>
-        <form
-          class="register-form"
-          #registrationForm="ngForm"
-          (ngSubmit)="save(registrationForm)"
-        >
+        <form class="register-form" #registrationForm="ngForm" (ngSubmit)="save(registrationForm)">
           <div class="form-field">
-            <label *ngIf="data.CUSTOMER_NAME" style="text-align: left"
-              >Name</label
-            >
-            <input
-              type="text"
-              placeholder="Enter Full Name"
-              required
-              (keypress)="alphaOnly($event)"
-              name="name"
-              [(ngModel)]="data.CUSTOMER_NAME"
-              #name="ngModel"
-              minlength="2"
-              maxlength="128"
-              autocomplete="off"
-            />
-            <div
-              *ngIf="(name.errors?.['required'] && (name.touched || registrationSubmitted))"
-              class="error-message"
-            >
+            <label *ngIf="data.CUSTOMER_NAME" style="text-align: left">Name</label>
+            <input type="text" placeholder="Enter Full Name" required (keypress)="alphaOnly($event)" name="name"
+              [(ngModel)]="data.CUSTOMER_NAME" #name="ngModel" minlength="2" maxlength="128" autocomplete="off" />
+            <div *ngIf="(name.errors?.['required'] && (name.touched || registrationSubmitted))" class="error-message">
               Please enter your name.
             </div>
           </div>
@@ -589,151 +395,99 @@
             </div>
           </div> -->
 
+
           <div class="form-field mb-3">
             <label *ngIf="mobileNumberorEmail" style="text-align: left">{{
               inputType === "initial"
-                ? "Email or Mobile Number"
-                : inputType === "mobile"
-                ? "Mobile Number"
-                : "Email"
-            }}</label>
+              ? "Email or Mobile Number"
+              : inputType === "mobile"
+              ? "Mobile Number"
+              : "Email"
+              }}</label>
             <div class="input-field">
               <div class="unique-country-selector-wrapper">
-                <div
-                  *ngIf="inputType === 'mobile'"
-                  class="unique-country-code-selector"
-                  (click)="toggleCountryDropdown(); $event.stopPropagation()"
-                >
+                <div *ngIf="inputType === 'mobile'" class="unique-country-code-selector"
+                  (click)="toggleCountryDropdown(); $event.stopPropagation()">
                   <span>{{ selectedCountryCode }}</span>
                   <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
                     <path d="M1 1L5 5L9 1" stroke="#666" stroke-width="1.5" />
                   </svg>
-                  <div
-                    class="unique-country-dropdown-container"
-                    *ngIf="showCountryDropdown && inputType === 'mobile'"
-                  >
+                  <div class="unique-country-dropdown-container" *ngIf="showCountryDropdown && inputType === 'mobile'">
                     <div class="unique-country-dropdown">
                       <div class="unique-search-box">
-                        <input
-                          type="text"
-                          placeholder="Search country..."
-                          [(ngModel)]="searchQuery"
-                          (input)="filterCountries($event)"
-                          (click)="$event.stopPropagation()"
-                          autocomplete="off"
-                        />
+                        <input type="text" placeholder="Search country..." [(ngModel)]="searchQuery"
+                          (input)="filterCountries($event)" (click)="$event.stopPropagation()" autocomplete="off"
+                          #searchCountry="ngModel" name="searchCountry" />
                       </div>
                       <div class="unique-country-list">
-                        <div
-                          class="unique-country-item"
-                          *ngFor="let country of filteredCountryCodes"
-                          (click)="
+                        <div class="unique-country-item" *ngFor="let country of filteredCountryCodes" (click)="
                             selectCountry(country); $event.stopPropagation()
-                          "
-                        >
+                          ">
                           {{ country.label }}
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <input
-                  [type]="inputType === 'email' ? 'email' : 'text'"
-                  class="form-control"
-                  placeholder="{{ getPlaceholder() }}"
-                  [(ngModel)]="mobileNumberorEmail"
-                  name="identifier"
-                  #identifier="ngModel"
-                  (input)="onIdentifierInput($event)"
-                  [pattern]="
+                <input [type]="inputType === 'email' ? 'email' : 'text'" class="form-control"
+                  placeholder="{{ getPlaceholder() }}" [(ngModel)]="mobileNumberorEmail" name="identifier"
+                  #identifier="ngModel" (input)="onIdentifierInput($event)" [pattern]="
                     inputType === 'mobile'
                       ? commonFunction.mobpattern
                       : inputType === 'email'
                       ? emailPattern
                       : ''
-                  "
-                  [maxlength]="inputType === 'mobile' ? 10 : 128"
-                  [minlength]="inputType === 'mobile' ? 10 : null"
+                  " [maxlength]="inputType === 'mobile' ? 10 : 128" [minlength]="inputType === 'mobile' ? 10 : null"
                   (keypress)="
                     inputType === 'mobile'
                       ? commonFunction.onlynum($event)
                       : null
-                  "
-                  autocomplete="off"
-                  required
-                />
+                  " autocomplete="off" required />
               </div>
-              <div
-                *ngIf="identifier.errors?.['required'] && (identifier.touched || loginSubmitted)"
-                class="error-message"
-              >
+              <div *ngIf="identifier.errors?.['required'] && (identifier.touched || loginSubmitted)"
+                class="error-message">
                 Please enter
                 {{
-                  inputType === "email"
-                    ? "your email address"
-                    : inputType === "mobile"
-                    ? "your mobile number"
-                    : "email or mobile number"
+                inputType === "email"
+                ? "your email address"
+                : inputType === "mobile"
+                ? "your mobile number"
+                : "email or mobile number"
                 }}.
               </div>
-              <div
-                *ngIf="identifier.errors?.['pattern'] && (identifier.touched || loginSubmitted)"
-                class="error-message"
-              >
+              <div *ngIf="identifier.errors?.['pattern'] && (identifier.touched || loginSubmitted)"
+                class="error-message">
                 Please enter a valid
                 {{ inputType === "email" ? "email address" : "mobile number" }}.
               </div>
             </div>
           </div>
+
+
           <div class="form-field">
-            <!-- <label>Password</label> -->
+            <label *ngIf="pass" style="text-align: left">Password</label>
             <div class="password-wrapper">
-              <input
-                [type]="showPassword ? 'text' : 'password'"
-                placeholder="Enter Password"
-                name="password"
-                [(ngModel)]="pass"
-                #password="ngModel"
-                maxlength="128"
-                autocomplete="off"
-                required
-                style="border: none"
-              />
-              <i
-                class="fas"
-                [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
-                (click)="PasswordVisibility()"
-              ></i>
+              <input [type]="showPassword ? 'text' : 'password'" placeholder="Enter Password" name="password"
+                [(ngModel)]="pass" #password="ngModel" maxlength="128" autocomplete="off" required
+                style="border: none" />
+              <i class="fas" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'" (click)="PasswordVisibility()"></i>
             </div>
           </div>
 
           <div class="form-field" style="margin-top: 12px">
             <!-- Confirm Password -->
+            <label *ngIf="confirmPass" style="text-align: left">Confirm Password</label>
             <div class="password-wrapper">
-              <input
-                [type]="showConfirmPassword ? 'text' : 'password'"
-                placeholder="Confirm Password"
-                name="confirmPassword"
-                [(ngModel)]="confirmPass"
-                #confirmPassword="ngModel"
-                maxlength="128"
-                autocomplete="off"
-                required
-                style="border: none"
-              />
-              <i
-                class="fas"
-                [ngClass]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"
-                (click)="toggleConfirmPasswordVisibility()"
-              ></i>
+              <input [type]="showConfirmPassword ? 'text' : 'password'" placeholder="Confirm Password"
+                name="confirmPassword" [(ngModel)]="confirmPass" #confirmPassword="ngModel" maxlength="128"
+                autocomplete="off" required style="border: none" />
+              <i class="fas" [ngClass]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"
+                (click)="toggleConfirmPasswordVisibility()"></i>
             </div>
           </div>
 
           <button type="submit" class="register-button">
-            <span
-              *ngIf="issignUpLoading"
-              class="spinner-border spinner-border-sm me-2"
-            ></span>
+            <span *ngIf="issignUpLoading" class="spinner-border spinner-border-sm me-2"></span>
             {{ issignUpLoading ? "Sending OTP..." : "Register" }}
           </button>
 
@@ -749,47 +503,29 @@
 <div class="auth-card-container" *ngIf="openVerify">
   <div
     class="min-h-screen bg-[url('https://readdy.ai/api/search-image?query=soft%20and%20elegant%20pattern%20of%20delicate%20ayurvedic%20herbs%20and%20leaves%20in%20very%20light%20sage%20green%20color%20on%20white%20background%2C%20minimal%20and%20modern%20design%2C%20subtle%20botanical%20illustration%2C%20professional%20and%20sophisticated&width=1920&height=1080&seq=1&orientation=landscape')] bg-cover bg-fixed d-flex justify-content-center align-items-center"
-    style="min-height: 100vh"
-  >
+    style="min-height: 100vh">
     <div class="auth-wrapper">
       <div
         class="auth-card frosted-glass shadow-sm p-4 rounded-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-8 relative overflow-hidden"
-        style="width: 380px !important"
-      >
-        <div
-          class="d-flex align-items-center justify-content-center mb-3"
-          style="gap: 12px"
-        >
-          <img
-            src="assets/img/logo1.png"
-            alt="Logo"
-            class="img-fluid"
-            style="height: 60px; width: 60px; min-width: 45px; margin-top: 8px"
-          />
-          <div
-            class="d-flex flex-column justify-content-center"
-            style="margin-left: -10px !important"
-          >
-            <div
-              class="fw-bold"
-              style="
+        style="width: 380px !important">
+        <div class="d-flex align-items-center justify-content-center mb-3" style="gap: 12px">
+          <img src="assets/img/logo1.png" alt="Logo" class="img-fluid"
+            style="height: 60px; width: 60px; min-width: 45px; margin-top: 8px" />
+          <div class="d-flex flex-column justify-content-center" style="margin-left: -10px !important">
+            <div class="fw-bold" style="
                 font-size: 28px;
                 color: rgb(90, 143, 105);
                 text-align: left;
                 line-height: 1.5;
-              "
-            >
+              ">
               Ojasvi Derma care
             </div>
-            <div
-              style="
+            <div class="subtext" style="
                 font-family: 'Pacifico', sans-serif;
-                font-size: 15px;
                 color: #ffc200;
                 line-height: 1;
                 text-align: left;
-              "
-            >
+              ">
               From Garden To Glow
             </div>
           </div>
@@ -800,9 +536,7 @@
           <p class="verification-text">
             We've sent a 4-digit verification code to<br />
             <span class="phone-number">{{ mobileNumberorEmail }} </span>
-            &nbsp;<span (click)="openLoginModal()"
-              ><i class="bi bi-pencil-square"></i
-            ></span>
+            &nbsp;<span (click)="openRegistarModal()"><i class="bi bi-pencil-square"></i></span>
           </p>
 
           <div style="color: red; margin-bottom: 15px" *ngIf="statusCode != ''">
@@ -811,52 +545,30 @@
 
           <form (ngSubmit)="VerifyOTP()" class="otp-form">
             <div class="otp-input-group">
-              <input
-                *ngFor="let i of [0, 1, 2, 3]"
-                class="otp-input"
-                type="text"
-                [(ngModel)]="otp[i]"
-                [name]="'otp-' + i"
-                maxlength="1"
-                (keydown)="moveToNext($event, i)"
-                (keypress)="allowOnlyNumbers($event)"
-                (ngModelChange)="onChange($event, i)"
-                (paste)="handlePaste($event)"
-                required
-                autocomplete="off"
-              />
+              <input *ngFor="let i of [0, 1, 2, 3]" class="otp-input" type="text" [(ngModel)]="otp[i]"
+                [name]="'otp-' + i" maxlength="1" (keydown)="moveToNext($event, i)"
+                (keypress)="allowOnlyNumbers($event)" (ngModelChange)="onChange($event, i)"
+                (paste)="handlePaste($event)" required autocomplete="off" />
             </div>
 
             <div class="timer-section">
               <span *ngIf="remainingTime > 0">{{ remainingTime }}</span>
               <p class="resend-text" style="color: #636363">
-                Didn’t Receive the Code?
-                <a
-                  (click)="remainingTime == 0 ? resendOtp() : ''"
-                  [ngStyle]="{
+                Didn’t receive the code?
+                <a (click)="remainingTime == 0 ? resendOtp() : ''" [ngStyle]="{
                     cursor: remainingTime > 0 ? 'wait' : 'pointer',
                     color:
                       remainingTime > 0
                         ? '#636363 !important'
                         : 'rgb(90, 143, 105) !important'
-                  }"
-                  [class.disabled]="remainingTime > 0"
-                  [ngClass]="{ 'finished-time': remainingTime <= 0 }"
-                >
+                  }" [class.disabled]="remainingTime > 0" [ngClass]="{ 'finished-time': remainingTime <= 0 }">
                   <span> Resend </span>
                 </a>
               </p>
             </div>
 
-            <button
-              type="submit"
-              class="verify-button"
-              [disabled]="isverifyOTP"
-            >
-              <span
-                *ngIf="isverifyOTP"
-                class="spinner-border spinner-border-sm me-2"
-              ></span>
+            <button type="submit" class="verify-button" [disabled]="isverifyOTP">
+              <span *ngIf="isverifyOTP" class="spinner-border spinner-border-sm me-2"></span>
               Verify
             </button>
           </form>

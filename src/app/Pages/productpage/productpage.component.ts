@@ -34,7 +34,7 @@ export class ProductpageComponent {
     private cartService: CartService,
     private toastr: ToastrService,
     private productService: ProductDataService,
-     private vps: ViewportScroller,
+    private vps: ViewportScroller
   ) {}
   selectedPrice: any;
   totalPrice: any;
@@ -49,7 +49,12 @@ export class ProductpageComponent {
     this.varientId = Number(this.route.snapshot.paramMap.get('variantId'));
     // this.scrollToSection('top')
     this.getcustomerProductReviews();
-    this.forceTop()
+    this.forceTop();
+    this.updateResponsiveSettings();
+    if (this.userID != null && this.userID != undefined && this.userID != '') {
+      this.getViewDetails();
+    }
+    this.getFAQDetails();
     // this.getProductData();
     // this.router.events.subscribe((event) => {
     //   console.log(event);
@@ -73,16 +78,19 @@ export class ProductpageComponent {
       // }
       // this.getvarientDetails(projectId)
       this.getingerdientDetails(projectId);
-      this.getpropertyDetails1();
-      let project = sessionStorage.getItem('propertyId');
-    });
 
-    
+      let project = sessionStorage.getItem('propertyId');
+      this.userID = this.commonFunction.decryptdata(this.userId);
+    });
   }
-    private forceTop() {
+  private forceTop() {
     // 1) window/html/body
-    try { window.scrollTo(0, 0); } catch {}
-    try { this.vps.scrollToPosition([0, 0]); } catch {}
+    try {
+      window.scrollTo(0, 0);
+    } catch {}
+    try {
+      this.vps.scrollToPosition([0, 0]);
+    } catch {}
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
 
@@ -156,8 +164,114 @@ export class ProductpageComponent {
 
   ReviewData: any[] = [];
   shouldShowTooltip: boolean[] = [];
-
+  //kundan
+  currentSlide = 0;
+  showNavigation = true;
+  visibleCards = 1;
   @ViewChildren('reviewText') reviewTextElements!: QueryList<ElementRef>;
+  ngOnDestroy() {
+    window.removeEventListener(
+      'resize',
+      this.updateResponsiveSettings.bind(this)
+    );
+  }
+  updateResponsiveSettings() {
+    const width = window.innerWidth;
+
+    if (width >= 1024) {
+      this.visibleCards = 3;
+    } else if (width >= 768) {
+      this.visibleCards = 2;
+    } else {
+      this.visibleCards = 1;
+    }
+
+    this.showNavigation = (this.ReviewData?.length ?? 0) > this.visibleCards;
+    const max = this.maxSlideIndex;
+    if (this.currentSlide > max) {
+      this.currentSlide = max;
+    }
+  }
+
+  get maxSlideIndex(): number {
+    if (!this.ReviewData?.length || this.visibleCards === 0) return 0;
+    return Math.max(
+      0,
+      Math.ceil(this.ReviewData.length / this.visibleCards) - 1
+    );
+  }
+
+  nextSlide() {
+    // console.log(
+    //   'this.maxSlideIndex',
+    //   this.maxSlideIndex,
+    //   'this.currentSlide',
+    //   this.currentSlide
+    // );
+
+    if (this.currentSlide < this.maxSlideIndex) {
+      this.currentSlide++;
+    }
+    // else {
+    //   console.log(
+    //     'this.visibleCards',
+    //     this.visibleCards,
+    //     'this.ReviewData?.length',
+    //     this.ReviewData?.length
+    //   );
+    //   this.showNavigation = (this.ReviewData?.length ?? 0) > this.visibleCards;
+    // }
+    // console.log(
+    //   'this.maxSlideIndex',
+    //   this.maxSlideIndex,
+    //   'this.currentSlide',
+    //   this.currentSlide
+    // );
+  }
+
+  prevSlide() {
+    if (this.currentSlide > 0) {
+      this.currentSlide--;
+    }
+  }
+  // @ViewChildren('reviewText') reviewTextElements!: QueryList<ElementRef>;
+  // updateResponsiveSettings() {
+  //   const width = window.innerWidth;
+
+  //   if (width >= 1024) {
+  //     this.visibleCards = 3;
+  //   } else if (width >= 768) {
+  //     this.visibleCards = 2;
+  //   } else {
+  //     this.visibleCards = 1;
+  //   }
+
+  //   this.showNavigation = (this.ReviewData?.length ?? 0) > this.visibleCards;
+  //   const max = this.maxSlideIndex;
+  //   if (this.currentSlide > max) {
+  //     this.currentSlide = max;
+  //   }
+  // }
+
+  // get maxSlideIndex(): number {
+  //   if (!this.ReviewData?.length || this.visibleCards === 0) return 0;
+  //   return Math.max(
+  //     0,
+  //     Math.ceil(this.ReviewData.length / this.visibleCards) - 1
+  //   );
+  // }
+
+  // nextSlide() {
+  //   if (this.currentSlide < this.maxSlideIndex) {
+  //     this.currentSlide++;
+  //   }
+  // }
+
+  // prevSlide() {
+  //   if (this.currentSlide > 0) {
+  //     this.currentSlide--;
+  //   }
+  // }
 
   getcustomerProductReviews() {
     this.api
@@ -168,14 +282,21 @@ export class ProductpageComponent {
             this.reviewLoading = false;
             this.ReviewData = data['data'];
 
-            this.reviewTextElements.forEach((el, index) => {
-              const nativeEl = el.nativeElement;
+            this.updateResponsiveSettings();
+            window.addEventListener(
+              'resize',
+              this.updateResponsiveSettings.bind(this)
+            );
+            setTimeout(() => {
+              this.reviewTextElements.forEach((el, index) => {
+                const nativeEl = el.nativeElement;
 
-              const isTruncated =
-                nativeEl.scrollHeight > nativeEl.clientHeight + 1; // small buffer for precision
+                const isTruncated =
+                  nativeEl.scrollHeight > nativeEl.clientHeight + 1; // small buffer for precision
 
-              this.shouldShowTooltip[index] = isTruncated;
-            });
+                this.shouldShowTooltip[index] = isTruncated;
+              });
+            }, 0);
           }
         },
         (err) => console.log(err)
@@ -377,6 +498,53 @@ export class ProductpageComponent {
         }
       });
   }
+  FAQData: any = [];
+  getFAQDetails() {
+    this.api
+      .getFAQDetails(' AND PRODUCT_ID=' + this.productId)
+      .subscribe((data) => {
+        if (data && data.data && Array.isArray(data.data)) {
+          // handle your FAQ data here
+          this.FAQData = data.data;
+          console.log('FAQ Details:', this.FAQData);
+        } else {
+          console.error('Something Went Wrong.', '');
+        }
+      });
+  }
+  ViewData: any = [];
+  getViewDetails() {
+    this.api
+      .getViewDetails(this.productId, this.userID)
+      .subscribe((data: any) => {
+        if (data && data.data && Array.isArray(data.data)) {
+          // handle your FAQ data here
+          this.ViewData = data;
+          this.getpropertyDetails1();
+          console.log('ViewData Details:', this.ViewData);
+        } else {
+          console.error('Something Went Wrong.', '');
+        }
+      });
+  }
+  goToImage(productId: string, index: number) {
+    this.imageIndices[productId] = index;
+  }
+
+  // Helper function to generate star icons
+  getStarIcons(rating: number): string {
+    let stars = '';
+    for (let i = 1; i <= 5; i++) {
+      if (rating >= i) {
+        stars += '<i class="ri-star-fill"></i>';
+      } else if (rating >= i - 0.5) {
+        stars += '<i class="ri-star-half-fill"></i>';
+      } else {
+        stars += '<i class="ri-star-line"></i>';
+      }
+    }
+    return stars;
+  }
 
   // vaishnavi
   varient: any;
@@ -441,7 +609,7 @@ export class ProductpageComponent {
         this.variantRateMap[productId] = selected.RATE || 0;
         this.selectedVariantStock = selected.CURRENT_STOCK || 0;
         this.selectedPrice = selected.RATE || 0;
-        this.selectedVarientrecent[productId]=selected
+        this.selectedVarientrecent[productId] = selected;
         this.updateTotalPrice();
       }
     } else {
@@ -455,7 +623,7 @@ export class ProductpageComponent {
         this.variantRateMap1[productId] = selected.RATE || 0;
         this.variantStockMap[productId] = selected.OPENING_STOCK || 0;
         this.selectedPrice = selected.RATE || 0;
-        this.selectedVarientrecent[productId]=selected
+        this.selectedVarientrecent[productId] = selected;
         this.updateTotalPrice();
       }
     }
@@ -503,24 +671,33 @@ export class ProductpageComponent {
 
   variantRateMap: { [productId: number]: number } = {};
   variantRateMap1: { [productId: number]: number } = {};
-  selectedVarientrecent:any={}
+  selectedVarientrecent: any = {};
+  benefitsArray = [];
+
+  filter: any;
   getpropertyDetails1() {
     this.show = true;
     this.loadingProducts = true;
+    // if (this.ViewData && this.ViewData.data && this.ViewData.data.length > 0) {
+    // join array values into comma separated string
+    if (this.ViewData && this.ViewData.data && this.ViewData.data.length > 0) {
+      // join array values into comma separated string
+      const ids = this.ViewData.data.join(',');
 
+      this.filter = `AND IS_VERIENT_AVAILABLE = 1 AND STATUS = 1`;
+      // only add ID filter if ids exist
+      if (ids) {
+        this.filter += ` AND ID IN (${ids})`;
+      }
+    }
     this.api
-      .getAllProductMaster(
-        1,
-        4,
-        'id',
-        'desc',
-        'AND IS_VERIENT_AVAILABLE = 1 AND STATUS=1',
-        ''
-      )
+      .getAllProductMaster(0, 0, 'id', 'desc', this.filter, '')
       .subscribe((data) => {
         if (data && data.data && Array.isArray(data.data)) {
           this.propertyyData1 = data.data;
           this.loadingProducts = false;
+          console.log(' this.propertyyData1', this.propertyyData1);
+
           // this.propertyyData1.forEach((product: any) => {
           //   const filter = `AND PRODUCT_ID = ${product.ID}`;
           //   this.getFavoriteProducts();
@@ -532,6 +709,21 @@ export class ProductpageComponent {
           //       }
           //     });
           // });
+
+          const product = this.propertyyData1.find(
+            (p: any) => p.ID === this.productId
+          );
+
+          if (product?.BENIFITS) {
+            // Split comma-separated benefits into array
+            this.benefitsArray = product.BENIFITS.split(',').map((b: string) =>
+              b.trim()
+            );
+            console.log(this.benefitsArray, 'this.benefitsArray');
+          } else {
+            // No benefits found
+            this.benefitsArray = [];
+          }
           this.propertyyData1.forEach((product: any) => {
             // this.loadProductVariantsFromData(product);
             let variants = product.VARIENTS;
@@ -552,17 +744,15 @@ export class ProductpageComponent {
                   (v: any) => v.STATUS === true || v.STATUS === 1
                 ) || [];
               this.variantMap1[product.ID] = Variants;
-              this.selectedVarientrecent[product.ID]=variants[0]
+              this.selectedVarientrecent[product.ID] = variants[0];
             } else {
               this.variantRateMap1[product.ID] = 0;
-              this.selectedVarientrecent={}
-
+              this.selectedVarientrecent = {};
             }
           });
           this.show = false;
         }
         // console.log(this.selectedVarientrecent);
-        
       });
   }
 
@@ -668,6 +858,7 @@ export class ProductpageComponent {
   }
   userId = sessionStorage.getItem('userId') || '';
   userID = this.commonFunction.decryptdata(this.userId);
+  currentStockMap: { [productId: number]: number } = {};
   addToCart(product: any, isdetailschange: boolean): void {
     console.log(product);
     // if (!this.userID) {
@@ -858,6 +1049,7 @@ export class ProductpageComponent {
         productData = JSON.parse(productDataStr);
       }
     }
+    console.log('productData', productData);
 
     if (productData) {
       const parsedArray = Array.isArray(productData)
@@ -900,5 +1092,13 @@ export class ProductpageComponent {
     } else {
       this.getpropertyDetails(this.propertyId);
     }
+  }
+
+  chunkArray(arr: any[], chunkSize: number) {
+    const chunks = [];
+    for (let i = 0; i < arr.length; i += chunkSize) {
+      chunks.push(arr.slice(i, i + chunkSize));
+    }
+    return chunks;
   }
 }

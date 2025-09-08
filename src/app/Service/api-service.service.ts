@@ -32,17 +32,33 @@ export class ApiServiceService {
     headers: this.httpHeaders1,
   };
 
-  commoncode = 'https://ojasviadmin.uvtechsoft.com:9090';
-  commonimgUrl = 'https://ojasviadmin.uvtechsoft.com:9090/api/upload/';
+  // commoncode = 'https://ojasviadmin.uvtechsoft.com:9090';
+  // commonimgUrl = 'https://ojasviadmin.uvtechsoft.com:9090/api/upload/';
+
+  // ojasvi live
+  commoncode = 'https://admin.ojasvidermacare.com:9092';
+  commonimgUrl = 'https://admin.ojasvidermacare.com:9092/api/upload/';
+
+  // commoncode = 'https://926f07a67789.ngrok-free.app';
+  // commonimgUrl = 'https://926f07a67789.ngrok-free.app/api/upload/';
+
+  // pooja
+  // commoncode = 'https://h10rqczh-9878.inc1.devtunnels.ms';
+  // commonimgUrl = 'https://h10rqczh-9878.inc1.devtunnels.ms/api/upload/';
 
   // commoncode = 'https://p8rhkmb7-9878.inc1.devtunnels.ms';
-  // commonimgUrl = 'https://p8rhkmb7-9878.inc1.devtunnels.ms/api/upload/';
+  // commonimgUrl = 'https://p8rhkmb7-9878.inc1.devtunnels.ms//api/upload/';
 
   //  commoncode = 'http://192.168.29.212:9878';
   // commonimgUrl = 'http://192.168.29.212:9878/api/upload/';
 
-  commonapikey = 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY';
-  commonapplicationkey = 'awlcQRwoZxAJQm7b';
+  // local
+  commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
+  commonapplicationkey = '26lLNSmaKlcFziHH';
+
+  // live ojasvi
+  //   APPLICATION_KEY = '26lLNSmaKlcFziHH'
+  // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla'
 
   url = `${this.commoncode}/`;
   baseUrl = `${this.commoncode}/`; // Base URL for your API
@@ -232,6 +248,7 @@ export class ApiServiceService {
       }
     );
   }
+
   getAddresses1data(
     pageIndex: number,
     pageSize: number,
@@ -2207,8 +2224,8 @@ export class ApiServiceService {
   onUpload2(folderName: any, selectedFile: any, filename: any) {
     this.httpHeaders1 = new HttpHeaders({
       Accept: 'application/json',
-      apikey: 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY',
-      applicationkey: 'awlcQRwoZxAJQm7b',
+      apikey: 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla',
+      applicationkey: '26lLNSmaKlcFziHH',
       deviceid: this.cookie.get('deviceId'),
       supportkey: this.cookie.get('supportKey'),
       Token: this.cookie.get('token'),
@@ -2939,7 +2956,7 @@ export class ApiServiceService {
     // data.CLIENT_ID = this.clientId; // Uncomment if needed
     const requestData: any = {
       USER_NAME,
-      NAME:USER_NAME,
+      NAME: USER_NAME,
       MOBILE_NO,
       EMAIL_ID,
       PASSWORD,
@@ -3837,6 +3854,112 @@ export class ApiServiceService {
     return this.httpClient.post<any>(
       this.url + 'web/customerProductReviews/get ',
       JSON.stringify(data),
+      {
+        headers,
+      }
+    );
+  }
+
+  changeForgotPasswordBehaviorSubject(data: any) {
+    this.getforgotPasswordBehaviorSubjet().next(data);
+  }
+  forgotPassword: any;
+  resetPassword: any;
+  setPassword: any;
+
+  getforgotPasswordBehaviorSubjet() {
+    if (!this.forgotPassword) {
+      this.forgotPassword = new BehaviorSubject<any>(false);
+    }
+
+    return this.forgotPassword;
+  }
+
+  //  sendLink(email: string): Observable<any> {
+  //   const params = new HttpParams().set('email', email);
+  //   return this.httpClient.post(`${this.baseUrl}/auth/send-otp`, null, { params });
+  // }
+
+  sendLink(
+    // pageIndex: number,
+    // pageSize: number,
+    // sortKey: string,
+    // sortValue: string,
+    // filter: string
+    mobileNo: string,
+    email: string
+  ): Observable<any> {
+    var data = {
+      // pageIndex: pageIndex,
+      // pageSize: pageSize,
+      // sortKey: sortKey,
+      // sortValue: sortValue,
+      // filter: filter,
+      MOBILE_NO: mobileNo, // Added Mobile_No
+      EMAIL_ID: email, // Added Email
+    };
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      applicationkey: this.commonapplicationkey,
+      apikey: this.commonapikey,
+      token: this.cookie.get('token'),
+    });
+    return this.httpClient.post<any>(
+      this.baseUrl + 'web/customer/forgotPassword',
+      JSON.stringify(data),
+      {
+        headers,
+      }
+    );
+  }
+
+  getFAQDetails(filter: any): Observable<any> {
+    var data = {
+      filter: filter,
+    };
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+
+      applicationkey: this.commonapplicationkey,
+
+      apikey: this.commonapikey,
+
+      token: this.cookie.get('token'),
+    });
+
+    return this.httpClient.post<any>(
+      this.url + 'web/productFaqMapping/get',
+
+      JSON.stringify(data),
+
+      {
+        headers,
+      }
+    );
+  }
+
+  getViewDetails(PRODUCT_ID: number, CUSTOMER_ID: any): Observable<any> {
+    var data = {
+      PRODUCT_ID: PRODUCT_ID,
+      CUSTOMER_ID: CUSTOMER_ID,
+    };
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+
+      applicationkey: this.commonapplicationkey,
+
+      apikey: this.commonapikey,
+
+      token: this.cookie.get('token'),
+    });
+
+    return this.httpClient.post<any>(
+      this.url + 'api/customer/recentProductsViews',
+
+      JSON.stringify(data),
+
       {
         headers,
       }

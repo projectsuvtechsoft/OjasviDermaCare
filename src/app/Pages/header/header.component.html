@@ -532,15 +532,16 @@
   <!-- Search Modal -->
   <div
     *ngIf="isSearchModalOpen"
-    class="fixed inset-0 z-50 flex items-start justify-center bg-black bg-opacity-40 pt-16 sm:pt-20 px-4"
+    class="fixed inset-0 z-50 flex items-start justify-center bg-opacity-40 pt-20"
   >
+    <!-- Modal Box -->
     <div
-      class="bg-white w-full max-w-2xl mx-auto rounded-lg shadow-lg p-4 sm:p-6 relative"
+      class="bg-white w-full max-w-2xl mx-auto rounded-lg shadow-lg p-6 relative"
     >
       <!-- Close Button -->
       <button
         (click)="searchModalOpen()"
-        class="absolute top-2 right-2 sm:top-4 sm:right-4 text-gray-600 hover:text-red-500 transition-colors"
+        class="absolute top-1 right-1 text-gray-600 hover:text-red-500"
       >
         <i class="ri-close-line text-2xl"></i>
       </button>
@@ -553,107 +554,107 @@
         </span>
 
         <!-- Search Input -->
-        <!-- <input
+        <input
           type="text"
           [(ngModel)]="searchText"
           (keyup)="keyup($event)"
           (keydown.enter)="onEnterKey($event)"
           (ngModelChange)="onSearchChange($event)"
           placeholder="Search for products..."
-          class="flex-1 px-2 py-2 sm:py-3 focus:outline-none text-sm"
-        /> -->
+          class="flex-1 px-2 py-2 focus:outline-none text-sm"
+        />
 
         <!-- Select Wrapper -->
-        <!-- <div class="relative w-24 sm:w-32 md:w-36 flex-shrink-0">
+        <div class="relative w-28 sm:w-36 md:w-40 flex-shrink-0">
           <select
             (change)="onCategoryChange($event)"
             [(ngModel)]="selectedOption"
-            class="w-full bg-gray-100 border-l py-2 px-2 sm:px-3 text-xs sm:text-sm focus:outline-none appearance-none truncate"
+            class="w-full bg-gray-100 border-l py-2 px-3 text-sm focus:outline-none appearance-none truncate"
           >
             <option value="A">All</option>
             <option value="C">Categories</option>
             <option value="P">Products</option>
           </select>
 
+          <!-- Optional arrow -->
           <div
             class="pointer-events-none absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-xs"
           >
             ▼
           </div>
-        </div> -->
+        </div>
       </div>
 
-      <!-- Search Results -->
-      <div class="mt-4 max-h-64 sm:max-h-80 overflow-y-auto pr-2">
-        <!-- Categories Section -->
-        <div
+      <div class="flex flex-col gap-2 mt-4 max-h-64 overflow-y-auto pr-2">
+        <h3
+          div
+          class="mb-3 text-lg font-semibold text-sm text-gray-700"
           *ngIf="selectedOption === 'A' && categoryList.length > 0"
-          class="mb-4"
         >
-          <h3 class="mb-3 text-sm sm:text-base font-semibold text-gray-700">
-            Categories
-          </h3>
-          <div class="space-y-2">
-            <div
-              *ngFor="let category of categoryList"
-              class="flex items-center gap-3 bg-gray-50 px-3 py-2 rounded-md shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-              (click)="goToProductList(category.ID)"
-            >
-              <img
-                [src]="IMAGEuRL + 'categoryImage/' + category.IMAGE"
-                [alt]="category.CATEGORY_NAME"
-                class="w-8 h-8 sm:w-10 sm:h-10 object-cover rounded-md"
-              />
-              <span class="text-sm text-gray-700 font-medium">{{
-                category.CATEGORY_NAME
-              }}</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Products Section -->
+          <b>Categories</b>
+        </h3>
         <div
-          *ngIf="selectedOption === 'A' && productList.length > 0"
-          class="mb-4"
-        >
-          <h3 class="mb-3 text-sm sm:text-base font-semibold text-gray-700">
-            Products
-          </h3>
-          <div class="space-y-2">
-            <div
-              *ngFor="let product of productList"
-              class="flex flex-col gap-1 bg-gray-50 px-3 py-2 rounded-md shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-              (click)="goToProductDetails(product.ID)"
-            >
-              <div class="text-xs text-gray-500 font-semibold">
-                {{ product.CATEGORY_NAME }}
-              </div>
-              <div class="flex items-center gap-3">
-                <img
-                  [src]="IMAGEuRL + 'productImages/' + product.IMAGE"
-                  [alt]="product.NAME"
-                  class="w-8 h-8 sm:w-10 sm:h-10 object-cover rounded-md"
-                />
-                <span class="text-sm text-gray-700 font-medium">{{
-                  product.NAME
-                }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- No Results -->
-        <div
-          *ngIf="categoryList.length === 0 && productList.length === 0"
-          class="flex flex-col items-center justify-center p-6 text-center"
+          *ngFor="let category of categoryList"
+          class="flex items-center gap-3 bg-white-50 px-3 py-2 rounded-md shadow-sm hover:shadow-md transition-shadow cursor-pointer"
         >
           <img
-            src="assets/img/nodata.png"
-            alt="No Data"
-            class="w-16 h-16 sm:w-24 sm:h-24 mb-3 opacity-80"
+            [src]="IMAGEuRL + 'categoryImage/' + category.IMAGE"
+            [alt]="category.CATEGORY_NAME"
+            class="w-10 h-10 object-cover rounded-md"
           />
-          <p class="text-gray-600 text-sm">No categories or products found</p>
+          <span
+            class="text-sm text-gray-700 font-medium"
+            (click)="goToProductList(category.ID)"
+          >
+            {{ category.CATEGORY_NAME }}
+          </span>
         </div>
+      </div>
+
+      <div class="flex flex-col gap-2 mt-4 max-h-64 overflow-y-auto pr-2">
+        <h3
+          div
+          class="mb-3 text-lg font-semibold text-sm text-gray-700"
+          *ngIf="selectedOption === 'A' && productList.length > 0"
+        >
+          <b>Products</b>
+        </h3>
+        <div
+          *ngFor="let product of productList"
+          class="flex flex-col gap-1 bg-white-50 px-3 py-2 rounded-md shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+        >
+          <!-- Category Name -->
+          <div class="text-xs text-gray-500 font-semibold">
+            {{ product.CATEGORY_NAME }}
+          </div>
+
+          <!-- Product Info -->
+          <div class="flex items-center gap-3">
+            <img
+              [src]="IMAGEuRL + 'productImages/' + product.IMAGE"
+              [alt]="product.NAME"
+              class="w-10 h-10 object-cover rounded-md"
+            />
+            <span
+              class="text-sm text-gray-700 font-medium"
+              (click)="goToProductDetails(product.ID)"
+            >
+              {{ product.NAME }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div
+        *ngIf="categoryList.length === 0 && productList.length === 0"
+        class="flex flex-col items-center justify-center p-6 text-center"
+      >
+        <img
+          src="assets/img/nodata.png"
+          alt="No Data"
+          class="w-24 h-24 mb-3 opacity-80"
+        />
+        <p class="text-gray-600 text-sm">No categories or products found</p>
       </div>
     </div>
   </div>
@@ -721,9 +722,15 @@
     class="modal-dialog modal-dialog-centered"
     style="margin: auto; justify-content: center !important"
   >
+    <!-- kundan -->
     <div
       class="modal-content p-3 rounded-3"
-      style="padding: 0px !important; border: none !important"
+      style="
+        padding: 0px !important;
+        border: none !important;
+        margin: 7px !important;
+        width: 400px !important;
+      "
     >
       <!-- <div class="modal-body"> -->
       <div class="popup" style="position: relative">
@@ -796,7 +803,10 @@
             </div>
 
             <div class="form-group mb-3">
-              <label *ngIf="mobileNumberorEmail" style="text-align: left">
+              <label
+                *ngIf="mobileNumberorEmail"
+                style="text-align: left; font-size: 13px"
+              >
                 {{
                   inputType === "initial"
                     ? "Email or Mobile Number"
@@ -844,6 +854,8 @@
                             (click)="$event.stopPropagation()"
                             autocomplete="off"
                             class="form-control customeclass"
+                            #searchCountry="ngModel"
+                            name="searchCountry"
                           />
                         </div>
                         <div class="unique-country-list">
@@ -865,7 +877,7 @@
                   <input
                     [type]="inputType === 'email' ? 'email' : 'text'"
                     class="form-control flex-grow customeclass"
-                    placeholder="{{ getPlaceholder() }}"
+                    [placeholder]="getPlaceholder()"
                     [(ngModel)]="mobileNumberorEmail"
                     name="identifier"
                     #identifier="ngModel"
@@ -877,6 +889,7 @@
                         ? emailPattern
                         : ''
                     "
+                    style="font-size: 13px"
                     [maxlength]="inputType === 'mobile' ? 10 : 128"
                     [minlength]="inputType === 'mobile' ? 10 : null"
                     (keypress)="
@@ -890,7 +903,7 @@
                 </div>
 
                 <!-- Error messages -->
-                <div
+                <!-- <div
                   *ngIf="identifier.errors?.['required'] && (identifier.touched)"
                   class="error-message"
                 >
@@ -902,9 +915,9 @@
                       ? "your mobile number"
                       : "email or mobile number"
                   }}.
-                </div>
+                </div> -->
 
-                <div
+                <!-- <div
                   *ngIf="identifier.errors?.['pattern'] && (identifier.touched)"
                   class="error-message text-[12px]"
                 >
@@ -912,16 +925,19 @@
                   {{
                     inputType === "email" ? "email address" : "mobile number"
                   }}.
-                </div>
+                </div> -->
               </div>
             </div>
 
             <div class="form-group mb-3">
-              <label *ngIf="data.PASSWORD" style="text-align: left"
+              <label
+                *ngIf="data.PASSWORD"
+                style="text-align: left; font-size: 13px"
                 >Password</label
               >
-              <div class="input-field">
+              <!-- <div class="input-field">
                 <input
+                  style="font-size: 13px"
                   type="password"
                   placeholder="Enter Password"
                   required
@@ -933,34 +949,46 @@
                   class="form-control customeclass"
                 />
 
-                <div
-                  *ngIf="(password.errors?.['required'] && (password.touched ))"
-                  class="error-message  text-[12px]"
-                >
-                  Please enter password.
-                </div>
+             
+              </div> -->
+              <div class="password-wrapper">
+                <input
+                  [type]="showPassword ? 'text' : 'password'"
+                  placeholder="Enter password"
+                  name="password"
+                  [(ngModel)]="data.PASSWORD"
+                  #password="ngModel"
+                  maxlength="128"
+                  autocomplete="off"
+                  required
+                  style="border: none"
+                />
+                <i
+                  class="fas"
+                  [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+                  (click)="PasswordVisibility()"
+                ></i>
               </div>
             </div>
             <!-- <div class="text-right mb-2" style="font-size: 13px;"> -->
             <!-- <a class="text-right mb-2" style="font-size: 13px;"  (click)="forgotpassModal()">Forgot Password?</a> -->
             <!-- </div> -->
 
-           <div class="flex justify-center text-[12px]">
-  <button
-    class="text-center mb-2 hover:text-[rgb(90,143,105)] footertexts1"
-    (click)="$event.preventDefault();forgotpassModal()"
-  >
-    Forgot Password
-  </button>
-  <span>&nbsp;|&nbsp;</span>
-  <button
-    class="text-center mb-2 hover:text-[rgb(90,143,105)]"
-    (click)="$event.preventDefault();goBack(); isGuest = true"
-  >
-    Continue as a guest
-  </button>
-</div>
-
+            <div class="flex justify-center text-[12px]">
+              <button
+                class="text-center mb-2 text-[rgb(1,158,46)] hover:text-[rgb(90,143,105)] footertexts1"
+                (click)="$event.preventDefault(); forgotpassModal()"
+              >
+                Forgot Password
+              </button>
+              <span>&nbsp;|&nbsp;</span>
+              <button
+                class="text-center mb-2 hover:text-[rgb(90,143,105)] text-[rgb(1,158,46)]"
+                (click)="$event.preventDefault(); goBack(); isGuest = true"
+              >
+                Continue as a guest
+              </button>
+            </div>
 
             <button
               type="submit"
@@ -978,7 +1006,7 @@
                 role="status"
                 aria-hidden="true"
               ></span>
-              {{ isloginSendOTP ? "Signing In..." : "Login" }}
+              {{ isloginSendOTP ? "Logging In..." : "Login" }}
             </button>
             <div class="auth-links text-center">
               <p class="mb-1 footertexts">

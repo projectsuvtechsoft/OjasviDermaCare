@@ -125,7 +125,6 @@
   </div>
 </section>
 
-
 <!-- <app-common-loader *ngIf="loadingProducts" class="overlay-loader"></app-common-loader> -->
 <section class="py-12 bg-gray-50 paddings">
   <app-common-loader
@@ -142,132 +141,135 @@
           class="bg-white rounded-lg shadow-sm p-6 sticky top-32"
           style="padding: 0px !important"
           #desktopFilters
-        > <ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
-        <ng-template #filtersTemplate>
-          <!-- <h3 class="text-xl font-bold mb-6">Filters</h3> -->
-          <!-- Categories Filter -->
-          <div
-            class="mb-6"
-            style="padding: 15px !important; margin-bottom: 5px !important"
-          >
-            <h4 class="font-medium text-gray-900 mb-3">Categories</h4>
-            <div class="space-y-2">
-              <label
-                class="custom-checkbox flex items-center"
-                *ngFor="let category of categories; let i = index"
-              >
-                <input
-                  name="checkbox{{ i }}"
-                  [disabled]="loadingCategories"
-                  type="checkbox"
-                   [attr.data-type]="'category'"
-                  [attr.data-index]="i"
-                  [checked]="selectedCategories.includes(category)"
-                  (change)="onCategoryChange($event, category)"
-                />
-                <span class="checkmark mr-2"></span>
-                <span style="font-size: 14px"
-                  >{{ category?.CATEGORY_NAME }}
-                  <span style="font-size: 10px"
-                    >({{ category?.cnt || 0 }})</span
-                  >
-                </span>
-              </label>
-            </div>
-          </div>
-          <hr style="color: #716f6f !important" />
-          <!-- Price Range Filter -->
-  <div
-  class="mb-6 relative"
-  style="padding: 15px !important; margin-bottom: 5px !important"
->
-  <h4 class="font-medium text-gray-900 mb-3">Price Range</h4>
-
-  <input
-    type="range"
-    min="0"
-    max="8000"
-    [(ngModel)]="priceRange"
-    (input)="onSliderInput()"
-    (mouseenter)="showTooltip = true"
-    (mouseleave)="showTooltip = false"
-    class="custom-range mb-3 w-full"
-  />
-
-  <!-- Min and Max labels -->
-  <div class="flex justify-between">
-    <span class="text-sm text-gray-600">$0</span>
-    <span class="text-sm text-gray-600">$8000</span>
-  </div>
-
-  <!-- Floating tooltip (visible when sliding or hovering) -->
-  <div
-    *ngIf="showTooltip"
-    class="absolute top-0"
-    [style.left.%]="(priceRange / 8000) * 100"
-    style="transform: translateX(-50%); margin-top: 28px;"
-  >
-    <span class="bg-gray-700 text-white text-xs px-2 py-1 rounded">
-      ${{ priceRange }}
-    </span>
-  </div>
-</div>
-
-
-
-    
-          <hr style="color: #716f6f !important" />
-          <!-- Ingredients Filter -->
-          <div
-            class="mb-6"
-            style="padding: 15px !important; margin-bottom: 5px !important"
-          >
-            <h4 class="font-medium text-gray-900 mb-3">Natural Ingredients</h4>
-            <div class="space-y-2">
-              <label
-                class="custom-checkbox flex items-center"
-                *ngFor="let category of visibleIngredients; let i = index"
-              >
-                <input
-                  name="checkbox{{ i }}"
-                  [disabled]="loadingIngredients"
-                  type="checkbox"
-                  [attr.data-type]="'ingredient'"
-                 [attr.data-index]="i"
-                  [checked]="selectedIngredient.includes(category)"
-                  (change)="onIngredientChange($event, category)"
-                />
-                <span class="checkmark mr-2"></span>
-                <span style="font-size: 14px">{{ category?.NAME }}</span>
-              </label>
-            </div>
-
-            <!-- Load More Button -->
+        >
+          <ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
+          <ng-template #filtersTemplate>
+            <!-- <h3 class="text-xl font-bold mb-6">Filters</h3> -->
+            <!-- Categories Filter -->
             <div
-              class="mt-4"
-              *ngIf="visibleIngredients.length < ingredients.length"
+              class="mb-6"
+              style="padding: 15px !important; margin-bottom: 5px !important"
             >
-              <button
-                style="
-                  font-size: 10px;
-                  padding: 7px 13px !important;
-                  background-color: #5a8f69;
-                "
-                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                (click)="loadMore()"
-              >
-                Load More
-              </button>
+              <h4 class="font-medium text-gray-900 mb-3">Categories</h4>
+              <div class="space-y-2">
+                <label
+                  class="custom-checkbox flex items-center"
+                  *ngFor="let category of categories; let i = index"
+                >
+                  <input
+                    name="checkbox{{ i }}"
+                    [disabled]="loadingCategories"
+                    type="checkbox"
+                    [attr.data-type]="'category'"
+                    [attr.data-index]="i"
+                    [checked]="selectedCategories.includes(category)"
+                    (change)="onCategoryChange($event, category)"
+                  />
+                  <span class="checkmark mr-2"></span>
+                  <span style="font-size: 14px"
+                    >{{ category?.CATEGORY_NAME }}
+                    <span style="font-size: 10px"
+                      >({{ category?.cnt || 0 }})</span
+                    >
+                  </span>
+                </label>
+              </div>
             </div>
-          </div>
-          <hr style="color: #716f6f !important" />
-          <button
-            style="padding: 15px !important; margin-top: 15px !important"
-            (click)="clearFilters()"
-            class="w-full bg-gray-100 text-gray-800 py-2 rounded-button font-medium hover:bg-gray-200 transition-colors !rounded-button whitespace-nowrap"
-          >
-            Clear All Filters
-          </button>
+            <hr style="color: #716f6f !important" />
+            <!-- Price Range Filter -->
+            <div
+              class="mb-6 relative"
+              style="padding: 15px !important; margin-bottom: 5px !important"
+            >
+              <h4 class="font-medium text-gray-900 mb-3">Price Range</h4>
+
+              <input
+                type="range"
+                min="0"
+                max="20"
+                [(ngModel)]="priceRange"
+                (input)="onSliderInput()"
+                (mouseenter)="showTooltip = true"
+                (mouseleave)="showTooltip = false"
+                class="custom-range mb-3 w-full"
+                [ngStyle]="{
+                  background: getSliderBackground(priceRange)
+                }"
+              />
+
+              <!-- Min and Max labels -->
+              <div class="flex justify-between">
+                <span class="text-sm text-gray-600">
+                  ${{ priceRange && priceRange > 0 ? priceRange : 0 }}
+                </span>
+                <span class="text-sm text-gray-600">$20</span>
+              </div>
+
+              <!-- Floating tooltip (visible when sliding or hovering) -->
+              <!-- <div
+                *ngIf="showTooltip"
+                class="absolute top-0"
+                [style.left.%]="(priceRange / 20) * 100"
+                style="transform: translateX(-50%); margin-top: 28px"
+              >
+                <span class="text-sm text-gray-600">${{ priceRange }}</span>
+              </div> -->
+            </div>
+
+            <hr style="color: #716f6f !important" />
+            <!-- Ingredients Filter -->
+            <div
+              class="mb-6"
+              style="padding: 15px !important; margin-bottom: 5px !important"
+            >
+              <h4 class="font-medium text-gray-900 mb-3">
+                Natural Ingredients
+              </h4>
+              <div class="space-y-2">
+                <label
+                  class="custom-checkbox flex items-center"
+                  *ngFor="let category of visibleIngredients; let i = index"
+                >
+                  <input
+                    name="checkbox{{ i }}"
+                    [disabled]="loadingIngredients"
+                    type="checkbox"
+                    [attr.data-type]="'ingredient'"
+                    [attr.data-index]="i"
+                    [checked]="selectedIngredient.includes(category)"
+                    (change)="onIngredientChange($event, category)"
+                  />
+                  <span class="checkmark mr-2"></span>
+                  <span style="font-size: 14px">{{ category?.NAME }}</span>
+                </label>
+              </div>
+
+              <!-- Load More Button -->
+              <div
+                class="mt-4"
+                *ngIf="visibleIngredients.length < ingredients.length"
+              >
+                <button
+                  style="
+                    font-size: 10px;
+                    padding: 7px 13px !important;
+                    background-color: #5a8f69;
+                  "
+                  class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                  (click)="loadMore()"
+                >
+                  Load More
+                </button>
+              </div>
+            </div>
+            <hr style="color: #716f6f !important" />
+            <button
+              style="padding: 15px !important; margin-top: 15px !important"
+              (click)="clearFilters()"
+              class="w-full bg-gray-100 text-gray-800 py-2 rounded-button font-medium hover:bg-gray-200 transition-colors !rounded-button whitespace-nowrap"
+            >
+              Clear All Filters
+            </button>
           </ng-template>
         </div>
       </div>
@@ -299,7 +301,7 @@
           </div>
         </div>
       </div>
-      
+
       <!-- Product Grid -->
       <div class="lg:w-3/4 w-full" id="product-grids">
         <div
@@ -387,6 +389,16 @@
         >
           <div
             class="product-card bg-white rounded-lg shadow-sm overflow-hidden"
+            (click)="addtodetail(product)"
+            [routerLink]="
+              selectedVariantMap[product.ID]
+                ? [
+                    '/product_details',
+                    product.ID,
+                    selectedVariantMap[product.ID]
+                  ]
+                : ['/product_details', product.ID]
+            "
             *ngFor="
               let product of products;
               trackBy: trackByProductId;
@@ -481,13 +493,15 @@
               >
                 <div>
                   <span
-                 class="text-[#5a8f69] font-medium"
-                 *ngIf="product.IS_VERIENT_AVAILABLE == 0"
+                    class="text-[#5a8f69] font-medium"
+                    *ngIf="product.IS_VERIENT_AVAILABLE == 0"
                   >
                     ${{ product.RATE }}
                   </span>
-                  <span class="text-[#5a8f69] font-medium"
-                   *ngIf="product.IS_VERIENT_AVAILABLE == 1">
+                  <span
+                    class="text-[#5a8f69] font-medium"
+                    *ngIf="product.IS_VERIENT_AVAILABLE == 1"
+                  >
                     ${{ variantRateMap[product.ID] || "0" }}</span
                   >
                 </div>
@@ -540,7 +554,7 @@
                 <button
                   style="font-size: 15px !important"
                   class="flex-1 bg-[#5a8f69] text-white py-2 rounded-button font-medium transition-colors !rounded-button whitespace-nowrap add-to-cart-btn"
-                  (click)="addToCart(product)"
+                  (click)="addToCart(product); $event.stopPropagation()"
                   [disabled]="
                     product.IS_UPCOMING == 1 ||
                     product.CURRENT_STOCK_VARIENT <= 0 ||
@@ -560,7 +574,8 @@
                 >
                   Add to Cart
                 </button>
-                 <a (click)="addtodetail(product)"
+                <a
+                  (click)="addtodetail(product)"
                   style="font-size: 15px !important"
                   [routerLink]="
                     selectedVariantMap[product.ID]
@@ -652,14 +667,16 @@
             </div>
           </div>
         </div>
-   <div *ngIf="products.length === 0" 
-     class="flex items-center justify-center min-h-[60vh] w-full">
-  <img 
-    src="assets/img/nodata.png" 
-    alt="No Data" 
-    class="max-w-[200px] w-1/2 md:w-1/3 lg:w-1/4 opacity-80"
-  />
-</div>
+        <div
+          *ngIf="products.length === 0"
+          class="flex items-center justify-center min-h-[60vh] w-full"
+        >
+          <img
+            src="assets/img/nodata.png"
+            alt="No Data"
+            class="max-w-[200px] w-1/2 md:w-1/3 lg:w-1/4 opacity-80"
+          />
+        </div>
 
         <div class="mt-10 flex justify-center" *ngIf="totalPages > 0">
           <nav class="flex items-center space-x-2">

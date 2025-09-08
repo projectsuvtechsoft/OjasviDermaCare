@@ -16,8 +16,6 @@
   class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
 ></div>
 
-
-
 <!-- Main Content Responsive Wrapper -->
 <div class="main-content-responsive flex flex-col md:flex-row min-h-screen">
   <!-- Sidebar (overlays on mobile, static on md+) -->
@@ -28,7 +26,6 @@
     >
       <!-- User Profile -->
       <div class="flex flex-col items-center p-6 border-b border-gray-200">
-       
         <div
           class="d-flex justify-content-center align-items-center"
           style="height: 100%; width: 100%"
@@ -1138,29 +1135,38 @@
                 >
                   <div>
                     <span
-                 class="text-[#5a8f69] font-medium"
-                 *ngIf="product.IS_VERIENT_AVAILABLE == 0"
-                  >
-                    ${{ product.RATE }}
-                  </span>
-                    <span class="text-[#5a8f69] font-medium"
-                    *ngIf="product.IS_VERIENT_AVAILABLE == 1">
+                      class="text-[#5a8f69] font-medium"
+                      *ngIf="product.IS_VERIENT_AVAILABLE == 0"
+                    >
+                      ${{ product.RATE }}
+                    </span>
+                    <span
+                      class="text-[#5a8f69] font-medium"
+                      *ngIf="product.IS_VERIENT_AVAILABLE == 1"
+                    >
                       ${{ variantRateMap[product.ID] || "0" }}</span
                     >
                   </div>
                   <select
-                  *ngIf="product.IS_VERIENT_AVAILABLE == 1"
-                  class="sm:w-auto border border-green-400 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-300"
-                  [(ngModel)]="selectedVariantMap[product.ID]"
-                  (ngModelChange)="change($event, product.ID)"
-                  style="width: 80px; height: 32px; font-size: 10px; padding: 2px !important;"
-                >
-                  <option value="" disabled>Select Variant</option>
-                  <option *ngFor="let item of variantMap[product.ID] || []" [value]="item.VARIENT_ID">
-                    {{ item.SIZE }} {{ item.UNIT_NAME }}
-                  </option>
-
-                </select>
+                    *ngIf="product.IS_VERIENT_AVAILABLE == 1"
+                    class="sm:w-auto border border-green-400 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-300"
+                    [(ngModel)]="selectedVariantMap[product.ID]"
+                    (ngModelChange)="change($event, product.ID)"
+                    style="
+                      width: 80px;
+                      height: 32px;
+                      font-size: 10px;
+                      padding: 2px !important;
+                    "
+                  >
+                    <option value="" disabled>Select Variant</option>
+                    <option
+                      *ngFor="let item of variantMap[product.ID] || []"
+                      [value]="item.VARIENT_ID"
+                    >
+                      {{ item.SIZE }} {{ item.UNIT_NAME }}
+                    </option>
+                  </select>
                   <div class="flex items-center">
                     <div
                       class="flex text-yellow-400"
@@ -1176,19 +1182,33 @@
                     style="font-size: 15px !important"
                     class="flex-1 bg-[#5a8f69] text-white py-2 rounded-button font-medium transition-colors !rounded-button whitespace-nowrap add-to-cart-btn"
                     (click)="addToCart(product)"
-                    [disabled]="product.IS_UPCOMING == 1 || product.IS_VERIENT_AVAILABLE == 0"
+                    [disabled]="
+                      product.IS_UPCOMING == 1 ||
+                      product.IS_VERIENT_AVAILABLE == 0
+                    "
                     id="addToCartBtn"
                     [ngClass]="{
                       'hover:bg-green-700 cursor-pointer':
-                        product.IS_UPCOMING != 1|| product.IS_VERIENT_AVAILABLE == 1,
-                      'bg-gray-400 cursor-not-allowed': product.IS_UPCOMING == 1 || product.IS_VERIENT_AVAILABLE == 0
+                        product.IS_UPCOMING != 1 ||
+                        product.IS_VERIENT_AVAILABLE == 1,
+                      'bg-gray-400 cursor-not-allowed':
+                        product.IS_UPCOMING == 1 ||
+                        product.IS_VERIENT_AVAILABLE == 0
                     }"
                   >
                     Add to Cart
                   </button>
                   <a
                     style="font-size: 15px !important"
-                    [routerLink]="selectedVariantMap[product.ID] ? ['/product_details', product.ID, selectedVariantMap[product.ID]] : ['/product_details', product.ID]"
+                    [routerLink]="
+                      selectedVariantMap[product.ID]
+                        ? [
+                            '/product_details',
+                            product.ID,
+                            selectedVariantMap[product.ID]
+                          ]
+                        : ['/product_details', product.ID]
+                    "
                     class="product-details-link details-btn bg-gray-100 text-gray-800 px-4 py-2 rounded-button font-medium hover:bg-gray-200 transition-colors whitespace-nowrap mrgLeft"
                     >Details</a
                   >
@@ -1364,7 +1384,7 @@
       <i class="ri-question-line"></i>
     </div>
     <h2 class="text-xl font-semibold mb-2">Confirmation</h2>
-    <p class="text-sm text-gray-600 mb-6">Are you sure you want to proceed?</p>
+    <p class="text-sm text-gray-600 mb-6">Are you sure you want to logout ?</p>
     <div class="flex justify-center gap-4">
       <button
         (click)="closeLogoutModal()"
@@ -1849,7 +1869,9 @@
             </div>
             <div class="flex justify-between gap-4">
               <span class="font-semibold text-green-600">Total Amount :</span>
-              <span class="text-green-600 font-semibold">$.{{TOTAL_AMOUNT?TOTAL_AMOUNT:0}}</span>
+              <span class="text-green-600 font-semibold"
+                >$.{{ TOTAL_AMOUNT ? TOTAL_AMOUNT : 0 }}</span
+              >
             </div>
           </div>
         </div>

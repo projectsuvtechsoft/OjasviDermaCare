@@ -1,9 +1,11 @@
-import { Component,
+import {
+  Component,
   ViewChild,
   TemplateRef,
   ViewContainerRef,
   Renderer2,
-  ElementRef,} from '@angular/core';
+  ElementRef,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiServiceService } from 'src/app/Service/api-service.service';
 import { ToastrService } from 'ngx-toastr';
@@ -38,7 +40,7 @@ export class HomeComponent {
     public datepipe: DatePipe,
     private cookie: CookieService,
     private route: ActivatedRoute,
-    private productService:ProductDataService
+    private productService: ProductDataService
   ) {}
 
   goToLogin() {
@@ -161,7 +163,7 @@ export class HomeComponent {
     this.selectedCategories = [];
     this.selectedIngredient = [];
     this.priceRange = 0;
-    this.rangeQuery=""
+    this.rangeQuery = '';
     // this.selectedSubCategory = null;
     this.getProducts();
   }
@@ -394,13 +396,13 @@ export class HomeComponent {
   }
 
   setCurrentPage(page: number): void {
-      if (this.totalPages === 0) {
-    return; 
-  }
+    if (this.totalPages === 0) {
+      return;
+    }
 
-  if (page < 1 || page > this.totalPages) {
-    return;
-  }
+    if (page < 1 || page > this.totalPages) {
+      return;
+    }
     this.currentPage = page;
     this.getProducts(); // Fetch products for the selected page
     // In a real application, you would fetch products for this page
@@ -484,7 +486,7 @@ export class HomeComponent {
   }
 
   onCategoryChange(event: any, category: any) {
-    console.log("clickcked")
+    console.log('clickcked');
     if (event.target.checked) {
       // Add only if not already present
       if (!this.selectedCategories.includes(category)) {
@@ -520,23 +522,23 @@ export class HomeComponent {
     this.getProducts();
     // console.log('Selected Ingredients:', this.selectedIngredient);
   }
- @ViewChild('mobileContent', { read: ViewContainerRef }) mobileContent!: ViewContainerRef; 
+  @ViewChild('mobileContent', { read: ViewContainerRef })
+  mobileContent!: ViewContainerRef;
   @ViewChild('desktopFilters', { static: false }) desktopFilters!: ElementRef;
- @ViewChild('filtersTemplate') filtersTemplate!: TemplateRef<any>;
-openMobileFilters(): void {
-  if (this.filtersTemplate && this.mobileContent) {
-    this.mobileContent.clear(); // Clear previous
-    this.mobileContent.createEmbeddedView(this.filtersTemplate); // Render template
-   this.isDrawerOpen = true;
+  @ViewChild('filtersTemplate') filtersTemplate!: TemplateRef<any>;
+  openMobileFilters(): void {
+    if (this.filtersTemplate && this.mobileContent) {
+      this.mobileContent.clear(); // Clear previous
+      this.mobileContent.createEmbeddedView(this.filtersTemplate); // Render template
+      this.isDrawerOpen = true;
       this.renderer.setStyle(document.body, 'overflow', 'hidden');
+    }
   }
-}
 
-closeMobileFilters(): void {
-  this.isDrawerOpen = false;
-  this.renderer.removeStyle(document.body, 'overflow'); // re-enable scroll
-}
-
+  closeMobileFilters(): void {
+    this.isDrawerOpen = false;
+    this.renderer.removeStyle(document.body, 'overflow'); // re-enable scroll
+  }
 
   onDrawerClick(event: MouseEvent): void {
     const drawer = event.currentTarget as HTMLElement;
@@ -554,9 +556,9 @@ closeMobileFilters(): void {
       this.getProducts();
     } else {
       const [key, direction] = value.split(':');
-      if(key === 'RATE'){
-        this.sortKey = 'JSON_EXTRACT(VARIENTS, \'$[0].RATE\')';
-      }else{
+      if (key === 'RATE') {
+        this.sortKey = "JSON_EXTRACT(VARIENTS, '$[0].RATE')";
+      } else {
         this.sortKey = key;
       }
       // this.sortKey = key;
@@ -568,39 +570,42 @@ closeMobileFilters(): void {
   }
   priceRange: number = 0;
   rangeQuery = '';
-showTooltip = false;
-tooltipTimeout: any;
+  showTooltip = false;
+  tooltipTimeout: any;
 
-onSliderInput() {
-  this.showTooltip = true;
+  onSliderInput() {
+    this.showTooltip = true;
 
-  // Hide tooltip shortly after sliding stops
-  if (this.tooltipTimeout) {
-    clearTimeout(this.tooltipTimeout);
+    // Hide tooltip shortly after sliding stops
+    if (this.tooltipTimeout) {
+      clearTimeout(this.tooltipTimeout);
+    }
+    this.tooltipTimeout = setTimeout(() => {
+      this.showTooltip = false;
+    }, 4000);
+
+    this.onPriceChange(); // existing logic
   }
-  this.tooltipTimeout = setTimeout(() => {
-    this.showTooltip = false;
-  }, 4000);
 
-  this.onPriceChange(); // existing logic
-}
-
-
-
-
-onPriceChange() {
-  if (this.priceRange != null) {
-    this.showTooltip=true
-    // Build rangeQuery for API
-    this.rangeQuery = ` AND ((IS_VERIENT_AVAILABLE=1 AND JSON_EXTRACT(VARIENTS, '$[0].RATE') <= ${this.priceRange}) OR (IS_VERIENT_AVAILABLE=0 AND RATE <= ${this.priceRange}))`;
-
-    this.getProducts(); // Call API with updated rangeQuery
-  } else {
-    this.rangeQuery = ''; // Reset filter
-    this.getProducts(); // Reload all products
+  getSliderBackground(value: number): string {
+    const percent = (value / 20) * 100;
+    return `linear-gradient(to right, #5a8f69 ${percent}%, #e5e7eb ${percent}%)`;
   }
-}
 
+  onPriceChange() {
+    if (this.priceRange != null) {
+      this.showTooltip = true;
+      // Build rangeQuery for API
+      this.rangeQuery = ` AND ((IS_VERIENT_AVAILABLE=1 AND JSON_EXTRACT(VARIENTS, '$[0].RATE') <= ${this.priceRange}) OR (IS_VERIENT_AVAILABLE=0 AND RATE <= ${this.priceRange}))`;
+      if (this.priceRange <= 10) {
+        this.priceRange++;
+      }
+      this.getProducts(); // Call API with updated rangeQuery
+    } else {
+      this.rangeQuery = ''; // Reset filter
+      this.getProducts(); // Reload all products
+    }
+  }
 
   SubsribeToNewsLetter() {
     if (
@@ -724,7 +729,7 @@ onPriceChange() {
       var filter = ` AND CUSTOMER_ID = ${this.userID}`;
     } else {
       let sessionKey = sessionStorage.getItem('SESSION_KEYS') || '';
-    this.decyptedsessionKey = this.commonFunction.decryptdata(sessionKey);
+      this.decyptedsessionKey = this.commonFunction.decryptdata(sessionKey);
       var filter = ` AND SESSION_KEY = '${this.decyptedsessionKey}'`;
     }
 
@@ -758,4 +763,10 @@ onPriceChange() {
   // scrollTotop(){
   //    window.scrollTo(0, 0);
   // }
+
+  showPassword: boolean = false;
+
+  PasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
 }
