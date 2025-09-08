@@ -821,8 +821,39 @@ export class ProductpageComponent {
   }
 
   increaseQuantity(): void {
-    this.quantity++;
-    this.updateTotalPrice();
+    // console.log(this.selectedVariantMap,this.selectedVariantId1)
+    const productId = Object.keys(this.selectedVariantMap)[0];
+    const varientId = this.selectedVariantMap[Number(productId)];
+    // console.log(productId,'proid',varientId,'varientId');
+    const data = this.propertyyData.find(
+      (data: any) => data.ID === Number(productId)
+    );
+    // console.log(data,'data');
+    if (data.IS_VERIENT_AVAILABLE === 1 && data.VARIENTS) {
+      const varients = JSON.parse(data.VARIENTS);
+      // console.log(varients,'varients');
+      const selectedVarientdata = varients.find(
+        (data: any) => data.VARIENT_ID === Number(varientId)
+      );
+      // console.log(selectedVarientdata,'selectedVarientdata');
+      if (selectedVarientdata) {
+        const nextQuantity = this.quantity + 1; // simulate the next step
+        const nextTotalSize = selectedVarientdata.SIZE * nextQuantity;
+        const varientStock = selectedVarientdata.CURRENT_STOCK;
+        // console.log(nextQuantity, nextTotalSize, varientStock);
+        
+        if (nextQuantity <= varientStock && nextTotalSize <= varientStock) {
+          this.quantity++;
+          // item.QUANTITY++;
+          this.updateTotalPrice();
+          } else {
+          this.toastr.info('Maximum quantity reached', 'Info');
+        }
+      }
+    }
+
+    // this.quantity++;
+    // this.updateTotalPrice();
   }
 
   decreaseQuantity(): void {

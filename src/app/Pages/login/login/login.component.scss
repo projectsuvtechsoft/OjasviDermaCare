@@ -1189,7 +1189,7 @@ select::placeholder {
 
 @media (max-width: 350px) {
   .tabs {
-    font-size: 11px !important;
+    font-size: 10px !important;
   }
 }
 
@@ -1392,7 +1392,12 @@ select::placeholder {
 @media (max-width: 576px) {
   .auth-card {
     padding: 20px;
-    max-width: 90%;
+    max-width: 100%;
+  }
+  .address-form-card {
+    width: 95%;
+    box-shadow: none;
+    border: 1px solid #ddd;
   }
 
   .fw-bold {
@@ -1617,14 +1622,6 @@ select::placeholder {
 
 .btn-group label {
   cursor: pointer;
-}
-
-@media (max-width: 576px) {
-  .address-form-card {
-    width: 95%;
-    box-shadow: none;
-    border: 1px solid #ddd;
-  }
 }
 
 .custom-btn-group .btn {

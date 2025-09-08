@@ -173,7 +173,7 @@ ul > li {
 
 @media (max-width: 886px) {
   .founder-img-responsive {
-    height: 440px;
+    height: 480px;
     object-fit: cover;
   }
 }
