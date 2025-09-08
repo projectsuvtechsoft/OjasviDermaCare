@@ -8,8 +8,11 @@ import { ToastrService } from 'ngx-toastr';
   providedIn: 'root',
 })
 export class CartService {
-  commonapikey = 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY';
-  commonapplicationkey = 'awlcQRwoZxAJQm7b';
+  // commonapikey = 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY';
+  // commonapplicationkey = 'awlcQRwoZxAJQm7b';
+
+  commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
+  commonapplicationkey = '26lLNSmaKlcFziHH';
   // private cartCountSource = new BehaviorSubject<number>(0);
   // cartCount$ = this.cartCountSource.asObservable();
 
