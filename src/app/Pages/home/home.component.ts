@@ -588,7 +588,7 @@ export class HomeComponent {
   }
 
   getSliderBackground(value: number): string {
-    const percent = (value / 20) * 100;
+    const percent = (value / 10) * 100;
     return `linear-gradient(to right, #5a8f69 ${percent}%, #e5e7eb ${percent}%)`;
   }
 
@@ -672,21 +672,25 @@ export class HomeComponent {
   isLiked: boolean = false;
   euserID: string = sessionStorage.getItem('userId') || '';
   decyptedsessionKey: any;
-  toggleLike(product: any) {
+  toggleLike(product: any, event: any) {
+ 
+    event.preventDefault();   // stop link navigation
+    event.stopPropagation();
     this.userID = this.commonFunction.decryptdata(this.euserID);
     let sessionKey = sessionStorage.getItem('SESSION_KEYS') || '';
     this.decyptedsessionKey = this.commonFunction.decryptdata(sessionKey);
-
+ 
     if (this.userID) {
       this.decyptedsessionKey = '';
     }
-
+ 
     const Data = {
       PRODUCT_ID: product.ID,
       CUSTOMER_ID: this.userID || 0,
       SESSION_KEY: this.decyptedsessionKey,
     };
-
+ 
+ 
     if (product.isLiked) {
       this.api.removeFavoriteProduct(Data).subscribe(
         (res) => {
@@ -704,7 +708,7 @@ export class HomeComponent {
       );
     } else {
       const addData = { ...Data, CLIENT_ID: 1 };
-
+ 
       this.api.addFavoriteProduct(addData).subscribe(
         (res) => {
           if (res['code'] === 200) {
@@ -721,6 +725,7 @@ export class HomeComponent {
       );
     }
   }
+ 
 
   totalFavourites: any;
   FavouritesData: any;

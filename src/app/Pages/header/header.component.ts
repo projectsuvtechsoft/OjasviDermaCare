@@ -455,8 +455,8 @@ export class HeaderComponent {
 
   onIdentifierInput(event: any) {
     const value = event.target.value;
-    console.log(this.mobileNumberorEmail, 'mobileoremail');
-    console.log(event, 'event');
+    // console.log(this.mobileNumberorEmail, 'mobileoremail');
+    // console.log(event, 'event');
     if (!value || value.length < 3) {
       this.inputType = 'initial';
       return;
@@ -467,6 +467,13 @@ export class HeaderComponent {
       this.inputType = 'email';
     } else {
       this.inputType = 'mobile';
+    }
+  }
+  handleKeyPress(event: KeyboardEvent) {
+    if (event.key === ' ') {
+      event.preventDefault();
+    } else if (this.inputType === 'mobile') {
+      this.commonFunction.onlynum(event);
     }
   }
 

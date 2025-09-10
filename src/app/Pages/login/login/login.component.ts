@@ -468,7 +468,19 @@ export class LoginComponent {
   whichOTP = '';
   registrationSubmitted = false;
   pass: any = '';
-
+  handleSpacePress(event:KeyboardEvent){
+    if (event.key === ' ') {
+      event.preventDefault();
+    }
+  }
+handleKeyPress(event: KeyboardEvent) {
+    if (
+      event.key === ' ' &&
+      (!this.data.CUSTOMER_NAME || this.data.CUSTOMER_NAME.length === 0)
+    ) {
+      event.preventDefault();
+    }
+  }
   save(form?: NgForm) {
     sessionStorage.setItem('USER_NAME', this.data.CUSTOMER_NAME);
     sessionStorage.setItem('emailormobile', this.mobileNumberorEmail);

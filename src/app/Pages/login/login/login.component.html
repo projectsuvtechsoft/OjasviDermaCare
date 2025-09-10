@@ -78,7 +78,9 @@
                   </div>
                 </div>
                 <input [type]="inputType === 'email' ? 'email' : 'text'" class="form-control"
-                  placeholder="{{ getPlaceholder() }}" [(ngModel)]="mobileNumberorEmail" name="identifier"
+                  placeholder="{{ getPlaceholder() }}" 
+                  (keypress)="handleSpacePress($event)"
+                  [(ngModel)]="mobileNumberorEmail" name="identifier"
                   #identifier="ngModel" (input)="onIdentifierInput($event)" [pattern]="
                     inputType === 'mobile'
                       ? commonFunction.mobpattern
@@ -86,11 +88,7 @@
                       ? emailPattern
                       : ''
                   " [maxlength]="inputType === 'mobile' ? 10 : 128" [minlength]="inputType === 'mobile' ? 10 : null"
-                  (keypress)="
-                    inputType === 'mobile'
-                      ? commonFunction.onlynum($event)
-                      : null
-                  " autocomplete="off" required />
+                   autocomplete="off" required />
               </div>
               <div *ngIf="identifier.errors?.['required'] && (identifier.touched || loginSubmitted)"
                 class="error-message">
@@ -162,13 +160,13 @@
 
           <div class="flex justify-center">
             <!-- adding margin top -->
-            <button class="text-center mt-1 mb-2 hover:text-[rgb(90,143,105)] tabs" style="font-size: 13px;"
+            <button class="text-center mt-1 mb-2 hover:text-[rgb(90,143,105)] text-[rgb(1,158,46)] tabs" style="font-size: 13px;"
               (click)="forgotpassModal()">
               Forgot Password
             </button>
             <span>&nbsp;|&nbsp;</span>
             <!-- adding margin top -->
-            <button class="text-center mt-1 mb-2 hover:text-[rgb(90,143,105)] tabs" style="font-size: 13px"
+            <button class="text-center mt-1 mb-2 hover:text-[rgb(90,143,105)] text-[rgb(1,158,46)] tabs" style="font-size: 13px"
               (click)="goBack()">
               Continue as a guest
             </button>
@@ -324,7 +322,7 @@
         <form class="register-form" #registrationForm="ngForm" (ngSubmit)="save(registrationForm)">
           <div class="form-field">
             <label *ngIf="data.CUSTOMER_NAME" style="text-align: left">Name</label>
-            <input type="text" placeholder="Enter Full Name" required (keypress)="alphaOnly($event)" name="name"
+            <input type="text" placeholder="Enter Full Name" required (keypress)="alphaOnly($event);handleKeyPress($event)" name="name"
               [(ngModel)]="data.CUSTOMER_NAME" #name="ngModel" minlength="2" maxlength="128" autocomplete="off" />
             <div *ngIf="(name.errors?.['required'] && (name.touched || registrationSubmitted))" class="error-message">
               Please enter your name.
@@ -438,11 +436,7 @@
                       ? emailPattern
                       : ''
                   " [maxlength]="inputType === 'mobile' ? 10 : 128" [minlength]="inputType === 'mobile' ? 10 : null"
-                  (keypress)="
-                    inputType === 'mobile'
-                      ? commonFunction.onlynum($event)
-                      : null
-                  " autocomplete="off" required />
+                 (keypress)="handleSpacePress($event)" autocomplete="off" required />
               </div>
               <div *ngIf="identifier.errors?.['required'] && (identifier.touched || loginSubmitted)"
                 class="error-message">
@@ -469,6 +463,7 @@
             <div class="password-wrapper">
               <input [type]="showPassword ? 'text' : 'password'" placeholder="Enter Password" name="password"
                 [(ngModel)]="pass" #password="ngModel" maxlength="128" autocomplete="off" required
+                (keypress)="handleSpacePress($event)"
                 style="border: none" />
               <i class="fas" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'" (click)="PasswordVisibility()"></i>
             </div>
@@ -480,7 +475,7 @@
             <div class="password-wrapper">
               <input [type]="showConfirmPassword ? 'text' : 'password'" placeholder="Confirm Password"
                 name="confirmPassword" [(ngModel)]="confirmPass" #confirmPassword="ngModel" maxlength="128"
-                autocomplete="off" required style="border: none" />
+                autocomplete="off" required (keypress)="handleSpacePress($event)" style="border: none" />
               <i class="fas" [ngClass]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"
                 (click)="toggleConfirmPasswordVisibility()"></i>
             </div>

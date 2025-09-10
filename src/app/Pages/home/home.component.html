@@ -186,7 +186,7 @@
               <input
                 type="range"
                 min="0"
-                max="20"
+                max="10"
                 [(ngModel)]="priceRange"
                 (input)="onSliderInput()"
                 (mouseenter)="showTooltip = true"
@@ -202,7 +202,7 @@
                 <span class="text-sm text-gray-600">
                   ${{ priceRange && priceRange > 0 ? priceRange : 0 }}
                 </span>
-                <span class="text-sm text-gray-600">$20</span>
+                <span class="text-sm text-gray-600">$10</span>
               </div>
 
               <!-- Floating tooltip (visible when sliding or hovering) -->
@@ -444,7 +444,7 @@
                     'text-green-500': product.isLiked,
                     'text-gray-600 hover:text-[#5a8f69]': !product.isLiked
                   }"
-                  (click)="toggleLike(product)"
+                  (click)="toggleLike(product, $event)"
                 >
                   <i
                     [class]="

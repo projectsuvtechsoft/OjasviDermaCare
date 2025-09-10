@@ -717,6 +717,7 @@
   tabindex="-1"
   aria-labelledby="loginmodalLabel"
   aria-hidden="true"
+  (hidden.bs.modal)="showCountryDropdown = false"
 >
   <div
     class="modal-dialog modal-dialog-centered"
@@ -892,11 +893,7 @@
                     style="font-size: 13px"
                     [maxlength]="inputType === 'mobile' ? 10 : 128"
                     [minlength]="inputType === 'mobile' ? 10 : null"
-                    (keypress)="
-                      inputType === 'mobile'
-                        ? commonFunction.onlynum($event)
-                        : null
-                    "
+                    (keypress)="handleKeyPress($event)"
                     autocomplete="off"
                     required
                   />
@@ -993,11 +990,10 @@
             <button
               type="submit"
               style="
-                background-color: rgb(90, 143, 105);
                 z-index: unset;
                 margin-top: 10px;
               "
-              class="btn btn-primary btn-block w-100 mb-2 footertexts"
+              class="btn bg-[#5a8f69] hover:bg-[#4a7a5a] btn-success text-white btn-block w-100 mb-2 footertexts"
               [disabled]="isloginSendOTP"
             >
               <span

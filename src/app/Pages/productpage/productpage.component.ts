@@ -1066,6 +1066,7 @@ export class ProductpageComponent {
         product.ID,
         this.selectedVariantMap1[product.ID],
       ]);
+      this.forceTop();
     } else {
       this.router.navigate(['/product_details', product.ID]);
     }

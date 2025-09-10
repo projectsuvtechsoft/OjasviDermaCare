@@ -977,7 +977,7 @@ video {
   flex: 1;
   border-radius: 8px;
   outline: none;
-  height: 29px;
+  height: 34px;
   font-size: 13px; /* Helps align vertically */
 }
 
@@ -992,4 +992,26 @@ video {
 }
 .modal-backdrop.show {
   opacity: 0.1 !important; /* default is 0.5 */
+}
+.unique-country-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+ 
+  &:hover {
+    background-color: rgba(9, 43, 156, 0.1);
+  }
+}
+ 
+.unique-country-dropdown {
+  margin-top: 10px;
+  background: white;
+  /* border: 1px solid rgb(90, 143, 105); */
+  border-radius: 8px;
+  /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+  display: flex;
+  flex-direction: column;
 }

@@ -86,17 +86,27 @@ body {
 /* Tabs: scrollable on mobile */
 @media (max-width: 767px) {
   nav.flex.space-x-8 {
-    overflow-x: auto;
+    /* overflow-x: auto; */
     -webkit-overflow-scrolling: touch;
     flex-wrap: nowrap;
-    gap: 0.5rem !important;
+    /* gap: 0.5rem !important; */
   }
   nav.flex.space-x-8 button {
-    min-width: 120px;
-    font-size: 1rem;
+    /* min-width: 120px; */
+    font-size: 0.9rem;
     padding-left: 0.75rem;
     padding-right: 0.75rem;
   }
+ 
+ 
+ 
+.space-x-8 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 0;
+    margin-right: calc(2rem * var(--tw-space-x-reverse));
+    margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)));
+    text-align: center;
+}
+ 
 }
 /* Feature icons grid: 1 or 2 columns on mobile */
 @media (max-width: 767px) {
