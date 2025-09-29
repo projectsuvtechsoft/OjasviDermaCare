@@ -8,11 +8,11 @@ import { ToastrService } from 'ngx-toastr';
   providedIn: 'root',
 })
 export class CartService {
-  // commonapikey = 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY';
-  // commonapplicationkey = 'awlcQRwoZxAJQm7b';
+  commonapikey = 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY';
+  commonapplicationkey = 'awlcQRwoZxAJQm7b';
 
-  commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
-  commonapplicationkey = '26lLNSmaKlcFziHH';
+  // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
+  // commonapplicationkey = '26lLNSmaKlcFziHH';
   // private cartCountSource = new BehaviorSubject<number>(0);
   // cartCount$ = this.cartCountSource.asObservable();
 
@@ -76,17 +76,24 @@ export class CartService {
         this.currentProduct.QUANTITY = item.QUANTITY
           ? item.QUANTITY
           : item.quantity;
-        this.currentProduct.CART_ID=item.CART_ID;
-        this.currentProduct.CART_ITEM_ID=item.ID;
+        this.currentProduct.CART_ID = item.CART_ID;
+        this.currentProduct.CART_ITEM_ID = item.ID;
         this.updateCartToServer();
       });
   }
-  euserID: string = sessionStorage.getItem('userId') || '';
-  etoken: string = sessionStorage.getItem('token') || '';
+  euserID: any = sessionStorage.getItem('userId') || '';
+  etoken: any = sessionStorage.getItem('token') || '';
   userID: any;
   token: any;
   quantityChange$ = new Subject<any>();
   ngOnInit() {
+    this.euserID = sessionStorage.getItem('userId');
+    this.etoken = sessionStorage.getItem('token');
+    console.log(
+      this.commonFunction.decryptdata(this.euserID),
+      this.commonFunction.decryptdata(this.etoken)
+    );
+
     if (this.euserID && this.etoken) {
       this.userID = this.commonFunction.decryptdata(this.euserID);
       // this.token = this.commonFunction.decryptdata(this.etoken);
@@ -124,10 +131,19 @@ export class CartService {
           // console.log(cartData.cartItemDetails)
           if (!cartData?.data || cartData.data.length === 0) {
             // this.toastr.info('Cart is empty or not found');
+            // console.log(cartData.data);
           } else {
+            var PACKAGING_CHARGES = cartData.data[0]['PACKAGING_CHARGES'];
+            var DELIVERY_CHARGES = cartData.data[0]['DELIVERY_CHARGES'];
+            var TOTAL_PRICE = cartData.data[0]['TOTAL_PRICE'];
+            var NET_AMOUNT = cartData.data[0]['NET_AMOUNT'];
             this.cartItems = cartData.cartItemDetails.map((item: any) => ({
               ...item,
               quantity: item.QUANTITY || 1,
+              PACKAGING_CHARGES: PACKAGING_CHARGES,
+              DELIVERY_CHARGES: DELIVERY_CHARGES,
+              NET_AMOUNT: NET_AMOUNT,
+              TOTAL_PRICE: TOTAL_PRICE,
             }));
           }
           this.cartUpdated.next(this.cartItems);
@@ -217,8 +233,10 @@ export class CartService {
       SIZE: this.currentProduct.SIZE,
       COUNTRY_ID: 0,
       UNIT_ID: this.currentProduct.UNIT_ID,
-      CART_ID:this.currentProduct.CART_ID?this.currentProduct.CART_ID:null,
-      CART_ITEM_ID:this.currentProduct.CART_ITEM_ID?this.currentProduct.CART_ITEM_ID:null,
+      CART_ID: this.currentProduct.CART_ID ? this.currentProduct.CART_ID : null,
+      CART_ITEM_ID: this.currentProduct.CART_ITEM_ID
+        ? this.currentProduct.CART_ITEM_ID
+        : null,
       // })),
     };
     const headers = new HttpHeaders({
@@ -270,8 +288,10 @@ export class CartService {
       SIZE: this.currentProduct.SIZE,
       COUNTRY_ID: 0,
       UNIT_ID: this.currentProduct.UNIT_ID,
-      CART_ID:this.currentProduct.CART_ID?this.currentProduct.CART_ID:null,
-      CART_ITEM_ID:this.currentProduct.CART_ITEM_ID?this.currentProduct.CART_ITEM_ID:null,
+      CART_ID: this.currentProduct.CART_ID ? this.currentProduct.CART_ID : null,
+      CART_ITEM_ID: this.currentProduct.CART_ITEM_ID
+        ? this.currentProduct.CART_ITEM_ID
+        : null,
       // })),
     };
     const headers = new HttpHeaders({

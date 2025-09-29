@@ -6,6 +6,8 @@ import {
   ViewChild,
 } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
+// import { parsePhoneNumberFromString } from 'libphonenumber-js';
+
 // import { Gallery } from "ng-gallery";
 import { Router, RouterModule } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -20,6 +22,7 @@ import {
 } from '@angular/forms';
 import { interval, takeWhile } from 'rxjs';
 import { HostListener } from '@angular/core';
+import { ViewChildren, QueryList } from '@angular/core';
 import { ModalService } from 'src/app/Service/modal.service';
 import { ApiServiceService } from 'src/app/Service/api-service.service';
 import { CommonFunctionService } from 'src/app/Service/CommonFunctionService';
@@ -98,8 +101,10 @@ export class LoginComponent {
     // public lightbox: Lightbox,
     private router: Router,
     private fb: FormBuilder,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private eRef: ElementRef
   ) {}
+  isGuest: any = false;
   handleImageError(event: Event): void {
     const target = event.target as HTMLImageElement;
     target.src = '../../../../../assets/images/profile.png';
@@ -391,6 +396,14 @@ export class LoginComponent {
             );
             this.stopLoader();
             // form?.resetForm();
+          } else if (successCode.code == '401') {
+            this.isloginSendOTP = false;
+            this.toastr.error(
+              'You have entered incorrect mobile number or email or password.',
+              ''
+            );
+            this.stopLoader();
+            // form?.resetForm();
           } else {
             this.isloginSendOTP = false;
             this.toastr.error('OTP Validation Failed...', '');
@@ -468,12 +481,12 @@ export class LoginComponent {
   whichOTP = '';
   registrationSubmitted = false;
   pass: any = '';
-  handleSpacePress(event:KeyboardEvent){
+  handleSpacePress(event: KeyboardEvent) {
     if (event.key === ' ') {
       event.preventDefault();
     }
   }
-handleKeyPress(event: KeyboardEvent) {
+  handleKeyPress(event: KeyboardEvent) {
     if (
       event.key === ' ' &&
       (!this.data.CUSTOMER_NAME || this.data.CUSTOMER_NAME.length === 0)
@@ -531,20 +544,16 @@ handleKeyPress(event: KeyboardEvent) {
         !this.mobileNumberorEmail.trim() &&
         !this.pass.trim()
       ) {
-        this.toastr.error('Please fill in all fields.', 'Error');
+        this.toastr.error('Please fill in all fields.', '');
         return;
-      }
-
-      else if (
-        this.data.CUSTOMER_NAME == '' ||
+      } else if (
+        this.data.CUSTOMER_NAME.trim() == '' ||
         this.data.CUSTOMER_NAME == undefined ||
         this.data.CUSTOMER_NAME == null
       ) {
-        this.toastr.error('Please enter name.', 'Error');
+        this.toastr.error('Please enter name.', '');
         return;
-      }
-      
-      else if (
+      } else if (
         !this.mobileNumberorEmail ||
         this.mobileNumberorEmail == '' ||
         this.mobileNumberorEmail == undefined ||
@@ -560,38 +569,42 @@ handleKeyPress(event: KeyboardEvent) {
         this.toastr.error(`Please enter ${fieldName}.`, '');
         // this.toastr.error('Please enter mobile no. or email', 'Error');
         // return;
-      } 
-      else if (
+      } else if (
         this.inputType === 'email' &&
         !this.commonFunction.emailpattern.test(this.mobileNumberorEmail)
       ) {
         this.toastr.error(`Please enter valid email address.`, '');
         return;
-      } 
-      else if (
+      } else if (
         this.inputType === 'mobile' &&
         !this.commonFunction.mobpattern.test(this.mobileNumberorEmail)
       ) {
         this.toastr.error(`Please enter valid Mobile No.`, '');
         return;
-      }
-
-      else if (this.pass == '' || this.pass == undefined || this.pass == null) {
-        this.toastr.error('Please enter password.', 'Error');
+      } else if (
+        this.pass == '' ||
+        this.pass == undefined ||
+        this.pass == null
+      ) {
+        this.toastr.error('Please enter password.', '');
         return;
       }
 
-      
-      else if (!this.confirmPass) {
-        this.toastr.error('Please confirm your password.', 'Error');
-        return;
-      }
+      const passwordPattern =
+        /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9])\S{8,16}$/;
 
-      else if (this.pass !== this.confirmPass) {
+      if (!passwordPattern.test(this.pass)) {
         this.toastr.error(
-          'Password and Confirm Password must be the same.',
-          'Error'
+          'Password must be 8–16 characters with uppercase, lowercase, number, and symbol.',
+          ''
         );
+
+        return;
+      } else if (!this.confirmPass) {
+        this.toastr.error('Please enter confirm password.', '');
+        return;
+      } else if (this.pass !== this.confirmPass) {
+        this.toastr.error('Password and confirm password must be same.', '');
         return;
       }
 
@@ -1389,20 +1402,58 @@ handleKeyPress(event: KeyboardEvent) {
   selectedCountryCode: string = '+1';
   countryCodeVisible: boolean = false;
   userName: string = '';
+  // onIdentifierInput(event: any) {
+  //   const value = event.target.value;
+  //   console.log(this.mobileNumberorEmail, 'mobileoremail');
+  //   console.log(event, 'event');
+  //   if (!value || value.length < 3) {
+  //     this.inputType = 'initial';
+  //     return;
+  //   }
+
+  //   // Check if input contains letters
+  //   if (/[a-zA-Z]/.test(value)) {
+  //     this.inputType = 'email';
+  //     return;
+  //   }
+  //     this.inputType = 'mobile';
+
+  // }
   onIdentifierInput(event: any) {
-    const value = event.target.value;
+    let value: string = event.target.value;
     console.log(this.mobileNumberorEmail, 'mobileoremail');
     console.log(event, 'event');
+
     if (!value || value.length < 3) {
       this.inputType = 'initial';
       return;
     }
 
-    // Check if input contains letters
+    // Check if input contains letters → email
     if (/[a-zA-Z]/.test(value)) {
       this.inputType = 'email';
-    } else {
-      this.inputType = 'mobile';
+      return;
+    }
+
+    // Otherwise → mobile
+    this.inputType = 'mobile';
+
+    try {
+      // ✅ Detect country code from the first few digits
+      if (value.startsWith('00')) {
+        value = '+' + value.substring(2); // normalize 00 → +
+      }
+
+      const firstFour = value.substring(0, 4);
+      const match = this.countryCodes.find((c) =>
+        firstFour.startsWith(c.value)
+      );
+
+      if (match) {
+        this.selectedCountryCode = match.value;
+      }
+    } catch (err) {
+      console.warn('Error detecting country code:', err);
     }
   }
 
@@ -1657,7 +1708,8 @@ handleKeyPress(event: KeyboardEvent) {
   searchQuery: string = '';
   filteredCountryCodes: any[] = [];
 
-  toggleCountryDropdown() {
+  toggleCountryDropdown(event: Event) {
+    event.stopPropagation();
     this.showCountryDropdown = !this.showCountryDropdown;
     // console.log('showCountryDropdown: ', this.showCountryDropdown);
 
@@ -1698,19 +1750,25 @@ handleKeyPress(event: KeyboardEvent) {
     );
   }
 
-  // Close dropdown when clicking outside
+  // Reference all dropdown wrapper instances in the template
+  @ViewChildren('dropdownWrapper') dropdownWrappers!: QueryList<ElementRef>;
+
+  // Close dropdown when clicking outside any wrapper
   @HostListener('document:click', ['$event'])
-  onDocumentClick(event: any) {
-    const dropdown = document.querySelector('.country-dropdown');
-    const selector = document.querySelector('.country-code-selector');
-    if (dropdown && selector) {
-      if (
-        !dropdown.contains(event.target) &&
-        !selector.contains(event.target)
-      ) {
-        this.showCountryDropdown = false;
-        this.searchQuery = '';
-      }
+  onDocumentClick(event: MouseEvent) {
+    if (!this.showCountryDropdown) return;
+
+    const target = event.target as Node;
+    const wrappers = this.dropdownWrappers
+      ? this.dropdownWrappers.toArray()
+      : [];
+    const clickedInside = wrappers.some((ref) =>
+      ref.nativeElement.contains(target)
+    );
+
+    if (!clickedInside) {
+      this.showCountryDropdown = false;
+      this.searchQuery = '';
     }
   }
 
@@ -1808,7 +1866,7 @@ handleKeyPress(event: KeyboardEvent) {
       ? 'Enter email address'
       : this.inputType === 'mobile'
       ? 'Enter mobile number'
-      : 'Enter Email or Mobile Number';
+      : 'Enter email or mobile number';
   }
 
   alphaOnly(event: any) {
@@ -1856,8 +1914,7 @@ handleKeyPress(event: KeyboardEvent) {
 
     // console.log(this.forgotpass1, ' this.forgotpass ');
 
-
-     const loginModalEl = document.getElementById('loginmodal');
+    const loginModalEl = document.getElementById('loginmodal');
 
     // Check if the modal element exists and hide it using Bootstrap's modal function
     if (loginModalEl) {
@@ -1871,7 +1928,7 @@ handleKeyPress(event: KeyboardEvent) {
     //  this.renderer.removeClass(document.body, 'modal-open');
 
     // document.body.classList.remove('modal-open');
-    //  const loginModalEl :any = document.getElementById('loginmodal');
+    const loginModalEl: any = document.getElementById('loginmodal');
     // // console.log(loginModalEl);
     // loginModalEl.addEventListener('hidden.bs.modal', () => {
     //   document.body.style.overflow = ''; // reset to default
@@ -1885,11 +1942,11 @@ handleKeyPress(event: KeyboardEvent) {
     if (backdrop) {
       backdrop.remove();
     }
-    if (window.history.length > 1) {
-      this.location.back();
-    } else {
-      this.router.navigate(['/home']); // fallback
-    }
+    // if (window.history.length > 1) {
+    //   this.location.back();
+    // } else {
+    this.router.navigate(['/home']); // fallback
+    // }
   }
 
   showPassword: boolean = false;
@@ -1908,4 +1965,5 @@ handleKeyPress(event: KeyboardEvent) {
   toggleLoginPasswordVisibility() {
     this.showLoginPassword = !this.showLoginPassword;
   }
+  // Removed duplicate specific outside click handler in favor of the generic one above
 }

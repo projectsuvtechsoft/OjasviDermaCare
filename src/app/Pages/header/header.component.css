@@ -43,8 +43,8 @@ h4,
 
 /* Logo Responsive Adjustments */
 @media (max-width: 450px) {
-  .login-text{
-    font-size:18px!important;
+  .login-text {
+    font-size: 18px !important;
   }
 }
 /* Logo Responsive Adjustments */
@@ -757,7 +757,7 @@ select:focus {
 
 .customeclass::placeholder {
   font-size: 12px !important;
-    color: #999;
+  color: #999;
 }
 
 ::ng-deep .sticky {
@@ -928,7 +928,7 @@ select:focus {
 
 .captured-photo {
   width: 100%;
-  max-width: 320px;
+  /* max-width: 320px; */
   border-radius: 8px;
   margin-top: 15px;
   border: 2px solid #5a8f69;
@@ -1000,18 +1000,18 @@ video {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
- 
+
   &:hover {
     background-color: rgba(9, 43, 156, 0.1);
   }
 }
- 
+
 .unique-country-dropdown {
   margin-top: 10px;
   background: white;
-  /* border: 1px solid rgb(90, 143, 105); */
+  border: 1px solid rgb(90, 143, 105);
   border-radius: 8px;
-  /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
 }

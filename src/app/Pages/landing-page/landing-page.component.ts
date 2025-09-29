@@ -69,11 +69,32 @@ export class LandingPageComponent {
     this.getcustomerWebsiteReviews();
     this.getProducts();
     this.getBannerData();
+    this.getsession()
     this.IMAGEuRL = this.api.retriveimgUrl2();
     this.Imgurl = this.IMAGEuRL + 'CustomerProfile/';
     sessionStorage.setItem('IS_GUEST', 'false');
   }
-
+ sessionkey: string = '';
+  // private commonFunction = new CommonFunctionService(); // Assuming this is a service for common functions
+  getsession() {
+    if (
+      sessionStorage.getItem('SESSION_KEYS') == undefined ||
+      sessionStorage.getItem('SESSION_KEYS') == null
+    ) {
+      this.api.sessionKeyGet().subscribe(
+        (data) => {
+          var d = data['sessionKey'];
+          this.sessionkey = d;
+          // console.log("session key",this.sessionkey);
+          let ekey = this.commonFunction.encryptdata(this.sessionkey);
+          sessionStorage.setItem('SESSION_KEYS', ekey);
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+    }
+  }
   goToProductList() {
     // console.log('redirecting to product list');
     

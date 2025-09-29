@@ -477,7 +477,10 @@ export class HomeComponent {
     // Optional: Show a toast or notification
     // this.toastr.success(`${product.NAME} added to cart!`);
   }
-
+  hasActiveVariants(productId: number): boolean {
+    const variants = this.variantMap[productId] || [];
+    return variants.some((v) => v.STATUS === 1);
+  }
   removeFromCart(productId: string) {
     // this.productsArray = this.productsArray.filter(
     //   (p: any) => p.ID !== productId
@@ -673,24 +676,22 @@ export class HomeComponent {
   euserID: string = sessionStorage.getItem('userId') || '';
   decyptedsessionKey: any;
   toggleLike(product: any, event: any) {
- 
-    event.preventDefault();   // stop link navigation
+    event.preventDefault(); // stop link navigation
     event.stopPropagation();
     this.userID = this.commonFunction.decryptdata(this.euserID);
     let sessionKey = sessionStorage.getItem('SESSION_KEYS') || '';
     this.decyptedsessionKey = this.commonFunction.decryptdata(sessionKey);
- 
+
     if (this.userID) {
       this.decyptedsessionKey = '';
     }
- 
+
     const Data = {
       PRODUCT_ID: product.ID,
       CUSTOMER_ID: this.userID || 0,
       SESSION_KEY: this.decyptedsessionKey,
     };
- 
- 
+
     if (product.isLiked) {
       this.api.removeFavoriteProduct(Data).subscribe(
         (res) => {
@@ -708,7 +709,7 @@ export class HomeComponent {
       );
     } else {
       const addData = { ...Data, CLIENT_ID: 1 };
- 
+
       this.api.addFavoriteProduct(addData).subscribe(
         (res) => {
           if (res['code'] === 200) {
@@ -725,7 +726,6 @@ export class HomeComponent {
       );
     }
   }
- 
 
   totalFavourites: any;
   FavouritesData: any;

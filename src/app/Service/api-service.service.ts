@@ -47,7 +47,7 @@ export class ApiServiceService {
   // commonimgUrl = 'https://h10rqczh-9878.inc1.devtunnels.ms/api/upload/';
 
   // commoncode = 'https://p8rhkmb7-9878.inc1.devtunnels.ms';
-  // commonimgUrl = 'https://p8rhkmb7-9878.inc1.devtunnels.ms//api/upload/';
+  // commonimgUrl = 'https://p8rhkmb7-9878.inc1.devtunnels.ms/api/upload/';
 
   //  commoncode = 'http://192.168.29.212:9878';
   // commonimgUrl = 'http://192.168.29.212:9878/api/upload/';
@@ -56,9 +56,8 @@ export class ApiServiceService {
   // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
   // commonapplicationkey = '26lLNSmaKlcFziHH';
 
-   commonapikey= 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY';
-      commonapplicationkey= 'awlcQRwoZxAJQm7b';
- 
+  commonapikey = 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY';
+  commonapplicationkey = 'awlcQRwoZxAJQm7b';
 
   // live ojasvi
   //   APPLICATION_KEY = '26lLNSmaKlcFziHH'
@@ -3909,7 +3908,7 @@ export class ApiServiceService {
       token: this.cookie.get('token'),
     });
     return this.httpClient.post<any>(
-      this.baseUrl + 'web/customer/forgotPassword',
+      this.baseUrl + 'customer/forgotPassword',
       JSON.stringify(data),
       {
         headers,

@@ -4,6 +4,9 @@ import {
   ElementRef,
   Renderer2,
   ViewChild,
+  ViewChildren,
+  QueryList,
+  HostListener,
   ViewEncapsulation,
 } from '@angular/core';
 import { Router } from '@angular/router';
@@ -18,6 +21,8 @@ import { registerdata } from '../login/login/login.component';
 import { NgForm } from '@angular/forms';
 import { LoaderService } from 'src/app/Service/loader.service';
 import { DatePipe, Location } from '@angular/common';
+// import { parsePhoneNumberFromString } from 'libphonenumber-js';
+
 declare var bootstrap: any;
 
 @Component({
@@ -469,6 +474,82 @@ export class HeaderComponent {
       this.inputType = 'mobile';
     }
   }
+  // onIdentifierInput(event: any) {
+  //   let value: string = event.target.value;
+  //   console.log(this.mobileNumberorEmail, 'mobileoremail');
+  //   console.log(event, 'event');
+
+  //   if (!value || value.length < 3) {
+  //     this.inputType = 'initial';
+  //     return;
+  //   }
+
+  //   // Check if input contains letters → email
+  //   if (/[a-zA-Z]/.test(value)) {
+  //     this.inputType = 'email';
+  //     return;
+  //   }
+
+  //   // Otherwise → mobile
+  //   this.inputType = 'mobile';
+
+  //   try {
+  //     // ✅ Detect country code from the first few digits
+  //     if (value.startsWith('00')) {
+  //       value = '+' + value.substring(2); // normalize 00 → +
+  //     }
+
+  //     const firstFour = value.substring(0, 4);
+  //     const match = this.countryCodes.find((c) =>
+  //       firstFour.startsWith(c.value)
+  //     );
+
+  //     if (match) {
+  //       this.selectedCountryCode = match.value;
+  //     }
+  //   } catch (err) {
+  //     console.warn('Error detecting country code:', err);
+  //   }
+  // }
+
+  // onIdentifierInput(event: any) {
+  //   let value: string = event.target.value;
+
+  //   if (!value || value.length < 3) {
+  //     this.inputType = 'initial';
+  //     return;
+  //   }
+
+  //   // Check if input contains letters → email
+  //   if (/[a-zA-Z]/.test(value)) {
+  //     this.inputType = 'email';
+  //     return;
+  //   }
+
+  //   // Otherwise → mobile
+  //   this.inputType = 'mobile';
+
+  //   try {
+  //     // Normalize numbers starting with 00 → +
+  //     if (value.startsWith('00')) {
+  //       value = '+' + value.substring(2);
+  //     }
+
+  //     // Parse number with libphonenumber-js
+  //     const phoneNumber = parsePhoneNumberFromString(value);
+  //     if (phoneNumber) {
+  //       const dialCode = '+' + phoneNumber.countryCallingCode;
+
+  //       // update selectedCountryCode if found in your list
+  //       const match = this.countryCodes.find((c) => c.value === dialCode);
+  //       if (match) {
+  //         this.selectedCountryCode = match.value;
+  //       }
+  //     }
+  //   } catch (err) {
+  //     console.warn('Error detecting country code:', err);
+  //   }
+  // }
   handleKeyPress(event: KeyboardEvent) {
     if (event.key === ' ') {
       event.preventDefault();
@@ -482,7 +563,7 @@ export class HeaderComponent {
       ? 'Enter email address'
       : this.inputType === 'mobile'
       ? 'Enter mobile number'
-      : 'Enter Email or Mobile Number';
+      : 'Enter email or mobile number';
   }
 
   showRegisterModal() {
@@ -764,6 +845,25 @@ export class HeaderComponent {
     }
   }
 
+  // Close-on-outside-click support for any country dropdown instance in this component
+  @ViewChildren('dropdownWrapper') dropdownWrappers!: QueryList<ElementRef>;
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.showCountryDropdown) return;
+    const target = event.target as Node;
+    const wrappers = this.dropdownWrappers
+      ? this.dropdownWrappers.toArray()
+      : [];
+    const clickedInside = wrappers.some((ref) =>
+      ref.nativeElement.contains(target)
+    );
+    if (!clickedInside) {
+      this.showCountryDropdown = false;
+      this.searchQuery = '';
+    }
+  }
+
   private isEmail(value: string): boolean {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailPattern.test(value);
@@ -830,7 +930,7 @@ export class HeaderComponent {
       this.data.PASSWORD == null ||
       this.data.PASSWORD == undefined
     ) {
-      this.toastr.error('Please Enter Password.', '');
+      this.toastr.error('Please enter password.', '');
     } else {
       // Determine type based on input value
       this.type = this.isEmail(this.mobileNumberorEmail) ? 'E' : 'M';
@@ -848,6 +948,7 @@ export class HeaderComponent {
         .subscribe({
           next: (successCode: any) => {
             if (successCode.code == '200') {
+              // console.log(successCode, 'successCode');
               this.stopLoader();
               // form?.resetForm();
               // console.log(this.data, 'iotrriuuiyoio');
@@ -909,7 +1010,7 @@ export class HeaderComponent {
 
               this.inputType = 'initial';
 
-              console.log(this.isLoggedIn, 'this.isLoggedIn');
+              // console.log(this.isLoggedIn, 'this.isLoggedIn');
               this.toastr.success('You have login Successfully!', 'success');
             } else if (successCode.code == '404') {
               // form?.resetForm();

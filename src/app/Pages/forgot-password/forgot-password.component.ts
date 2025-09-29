@@ -1,5 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  QueryList,
+  ViewChildren,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiServiceService } from 'src/app/Service/api-service.service';
 import { CommonFunctionService } from 'src/app/Service/CommonFunctionService';
@@ -7,11 +13,12 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-forgot-password',
   templateUrl: './forgot-password.component.html',
-  styleUrls: ['./forgot-password.component.css']
+  styleUrls: ['./forgot-password.component.css'],
 })
 export class ForgotPasswordComponent {
   email: string = '';
   getLinkLoading: boolean = false;
+  linkSent: boolean = false;
   verifyLoading: boolean = false;
   showOtp: boolean = false;
 
@@ -31,7 +38,6 @@ export class ForgotPasswordComponent {
   showConfirmPassword: boolean = false;
   showNewPassword: boolean = false;
 
-
   ngOnInit() {
     // this.filteredCountryCodes = this.countryCodes;
   }
@@ -41,14 +47,13 @@ export class ForgotPasswordComponent {
     private api: ApiServiceService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private toastr: ToastrService,
-    // private message: NzNotificationService
-  ) { }
-  emailPattern = /^[_a-zA-Z0-9]+(\.[_a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,4})$/;
+    private toastr: ToastrService // private message: NzNotificationService
+  ) {}
+  emailPattern =
+    /^[_a-zA-Z0-9]+(\.[_a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,4})$/;
   identifier: string = '';
 
-
-   userMobileNo:any;
+  userMobileNo: any;
   sendLink() {
     // if (!this.email) {
     //   this.toastr.error('Error', 'Please enter username');
@@ -59,7 +64,6 @@ export class ForgotPasswordComponent {
     //   return;
     // }
 
-    
     if (
       !this.mobileNumberorEmail ||
       this.mobileNumberorEmail == '' ||
@@ -70,21 +74,19 @@ export class ForgotPasswordComponent {
         this.inputType === 'email'
           ? 'your email addresss'
           : this.inputType === 'mobile'
-            ? 'your mobile number'
-            : 'email or mobile number';
+          ? 'your mobile number'
+          : 'email or mobile number';
 
       this.toastr.error(`Please enter ${fieldName}.`, '');
       // this.toastr.error('Please enter mobile no. or email', 'Error');
-      // return;
-    }
-    else if (
+      return;
+    } else if (
       this.inputType === 'email' &&
       !this.commonFunction.emailpattern.test(this.mobileNumberorEmail)
     ) {
       this.toastr.error(`Please enter valid email address.`, '');
       return;
-    }
-    else if (
+    } else if (
       this.inputType === 'mobile' &&
       !this.commonFunction.mobpattern.test(this.mobileNumberorEmail)
     ) {
@@ -92,76 +94,78 @@ export class ForgotPasswordComponent {
       return;
     }
 
+    let mobileNoToSend = '';
+    let emailToSend = '';
 
+    if (this.inputType === 'mobile') {
+      mobileNoToSend = this.mobileNumberorEmail;
+    } else if (this.inputType === 'email') {
+      emailToSend = this.mobileNumberorEmail;
+    }
+    this.getLinkLoading = true;
 
- let mobileNoToSend = '';
-  let emailToSend = '';
-
-  if (this.inputType === 'mobile') {
-    mobileNoToSend = this.mobileNumberorEmail;
-  } else if (this.inputType === 'email') {
-    emailToSend = this.mobileNumberorEmail;
-  }
-    // this.getLinkLoading = false;
-
-    this.api.sendLink( mobileNoToSend, emailToSend).subscribe(
+    this.api.sendLink(mobileNoToSend, emailToSend).subscribe(
       (data) => {
         console.log('Reset email sent:', data);
-        // this.getLinkLoading = false;
-        // this.showOtp = true;
-        // this.otpSent = true;
-        // this.reinitiliseOTPCountdown();
-        // this.startOTPCountdown();
-        // this.toastr.success(
-        //   'Success',
-        //   'OTP sent to your email! Please check your inbox.'
-        // );
-        // if (this.inputType === 'email') {
-        //   this.sendEmailLink();
-        // } else if (this.inputType === 'mobile') {
-        //   // this.sendWhatsAppLink();
-        // }
-        
+        if (data.code == '200') {
+          this.getLinkLoading = false;
+          this.linkSent = true;
+          // this.showOtp = true;
+          // this.otpSent = true;
+          // this.reinitiliseOTPCountdown();
+          // this.startOTPCountdown();
+          // this.toastr.success(
+          //   'Success',
+          //   'OTP sent to your email! Please check your inbox.'
+          // );
+          // if (this.inputType === 'email') {
+          //   this.sendEmailLink();
+          // } else if (this.inputType === 'mobile') {
+          //   // this.sendWhatsAppLink();
+          // }
+          this.toastr.success('Password reset link sent successfully', '');
+        } else if (data.code == '400') {
+          this.getLinkLoading = false;
+          this.linkSent = false;
+          this.toastr.error(
+            'This email or mobile number is not registered.',
+            ''
+          );
+        }
       },
       (error) => {
-        // this.getLinkLoading = false;
-        this.toastr.error(
-          'Error',
-          'Error sending otp:  User not found'
-        );
+        this.getLinkLoading = false;
+        this.toastr.error('Error', 'Error sending otp:  User not found');
       }
     );
-
-
   }
 
   private sendEmailLink(): void {
     const emailData = { email: this.identifier };
     this.http.post('YOUR_BACKEND_EMAIL_API_URL', emailData).subscribe(
-      response => {
+      (response) => {
         // console.log('Email link sent successfully', response);
         this.toastr.error('Email link sent successfully', '');
         this.getLinkLoading = false;
         // Handle success, e.g., show a success message
       },
-      error => {
+      (error) => {
         // console.error('Error sending email link', error);
         this.toastr.error('Error sending email link', error);
         this.getLinkLoading = false;
         // Handle error, e.g., show an error message
       }
     );
-
   }
   private sendWhatsAppLink(): void {
     const mobileData = { mobileNumber: this.identifier };
     this.http.post('YOUR_BACKEND_WHATSAPP_API_URL', mobileData).subscribe(
-      response => {
+      (response) => {
         console.log('WhatsApp link sent successfully', response);
         this.getLinkLoading = false;
         // Handle success
       },
-      error => {
+      (error) => {
         console.error('Error sending WhatsApp link', error);
         this.getLinkLoading = false;
         // Handle error
@@ -169,13 +173,12 @@ export class ForgotPasswordComponent {
     );
   }
 
-
   onGotoLogin() {
     this.router.navigate(['/login']);
     // window.location.reload();
   }
   onSubmitOtp() {
-    false    // this.api.requestResetPassword(this.email, this.otp).subscribe(
+    false; // this.api.requestResetPassword(this.email, this.otp).subscribe(
     //   (response) => {
     //     console.log('Reset email sent:', response);
     //     this._message.success('Success', 'OTP verified successfully');
@@ -218,7 +221,10 @@ export class ForgotPasswordComponent {
       this.toastr.warning('Warning', 'Please enter valid password');
       return;
     } else if (this.newPassword != this.confirmPassword) {
-      this.toastr.warning('Warning', 'New password & confirm password must be same');
+      this.toastr.warning(
+        'Warning',
+        'New password & confirm password must be same'
+      );
       return;
     } else {
       this.Loading = false;
@@ -248,15 +254,6 @@ export class ForgotPasswordComponent {
     return passwordPattern.test(password);
   }
 
-
-
-
-
-
-
-
-
-
   // ******************************************
   inputType: 'initial' | 'mobile' | 'email' = 'initial';
   showCountryDropdown: boolean = false;
@@ -276,8 +273,6 @@ export class ForgotPasswordComponent {
       this.searchQuery = '';
     }
   }
-
-
 
   filterCountries(event: any) {
     const query = event.target.value.toLowerCase().trim();
@@ -300,8 +295,8 @@ export class ForgotPasswordComponent {
     return this.inputType === 'email'
       ? 'Enter email address'
       : this.inputType === 'mobile'
-        ? 'Enter mobile number'
-        : 'Enter Email or Mobile Number';
+      ? 'Enter mobile number'
+      : 'Enter email or mobile number';
   }
 
   onIdentifierInput(event: any) {
@@ -560,22 +555,24 @@ export class ForgotPasswordComponent {
     { label: 'Uzbekistan (+998)', value: '+998' },
   ];
 
+  // Close-on-outside-click support for country dropdown
+  @ViewChildren('dropdownWrapper') dropdownWrappers!: QueryList<ElementRef>;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.showCountryDropdown) return;
+    const target = event.target as Node;
+    const wrappers = this.dropdownWrappers
+      ? this.dropdownWrappers.toArray()
+      : [];
+    const clickedInside = wrappers.some((ref) =>
+      ref.nativeElement.contains(target)
+    );
+    if (!clickedInside) {
+      this.showCountryDropdown = false;
+      this.searchQuery = '';
+    }
+  }
 
   // identifier: string = '';
   // isMobileNumber: boolean = false;
@@ -588,12 +585,10 @@ export class ForgotPasswordComponent {
   // // emailPattern: string = '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$';
   // mobilePattern: string = '^[6-9]\\d{9}$'; // Simple 10-digit mobile number pattern
 
-
   // selectCountry(country: any): void {
   //   this.selectedCountryCode = country.value;
   //   this.showCountryDropdown = false;
   // }
-
 
   //  onIdentifierInput(): void {
   //   const value = this.displayIdentifier.trim();
@@ -608,7 +603,6 @@ export class ForgotPasswordComponent {
   //     this.isMobileNumber = false;
   //   }
   // }
-
 
   // // Handles the logic for the country dropdown
   // toggleCountryDropdown(): void {
@@ -863,7 +857,6 @@ export class ForgotPasswordComponent {
   //   { label: 'Uzbekistan (+998)', value: '+998' },
   // ];
 
-
   // // Getter/Setter logic remains the same
   // get displayIdentifier(): string {
   //   return this.isMobileNumber
@@ -879,8 +872,6 @@ export class ForgotPasswordComponent {
   //   }
   // }
 
-
-
   // filterCountries(): void {
   //   const query = this.searchQuery.toLowerCase().trim();
   //   if (query) {
@@ -891,7 +882,4 @@ export class ForgotPasswordComponent {
   //     this.filteredCountryCodes = this.countryCodes;
   //   }
   // }
-
-
 }
-

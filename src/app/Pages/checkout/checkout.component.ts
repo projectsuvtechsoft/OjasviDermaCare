@@ -22,6 +22,7 @@ interface Address {
   LOCALITY?: string; // New field
   ADDRESS_TYPE?: 'Residential' | 'Office'; // New field
   IS_DEFAULT?: boolean; // New field
+  IS_DEFUALT_ADDRESS?: boolean;
   CUST_ID?: string; // Assuming CUST_ID is for customer association
   SESSION_KEY: any;
 }
@@ -58,6 +59,7 @@ export class CheckoutComponent {
     LOCALITY: '',
     ADDRESS_TYPE: 'Residential',
     IS_DEFAULT: false,
+    IS_DEFUALT_ADDRESS: false,
     SESSION_KEY: '',
   };
 
@@ -80,7 +82,7 @@ export class CheckoutComponent {
 
   showOrderSummaryModal: boolean = false;
   ngOnInit() {
-    // console.log(this.cartDetails);
+    console.log(this.cartDetails);
 
     // this.addressDrawerOpen=false
     this.fetchSavedAddresses();
@@ -108,9 +110,9 @@ export class CheckoutComponent {
     // Optional: Reset form state when closing the drawer completely
     this.resetAddressForm();
     this.currentAddressId = null; // Clear any active editing
-    setTimeout(() => {
-      window.location.reload(); // Reload the page to reflect any changes
-    }, 6000);
+    // setTimeout(() => {
+    //   window.location.reload(); // Reload the page to reflect any changes
+    // }, 6000);
     // window.location.reload(); // Reload the page to reflect any changes
   }
 
@@ -180,10 +182,14 @@ export class CheckoutComponent {
             LANDMARK: addr.LANDMARK,
             LOCALITY: addr.LOCALITY,
             ADDRESS_TYPE: addr.ADDRESS_TYPE,
-            IS_DEFAULT: addr.IS_DEFAULT === 1 ? true : false,
+            IS_DEFAULT: addr.IS_DEFUALT_ADDRESS == 1 ? true : false,
             CUST_ID: addr.CUST_ID,
             SESSION_KEY: addr.SESSION_KEY,
+            MOBILE_NO: addr.MOBILE_NO,
           }));
+          this.selectedAddress =
+            this.savedAddresses.find((a) => a.IS_DEFAULT) ||
+            this.savedAddresses[0];
         } else {
           this.toastr.error('Failed to load saved addresses.', 'Error');
           this.savedAddresses = [];
@@ -208,7 +214,7 @@ export class CheckoutComponent {
       STATE_ID: '',
       LANDMARK: '',
       LOCALITY: '',
-      ADDRESS_TYPE: 'Residential',
+      ADDRESS_TYPE: undefined,
       IS_DEFAULT: false,
       SESSION_KEY: '',
     };
@@ -218,14 +224,107 @@ export class CheckoutComponent {
   sessionkey: string = sessionStorage.getItem('SESSION_KEYS') || '';
   SESSION_KEYS = this.commonFunction.decryptdata(this.sessionkey);
 
+  // Add this method to your component:
+  onDefaultAddressChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+    this.addressForm.IS_DEFAULT = target.checked;
+    console.log('Checkbox changed to:', this.addressForm.IS_DEFAULT);
+  }
+
   saveAddress(form: NgForm) {
-    if (form.invalid) {
-      this.toastr.error(
-        'Please fill in all required address fields (marked with *).',
-        'Validation Error'
-      );
+    // if (form.invalid) {
+    //   this.toastr.error('Please fill all required fields.', '');
+    //   return;
+    // }
+    if (
+      (this.addressForm.NAME == '' ||
+        this.addressForm.NAME == null ||
+        this.addressForm.NAME == undefined) &&
+      (this.addressForm.MOBILE_NO == '' ||
+        this.addressForm.MOBILE_NO == null ||
+        this.addressForm.MOBILE_NO == undefined) &&
+      (this.addressForm.ADDRESS == '' ||
+        this.addressForm.ADDRESS == null ||
+        this.addressForm.ADDRESS == undefined) &&
+      (this.addressForm.LANDMARK == '' ||
+        this.addressForm.LANDMARK == null ||
+        this.addressForm.LANDMARK == undefined) &&
+      (this.addressForm.STATE_ID == '' ||
+        this.addressForm.STATE_ID == null ||
+        this.addressForm.STATE_ID == undefined) &&
+      (this.addressForm.CITY == '' ||
+        this.addressForm.CITY == null ||
+        this.addressForm.CITY == undefined) &&
+      (this.addressForm.PINCODE == '' ||
+        this.addressForm.PINCODE == null ||
+        this.addressForm.PINCODE == undefined) &&
+      (!this.addressForm.ADDRESS_TYPE ||
+        !this.addressForm.ADDRESS_TYPE.trim()) &&
+      this.addressForm.IS_DEFAULT === false
+    ) {
+      // this.isOk = false;
+      this.toastr.error(' Please Fill All Required Fields ', '');
+      return;
+    } else if (
+      this.addressForm.NAME == null ||
+      this.addressForm.NAME.trim() == ''
+    ) {
+      // this.isOk = false;
+      this.toastr.error('Please Enter Name', '');
+      return;
+    } else if (
+      this.addressForm.MOBILE_NO == null ||
+      this.addressForm.MOBILE_NO.trim() == ''
+    ) {
+      // this.isOk = false;
+      this.toastr.error('Please Enter Mobile Number', '');
+      return;
+    } else if (
+      this.addressForm.ADDRESS == null ||
+      this.addressForm.ADDRESS.trim() == ''
+    ) {
+      // this.isOk = false;
+      this.toastr.error('Please Enter Address', '');
+      return;
+    } else if (
+      this.addressForm.COUNTRY_ID == undefined ||
+      this.addressForm.COUNTRY_ID == ''
+    ) {
+      // this.isOk = false;
+      this.toastr.error('Please Select Country', '');
+      return;
+    } else if (
+      this.addressForm.STATE_ID == undefined ||
+      this.addressForm.STATE_ID == ''
+    ) {
+      // this.isOk = false;
+      this.toastr.error('Please Select State', '');
+      return;
+    } else if (
+      this.addressForm.CITY == null ||
+      this.addressForm.CITY.trim() == ''
+    ) {
+      // this.isOk = false;
+      this.toastr.error('Please Enter City', '');
+      return;
+    } else if (
+      this.addressForm.PINCODE == undefined ||
+      this.addressForm.PINCODE == ''
+    ) {
+      // this.isOk = false;
+      this.toastr.error(' Please Enter Zipcode ', '');
+      return;
+    } else if (
+      !this.addressForm.ADDRESS_TYPE ||
+      !this.addressForm.ADDRESS_TYPE.trim()
+    ) {
+      this.toastr.error('Please Select Address Type', '');
       return;
     }
+    // } else if (this.addressForm.IS_DEFAULT === false) {
+    //   this.toastr.error('Please specify if this is default', '');
+    //   return;
+    // }
 
     if (this.userId) {
       this.addressForm.CUST_ID = this.userId;
@@ -234,10 +333,15 @@ export class CheckoutComponent {
     }
 
     if (this.isEditingAddress && this.currentAddressId) {
+      this.addressForm.IS_DEFAULT = Boolean(this.addressForm.IS_DEFAULT);
+      this.addressForm.IS_DEFUALT_ADDRESS = Boolean(
+        this.addressForm.IS_DEFAULT
+      );
       this.api.updateAddressMaster(this.addressForm).subscribe({
         next: (response: any) => {
           if (response.code === 200) {
             this.toastr.success('Address updated successfully!', 'Success');
+            console.log(this.addressForm);
             this.fetchSavedAddresses();
             this.goBackToAddressList();
           } else {
@@ -255,11 +359,15 @@ export class CheckoutComponent {
         },
       });
     } else {
+      this.addressForm.IS_DEFUALT_ADDRESS = Boolean(
+        this.addressForm.IS_DEFAULT
+      );
       this.api.createAddressMaster(this.addressForm).subscribe({
         next: (response: any) => {
           if (response.code === 200) {
             this.toastr.success('Address added successfully!', 'Success');
             this.addressForm.ID = response.data?.ID || String(Date.now());
+            console.log(this.addressForm);
             this.fetchSavedAddresses();
             this.goBackToAddressList();
           } else {
@@ -275,6 +383,16 @@ export class CheckoutComponent {
       });
     }
   }
+
+  // Method to auto-select default address during shopping
+  // autoSelectDefaultAddress() {
+  //   const defaultAddress = this.getDefaultAddress();
+  //   if (defaultAddress) {
+  //     this.selectedShippingAddress = defaultAddress;
+  //     return defaultAddress;
+  //   }
+  //   return null;
+  // }
   deleteAddress(addressId: string) {
     if (confirm('Are you sure you want to delete this address?')) {
       // Uncomment and test your API call for deletion
@@ -593,7 +711,7 @@ export class CheckoutComponent {
         queryParams: { section },
       })
       .then(() => {
-        window.location.reload();
+        // window.location.reload();
         // window.scrollTo(0, 0);
       });
   }

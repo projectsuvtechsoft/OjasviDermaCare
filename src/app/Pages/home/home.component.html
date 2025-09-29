@@ -389,16 +389,6 @@
         >
           <div
             class="product-card bg-white rounded-lg shadow-sm overflow-hidden"
-            (click)="addtodetail(product)"
-            [routerLink]="
-              selectedVariantMap[product.ID]
-                ? [
-                    '/product_details',
-                    product.ID,
-                    selectedVariantMap[product.ID]
-                  ]
-                : ['/product_details', product.ID]
-            "
             *ngFor="
               let product of products;
               trackBy: trackByProductId;
@@ -416,7 +406,7 @@
                     getImageArray(product)[imageIndices[product.ID]]
                   "
                   [alt]="product.NAME"
-                  class="max-h-full max-w-full object-contain"
+                  class="max-h-full max-w-full object-contain mt-2"
                 />
               </div>
 
@@ -478,15 +468,56 @@
               <span class="text-xs text-gray-500">{{
                 product.CATEGORY_NAME
               }}</span>
+              <span
+                *ngIf="product.DISCOUNT"
+                class="text-green-800 px-2 py-1 rounded text-sm float-right"
+              >
+                <span>{{ product.DISCOUNT }}% off</span>
+              </span>
+              <!-- <h3
+                class="text-lg font-medium text-gray-900 mt-1 hover:text-[rgb(90,143,105)]"
+                style="margin-top: 0px !important; cursor: pointer"
+                (click)="addtodetail(product)"
+                [routerLink]="
+                  selectedVariantMap[product.ID]
+                    ? [
+                        '/product_details',
+                        product.ID,
+                        selectedVariantMap[product.ID]
+                      ]
+                    : ['/product_details', product.ID]
+                "
+              >
+                {{ product.NAME }}
+              </h3> -->
               <h3
-                class="text-lg font-medium text-gray-900 mt-1"
-                style="margin-top: 0px !important"
+                class="text-lg font-medium text-gray-900 mt-1 hover:text-[rgb(90,143,105)] truncate"
+                style="cursor: pointer; margin-top: 0 !important"
+                (click)="addtodetail(product)"
+                [routerLink]="
+                  selectedVariantMap[product.ID]
+                    ? [
+                        '/product_details',
+                        product.ID,
+                        selectedVariantMap[product.ID]
+                      ]
+                    : ['/product_details', product.ID]
+                "
+                [title]="product.NAME"
               >
                 {{ product.NAME }}
               </h3>
-              <p class="text-sm text-gray-600 mt-2 line-clamp-2">
+
+              <!-- <p class="text-sm text-gray-600 mt-2 line-clamp-2">
+                {{ product.DESCRIPTION }}
+              </p> -->
+              <p
+                class="text-sm text-gray-600 mt-2 line-clamp-2"
+                [title]="product.DESCRIPTION"
+              >
                 {{ product.DESCRIPTION }}
               </p>
+
               <div
                 class="flex items-center justify-between mt-4"
                 style="margin-top: 10px !important"
@@ -520,7 +551,12 @@
                     </option>
                 </select> -->
                 <select
-                  *ngIf="product.IS_VERIENT_AVAILABLE == 1"
+                  *ngIf="
+                    product.IS_VERIENT_AVAILABLE == 1 &&
+                    (product.VARIENTS != null ||
+                      product.VARIENTS != undefined) &&
+                    hasActiveVariants(product.ID)
+                  "
                   class="sm:w-auto border border-green-400 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-300"
                   [(ngModel)]="selectedVariantMap[product.ID]"
                   (ngModelChange)="change($event, product.ID)"
@@ -558,7 +594,8 @@
                   [disabled]="
                     product.IS_UPCOMING == 1 ||
                     product.CURRENT_STOCK_VARIENT <= 0 ||
-                    currentStockMap[product.ID] <= 0
+                    currentStockMap[product.ID] <= 0 ||
+                    !hasActiveVariants(product.ID)
                   "
                   id="addToCartBtn"
                   [ngClass]="{
@@ -569,7 +606,8 @@
                     'bg-gray-400 cursor-not-allowed':
                       product.IS_UPCOMING == 1 ||
                       product.CURRENT_STOCK_VARIENT <= 0 ||
-                      currentStockMap[product.ID] <= 0
+                      currentStockMap[product.ID] <= 0 ||
+                      !hasActiveVariants(product.ID)
                   }"
                 >
                   Add to Cart

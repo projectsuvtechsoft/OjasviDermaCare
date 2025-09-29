@@ -517,13 +517,26 @@ export class ProductpageComponent {
     this.api
       .getViewDetails(this.productId, this.userID)
       .subscribe((data: any) => {
-        if (data && data.data && Array.isArray(data.data)) {
-          // handle your FAQ data here
-          this.ViewData = data;
+        // if (data && data.data && Array.isArray(data.data)) {
+        //   // handle your FAQ data here
+        //   this.ViewData = data;
+        //   this.getpropertyDetails1();
+        //   console.log('ViewData Details:', this.ViewData);
+        // } else {
+        //   console.error('Something Went Wrong.', '');
+        // }
+        if (data && data.data) {
+          let ids: string[] = [];
+          if (typeof data.data === 'string') {
+            ids = data.data.split(',').map((id: string) => id.trim());
+          } else if (Array.isArray(data.data)) {
+            ids = data.data;
+          }
+          this.ViewData = { data: ids }; // normalize into array
           this.getpropertyDetails1();
           console.log('ViewData Details:', this.ViewData);
         } else {
-          console.error('Something Went Wrong.', '');
+          console.error('Something Went Wrong.');
         }
       });
   }
@@ -582,6 +595,8 @@ export class ProductpageComponent {
           this.variantRateMap[product.ID] = matchingVariant.RATE || 0;
           this.variantStockMap[product.ID] = matchingVariant.OPENING_STOCK || 0;
           this.selectedVariantStock = matchingVariant.CURRENT_STOCK || 0;
+          console.log('Matching ', matchingVariant);
+          console.log('propertyData', this.propertyyData);
         } else {
           const firstAvailable = variants.find((v: any) => v.STATUS === 1);
           if (firstAvailable) {
@@ -590,6 +605,7 @@ export class ProductpageComponent {
             this.variantStockMap[product.ID] =
               firstAvailable.OPENING_STOCK || 0;
             this.selectedVariantStock = firstAvailable.CURRENT_STOCK || 0;
+            console.log('first Available', firstAvailable);
           }
         }
       }
@@ -788,6 +804,7 @@ export class ProductpageComponent {
   }
 
   producctImageurl: string = this.api.retriveimgUrl;
+  producctImageurl2: string = this.api.retriveimgUrl + 'prdoctImages/';
 
   IMAGEuRL = 'https://your-backend.com/uploads/';
 
@@ -837,18 +854,18 @@ export class ProductpageComponent {
       );
       // console.log(selectedVarientdata,'selectedVarientdata');
       if (selectedVarientdata) {
-        const nextQuantity = this.quantity + 1; // simulate the next step
-        const nextTotalSize = selectedVarientdata.SIZE * nextQuantity;
-        const varientStock = selectedVarientdata.CURRENT_STOCK;
+        // const nextQuantity = this.quantity + 1; // simulate the next step
+        // const nextTotalSize = selectedVarientdata.SIZE * nextQuantity;
+        // const varientStock = selectedVarientdata.CURRENT_STOCK;
         // console.log(nextQuantity, nextTotalSize, varientStock);
-        
-        if (nextQuantity <= varientStock && nextTotalSize <= varientStock) {
-          this.quantity++;
-          // item.QUANTITY++;
-          this.updateTotalPrice();
-          } else {
-          this.toastr.info('Maximum quantity reached', 'Info');
-        }
+
+        // if (nextQuantity <= varientStock && nextTotalSize <= varientStock) {
+        this.quantity++;
+        // item.QUANTITY++;
+        this.updateTotalPrice();
+        //   } else {
+        //   this.toastr.info('Maximum quantity reached', 'Info');
+        // }
       }
     }
 

@@ -11,6 +11,7 @@ import {
   Event,
   NavigationStart,
 } from '@angular/router';
+import { CommonFunctionService } from './Service/CommonFunctionService';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -29,13 +30,13 @@ export class AppComponent {
     this.loaderService.isLoading$.subscribe((loading) => {
       this.isLoading = loading;
     });
-
   }
   needLogeIn: boolean = false;
   isLoading = false; // Loader starts by default
   flashscreen: boolean = true;
   showFooter = true;
   showHeader = true;
+  public commonFunction: CommonFunctionService = new CommonFunctionService();
 
   hideFooter: boolean = false;
   showPopup: boolean = false;
@@ -56,8 +57,8 @@ export class AppComponent {
         const currentUrl = event.urlAfterRedirects;
 
         const loginRoute = '/login';
-        const forgotpasswordroute = '/forgot-password'
-        const resetpassword = '/reset-password'
+        const forgotpasswordroute = '/forgot-password';
+        const resetpassword = '/reset-password';
         const routesToHide = [loginRoute, forgotpasswordroute, resetpassword];
         const exactHiddenRoutes1 = ['book-common-page'];
         const dynamicPattern =
@@ -98,7 +99,27 @@ export class AppComponent {
     });
     this.showPopup = true;
   }
-
+  sessionkey: string = '';
+  // private commonFunction = new CommonFunctionService(); // Assuming this is a service for common functions
+  getsession() {
+    if (
+      sessionStorage.getItem('SESSION_KEYS') == undefined ||
+      sessionStorage.getItem('SESSION_KEYS') == null
+    ) {
+      this.apiservice.sessionKeyGet().subscribe(
+        (data) => {
+          var d = data['sessionKey'];
+          this.sessionkey = d;
+          // console.log("session key",this.sessionkey);
+          let ekey = this.commonFunction.encryptdata(this.sessionkey);
+          sessionStorage.setItem('SESSION_KEYS', ekey);
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+    }
+  }
   closePopup(): void {
     this.showPopup = false;
   }

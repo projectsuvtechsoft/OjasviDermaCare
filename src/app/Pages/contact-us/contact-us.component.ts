@@ -21,10 +21,15 @@ export class ContactUsComponent {
     MESSAGE: '',
   };
   public commonFunction = new CommonFunctionService();
-emailaddress:any='';
-loadingRecords: boolean = false;
-//  private commonFunction = new CommonFunctionService();
-  constructor(private api: ApiServiceService, private toastr: ToastrService, public datepipe: DatePipe, private cookie:CookieService) {}
+  emailaddress: any = '';
+  loadingRecords: boolean = false;
+  //  private commonFunction = new CommonFunctionService();
+  constructor(
+    private api: ApiServiceService,
+    private toastr: ToastrService,
+    public datepipe: DatePipe,
+    private cookie: CookieService
+  ) {}
 
   isOk: boolean = false;
   isSpinning: boolean = false;
@@ -34,7 +39,9 @@ loadingRecords: boolean = false;
 
     if (
       this.contactData.NAME == undefined ||
-      this.contactData.NAME == null
+      this.contactData.NAME == null ||
+      this.contactData.NAME == '' ||
+      this.contactData.NAME.trim() == ''
     ) {
       this.isOk = false;
       this.toastr.error('Please Enter  Name', '');
@@ -55,6 +62,13 @@ loadingRecords: boolean = false;
       // console.log(this.toastr)
       this.toastr.error('Please Enter Mobile No', '');
     } else if (
+      !this.commonFunction.internationalmobpattern.test(
+        this.contactData.MOBILE_NO
+      )
+    ) {
+      this.isOk = false;
+      this.toastr.error('Please enter a valid mobile number', '');
+    } else if (
       this.contactData.SUBJECT == undefined ||
       this.contactData.SUBJECT == null ||
       this.contactData.SUBJECT == '' ||
@@ -71,16 +85,16 @@ loadingRecords: boolean = false;
       this.isOk = false;
       this.toastr.error('Please Enter Message', '');
     }
-    if (this.isOk) {  
+    if (this.isOk) {
       this.isSpinning = true;
       {
         this.api.SendMessage(this.contactData).subscribe(
           (successCode) => {
-            console.log("contactData",this.contactData);
+            console.log('contactData', this.contactData);
             if (successCode.code == 200) {
               this.isSpinning = false;
+              contactData.resetForm();
               this.toastr.success(
-              
                 'Contact Information Saved  Successfully...',
                 ''
               );
@@ -98,45 +112,47 @@ loadingRecords: boolean = false;
     }
   }
 
-   
- SubsribeToNewsLetter() {
-  if(this.emailaddress==undefined || this.emailaddress==null || this.emailaddress==''){
-    console.log("1",this.emailaddress)
-   
-    this.toastr.error("Please enter email ID",'')
-  }else if(!this.commonFunction.emailpattern.test(this.emailaddress)){
-   this.toastr.error("Please enter valid email ID",'')
-  }else{
-    console.log("11")
- 
-var data:any={
-      DATE:
-     this.datepipe.transform(new Date(),'yyyy-MM-dd HH:mm:ss'),
-EMAIL_ID:this.emailaddress,
-DEVICE_ID: this.cookie.get('deviceId'),
- 
-CLIENT_ID:1
-    }
-    this.loadingRecords = true;
- 
-    this.api.SubsribeToNewsLetterCreate(data).subscribe(
-          (successCode) => {
-            if (successCode['code'] === 200) {
-   this.toastr.success("Subscribed successfully.",'')
-          this.loadingRecords = false;
-          this.emailaddress='';
-        }else if(successCode['code'] === 400){
-           this.toastr.error("Email ID already exists",'')
-          this.loadingRecords = false;
-        } else {
+  SubsribeToNewsLetter() {
+    if (
+      this.emailaddress == undefined ||
+      this.emailaddress == null ||
+      this.emailaddress == ''
+    ) {
+      console.log('1', this.emailaddress);
+
+      this.toastr.error('Please enter email ID', '');
+    } else if (!this.commonFunction.emailpattern.test(this.emailaddress)) {
+      this.toastr.error('Please enter valid email ID', '');
+    } else {
+      console.log('11');
+
+      var data: any = {
+        DATE: this.datepipe.transform(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+        EMAIL_ID: this.emailaddress,
+        DEVICE_ID: this.cookie.get('deviceId'),
+
+        CLIENT_ID: 1,
+      };
+      this.loadingRecords = true;
+
+      this.api.SubsribeToNewsLetterCreate(data).subscribe(
+        (successCode) => {
+          if (successCode['code'] === 200) {
+            this.toastr.success('Subscribed successfully.', '');
+            this.loadingRecords = false;
+            this.emailaddress = '';
+          } else if (successCode['code'] === 400) {
+            this.toastr.error('Email ID already exists', '');
+            this.loadingRecords = false;
+          } else {
+            this.loadingRecords = false;
+          }
+        },
+        (err) => {
+          this.toastr.error('Something Went Wrong try Again Later..', '');
           this.loadingRecords = false;
         }
-          },
-          (err) => {
-            this.toastr.error('Something Went Wrong try Again Later..', '');
-                 this.loadingRecords = false;
-          });
+      );
+    }
   }
-  }
- 
 }

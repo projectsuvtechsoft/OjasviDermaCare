@@ -31,7 +31,8 @@ export class AddressMaster {
   PINCODE = '';
   LANDMARK = '';
   ID = '';
-  AREA = '';
+  LOCALITY = '';
+  STATE_NAME = '';
   CUST_ID = '';
   MOBILE_NO = '';
   NAME = '';
@@ -77,6 +78,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     CITY: string;
     STATE_NAME: string;
     COUNTRY_NAME: string;
+    LANDMARK: string;
+    LOCALITY: string;
     IS_DEFUALT_ADDRESS: number;
     [key: string]: any; // to allow other dynamic properties
   }[] = [];
@@ -334,7 +337,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.api.updateUserData(payload).subscribe({
       next: (res: HttpResponse<any>) => {
         this.isUpdatingUserDetails = false;
-        
+
         const response = res.body;
 
         if (response?.code === 200) {
@@ -376,7 +379,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.api.updateUserData(payload).subscribe({
       next: (res: HttpResponse<any>) => {
         this.isUpdating = false;
-       
+
         const response = res.body;
 
         if (response?.code === 200) {
@@ -430,9 +433,10 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
               password: userData.PASSWORD || '', // Set password for display
             };
+            // console.log(userData.Name);
             this.imagePreview =
               this.IMAGEuRL + 'CustomerProfile/' + this.user.PROFILE_URL;
-            }
+          }
 
           this.cdRef.detectChanges();
         } else {
@@ -522,6 +526,9 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   openAddressModal(address?: any) {
     this.isEditingAddress = !!address;
     this.addressForm = Object.assign({}, address);
+    if (this.addressForm.ID) {
+      this.onCountryChange(this.addressForm.COUNTRY_ID);
+    }
     // if (address) {
     //   this.addressForm = { ...address };
 
@@ -577,11 +584,27 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       this.addressForm.IS_DEFUALT_ADDRESS;
 
     if (
-      this.addressForm.ADDRESS.trim() == '' &&
-      this.addressForm.LANDMARK.trim() == '' &&
-      this.addressForm.STATE_ID != null &&
-      this.addressForm.CITY.trim() == '' &&
-      this.addressForm.PINCODE != null
+      (this.addressForm.NAME == '' ||
+        this.addressForm.NAME == null ||
+        this.addressForm.NAME == undefined) &&
+      (this.addressForm.MOBILE_NO == '' ||
+        this.addressForm.MOBILE_NO == null ||
+        this.addressForm.MOBILE_NO == undefined) &&
+      (this.addressForm.ADDRESS == '' ||
+        this.addressForm.ADDRESS == null ||
+        this.addressForm.ADDRESS == undefined) &&
+      (this.addressForm.LANDMARK == '' ||
+        this.addressForm.LANDMARK == null ||
+        this.addressForm.LANDMARK == undefined) &&
+      (this.addressForm.STATE_ID == '' ||
+        this.addressForm.STATE_ID == null ||
+        this.addressForm.STATE_ID == undefined) &&
+      (this.addressForm.CITY == '' ||
+        this.addressForm.CITY == null ||
+        this.addressForm.CITY == undefined) &&
+      (this.addressForm.PINCODE == '' ||
+        this.addressForm.PINCODE == null ||
+        this.addressForm.PINCODE == undefined)
     ) {
       this.isOk = false;
       this.toastr.error(' Please Fill All Required Fields ', '');
@@ -599,6 +622,26 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     //   this.toastr.error('Please Enter Valid Mobile Number', '');
     // }
     else if (
+      this.addressForm.NAME == null ||
+      this.addressForm.NAME.trim() == ''
+    ) {
+      this.isOk = false;
+      this.toastr.error('Please Enter Name', '');
+    } else if (
+      this.addressForm.MOBILE_NO == null ||
+      this.addressForm.MOBILE_NO.trim() == '' ||
+      this.addressForm.MOBILE_NO == undefined
+    ) {
+      this.isOk = false;
+      this.toastr.error('Please Enter Mobile Number', '');
+    } else if (
+      !this.commonFunction.internationalmobpattern.test(
+        this.addressForm.MOBILE_NO
+      )
+    ) {
+      this.isOk = false;
+      this.toastr.error('Please enter a valid mobile number', '');
+    } else if (
       this.addressForm.ADDRESS == null ||
       this.addressForm.ADDRESS.trim() == ''
     ) {
@@ -707,8 +750,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         }
       }
     }
-    this.addressForm.NAME = this.user.NAME;
-    this.addressForm.MOBILE_NO = this.user.mobile;
+    // this.addressForm.NAME = this.user.NAME;
+    // this.addressForm.MOBILE_NO = this.user.mobile;
     if (this.isOk) {
       this.isSpinning = true;
 
@@ -774,6 +817,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           if (data['code'] == 200) {
             // this.totalRecords = data['count'];
             this.dataList1 = data['data'];
+            console.log(this.dataList1);
+            // console.log(data['data']);
             // this.loadingRecords = false;
             // if(this.totalRecords==0){
             //   data.SEQUENCE_NO=1;
@@ -808,6 +853,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         (data: any) => {
           if (data['code'] == 200) {
             this.orders = data['data'];
+            console.log(data['data']);
             this.isloadstate = false;
           } else {
             this.toastr.error("Data Can't Load", '');
@@ -828,12 +874,16 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   totalPrice: any;
   photoUrls: any;
   producctImageurl: string = this.api.retriveimgUrl + 'productImages/';
-  TOTAL_AMOUNT:any
+  TOTAL_AMOUNT: any;
   openProjectDetails(data: any) {
     this.viewdetail = [data];
+    // console.log(data);
+    // console.log(this.viewdetail);
     this.orderNo = data.ORDER_NUMBER;
     this.DELIVERY_CHARGES = data.DELIVERY_CHARGES;
+    console.log(this.DELIVERY_CHARGES);
     this.PACKAGING_CHARGES = data.PACKAGING_CHARGES;
+    console.log(this.PACKAGING_CHARGES);
     this.TOTAL_AMOUNT = data.TOTAL_AMOUNT;
 
     try {
@@ -898,7 +948,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   @ViewChild('canvasElement', { static: false }) canvasElement!: ElementRef;
 
   openCamera() {
-
     // Close the photo selection modal first
     this.closeModal();
 
@@ -1092,8 +1141,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     // Stop the camera stream
     this.stream.getTracks().forEach((track) => track.stop());
 
-    // Close modal using Bootstrap system
-    this.closeCapturePhotoModal();
+    // Note: Modal will be closed after successful upload in uploadImage method
+    // Don't close here to avoid conflicts
   }
   base64ToBlob(base64: string, contentType: string): Blob {
     const byteCharacters = atob(base64.split(',')[1]); // Decode Base64
@@ -1124,18 +1173,28 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
             this.imagePreview =
               this.IMAGEuRL + 'CustomerProfile/' + this.user.PROFILE_URL;
-            this.showModal = true;
 
-            // if (this.showContent == 'normal') {
-            this.updateUserProfile();
-            // }
-            this.closeModal();
+            // Close the capture photo modal first
+            console.log('Closing capture photo modal after successful upload');
+            this.closeCapturePhotoModal();
             this.clearCanvasAndVideo();
+
+            // Update user profile
+            this.updateUserProfile();
+
+            // Close the photo selection modal with a small delay to ensure capture modal closes first
+            setTimeout(() => {
+              console.log('Closing photo selection modal');
+              this.closeModal();
+            }, 100);
           } else {
             this.toastr.error('Image upload failed.', '');
+            this.clearCanvasAndVideo();
             this.imagePreview = null;
             this.user.PROFILE_URL = '';
             this.showModal = false;
+            // Close the capture photo modal on error too
+            this.closeCapturePhotoModal();
           }
         }
       },
@@ -1145,6 +1204,9 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         this.imagePreview = null;
         this.user.PROFILE_URL = '';
         this.showModal = false;
+        this.clearCanvasAndVideo();
+        // Close the capture photo modal on error
+        this.closeCapturePhotoModal();
       },
     });
   }
@@ -1182,28 +1244,36 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   closeCapturePhotoModal() {
+    console.log('closeCapturePhotoModal called');
     const modal = document.getElementById('CapturePhotoModal');
     if (!modal) {
       console.error('Capture photo modal not found for closing');
       return;
     }
 
-    modal.classList.remove('show');
-
-    setTimeout(() => {
-      modal.classList.remove('fade');
-      modal.style.display = 'none';
-    }, 300);
-
-    this.renderer.removeClass(document.body, 'modal-open');
+    console.log('Modal found, closing...');
 
     // Stop the camera stream if it's active
     if (this.stream) {
       this.stream.getTracks().forEach((track) => track.stop());
     }
 
+    // Remove modal-open class from body first
+    this.renderer.removeClass(document.body, 'modal-open');
+
+    // Hide the modal with proper Bootstrap sequence
+    modal.classList.remove('show');
+    modal.style.display = 'none';
+    modal.classList.remove('fade');
+
+    // Reset captured image
     this.capturedImage = null;
     this.clearCanvasAndVideo();
+
+    // Force a change detection cycle
+    this.cdRef.detectChanges();
+
+    console.log('Modal closed successfully');
   }
 
   updateUserProfile(form?: NgForm) {
@@ -1226,6 +1296,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
             'userName',
             this.commonFunction.encryptdata(this.user.NAME)
           );
+          this.clearCanvasAndVideo();
           this.getUserData();
         }
         // else if (
@@ -1384,17 +1455,15 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           );
           localStorage.setItem('totalFavourites', this.totalFavourites);
           window.dispatchEvent(new Event('favouritesUpdated'));
-        
-           if(this.favoriteProductIds.length>0){
-              this.getProducts();
-            }
+
+          if (this.favoriteProductIds.length > 0) {
+            this.getProducts();
+          }
           this.products = this.products?.map((product: any) => ({
             ...product,
             isLiked: this.favoriteProductIds.includes(product.ID),
           }));
-          this.products?.forEach((product: any) => {
-           
-          });
+          this.products?.forEach((product: any) => {});
         }
       },
       (err) => {
@@ -1463,26 +1532,26 @@ export class UserProfileComponent implements OnInit, OnDestroy {
             this.loadingProducts = false;
             this.totalProducts = res.count;
             this.showTotalProducts = res.count;
-           this.products.forEach((product: any) => {
+            this.products.forEach((product: any) => {
               this.loadProductVariantsFromData(product);
-            let variants = product.VARIENTS;
-             this.products = this.products.map((product: any) => ({
+              let variants = product.VARIENTS;
+              this.products = this.products.map((product: any) => ({
                 ...product,
-                isLiked: this.favoriteProductIds.includes(product.ID) 
+                isLiked: this.favoriteProductIds.includes(product.ID),
               }));
-            if (typeof variants === 'string') {
-              try {
-                variants = JSON.parse(variants);
-              } catch (e) {
-                variants = [];
+              if (typeof variants === 'string') {
+                try {
+                  variants = JSON.parse(variants);
+                } catch (e) {
+                  variants = [];
+                }
               }
-            }
 
-            if (Array.isArray(variants) && variants.length > 0) {
-              this.variantRateMap[product.ID] = variants[0].RATE;
-            } else {
-              this.variantRateMap[product.ID] = 0; 
-            }
+              if (Array.isArray(variants) && variants.length > 0) {
+                this.variantRateMap[product.ID] = variants[0].RATE;
+              } else {
+                this.variantRateMap[product.ID] = 0;
+              }
             });
           } else {
             this.products = [];
@@ -1547,15 +1616,17 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     const existingProductIndex = this.productsArray.findIndex(
       (p: any) => p.ID === product.ID
     );
-       const selectedVariantId = this.selectedVariantMap[product.ID];
-      const variants = this.variantMap[product.ID] || [];
-      const selectedVariant = variants.find(v => v.VARIENT_ID === selectedVariantId);
+    const selectedVariantId = this.selectedVariantMap[product.ID];
+    const variants = this.variantMap[product.ID] || [];
+    const selectedVariant = variants.find(
+      (v) => v.VARIENT_ID === selectedVariantId
+    );
 
-      if (selectedVariant) {
-        product.UNIT_ID = selectedVariant.UNIT_ID;
-        product.VERIENT_ID = selectedVariantId; 
-        product.SIZE = selectedVariant.SIZE; 
-      }
+    if (selectedVariant) {
+      product.UNIT_ID = selectedVariant.UNIT_ID;
+      product.VERIENT_ID = selectedVariantId;
+      product.SIZE = selectedVariant.SIZE;
+    }
 
     if (existingProductIndex !== -1) {
       this.cartService.addToCart(product);
@@ -1616,73 +1687,78 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   //   return Math.ceil(this.totalProducts / this.productsPerPage);
   // }
 
-get totalPages(): number {
-  if (!this.productsPerPage || this.productsPerPage <= 0) return 0;
-  if (!this.totalProducts || this.totalProducts <= 0) return 0;
-  return Math.ceil(this.totalProducts / this.productsPerPage);
-}
+  get totalPages(): number {
+    if (!this.productsPerPage || this.productsPerPage <= 0) return 0;
+    if (!this.totalProducts || this.totalProducts <= 0) return 0;
+    return Math.ceil(this.totalProducts / this.productsPerPage);
+  }
 
-get pagesArray(): number[] {
-  const total = this.totalPages;
-  return total > 0 ? Array(total).fill(0).map((_, i) => i + 1) : [];
-}
+  get pagesArray(): number[] {
+    const total = this.totalPages;
+    return total > 0
+      ? Array(total)
+          .fill(0)
+          .map((_, i) => i + 1)
+      : [];
+  }
 
-  
-price: number = 0; 
-selectedVariantStock:any;
-quantity = 1;
-variantMap: { [key: number]: any[] } = {}; 
-selectedVariantMap: { [key: number]: number } = {}; 
-variantStockMap: { [key: number]: number } = {}; 
-unitIdMap: { [key: number]: number } = {}; 
+  price: number = 0;
+  selectedVariantStock: any;
+  quantity = 1;
+  variantMap: { [key: number]: any[] } = {};
+  selectedVariantMap: { [key: number]: number } = {};
+  variantStockMap: { [key: number]: number } = {};
+  unitIdMap: { [key: number]: number } = {};
 
-unitId:any;
-updateTotalPrice(): void {
-  this.totalPrice = this.selectedPrice * this.quantity;
-}
-loadProductVariantsFromData(product: any) {
-  let variants = product.VARIENTS;
+  unitId: any;
+  updateTotalPrice(): void {
+    this.totalPrice = this.selectedPrice * this.quantity;
+  }
+  loadProductVariantsFromData(product: any) {
+    let variants = product.VARIENTS;
 
-  if (typeof variants === 'string') {
-    try {
-      variants = JSON.parse(variants);
-    } catch {
-      variants = [];
+    if (typeof variants === 'string') {
+      try {
+        variants = JSON.parse(variants);
+      } catch {
+        variants = [];
+      }
+    }
+
+    if (Array.isArray(variants) && variants.length > 0) {
+      let Variants =
+        variants?.filter((v: any) => v.STATUS === true || v.STATUS === 1) || [];
+      this.variantMap[product.ID] = Variants;
+      if (!this.selectedVariantMap[product.ID]) {
+        const firstVariant = variants[0];
+        this.selectedVariantMap[product.ID] = firstVariant.VARIENT_ID;
+        this.variantRateMap[product.ID] = firstVariant.RATE || 0;
+        this.variantStockMap[product.ID] = firstVariant.OPENING_STOCK || 0;
+        this.unitIdMap[product.ID] = firstVariant.UNIT_ID;
+      } else {
+        const selectedVariant = Variants.find(
+          (v) => v.VARIENT_ID === this.selectedVariantMap[product.ID]
+        );
+        if (selectedVariant) {
+          this.unitIdMap[product.ID] = selectedVariant.UNIT_ID;
+        }
+      }
     }
   }
 
-  if (Array.isArray(variants) && variants.length > 0) {
-    let Variants = variants?.filter((v: any) => v.STATUS === true || v.STATUS === 1) || [];
-    this.variantMap[product.ID] = Variants;
-    if (!this.selectedVariantMap[product.ID]) {
-      const firstVariant = variants[0];
-      this.selectedVariantMap[product.ID] = firstVariant.VARIENT_ID;
-      this.variantRateMap[product.ID] = firstVariant.RATE || 0;
-      this.variantStockMap[product.ID] = firstVariant.OPENING_STOCK || 0;
-       this.unitIdMap[product.ID] = firstVariant.UNIT_ID;
-    }else {
-    const selectedVariant = Variants.find(v => v.VARIENT_ID === this.selectedVariantMap[product.ID]);
-    if (selectedVariant) {
-      this.unitIdMap[product.ID] = selectedVariant.UNIT_ID;
+  change(selectedId: string, productId: number): void {
+    const variants = this.variantMap[productId] || [];
+    const selected = variants.find(
+      (v: any) => v.VARIENT_ID === Number(selectedId)
+    );
+
+    if (selected) {
+      this.selectedVariantMap[productId] = selected.VARIENT_ID;
+      this.variantRateMap[productId] = selected.RATE || 0;
+      this.variantStockMap[productId] = selected.OPENING_STOCK || 0;
+      this.unitIdMap[productId] = selected.UNIT_ID;
+
+      this.updateTotalPrice();
     }
   }
-  }
-}
-
-change(selectedId: string, productId: number): void {
-  const variants = this.variantMap[productId] || [];
-  const selected = variants.find((v: any) => v.VARIENT_ID === Number(selectedId));
-
-  if (selected) {
-    this.selectedVariantMap[productId] = selected.VARIENT_ID;
-    this.variantRateMap[productId] = selected.RATE || 0; 
-    this.variantStockMap[productId] = selected.OPENING_STOCK || 0;
-    this.unitIdMap[productId]= selected.UNIT_ID;
-    
-
-    this.updateTotalPrice();
-  }
-}
-
-
 }

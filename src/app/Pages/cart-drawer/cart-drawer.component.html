@@ -52,7 +52,7 @@
               type="number"
               [value]="item.quantity"
               min="1"
-              max="{{maxQuantity}}"
+              max="{{ maxQuantity }}"
               readonly
               class="w-12 text-center border-none text-sm"
             />
@@ -69,6 +69,7 @@
           (click)="deleteItem(item)"
           class="ml-4 text-gray-400 hover:text-red-500"
           aria-label="Remove item"
+          title="Remove item"
         >
           <i class="ri-delete-bin-line"></i>
         </button>

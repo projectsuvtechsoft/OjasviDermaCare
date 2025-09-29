@@ -281,7 +281,7 @@
           (click)="goToLogin(); isMobileMenuOpen = false"
           class="w-full bg-[#5a8f69] text-white py-3 px-4 rounded-md font-medium hover:bg-[#4a7a5a] transition-colors"
         >
-          Login
+          Log in
         </button>
       </div>
     </div>
@@ -790,7 +790,7 @@
                 text-align: center;
               "
             >
-              Login
+              Log in
             </h3>
           </div>
           <form
@@ -818,56 +818,69 @@
               </label>
 
               <div class="input-field">
-                <div
-                  class="unique-country-selector-wrapper flex items-center gap-x-2"
-                >
+                <div class="unique-country-selector-wrapper flex items-center">
                   <!-- Country code block -->
-                  <div
-                    *ngIf="inputType === 'mobile'"
-                    class="unique-country-code-selector flex items-center cursor-pointer px-2 py-1 border rounded"
-                    (click)="toggleCountryDropdown(); $event.stopPropagation()"
-                  >
-                    <span>{{ selectedCountryCode }}</span>
-                    <svg
-                      width="10"
-                      height="6"
-                      viewBox="0 0 10 6"
-                      fill="none"
-                      class="ml-1"
-                    >
-                      <path d="M1 1L5 5L9 1" stroke="#666" stroke-width="1.5" />
-                    </svg>
-
-                    <!-- Country dropdown -->
+                  <div class="country-selector-wrapper" #dropdownWrapper>
                     <div
-                      class="unique-country-dropdown-container absolute z-10"
-                      *ngIf="showCountryDropdown && inputType === 'mobile'"
+                      *ngIf="inputType === 'mobile'"
+                      class="unique-country-code-selector flex items-center cursor-pointer px-2 py-1 border"
+                      style="
+                        font-size: 13px;
+                        height: 36px;
+                        border-top-left-radius: 8px;
+                        border-bottom-left-radius: 8px;
+                      "
+                      (click)="
+                        toggleCountryDropdown(); $event.stopPropagation()
+                      "
                     >
-                      <div
-                        class="unique-country-dropdown bg-white shadow rounded mt-2 p-2 max-h-48 overflow-y-auto"
+                      <span>{{ selectedCountryCode }}</span>
+                      <svg
+                        width="10"
+                        height="6"
+                        viewBox="0 0 10 6"
+                        fill="none"
+                        class="ml-1"
                       >
-                        <div class="unique-search-box mb-2">
-                          <input
-                            type="text"
-                            placeholder="Search country..."
-                            [(ngModel)]="searchQuery"
-                            (input)="filterCountries($event)"
-                            (click)="$event.stopPropagation()"
-                            autocomplete="off"
-                            class="form-control customeclass"
-                            #searchCountry="ngModel"
-                            name="searchCountry"
-                          />
-                        </div>
-                        <div class="unique-country-list">
-                          <div
-                            class="unique-country-item px-2 py-1 hover:bg-gray-100 cursor-pointer"
-                            *ngFor="let country of filteredCountryCodes"
-                            (click)="
-                              selectCountry(country); $event.stopPropagation()
-                            "
-                          >
-                            {{ country.label }}
+                        <path
+                          d="M1 1L5 5L9 1"
+                          stroke="#666"
+                          stroke-width="1.5"
+                        />
+                      </svg>
+
+                      <!-- Country dropdown -->
+                      <div
+                        class="unique-country-dropdown-container absolute z-10"
+                        *ngIf="showCountryDropdown && inputType === 'mobile'"
+                        (click)="$event.stopPropagation()"
+                      >
+                        <div
+                          class="unique-country-dropdown bg-white shadow rounded mt-2 p-2 max-h-48 overflow-y-auto"
+                        >
+                          <div class="unique-search-box mb-2">
+                            <input
+                              type="text"
+                              placeholder="Search country..."
+                              [(ngModel)]="searchQuery"
+                              (input)="filterCountries($event)"
+                              (click)="$event.stopPropagation()"
+                              autocomplete="off"
+                              class="form-control customeclass"
+                              #searchCountry="ngModel"
+                              name="searchCountry"
+                            />
+                          </div>
+                          <div class="unique-country-list">
+                            <div
+                              class="unique-country-item px-2 py-1 hover:bg-gray-100 cursor-pointer"
+                              *ngFor="let country of filteredCountryCodes"
+                              (click)="
+                                selectCountry(country); $event.stopPropagation()
+                              "
+                            >
+                              {{ country.label }}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -879,6 +892,14 @@
                     [type]="inputType === 'email' ? 'email' : 'text'"
                     class="form-control flex-grow customeclass"
                     [placeholder]="getPlaceholder()"
+                    [ngStyle]="{
+                      'border-top-left-radius':
+                        inputType === 'mobile' ? '0px' : '8px',
+                      'border-bottom-left-radius':
+                        inputType === 'mobile' ? '0px' : '8px',
+                      'border-top-right-radius': '8px',
+                      'border-bottom-right-radius': '8px'
+                    }"
                     [(ngModel)]="mobileNumberorEmail"
                     name="identifier"
                     #identifier="ngModel"
@@ -890,7 +911,7 @@
                         ? emailPattern
                         : ''
                     "
-                    style="font-size: 13px"
+                    style="font-size: 13px; height: 36px"
                     [maxlength]="inputType === 'mobile' ? 10 : 128"
                     [minlength]="inputType === 'mobile' ? 10 : null"
                     (keypress)="handleKeyPress($event)"
@@ -971,28 +992,9 @@
             <!-- <a class="text-right mb-2" style="font-size: 13px;"  (click)="forgotpassModal()">Forgot Password?</a> -->
             <!-- </div> -->
 
-            <div class="flex justify-center text-[12px]">
-              <button
-                class="text-center mb-2 text-[rgb(1,158,46)] hover:text-[rgb(90,143,105)] footertexts1"
-                (click)="$event.preventDefault(); forgotpassModal()"
-              >
-                Forgot Password
-              </button>
-              <span>&nbsp;|&nbsp;</span>
-              <button
-                class="text-center mb-2 hover:text-[rgb(90,143,105)] text-[rgb(1,158,46)]"
-                (click)="$event.preventDefault(); goBack(); isGuest = true"
-              >
-                Continue as a guest
-              </button>
-            </div>
-
             <button
               type="submit"
-              style="
-                z-index: unset;
-                margin-top: 10px;
-              "
+              style="z-index: unset; margin-bottom: 4px !important"
               class="btn bg-[#5a8f69] hover:bg-[#4a7a5a] btn-success text-white btn-block w-100 mb-2 footertexts"
               [disabled]="isloginSendOTP"
             >
@@ -1002,8 +1004,23 @@
                 role="status"
                 aria-hidden="true"
               ></span>
-              {{ isloginSendOTP ? "Logging In..." : "Login" }}
+              {{ isloginSendOTP ? "Logging In..." : "Log in" }}
             </button>
+            <div class="flex justify-center text-[12px]">
+              <button
+                class="text-center mb-2 text-[rgb(1,158,46)] footertexts1 hover:text-[rgb(90,143,105)] hover:underline footertexts1"
+                (click)="$event.preventDefault(); forgotpassModal()"
+              >
+                Forgot password
+              </button>
+              <span>&nbsp;|&nbsp;</span>
+              <button
+                class="text-center mb-2 hover:text-[rgb(90,143,105)] text-[rgb(1,158,46)] hover:underline footertexts1"
+                (click)="$event.preventDefault(); goBack(); isGuest = true"
+              >
+                Continue as a guest
+              </button>
+            </div>
             <div class="auth-links text-center">
               <p class="mb-1 footertexts">
                 Don't have an account?
@@ -1082,10 +1099,10 @@
         </button>
       </div>
       <div class="modal-body-photo">
-        <div class="photo-option" (click)="openCamera()">
+        <!-- <div class="photo-option" (click)="openCamera()">
           <i class="ri-camera-line"></i>
           <span>Camera</span>
-        </div>
+        </div> -->
         <div class="photo-option" (click)="fileInput.click()">
           <i class="ri-image-line"></i>
           <span>Upload File</span>
@@ -1136,6 +1153,10 @@
           class="captured-photo"
           alt="Captured photo"
         />
+
+        <!-- <button class="capture-btn" *ngIf="capturedImage">
+          <i class="ri-camera-line"></i> Submit Photo
+        </button> -->
       </div>
     </div>
   </div>

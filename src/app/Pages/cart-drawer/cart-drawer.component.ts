@@ -52,7 +52,7 @@ export class CartDrawerComponent {
 
         // this.toastr.success('Item Added to cart', 'Success')
         this.loadingProducts = false;
-        // console.log(this.cartItems);
+        console.log('cart items', this.cartItems);
         this.cd.detectChanges(); // Optional but ensures view update
       });
       // this.loadingProducts = false; // Hide loader after fetching cart items
@@ -67,7 +67,7 @@ export class CartDrawerComponent {
       this.cartService.fetchCartFromServer(0, this.SESSION_KEYS);
       this.cartService.cartUpdated$.subscribe((cartItems) => {
         this.cartItems = cartItems;
-        // console.log(this.cartItems);
+        console.log(this.cartItems);
 
         // this.toastr.success('Item Added to cart', 'Success')
         this.loadingProducts = false;
@@ -162,10 +162,10 @@ export class CartDrawerComponent {
   quantity = 0;
   maxQuantity = 0;
   increaseQty(item: any) {
-  const nextQuantity = item.quantity + 1; // simulate the next step
-  const nextTotalSize = item.VERIENT_SIZE * nextQuantity;
-  this.varientStock=item.VERIENT_CURRENT_STOCK
-  if (nextQuantity <= this.varientStock && nextTotalSize <= this.varientStock) {
+    // const nextQuantity = item.quantity + 1; // simulate the next step
+    // const nextTotalSize = item.VERIENT_SIZE * nextQuantity;
+    // this.varientStock=item.VERIENT_CURRENT_STOCK
+    // if (nextQuantity <= this.varientStock && nextTotalSize <= this.varientStock) {
     item.quantity++;
     item.QUANTITY++;
     this.cartService.quantityChange$.next(item);
@@ -174,11 +174,10 @@ export class CartDrawerComponent {
       this.cartItems = cartItems;
       this.cd.detectChanges();
     });
-  } else {
-    this.toastr.info('Maximum quantity reached', 'Info');
+    // } else {
+    //   this.toastr.info('Maximum quantity reached', 'Info');
+    // }
   }
-}
-
 
   @Output() remove = new EventEmitter<string>(); // string = product ID
 

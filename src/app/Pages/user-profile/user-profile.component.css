@@ -472,7 +472,7 @@ video {
 }
 
 .modal-overlay .modal-dialog {
-  max-width: 400px;
+  max-width: 300px;
   width: 100%;
   margin: 0;
 }
@@ -482,6 +482,7 @@ video {
   border-radius: 12px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   border: none;
+  padding: 10px;
   animation: modalFadeIn 0.3s ease-out;
 }
 
@@ -500,8 +501,9 @@ video {
   background: white;
   border-radius: 12px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
-  padding: 0;
-  max-width: 320px;
+  /* padding: 10px; */
+  max-width: 280px;
+  /* max-width: 320px; */
   margin: auto;
   text-align: center;
 }

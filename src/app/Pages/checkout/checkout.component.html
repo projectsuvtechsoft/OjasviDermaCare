@@ -332,21 +332,19 @@
                 {{ address.CITY }}, {{ address.PINCODE }}
               </p>
               <p class="text-sm text-gray-600 mt-1">
-                {{
-                  commonFunction.decryptdata(encryptedmobno) ||
-                    "Phone not provided"
-                }}
+                {{ address.MOBILE_NO }}
               </p>
-              <span
-                *ngIf="address.IS_DEFAULT"
-                class="inline-block text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded mt-2"
-                >Default</span
-              >
+
               <span
                 *ngIf="address.ADDRESS_TYPE"
                 class="inline-block text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded mt-2 ml-1"
                 >{{ address.ADDRESS_TYPE }}</span
               >
+              <span
+                *ngIf="address.IS_DEFAULT"
+                class="inline-block text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded mt-2"
+                >Default
+              </span>
             </div>
             <div class="space-x-2 flex items-start">
               <button
@@ -452,10 +450,17 @@
               #COUNTRY_ID="ngModel"
               (ngModelChange)="onCountryChange($event)"
               class="w-full border rounded px-2 py-1 text-sm"
+              [ngClass]="
+                addressForm.COUNTRY_ID ? 'text-black' : 'text-gray-400'
+              "
               required
             >
               <option value="">Select Country</option>
-              <option *ngFor="let c of countryList" [value]="c.ID">
+              <option
+                *ngFor="let c of countryList"
+                [value]="c.ID"
+                style="color: black"
+              >
                 {{ c.NAME }}
               </option>
             </select>
@@ -476,10 +481,15 @@
               name="STATE_ID"
               #STATE_ID="ngModel"
               class="w-full border rounded px-2 py-1 text-sm"
+              [ngClass]="addressForm.STATE_ID ? 'text-black' : 'text-gray-400'"
               required
             >
               <option value="">Select State</option>
-              <option *ngFor="let s of stateList" [value]="s.ID">
+              <option
+                *ngFor="let s of stateList"
+                [value]="s.ID"
+                style="color: black"
+              >
                 {{ s.NAME }}
               </option>
             </select>
@@ -595,6 +605,8 @@
               type="checkbox"
               [(ngModel)]="addressForm.IS_DEFAULT"
               name="isDefault"
+              (change)="onDefaultAddressChange($event)"
+              [checked]="addressForm.IS_DEFAULT"
             />
           </div>
         </div>
@@ -707,13 +719,80 @@
       </ul>
     </div>
 
-    <div
+    <!-- <div
       class="border-t border-gray-200 pt-2 mt-4 flex justify-between text-base"
     >
-      <span>Total</span>
-      <strong>{{ subtotal | currency : "USD" : "symbol" : "1.2-2" }}</strong>
-    </div>
+      <div class="flex justify-between gap-4">
+        <span class="font-semibold text-gray-700">Price :</span>
+        <span class="text-gray-900">{{
+          (cartDetails.cartDetails.Price ? cartDetails.cartDetails.Price : 0)
+            | currency : "USD" : "symbol" : "1.2-2"
+        }}</span>
+      </div>
+      <div class="flex justify-between gap-4">
+        <span class="font-semibold text-gray-700">Delivery Charges :</span>
+        <span class="text-gray-900">{{
+          (cartDetails.cartDetails.DELIVERY_CHARGES
+            ? cartDetails.cartDetails.DELIVERY_CHARGES
+            : 0
+          ) | currency : "USD" : "symbol" : "1.2-2"
+        }}</span>
+      </div>
+      <div class="flex justify-between gap-4">
+        <span class="font-semibold text-gray-700">Packing Charges :</span>
+        <span class="text-gray-900">{{
+          (cartDetails.cartDetails.PACKAGING_CHARGES
+            ? cartDetails.cartDetails.PACKAGING_CHARGES
+            : 0
+          ) | currency : "USD" : "symbol" : "1.2-2"
+        }}</span>
+      </div>
+      <div class="flex justify-between gap-4">
+        <span class="font-semibold text-green-600">Total Amount :</span>
+        <span class="text-green-600 font-semibold">{{
+          (subtotal ? subtotal : 0) | currency : "USD" : "symbol" : "1.2-2"
+        }}</span>
+      </div>
+    </div> -->
 
+    <div class="border-t border-gray-200 text-sm space-y-2 text-right">
+      <div class="flex justify-between gap-4">
+        <span class="font-semibold text-gray-700">Price :</span>
+        <span class="text-gray-900">{{
+          (cartDetails.cartDetails[0].NET_AMOUNT
+            ? cartDetails.cartDetails[0].NET_AMOUNT
+            : 0
+          ) | currency : "USD" : "symbol" : "1.2-2"
+        }}</span>
+      </div>
+      <div class="flex justify-between gap-4">
+        <span class="font-semibold text-gray-700">Delivery Charges :</span>
+        <span class="text-gray-900">{{
+          (cartDetails.cartDetails[0].DELIVERY_CHARGES
+            ? cartDetails.cartDetails[0].DELIVERY_CHARGES
+            : 0
+          ) | currency : "USD" : "symbol" : "1.2-2"
+        }}</span>
+      </div>
+      <div class="flex justify-between gap-4">
+        <span class="font-semibold text-gray-700">Packing Charges :</span>
+        <span class="text-gray-900">{{
+          (cartDetails.cartDetails[0].PACKAGING_CHARGES
+            ? cartDetails.cartDetails[0].PACKAGING_CHARGES
+            : 0
+          ) | currency : "USD" : "symbol" : "1.2-2"
+        }}</span>
+      </div>
+      <div class="flex justify-between gap-4">
+        <span class="font-semibold text-green-600">Total Amount :</span>
+        <span class="text-green-600 font-semibold">{{
+          (cartDetails.cartDetails[0].TOTAL_PRICE
+            ? cartDetails.cartDetails[0].TOTAL_PRICE
+            : 0
+          ) | currency : "USD" : "symbol" : "1.2-2"
+        }}</span>
+      </div>
+    </div>
     <div class="mt-4 text-right">
       <button
         (click)="proceedToPayment()"
