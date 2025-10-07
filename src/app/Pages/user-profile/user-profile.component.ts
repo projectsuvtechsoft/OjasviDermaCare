@@ -485,6 +485,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.api.getAllCountryMaster(0, 0, '', '', ' AND STATUS=1').subscribe(
       (data: any) => {
         this.countryList = data['data'];
+        // console.log(this.countryList);
       },
       (err: any) => {
         console.log(err);
@@ -529,6 +530,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     if (this.addressForm.ID) {
       this.onCountryChange(this.addressForm.COUNTRY_ID);
     }
+
+    // console.log(this.addressForm);
     // if (address) {
     //   this.addressForm = { ...address };
 
@@ -817,7 +820,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           if (data['code'] == 200) {
             // this.totalRecords = data['count'];
             this.dataList1 = data['data'];
-            console.log(this.dataList1);
+            // console.log(this.dataList1);
             // console.log(data['data']);
             // this.loadingRecords = false;
             // if(this.totalRecords==0){

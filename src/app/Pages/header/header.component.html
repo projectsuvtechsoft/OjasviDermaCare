@@ -856,7 +856,7 @@
                         (click)="$event.stopPropagation()"
                       >
                         <div
-                          class="unique-country-dropdown bg-white shadow rounded mt-2 p-2 max-h-48 overflow-y-auto"
+                          class="unique-country-dropdown bg-white shadow rounded mt-2 p-2 max-h-48"
                         >
                           <div class="unique-search-box mb-2">
                             <input
@@ -871,7 +871,7 @@
                               name="searchCountry"
                             />
                           </div>
-                          <div class="unique-country-list">
+                          <div class="unique-country-list overflow-y-auto">
                             <div
                               class="unique-country-item px-2 py-1 hover:bg-gray-100 cursor-pointer"
                               *ngFor="let country of filteredCountryCodes"
@@ -985,6 +985,7 @@
                   class="fas"
                   [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
                   (click)="PasswordVisibility()"
+                  [title]="showPassword ? 'Hide Password' : 'Show Password'"
                 ></i>
               </div>
             </div>

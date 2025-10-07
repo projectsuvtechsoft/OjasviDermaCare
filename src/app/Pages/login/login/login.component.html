@@ -234,6 +234,7 @@
               <i
                 class="fas"
                 [ngClass]="showLoginPassword ? 'fa-eye-slash' : 'fa-eye'"
+                [title]="showLoginPassword ? 'Hide Password' : 'Show Password'"
                 (click)="toggleLoginPasswordVisibility()"
               ></i>
             </div>
@@ -721,6 +722,7 @@
               <i
                 class="fas"
                 [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+                [title]="showPassword ? 'Hide Password' : 'Show Password'"
                 (click)="PasswordVisibility()"
               ></i>
             </div>
@@ -749,6 +751,9 @@
               <i
                 class="fas"
                 [ngClass]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"
+                [title]="
+                  showConfirmPassword ? 'Hide Password' : 'Show Password'
+                "
                 (click)="toggleConfirmPasswordVisibility()"
               ></i>
             </div>

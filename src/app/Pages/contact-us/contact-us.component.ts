@@ -34,6 +34,19 @@ export class ContactUsComponent {
   isOk: boolean = false;
   isSpinning: boolean = false;
 
+  alphaOnly(event: any) {
+    event = event ? event : window.event;
+    var charCode = event.which ? event.which : event.keyCode;
+    if (
+      charCode > 32 &&
+      (charCode < 65 || charCode > 90) &&
+      (charCode < 97 || charCode > 122)
+    ) {
+      return false;
+    }
+    return true;
+  }
+
   onSubmit(contactData: NgForm): void {
     this.isOk = true;
 
@@ -52,6 +65,11 @@ export class ContactUsComponent {
     ) {
       this.isOk = false;
       this.toastr.error('Please Enter Email', '');
+    } else if (
+      !this.commonFunction.emailpattern.test(this.contactData.EMAIL_ID)
+    ) {
+      this.isOk = false;
+      this.toastr.error('Please enter a valid email', '');
     } else if (
       this.contactData.MOBILE_NO == null ||
       this.contactData.MOBILE_NO == undefined ||

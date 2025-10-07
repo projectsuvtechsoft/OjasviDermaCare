@@ -909,6 +909,8 @@ export class ProductpageComponent {
   currentStockMap: { [productId: number]: number } = {};
   addToCart(product: any, isdetailschange: boolean): void {
     console.log(product);
+    // console.log(product.COUNTRY_ID);
+    // console.log(product.ADDRESS_ID);
     // if (!this.userID) {
     //   this.showLoginModal();
     // } else {

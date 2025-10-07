@@ -249,6 +249,7 @@ export class HeaderComponent {
       'favouritesUpdated',
       this.updateFavouritesCount.bind(this)
     );
+    // this.IMAGEuRL = this.api.retriveimgUrl2();
     // if(this.)
     // const userId = sessionStorage.getItem('userId');
   }
@@ -320,6 +321,7 @@ export class HeaderComponent {
             this.loadingRecords = false;
             this.totalRecords = data['count'];
             this.productList = data['data'][1];
+            console.log(data['data']);
             this.categoryList = data['data'][0];
           } else if (data['code'] == 400) {
             this.loadingRecords = false;

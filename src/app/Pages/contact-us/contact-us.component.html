@@ -159,6 +159,7 @@
             class="w-full h-12 px-4 border border-gray-200 rounded focus:outline-none focus:border-[#5a8f69] text-sm"
             [(ngModel)]="contactData.NAME"
             required
+            (keypress)="alphaOnly($event)"
           />
 
           <input
@@ -168,6 +169,7 @@
             class="w-full h-12 px-4 border border-gray-200 rounded focus:outline-none focus:border-[#5a8f69] text-sm"
             [(ngModel)]="contactData.EMAIL_ID"
             required
+            pattern="commonFunction.emailpattern"
           />
 
           <input
@@ -200,11 +202,27 @@
             required
           ></textarea>
 
-          <button
+          <!-- <button
             type="submit"
             class="w-full bg-[#5a8f69] text-white py-3 rounded-button hover:bg-opacity-90 transition-colors"
           >
             Send Message
+          </button> -->
+          <button
+            type="submit"
+            class="w-full bg-[#5a8f69] text-white py-3 rounded-button hover:bg-opacity-90 transition-colors flex justify-center items-center"
+            [disabled]="isSpinning"
+          >
+            <!-- Loader -->
+            <span
+              *ngIf="isSpinning"
+              class="spinner-border spinner-border-sm me-2 mr-2"
+              role="status"
+              aria-hidden="true"
+            ></span>
+
+            <!-- Button text -->
+            {{ isSpinning ? "Sending..." : "Send Message" }}
           </button>
         </form>
       </div>

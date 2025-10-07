@@ -86,8 +86,7 @@ export class CommonFunctionService {
   // [pattern]="commonFunction.PincodePatt"
   PincodePatt = /^[1-9][0-9]{5}$/;
 
-  internationalmobpattern =
-    /^(\+)?(\d{1,4}[\s-]?)?(\(?\d{1,4}\)?[\s-]?){1,4}\d{3,4}$/;
+  internationalmobpattern = /^\+?\d{1,4}?[\s-]?(\(?\d{1,4}\)?[\s-]?)*\d{4,14}$/;
 
   //// GST Pattern
   // [pattern]="commonFunction.GSTpattern"

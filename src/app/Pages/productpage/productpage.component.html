@@ -303,6 +303,7 @@
               <button
                 (click)="addToCart(data, true)"
                 [disabled]="
+                  data.status === 'disabled' ||
                   data.IS_UPCOMING == 1 ||
                   data.IS_VERIENT_AVAILABLE == 0 ||
                   selectedVariantStock == 0 ||
@@ -313,10 +314,12 @@
                 class="w-full sm:w-auto bg-[#5a8f69] text-white py-3 px-6 rounded font-medium transition"
                 [ngClass]="{
                   'hover:bg-green-700 cursor-pointer':
+                    data.status !== 'disabled' &&
                     data.IS_UPCOMING != 1 &&
                     data.IS_VERIENT_AVAILABLE == 1 &&
                     selectedVariantStock > 0,
                   'bg-gray-400 cursor-not-allowed':
+                    data.status !== 'disabled' ||
                     data.IS_UPCOMING == 1 ||
                     data.IS_VERIENT_AVAILABLE == 0 ||
                     selectedVariantStock == 0 ||

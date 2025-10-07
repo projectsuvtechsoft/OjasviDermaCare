@@ -322,7 +322,7 @@
           class="border border-gray-200 rounded-lg p-4 bg-white relative hover:shadow-md transition-shadow duration-200 cursor-pointer"
           [class.ring-2]="selectedAddress?.ID === address.ID"
           [class.ring-[#5a8f69]]="selectedAddress?.ID === address.ID"
-          (click)="selectedAddress = address"
+          (click)="onSelectAddress(address)"
         >
           <div class="flex justify-between items-start">
             <div>
@@ -360,6 +360,7 @@
                 [value]="address"
                 [(ngModel)]="selectedAddress"
                 (click)="$event.stopPropagation()"
+                (ngModelChange)="onSelectAddress($event)"
               />
             </div>
           </div>
@@ -523,14 +524,30 @@
 
           <div class="flex-1">
             <label class="block mb-1 font-medium">* Zipcode</label>
-            <input
+            <!-- <input
               [(ngModel)]="addressForm.PINCODE"
               name="PINCODE"
               #PINCODE="ngModel"
               class="w-full border rounded px-2 py-1 text-sm"
               placeholder="Enter Zipcode"
               required
-            />
+            /> -->
+            <select
+              [(ngModel)]="addressForm.PINCODE"
+              name="PINCODE"
+              #PINCODE="ngModel"
+              class="w-full border rounded px-2 py-1 text-sm"
+              required
+            >
+              <option value="">Select Pincode</option>
+              <option
+                *ngFor="let p of pincodeList"
+                [value]="p.PINCODE"
+                style="color: black"
+              >
+                {{ p.PINCODE }}
+              </option>
+            </select>
             <p
               *ngIf="PINCODE.invalid && (PINCODE.touched || form.submitted)"
               class="text-red-500 text-xs mt-1"
@@ -681,7 +698,11 @@
         Processing...
       </ng-container>
       <ng-template #payText>
-        Pay {{ subtotal | currency : "USD" : "symbol" : "1.2-2" }}
+        Pay
+        {{
+          cartDetails.cartDetails[0].NET_AMOUNT
+            | currency : "USD" : "symbol" : "1.2-2"
+        }}
       </ng-template>
     </button>
   </div>
@@ -759,20 +780,21 @@
       <div class="flex justify-between gap-4">
         <span class="font-semibold text-gray-700">Price :</span>
         <span class="text-gray-900">{{
-          (cartDetails.cartDetails[0].NET_AMOUNT
-            ? cartDetails.cartDetails[0].NET_AMOUNT
+          (cartDetails.cartDetails[0].TOTAL_PRICE
+            ? cartDetails.cartDetails[0].TOTAL_PRICE
             : 0
           ) | currency : "USD" : "symbol" : "1.2-2"
         }}</span>
       </div>
       <div class="flex justify-between gap-4">
         <span class="font-semibold text-gray-700">Delivery Charges :</span>
-        <span class="text-gray-900">{{
-          (cartDetails.cartDetails[0].DELIVERY_CHARGES
-            ? cartDetails.cartDetails[0].DELIVERY_CHARGES
-            : 0
-          ) | currency : "USD" : "symbol" : "1.2-2"
-        }}</span>
+        <!-- <span class="text-gray-900">
+          {{ selectedShippingCharge }}
+          {{ selectedShippingCharge | currency : "USD" : "symbol" : "1.2-2" }}
+        </span> -->
+        <span class="text-gray-900">
+          {{ selectedShippingCharge | currency : "USD" : "symbol" : "1.2-2" }}
+        </span>
       </div>
       <div class="flex justify-between gap-4">
         <span class="font-semibold text-gray-700">Packing Charges :</span>
@@ -786,8 +808,8 @@
       <div class="flex justify-between gap-4">
         <span class="font-semibold text-green-600">Total Amount :</span>
         <span class="text-green-600 font-semibold">{{
-          (cartDetails.cartDetails[0].TOTAL_PRICE
-            ? cartDetails.cartDetails[0].TOTAL_PRICE
+          (cartDetails.cartDetails[0].NET_AMOUNT
+            ? cartDetails.cartDetails[0].NET_AMOUNT
             : 0
           ) | currency : "USD" : "symbol" : "1.2-2"
         }}</span>

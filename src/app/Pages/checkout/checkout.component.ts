@@ -65,6 +65,7 @@ export class CheckoutComponent {
 
   countryList: any[] = [];
   stateList: any[] = [];
+  pincodeList: any[] = [];
 
   public commonFunction = new CommonFunctionService(); // Ensure this path is correct
   encryptedmail: string = sessionStorage.getItem('email') || '';
@@ -77,18 +78,31 @@ export class CheckoutComponent {
     private datePipe: DatePipe,
     private http: HttpClient,
     private cookie: CookieService,
-    private router: Router // private cartService: CartService
-  ) {}
+    private router: Router,
+    private cartService: CartService
+  ) {
+    this.cartService.cartUpdated$.subscribe((cartItems) => {
+      this.cartDetails.cartDetails = cartItems;
+
+      // this.toastr.success('Item Added to cart', 'Success')
+      // this.loadingProducts = false;
+      // console.log('cart items', this.cartItems);
+      // this.cd.detectChanges(); // Optional but ensures view update
+    });
+  }
 
   showOrderSummaryModal: boolean = false;
   ngOnInit() {
-    console.log(this.cartDetails);
+    // console.log(this.cartDetails);
 
     // this.addressDrawerOpen=false
     this.fetchSavedAddresses();
     this.cartId = this.cartDetails.cartDetails[0]?.CART_ID || '';
     this.fetchCountries();
+    // console.log('this is cartdetails: ', this.cartDetails);
+    this.fetchPincodes('1');
     // this.addressDrawerOpen=true
+    // console.log(this.fetchPincodes('1'));
   }
 
   // --- Drawer Management Functions ---
@@ -131,11 +145,12 @@ export class CheckoutComponent {
         (addr) => addr.ID === addressId
       );
 
-      console.log('Address to edit:', addressToEdit);
+      // console.log('Address to edit:', addressToEdit);
       if (addressToEdit) {
         this.addressForm = { ...addressToEdit }; // Create a copy for editing
         if (this.addressForm.COUNTRY_ID) {
           this.fetchStates(this.addressForm.COUNTRY_ID); // Load states for the selected country
+          // this.fetchPincodes(this.addressForm.PINCODE);
         }
       } else {
         // console.error('Address not found for editing:', addressId);
@@ -154,6 +169,7 @@ export class CheckoutComponent {
   /**
    * Switches the drawer view back to the list of saved addresses.
    */
+
   goBackToAddressList() {
     this.showAddressForm = false; // Switch back to the list view
     this.resetAddressForm(); // Clear form data just in case
@@ -188,8 +204,39 @@ export class CheckoutComponent {
             MOBILE_NO: addr.MOBILE_NO,
           }));
           this.selectedAddress =
-            this.savedAddresses.find((a) => a.IS_DEFAULT) ||
-            this.savedAddresses[0];
+            this.savedAddresses.find((a) => a.IS_DEFAULT) || null;
+
+          if (this.selectedAddress && this.selectedAddress.COUNTRY_ID != null) {
+            sessionStorage.setItem(
+              'address',
+              String(this.selectedAddress.COUNTRY_ID)
+            );
+          }
+          if (this.selectedAddress && this.selectedAddress.PINCODE != null) {
+            sessionStorage.setItem(
+              'pincode',
+              String(this.selectedAddress.PINCODE)
+            );
+          }
+          if (this.selectedAddress) {
+            var CART_ID = this.cartDetails.cartDetails[0].CART_ID;
+            var CART_ITEM_ID = this.cartDetails.cartDetails[0].ID;
+            var COUNTRY_ID = this.addressForm.COUNTRY_ID;
+            var ADDRESS_ID = this.addressForm.ID;
+            this.cartDetails.cartDetails[0]['COUNTRY_ID'] = COUNTRY_ID;
+            this.cartDetails.cartDetails[0]['ADDRESS_ID'] = ADDRESS_ID;
+            this.cartDetails.cartDetails[0]['CART_ID'] = CART_ID;
+            this.cartDetails.cartDetails[0]['CART_ITEM_ID'] = CART_ITEM_ID;
+            this.cartDetails.cartDetails[0]['PINCODE'] =
+              this.addressForm.PINCODE;
+            this.cartService.currentProduct = this.cartDetails.cartDetails[0];
+            this.cartService.updateCartToServer();
+            this.cartService.cartUpdated.next(this.cartService.cartItems);
+            // console.log(this.cartService.cartItems)
+            // this.cartDetails.cartDetails = this.cartService.getCartItems();
+            // console.log(this.cartDetails.cartDetails);
+          }
+          // console.log(this.fetchPincodes(this.selectedAddress.PINCODE));
         } else {
           this.toastr.error('Failed to load saved addresses.', 'Error');
           this.savedAddresses = [];
@@ -201,6 +248,33 @@ export class CheckoutComponent {
         this.toastr.error('Failed to load saved addresses.', 'Error');
       }
     );
+  }
+
+  onSelectAddress(address: any) {
+    if (address && address.COUNTRY_ID != null) {
+      this.selectedAddress = address; // Update selected address
+      sessionStorage.setItem('address', String(address.COUNTRY_ID)); // Update sessionStorage
+      sessionStorage.setItem('pincode', String(address.PINCODE));
+      var CART_ID = this.cartDetails.cartDetails[0].CART_ID;
+      var CART_ITEM_ID = this.cartDetails.cartDetails[0].ID;
+      var COUNTRY_ID = address.COUNTRY_ID;
+      var ADDRESS_ID = address.ID;
+      this.cartDetails.cartDetails[0]['COUNTRY_ID'] = COUNTRY_ID;
+      this.cartDetails.cartDetails[0]['ADDRESS_ID'] = ADDRESS_ID;
+      this.cartDetails.cartDetails[0]['CART_ID'] = CART_ID;
+      this.cartDetails.cartDetails[0]['CART_ITEM_ID'] = CART_ITEM_ID;
+      this.cartDetails.cartDetails[0]['PINCODE'] = address.PINCODE;
+      this.cartService.currentProduct = this.cartDetails.cartDetails[0];
+      this.cartService.updateCartToServer();
+      // this.cartService.cartUpdated.next(this.cartService.cartItems);
+
+      // console.log(this.cartService.cartItems)
+
+      // this.cartDetails.cartDetails = this.cartService.getCartItems();
+      // console.log(this.cartDetails.cartDetails);
+
+      // console.log('Country ID saved to sessionStorage:', address.COUNTRY_ID);
+    }
   }
 
   resetAddressForm() {
@@ -218,13 +292,13 @@ export class CheckoutComponent {
       IS_DEFAULT: false,
       SESSION_KEY: '',
     };
-    this.stateList = []; // Clear states when resetting country
+    // this.stateList = []; // Clear states when resetting country
+    // this.pincodeList = [];
   }
 
   sessionkey: string = sessionStorage.getItem('SESSION_KEYS') || '';
   SESSION_KEYS = this.commonFunction.decryptdata(this.sessionkey);
 
-  // Add this method to your component:
   onDefaultAddressChange(event: Event) {
     const target = event.target as HTMLInputElement;
     this.addressForm.IS_DEFAULT = target.checked;
@@ -309,7 +383,8 @@ export class CheckoutComponent {
       return;
     } else if (
       this.addressForm.PINCODE == undefined ||
-      this.addressForm.PINCODE == ''
+      this.addressForm.PINCODE == '' ||
+      this.addressForm.PINCODE.trim() === ''
     ) {
       // this.isOk = false;
       this.toastr.error(' Please Enter Zipcode ', '');
@@ -332,6 +407,7 @@ export class CheckoutComponent {
       this.addressForm.SESSION_KEY = this.SESSION_KEYS;
     }
 
+    sessionStorage.setItem('pincode', String(this.addressForm.PINCODE));
     if (this.isEditingAddress && this.currentAddressId) {
       this.addressForm.IS_DEFAULT = Boolean(this.addressForm.IS_DEFAULT);
       this.addressForm.IS_DEFUALT_ADDRESS = Boolean(
@@ -384,15 +460,6 @@ export class CheckoutComponent {
     }
   }
 
-  // Method to auto-select default address during shopping
-  // autoSelectDefaultAddress() {
-  //   const defaultAddress = this.getDefaultAddress();
-  //   if (defaultAddress) {
-  //     this.selectedShippingAddress = defaultAddress;
-  //     return defaultAddress;
-  //   }
-  //   return null;
-  // }
   deleteAddress(addressId: string) {
     if (confirm('Are you sure you want to delete this address?')) {
       // Uncomment and test your API call for deletion
@@ -503,6 +570,9 @@ export class CheckoutComponent {
     if (countryId) {
       this.fetchStates(countryId);
     }
+    // if (countryId == '1') {
+    //   this.fetchPincodes(countryId);
+    // }
   }
 
   fetchStates(countryId: string) {
@@ -523,6 +593,38 @@ export class CheckoutComponent {
           this.toastr.error('Failed to load states.', 'Error');
         }
       );
+  }
+  get selectedShippingCharge(): number {
+    // console.log(this.pincodeList)
+    if (!this.pincodeList?.length || !this.selectedAddress.PINCODE) return 0;
+
+    // Convert both to string to ensure exact match
+    const match = this.pincodeList.find(
+      (p) =>
+        String(p.PINCODE).trim() === String(this.selectedAddress.PINCODE).trim()
+    );
+
+    // console.log(match.SHIPPING_CHARGES);
+    return match ? Number(match.SHIPPING_CHARGES) : 0;
+  }
+
+  fetchPincodes(status: string) {
+    this.api.getPincodeData(0, 0, 'id', 'desc', 'AND STATUS=1').subscribe(
+      (response: any) => {
+        if (response['code'] === 200) {
+          this.pincodeList = response['data'];
+          // console.log(this.pincodeList,response,'Debug')
+        } else {
+          // console.error('Failed to fetch pincode:', response['message']);
+          this.pincodeList = [];
+        }
+      },
+      (error: any) => {
+        // console.error('Error fetching pincode:', error);
+        this.pincodeList = [];
+        this.toastr.error('Failed to load pincode.', 'Error');
+      }
+    );
   }
   card: any;
   showPaymentModal = false;
@@ -711,6 +813,12 @@ export class CheckoutComponent {
         queryParams: { section },
       })
       .then(() => {
+        // this.addressDrawerOpen = false;
+        this.visibleChange.emit(false);
+        this.orderPlaced.emit(true);
+        this.cartService.cartItems = [];
+        this.cartService.cartUpdated.next(this.cartService.cartItems);
+        this.cartService.updateCartCount();
         // window.location.reload();
         // window.scrollTo(0, 0);
       });
@@ -718,7 +826,12 @@ export class CheckoutComponent {
 
   goToProductListing() {
     this.router.navigate(['/product-list']).then(() => {
-      window.location.reload();
+      this.visibleChange.emit(false);
+      this.orderPlaced.emit(true);
+      this.cartService.cartItems = [];
+      this.cartService.cartUpdated.next(this.cartService.cartItems);
+      this.cartService.updateCartCount();
+      // window.location.reload();
     }); // change as needed
   }
 

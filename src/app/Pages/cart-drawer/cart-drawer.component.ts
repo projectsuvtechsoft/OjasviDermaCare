@@ -52,7 +52,7 @@ export class CartDrawerComponent {
 
         // this.toastr.success('Item Added to cart', 'Success')
         this.loadingProducts = false;
-        console.log('cart items', this.cartItems);
+        // console.log('cart items', this.cartItems);
         this.cd.detectChanges(); // Optional but ensures view update
       });
       // this.loadingProducts = false; // Hide loader after fetching cart items
@@ -217,6 +217,8 @@ export class CartDrawerComponent {
   }
 
   onOrderPlaced(success: boolean) {
+    // console.log(success);
+    
     if (success) {
       // console.log('Order has been successfully placed!');
       // Here you would typically:

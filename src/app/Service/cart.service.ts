@@ -8,9 +8,14 @@ import { ToastrService } from 'ngx-toastr';
   providedIn: 'root',
 })
 export class CartService {
+
+  //Testing
   commonapikey = 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY';
   commonapplicationkey = 'awlcQRwoZxAJQm7b';
 
+  //Live
+// commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
+//   commonapplicationkey = '26lLNSmaKlcFziHH';
   // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
   // commonapplicationkey = '26lLNSmaKlcFziHH';
   // private cartCountSource = new BehaviorSubject<number>(0);
@@ -50,10 +55,10 @@ export class CartService {
   //   );
   // }
 
-  private cartItems: any[] = [];
+  cartItems: any[] = [];
   private cartCountSubject = new BehaviorSubject<number>(0);
   cartCount$ = this.cartCountSubject.asObservable();
-  private cartUpdated = new Subject<any[]>(); // Emits new cart when updated
+  cartUpdated = new Subject<any[]>(); // Emits new cart when updated
   cartUpdated$ = this.cartUpdated.asObservable();
   private sectionChangeSubject = new Subject<string>();
   sectionChange$ = this.sectionChangeSubject.asObservable();
@@ -134,7 +139,7 @@ export class CartService {
             // console.log(cartData.data);
           } else {
             var PACKAGING_CHARGES = cartData.data[0]['PACKAGING_CHARGES'];
-            var DELIVERY_CHARGES = cartData.data[0]['DELIVERY_CHARGES'];
+            var DELIVERY_CHARGES = cartData.data[0]['ADDON_AMOUNT'];
             var TOTAL_PRICE = cartData.data[0]['TOTAL_PRICE'];
             var NET_AMOUNT = cartData.data[0]['NET_AMOUNT'];
             this.cartItems = cartData.cartItemDetails.map((item: any) => ({
@@ -145,6 +150,8 @@ export class CartService {
               NET_AMOUNT: NET_AMOUNT,
               TOTAL_PRICE: TOTAL_PRICE,
             }));
+            // console.log(this.cartItems);
+            
           }
           this.cartUpdated.next(this.cartItems);
           this.updateCartCount();
@@ -204,7 +211,7 @@ export class CartService {
     }
   }
 
-  private updateCartCount(): void {
+  updateCartCount(): void {
     const total = this.cartItems.reduce((sum, item) => sum + item.quantity, 0);
     this.cartCountSubject.next(total);
   }
@@ -231,7 +238,8 @@ export class CartService {
         ? this.currentProduct.QUANTITY
         : this.currentProduct.quantity,
       SIZE: this.currentProduct.SIZE,
-      COUNTRY_ID: 0,
+      COUNTRY_ID: sessionStorage.getItem('address'),
+      PINCODE: sessionStorage.getItem('pincode'),
       UNIT_ID: this.currentProduct.UNIT_ID,
       CART_ID: this.currentProduct.CART_ID ? this.currentProduct.CART_ID : null,
       CART_ITEM_ID: this.currentProduct.CART_ITEM_ID
@@ -264,7 +272,7 @@ export class CartService {
         }
       );
   }
-  private updateCartToServer(): void {
+  updateCartToServer(): void {
     this.userID = this.commonFunction.decryptdata(this.euserID);
     let sessionKey = sessionStorage.getItem('SESSION_KEYS') || '';
     let decypted = this.commonFunction.decryptdata(sessionKey);
@@ -286,7 +294,8 @@ export class CartService {
         ? this.currentProduct.QUANTITY
         : this.currentProduct.quantity,
       SIZE: this.currentProduct.SIZE,
-      COUNTRY_ID: 0,
+      COUNTRY_ID: sessionStorage.getItem('address'),
+      PINCODE: sessionStorage.getItem('pincode'),
       UNIT_ID: this.currentProduct.UNIT_ID,
       CART_ID: this.currentProduct.CART_ID ? this.currentProduct.CART_ID : null,
       CART_ITEM_ID: this.currentProduct.CART_ITEM_ID

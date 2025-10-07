@@ -39,8 +39,8 @@ export class ApiServiceService {
   // commoncode = 'https://admin.ojasvidermacare.com:9092';
   // commonimgUrl = 'https://admin.ojasvidermacare.com:9092/api/upload/';
 
-  // commoncode = 'https://926f07a67789.ngrok-free.app';
-  // commonimgUrl = 'https://926f07a67789.ngrok-free.app/api/upload/';
+  // commoncode = 'https://h10rqczh-9878.inc1.devtunnels.ms';
+  // commonimgUrl = 'https://h10rqczh-9878.inc1.devtunnels.ms/api/upload/';
 
   // pooja
   // commoncode = 'https://h10rqczh-9878.inc1.devtunnels.ms';
@@ -56,9 +56,13 @@ export class ApiServiceService {
   // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
   // commonapplicationkey = '26lLNSmaKlcFziHH';
 
+  //Testing
   commonapikey = 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY';
   commonapplicationkey = 'awlcQRwoZxAJQm7b';
 
+    //Live
+// commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
+//   commonapplicationkey = '26lLNSmaKlcFziHH';
   // live ojasvi
   //   APPLICATION_KEY = '26lLNSmaKlcFziHH'
   // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla'
@@ -811,7 +815,7 @@ export class ApiServiceService {
     });
 
     return this.httpClient.post<any>(
-      `${this.baseUrl}pincode/get`,
+      `${this.baseUrl}web/pincode/get`,
       requestData,
       {
         headers,
