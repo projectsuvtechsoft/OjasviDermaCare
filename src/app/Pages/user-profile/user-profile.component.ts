@@ -466,7 +466,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
   pincodelist: any[] = [];
   getpincodes() {
-    this.api.getPincodeMaster(0, 0, '', '', '  AND STATUS=1 ').subscribe(
+    this.api.getPincodeData(0, 0, '', '', '  AND STATUS=1 ').subscribe(
       (data) => {
         if (data['code'] == 200) {
           // this.totalRecords = data['count'];
@@ -813,6 +813,9 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     websitebannerPage.form.markAsUntouched();
   }
   gettabledata() {
+    const USER_ID = this.commonFunction.decryptdata(
+      sessionStorage.getItem('userId') || ''
+    );
     this.api
       .getAddressMaster(0, 0, '', '', ' AND CUST_ID = ' + this.USER_ID)
       .subscribe(
