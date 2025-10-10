@@ -668,13 +668,13 @@ body {
 }
 
 /* Focus States for Accessibility */
-button:focus,
+/* button:focus,
 a:focus,
 input:focus,
 select:focus {
   outline: 2px solid #5a8f69;
   outline-offset: 2px;
-}
+} */
 
 /* High Contrast Mode Support */
 @media (prefers-contrast: high) {

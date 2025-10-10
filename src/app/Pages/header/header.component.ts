@@ -67,8 +67,8 @@ export class HeaderComponent {
     // this.router.navigate(['/login']);
     this.isMobileMenuOpen = false; // Close mobile menu when login is clicked
     this.showLoginModal();
-    this.modalservice.openModal();
-    console.log('vbnm');
+    // this.modalservice.openModal();
+    // console.log('vbnm');
     this.IMAGEuRL = this.api.retriveimgUrl2();
   }
 
@@ -192,7 +192,7 @@ export class HeaderComponent {
   }
   isMenuOpen: boolean = false;
   isMobileMenuOpen = false;
-  cartCount: number = 0;
+ cartCount: number | null = null;
   isGuest: any = false;
   goBack(): void {
     // // const loginModalEl = document.getElementById('loginmodal');
@@ -221,29 +221,45 @@ export class HeaderComponent {
     // console.log(modalInstance, 'modalInstance');
 
     // modalInstance._backdrop._config.rootElement.attributes[1].value='overflow:auto'
-    let isGuest: any = false;
-    if (sessionStorage.getItem('IS_GUEST')) {
-      isGuest = sessionStorage.getItem('IS_GUEST');
-      this.isGuest = isGuest;
+    // let isGuest: any = false;
+    if (!sessionStorage.getItem('IS_GUEST')) {
+      sessionStorage.setItem('IS_GUEST', this.isGuest);
+      // isGuest =sessionStorage.getItem('IS_GUEST');
+      // this.isGuest = isGuest;
+      // this.isGuest = sessionStorage.getItem('IS_GUEST');
+
     } else {
       sessionStorage.setItem('IS_GUEST', 'true');
-      this.isGuest = isGuest;
+      this.isGuest = sessionStorage.getItem('IS_GUEST');
     }
-    this.router.navigate(['/home']); // fallback
+    // this.router.navigate(['/home']); // fallback
   }
-  ngOnInit() {
-    this.isGuest = false;
-    let euserID = sessionStorage.getItem('userId') || '';
-    let etoken = sessionStorage.getItem('token') || '';
-    if (euserID && etoken) {
-      let userID = this.commonFunction.decryptdata(euserID);
-      let token = etoken;
-      this.cartService.fetchCartFromServer(userID, token);
-      this.getUserData();
-    }
+ ngOnInit() {
+  
     this.cartService.cartCount$.subscribe((count) => {
-      this.cartCount = count;
-    });
+    this.cartCount = count; // updates automatically when server data arrives
+  });
+    this.isGuest = false;
+    // let euserID = sessionStorage.getItem('userId') || '';
+    // let etoken = sessionStorage.getItem('token') || '';
+  const euserID = sessionStorage.getItem('userId') || '';
+const etoken = sessionStorage.getItem('token') || '';
+ 
+let userID = '';
+let token = '';
+ 
+if (euserID && etoken) {
+  userID = this.commonFunction.decryptdata(euserID);
+  token = etoken;
+}
+ 
+this.cartService.fetchCartFromServer(userID, token);
+ 
+if (userID && token) {
+  this.getUserData();
+}
+ 
+ 
     this.favouriteCount = localStorage.getItem('totalFavourites') || 0;
     window.addEventListener(
       'favouritesUpdated',

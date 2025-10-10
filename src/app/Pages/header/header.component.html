@@ -504,7 +504,6 @@
 
             <!-- Cart (Logged in) -->
             <button
-              *ngIf="isLogged"
               (click)="isCartVisible = true; isMobileMenuOpen = false"
               class="relative w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-gray-700 hover:text-[#5a8f69] transition-colors"
             >
@@ -1017,7 +1016,7 @@
               <span>&nbsp;|&nbsp;</span>
               <button
                 class="text-center mb-2 hover:text-[rgb(90,143,105)] text-[rgb(1,158,46)] hover:underline footertexts1"
-                (click)="$event.preventDefault(); goBack(); isGuest = true"
+                (click)="isGuest = true;goBack();$event.preventDefault(); "
               >
                 Continue as a guest
               </button>

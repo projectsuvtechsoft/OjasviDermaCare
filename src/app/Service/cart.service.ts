@@ -8,14 +8,13 @@ import { ToastrService } from 'ngx-toastr';
   providedIn: 'root',
 })
 export class CartService {
-
   //Testing
   commonapikey = 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY';
   commonapplicationkey = 'awlcQRwoZxAJQm7b';
 
   //Live
-// commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
-//   commonapplicationkey = '26lLNSmaKlcFziHH';
+  // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
+  //   commonapplicationkey = '26lLNSmaKlcFziHH';
   // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
   // commonapplicationkey = '26lLNSmaKlcFziHH';
   // private cartCountSource = new BehaviorSubject<number>(0);
@@ -151,7 +150,6 @@ export class CartService {
               TOTAL_PRICE: TOTAL_PRICE,
             }));
             // console.log(this.cartItems);
-            
           }
           this.cartUpdated.next(this.cartItems);
           this.updateCartCount();
@@ -238,7 +236,7 @@ export class CartService {
         ? this.currentProduct.QUANTITY
         : this.currentProduct.quantity,
       SIZE: this.currentProduct.SIZE,
-      COUNTRY_ID: sessionStorage.getItem('address'),
+      COUNTRY_NAME: sessionStorage.getItem('address'),
       PINCODE: sessionStorage.getItem('pincode'),
       UNIT_ID: this.currentProduct.UNIT_ID,
       CART_ID: this.currentProduct.CART_ID ? this.currentProduct.CART_ID : null,
@@ -294,7 +292,7 @@ export class CartService {
         ? this.currentProduct.QUANTITY
         : this.currentProduct.quantity,
       SIZE: this.currentProduct.SIZE,
-      COUNTRY_ID: sessionStorage.getItem('address'),
+      COUNTRY_NAME: sessionStorage.getItem('address'),
       PINCODE: sessionStorage.getItem('pincode'),
       UNIT_ID: this.currentProduct.UNIT_ID,
       CART_ID: this.currentProduct.CART_ID ? this.currentProduct.CART_ID : null,
@@ -309,6 +307,7 @@ export class CartService {
       apikey: this.commonapikey,
       token: this.etoken,
     });
+
     this.http
       .post(this.api.baseUrl + 'web/cart/updateQuantity', payload, { headers })
       .subscribe(

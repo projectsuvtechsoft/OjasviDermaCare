@@ -283,7 +283,7 @@
             <button
               class="text-center mt-1 mb-2 hover:text-[rgb(90,143,105)] text-[rgb(1,158,46)] tabs hover:underline footertexts1"
               style="font-size: 13px"
-              (click)="$event.preventDefault(); goBack(); isGuest = true"
+              (click)="isGuest = true;goBack();$event.preventDefault();"
             >
               Continue as a guest
             </button>

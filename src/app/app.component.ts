@@ -44,6 +44,8 @@ export class AppComponent {
   // The path to your image
   popupImageSrc: string = 'assets/img/New.jpg';
   ngOnInit() {
+    sessionStorage.setItem('IS_GUEST', 'false');
+    // this.getsession();
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationStart) {
         this.loaderService.showLoader();

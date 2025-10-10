@@ -46,17 +46,23 @@ export class HomeComponent {
   goToLogin() {
     this.router.navigate(['/login']);
   }
-  ngOnInit() {
+  is_guest:any=sessionStorage.getItem('IS_GUEST');
+
+   ngOnInit() {
+      this.sortKey = 'IS_POPULAR';
+  this.sortDirection = 'desc';
     this.getFilters();
     this.getProducts();
     this.getsession();
-    sessionStorage.setItem('IS_GUEST', 'false');
+    // sessionStorage.setItem('IS_GUEST', 'false');
+     this.is_guest=sessionStorage.getItem('IS_GUEST')
     //  document.body.classList.remove('modal-open');
     // document.querySelectorAll('.modal-backdrop').forEach((el) => el.remove());
     // if (this.categories?.length > 0) {
     //   this.selectedCategories = [this.categories[0]];
     // }
   }
+ 
   categories: any[] = [];
   products: any[] = [];
   selectedCategories: any = [];
@@ -333,39 +339,43 @@ export class HomeComponent {
   onCartDrawerClose(isVisible: boolean) {
     this.viewCart = isVisible;
   }
-  imageIndices: { [productId: string]: number } = {};
-
-  getImageArray(product: any): string[] {
-    try {
-      const images = JSON.parse(product.Images);
-      return images.map((img: any) => img.PHOTO_URL);
-    } catch (e) {
-      console.error('Invalid image format', e);
-      return [];
-    }
+ productImageUrl: string = this.api.retriveimgUrl + 'productImages/';
+imageIndices: { [productId: string]: number } = {};
+ 
+getImageArray(product: any): string[] {
+  try {
+    const images = JSON.parse(product.Images);
+    return images.map((img: any) => img.PHOTO_URL);
+  } catch (e) {
+    console.error('Invalid image format', e);
+    return [];
   }
-
-  initImageIndex(productId: string) {
-    if (!(productId in this.imageIndices)) {
-      this.imageIndices[productId] = 0;
-    }
+}
+ 
+// Initialize index safely
+initImageIndex(productId: number) {
+  if (!(productId in this.imageIndices)) {
+    this.imageIndices[productId] = 0;
   }
-
+}
+ 
+ 
   prevImage(productId: string) {
     if (this.imageIndices[productId] > 0) {
       this.imageIndices[productId]--;
     }
   }
-
+ 
   nextImage(productId: string, total: number) {
     if (this.imageIndices[productId] < total - 1) {
       this.imageIndices[productId]++;
     }
   }
-
+ 
   goToImage(productId: string, index: number) {
     this.imageIndices[productId] = index;
   }
+
 
   get totalPages(): number {
     return Math.ceil(this.totalProducts / this.productsPerPage);
@@ -414,6 +424,14 @@ export class HomeComponent {
     // Implement your quick view modal logic here
   }
   showLoginModal() {
+     this.renderer.removeClass(document.body, 'modal-open');
+    document.body.classList.remove('modal-open');
+    // const loginModalEl = document.getElementById('loginmodal');
+    const backdrop = document.querySelector('.modal-backdrop');
+    if (backdrop) {
+      backdrop.remove();
+    }
+    document.querySelectorAll('.modal-backdrop').forEach((el) => el.remove());
     var d: any = document.getElementById('loginmodaltrack') as HTMLElement;
     d.click();
   }
@@ -428,10 +446,59 @@ export class HomeComponent {
 
   userId = sessionStorage.getItem('userId') || '';
   userID = this.commonFunction.decryptdata(this.userId);
+
   addToCart(product: any): void {
-    // if(!this.userId){
-    //    this.showLoginModal()
-    // }
+    // console.log(sessionStorage.getItem('IS_GUEST'))
+    // ;
+    this.is_guest = sessionStorage.getItem('IS_GUEST') === 'true';
+    // this.is_guest=sessionStorage.getItem('IS_GUEST')
+    // console.log(this.is_guest);
+    
+    if(!this.is_guest && !this.userId){
+      //  console.log(this.is_guest);
+       
+       this.showLoginModal()
+        const existingProductIndex = this.productsArray.findIndex(
+      (p: any) => p.ID === product.ID
+    );
+
+    const selectedVariantId = this.selectedVariantMap[product.ID];
+    const variants = this.variantMap[product.ID] || [];
+    const selectedVariant = variants.find(
+      (v) => v.VARIENT_ID === selectedVariantId
+    );
+
+    if (selectedVariant) {
+      product.UNIT_ID = selectedVariant.UNIT_ID;
+      product.VERIENT_ID = selectedVariantId;
+      product.SIZE = selectedVariant.SIZE;
+    }
+
+    if (existingProductIndex !== -1) {
+      // Product already exists, increment quantity
+      // this.productsArray[existingProductIndex].quantity += 1;
+      // this.toastr.success(`${product.name} added to cart`);
+      this.cartService.addToCart(product);
+
+      // this.cartService.addToCart(product);
+    } else {
+      // New product, add with quantity 1
+      // this.toastr.success(`${product.name} added to cart`);
+      const productWithQuantity = { ...product, quantity: 1 };
+      this.productsArray = [...this.productsArray, productWithQuantity];
+      // this.cartService.addToCart(product);
+      this.cartService.addToCart(product);
+    }
+    }
+    else{
+        this.renderer.removeClass(document.body, 'modal-open');
+    document.body.classList.remove('modal-open');
+    // const loginModalEl = document.getElementById('loginmodal');
+    const backdrop = document.querySelector('.modal-backdrop');
+    if (backdrop) {
+      backdrop.remove();
+    }
+    document.querySelectorAll('.modal-backdrop').forEach((el) => el.remove());
     // else{
     //   if(sessionStorage.getItem('userId')){
     const existingProductIndex = this.productsArray.findIndex(
@@ -466,7 +533,8 @@ export class HomeComponent {
       this.cartService.addToCart(product);
     }
 
-    this.viewCart = true;
+    if(!this.is_guest && this.userId)this.viewCart = true;
+  }
     // }
     // else{
     //   this.toastr.error('Please login to add items to the cart');
@@ -549,66 +617,68 @@ export class HomeComponent {
       this.closeMobileFilters();
     }
   }
-  onSortChange(event: Event) {
-    const value = (event.target as HTMLSelectElement).value;
-
-    if (value === 'default') {
-      // apply default sort logic
-      this.sortKey = 'ID';
-      this.sortDirection = 'desc';
-      this.getProducts();
+onSortChange(event: Event) {
+  const select = event.target as HTMLSelectElement; // cast here
+  const value = select.value; // now TypeScript knows 'value' exists
+ 
+  if (value === 'default') {
+    this.sortKey = 'ID';
+    this.sortDirection = 'desc';
+    this.getProducts();
+  } else {
+    const [key, direction] = value.split(':');
+    if (key === 'RATE') {
+      this.sortKey = "JSON_EXTRACT(VARIENTS, '$[0].RATE')";
     } else {
-      const [key, direction] = value.split(':');
-      if (key === 'RATE') {
-        this.sortKey = "JSON_EXTRACT(VARIENTS, '$[0].RATE')";
-      } else {
-        this.sortKey = key;
-      }
-      // this.sortKey = key;
-      this.sortDirection = direction;
-      this.getProducts();
-      // example: call your sorting function
-      // this.sortProducts(this.sortKey, this.sortDirection);
+      this.sortKey = key;
     }
+    this.sortDirection = direction;
+    this.getProducts();
   }
-  priceRange: number = 0;
-  rangeQuery = '';
-  showTooltip = false;
-  tooltipTimeout: any;
-
-  onSliderInput() {
-    this.showTooltip = true;
-
-    // Hide tooltip shortly after sliding stops
-    if (this.tooltipTimeout) {
-      clearTimeout(this.tooltipTimeout);
-    }
-    this.tooltipTimeout = setTimeout(() => {
-      this.showTooltip = false;
-    }, 4000);
-
-    this.onPriceChange(); // existing logic
+}
+ 
+priceRange: number = 0;
+rangeQuery = '';
+showTooltip = false;
+tooltipTimeout: any;
+ 
+onSliderInput() {
+  this.showTooltip = true;
+ 
+  // Hide tooltip shortly after sliding stops
+  if (this.tooltipTimeout) {
+    clearTimeout(this.tooltipTimeout);
   }
-
-  getSliderBackground(value: number): string {
-    const percent = (value / 10) * 100;
-    return `linear-gradient(to right, #5a8f69 ${percent}%, #e5e7eb ${percent}%)`;
+  this.tooltipTimeout = setTimeout(() => {
+    this.showTooltip = false;
+  }, 4000);
+ 
+  this.onPriceChange();
+}
+ 
+getSliderBackground(value: number): string {
+  const percent = (value / 50) * 100;
+  return `linear-gradient(to right, #5a8f69 ${percent}%, #e5e7eb ${percent}%)`;
+}
+ 
+// Optional: helper for range text
+get priceLabel(): string {
+  return `$0 - $${this.priceRange}`;
+}
+ 
+ 
+onPriceChange() {
+  if (this.priceRange != null && this.priceRange > 0) {
+    // Build rangeQuery for API only if priceRange > 0
+    this.rangeQuery = ` AND ((IS_VERIENT_AVAILABLE=1 AND JSON_EXTRACT(VARIENTS, '$[0].RATE') <= ${this.priceRange}) OR (IS_VERIENT_AVAILABLE=0 AND RATE <= ${this.priceRange}))`;
+   
+    this.getProducts(); // Call API with updated rangeQuery
+  } else {
+    // priceRange is 0 or null, reset filter
+    this.rangeQuery = '';
+    this.getProducts(); // Reload all products without price filter
   }
-
-  onPriceChange() {
-    if (this.priceRange != null) {
-      this.showTooltip = true;
-      // Build rangeQuery for API
-      this.rangeQuery = ` AND ((IS_VERIENT_AVAILABLE=1 AND JSON_EXTRACT(VARIENTS, '$[0].RATE') <= ${this.priceRange}) OR (IS_VERIENT_AVAILABLE=0 AND RATE <= ${this.priceRange}))`;
-      if (this.priceRange <= 10) {
-        this.priceRange++;
-      }
-      this.getProducts(); // Call API with updated rangeQuery
-    } else {
-      this.rangeQuery = ''; // Reset filter
-      this.getProducts(); // Reload all products
-    }
-  }
+}
 
   SubsribeToNewsLetter() {
     if (
@@ -774,4 +844,22 @@ export class HomeComponent {
   PasswordVisibility() {
     this.showPassword = !this.showPassword;
   }
+
+  get currentPageCount(): number {
+  return Math.min(this.productsPerPage, this.totalProducts);
+}
+guest="false";
+verifylogin() {
+  // Refresh the userId from sessionStorage
+  this.userId = sessionStorage.getItem('userId') || '';
+  this.guest=sessionStorage.getItem('IS_GUEST')||"false";
+  console.log('Updated userId:', this.userId);
+ 
+  if (!this.userId && this.guest=="false") {
+    this.showLoginModal();
+  } else {
+    // User is logged in
+    console.log('User is logged in');
+  }
+}
 }

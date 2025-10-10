@@ -6,6 +6,7 @@ import {
   Output,
   ViewEncapsulation,
 } from '@angular/core';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ApiServiceService } from 'src/app/Service/api-service.service';
 import { CartService } from 'src/app/Service/cart.service';
@@ -22,11 +23,13 @@ export class CartDrawerComponent {
   @Output() visibleChange = new EventEmitter<boolean>();
   isCheckoutVisible = false;
   senddatatoCheckout: any = {};
+  loader=true;
   constructor(
     private api: ApiServiceService,
     private cartService: CartService,
     private toastr: ToastrService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private router: Router
   ) {} // Replace 'any' with the actual type of your API service
   euserID: string = sessionStorage.getItem('userId') || '';
   etoken: string = sessionStorage.getItem('token') || '';
@@ -47,14 +50,20 @@ export class CartDrawerComponent {
       // this.loadingProducts = false;
       // setTimeout(() => {
       // this.cartService.fetchCartFromServer(this.userID, this.etoken);
-      this.cartService.cartUpdated$.subscribe((cartItems) => {
+      this.loader=true;
+      this.cartService.cartUpdated$
+      .subscribe((cartItems) => {
         this.cartItems = cartItems;
 
         // this.toastr.success('Item Added to cart', 'Success')
         this.loadingProducts = false;
+        this.loader=false;
         // console.log('cart items', this.cartItems);
         this.cd.detectChanges(); // Optional but ensures view update
       });
+          setTimeout(()=>{
+  this.loader=false;
+},200)
       // this.loadingProducts = false; // Hide loader after fetching cart items
       // }, 5000);
       // this.cd.detectChanges(); // Optional but ensures view update
@@ -65,15 +74,19 @@ export class CartDrawerComponent {
       // console.log()
     } else {
       this.cartService.fetchCartFromServer(0, this.SESSION_KEYS);
+      this.loader=true;
       this.cartService.cartUpdated$.subscribe((cartItems) => {
         this.cartItems = cartItems;
-        console.log(this.cartItems);
-
+        // console.log(this.cartItems);
+        this.loader=false;
         // this.toastr.success('Item Added to cart', 'Success')
         this.loadingProducts = false;
         // console.log(this.cartItems);
         this.cd.detectChanges(); // Optional but ensures view update
       });
+          setTimeout(()=>{
+  this.loader=false;
+},200)
       // this.loadingProducts = false;
     }
     setTimeout(() => {
@@ -86,6 +99,23 @@ export class CartDrawerComponent {
     this.visibleChange.emit(this.visible);
     // window.location.reload();
   }
+  // showLoginModal: boolean = false;
+  // onLogin() {
+  //   const userId = sessionStorage.getItem('userId');
+  //   console.log(userId);
+
+  //   if (!userId) {
+  //     this.showLoginModal = true;
+  //     this.router.navigateByUrl('login');
+  //   } else {
+  //     this.showLoginModal = false;
+  //     this.proceedToCheckout();
+  //   }
+  // }
+
+  // onNotNow() {
+  //   this.showLoginModal = false;
+  // }
   onCheckoutDrawerClose(isVisible: boolean) {
     // console.log('Cart drawer closed:', isVisible);
 
@@ -148,14 +178,18 @@ export class CartDrawerComponent {
       item.quantity--;
       item.QUANTITY--;
       this.cartService.quantityChange$.next(item);
+      this.loader=true;
       this.cartService.cartUpdated$.subscribe((cartItems) => {
         this.cartItems = cartItems;
-
+this.loader=false;
         // this.toastr.success('Item Added to cart', 'Success')
         // this.loadingProducts = false;
         // console.log(this.cartItems);
         this.cd.detectChanges(); // Optional but ensures view update
       });
+          setTimeout(()=>{
+  this.loader=false;
+},200)
     }
   }
   varientStock = 0;
@@ -169,11 +203,15 @@ export class CartDrawerComponent {
     item.quantity++;
     item.QUANTITY++;
     this.cartService.quantityChange$.next(item);
-
+    this.loader=true;
     this.cartService.cartUpdated$.subscribe((cartItems) => {
+      this.loader=false;
       this.cartItems = cartItems;
       this.cd.detectChanges();
     });
+        setTimeout(()=>{
+  this.loader=false;
+},200)
     // } else {
     //   this.toastr.info('Maximum quantity reached', 'Info');
     // }
@@ -198,13 +236,17 @@ export class CartDrawerComponent {
     // this.toastr.info('Item removed from cart', 'Info');
     // this.cartService.fetchCartFromServer(this.userID, this.etoken);
     this.loadingProducts = false; // Hide loader after fetching cart items
-
+    this.loader=true;
     this.cartService.cartUpdated$.subscribe((cartItems) => {
+      this.loader=false;
       this.cartItems = cartItems;
       // this.loadingProducts = false;
       // console.log(this.cartItems);
       this.cd.detectChanges(); // Optional but ensures view update
     });
+        setTimeout(()=>{
+  this.loader=false;
+},200)
     // console.log('Item removed from cart:', productId
   }
 
@@ -218,7 +260,7 @@ export class CartDrawerComponent {
 
   onOrderPlaced(success: boolean) {
     // console.log(success);
-    
+
     if (success) {
       // console.log('Order has been successfully placed!');
       // Here you would typically:

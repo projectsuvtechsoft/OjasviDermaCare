@@ -280,18 +280,7 @@
     [class.translate-x-full]="!addressDrawerOpen"
     (click)="$event.stopPropagation()"
   >
-    <div class="flex justify-between items-center mb-4">
-      <button
-        (click)="goBackToCart()"
-        class="text-sm text-[#5a8f69] hover:underline"
-      >
-        ← Back to Cart
-      </button>
-    </div>
-    <div
-      class="flex justify-between items-center pb-4 mb-4 border-b border-gray-200"
-    >
-      <h2 class="text-xl font-semibold text-gray-800">Address Management</h2>
+    <div class="flex justify-end">
       <button
         (click)="closeAddressDrawer()"
         class="text-gray-500 hover:text-gray-700"
@@ -299,13 +288,102 @@
         <i class="ri-close-line text-2xl"></i>
       </button>
     </div>
+    <div class="flex justify-between items-center mb-4">
+      <!-- <button
+        (click)="goBackToCart()"
+        class="text-sm text-[#5a8f69] hover:underline"
+      >
+        ← Back to Cart
+      </button> -->
+    </div>
+    <div class="flex items-center justify-between mb-8 relative">
+      <!-- Step 1 -->
+      <div class="flex flex-col items-center">
+        <div
+          class="relative w-10 h-10 rounded-full flex items-center justify-center font-bold"
+          [ngClass]="
+            currentStep > 1
+              ? 'bg-green-700 text-white'
+              : 'bg-gray-300 text-gray-600'
+          "
+          (click)="goBackToCart()"
+        >
+          <span *ngIf="currentStep > 1">✔</span>
+          <span *ngIf="currentStep <= 1" (click)="goBackToCart()">1</span>
+        </div>
+        <p class="text-xs mt-2 text-gray-700 font-medium">Cart Details</p>
+      </div>
+
+      <!-- Line 1 -->
+      <div
+        [ngClass]="currentStep > 1 ? 'bg-green-700' : 'bg-gray-300'"
+        class="flex-1 h-1 mx-2"
+      ></div>
+
+      <!-- Step 2 -->
+      <div class="flex flex-col items-center">
+        <div
+          class="relative w-10 h-10 rounded-full flex items-center justify-center font-bold"
+          [ngClass]="
+            currentStep > 2
+              ? 'bg-green-700 text-white'
+              : currentStep === 2
+              ? 'bg-green-700 text-white'
+              : 'bg-gray-300 text-gray-600'
+          "
+        >
+          <span *ngIf="currentStep > 2" (click)="openr()">✔</span>
+          <span *ngIf="currentStep <= 2" (click)="openr()">2</span>
+        </div>
+        <p class="text-xs mt-2 text-gray-700 font-medium" (click)="openr()">
+          Address Details
+        </p>
+      </div>
+
+      <!-- Line 2 -->
+      <div
+        [ngClass]="currentStep > 2 ? 'bg-green-700' : 'bg-gray-300'"
+        class="flex-1 h-1 mx-2"
+      ></div>
+
+      <!-- Step 3 -->
+      <div class="flex flex-col items-center">
+        <div
+          class="relative w-10 h-10 rounded-full flex items-center justify-center font-bold"
+          [ngClass]="
+            currentStep > 3
+              ? 'bg-green-700 text-white'
+              : currentStep === 3
+              ? 'bg-green-700 text-white'
+              : 'bg-gray-300 text-gray-600'
+          "
+        >
+          <span *ngIf="currentStep > 3">✔</span>
+          <span *ngIf="currentStep <= 3">3</span>
+        </div>
+        <p class="text-xs mt-2 text-gray-700 font-medium">Payment Details</p>
+      </div>
+    </div>
+    <div
+      class="flex justify-between items-center pb-4 mb-4 border-b border-gray-200"
+    >
+      <h2
+        *ngIf="!showAddressForm && !showOrderSummaryInDrawer"
+        class="text-xl font-semibold text-gray-800"
+      >
+        Choose Shipping Address
+      </h2>
+    </div>
 
     <!-- Address List Section -->
-    <div *ngIf="!showAddressForm" class="flex-grow overflow-y-auto">
+    <div
+      *ngIf="!showAddressForm && !showOrderSummaryInDrawer"
+      class="flex-grow overflow-y-auto"
+    >
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-lg font-semibold text-gray-800 flex items-center">
           <i class="ri-map-pin-line text-[#5a8f69] text-xl mr-2"></i>
-          Your Saved Addresses
+          Your Shipping Addresses
         </h3>
 
         <button
@@ -315,8 +393,17 @@
           + Add New Address
         </button>
       </div>
-
-      <div *ngIf="savedAddresses.length > 0" class="grid grid-cols-1 gap-6">
+      <div
+        *ngIf="savedAddresses.length < 1"
+        style="text-align: center; margin-top: 160px"
+      >
+        <p class="text-green-800 font-bold text-2xl">No any address added !</p>
+        <p class="text-green-800 font-semibold">Please add an address first</p>
+      </div>
+      <div
+        *ngIf="savedAddresses.length > 0"
+        class="grid grid-cols-1 gap-6 ml-2 mr-2"
+      >
         <div
           *ngFor="let address of savedAddresses"
           class="border border-gray-200 rounded-lg p-4 bg-white relative hover:shadow-md transition-shadow duration-200 cursor-pointer"
@@ -329,7 +416,7 @@
               <p class="font-semibold text-gray-800">{{ address.NAME }}</p>
               <p class="text-sm text-gray-600 mt-1">
                 {{ address.ADDRESS }}<br />
-                {{ address.CITY }}, {{ address.PINCODE }}
+                {{ address.CITY_NAME }}, {{ address.PINCODE }}
               </p>
               <p class="text-sm text-gray-600 mt-1">
                 {{ address.MOBILE_NO }}
@@ -338,7 +425,9 @@
               <span
                 *ngIf="address.ADDRESS_TYPE"
                 class="inline-block text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded mt-2 ml-1"
-                >{{ address.ADDRESS_TYPE }}</span
+                >{{
+                  address.ADDRESS_TYPE == "Residential" ? "Residence" : "Office"
+                }}</span
               >
               <span
                 *ngIf="address.IS_DEFAULT"
@@ -346,7 +435,14 @@
                 >Default
               </span>
             </div>
-            <div class="space-x-2 flex items-start">
+            <div
+              class="space-x-2 flex items-start"
+              style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              "
+            >
               <button
                 class="text-gray-500 hover:text-[#5a8f69] transition"
                 title="Edit"
@@ -362,28 +458,144 @@
                 (click)="$event.stopPropagation()"
                 (ngModelChange)="onSelectAddress($event)"
               />
+              <!-- </div>
+            <div> -->
+              <button
+                class="text-gray-500 hover:text-red-500 transition"
+                title="Delete"
+                (click)="deleteAddress(address.ID, address.CUST_ID)"
+              >
+                <i class="ri-delete-bin-line"></i>
+              </button>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Final Deliver Button -->
-      <div *ngIf="selectedAddress" class="mt-6 text-right">
+      <div
+        *ngIf="selectedAddress"
+        class="fixed bottom-0 left-0 right-0 bg-white py-3 px-4 shadow-md text-right"
+      >
         <button
-          (click)="showOrderSummaryModal = true"
+          (click)="showOrderSummaryInDrawer = true; steped()"
           class="bg-[#5a8f69] text-white px-6 py-2 rounded-md text-sm hover:bg-[#4a7a58] transition"
         >
-          Pay and Order
+          Continue to Pay..
         </button>
       </div>
     </div>
+    <div
+      *ngIf="showOrderSummaryInDrawer && !showAddressForm"
+      class="flex-grow overflow-y-auto"
+    >
+      <div class="relative">
+        <h3 class="text-lg font-semibold mb-4 text-gray-800">Order Summary</h3>
 
+        <div class="text-sm text-gray-700 mb-4">
+          <p><strong>Shipping to:</strong> {{ selectedAddress?.NAME }}</p>
+          <p class="mt-1">
+            {{ selectedAddress?.ADDRESS }}, {{ selectedAddress?.CITY }} -
+            {{ selectedAddress?.PINCODE }}
+          </p>
+        </div>
+
+        <div class="border-t border-gray-200 pt-2 mt-2">
+          <h4 class="font-medium mb-2">Items:</h4>
+          <ul class="max-h-48 overflow-y-auto text-sm">
+            <li *ngFor="let item of cartDetails.cartDetails" class="mb-1">
+              {{ item.PRODUCT_NAME }} x {{ item.QUANTITY }} -
+              {{ item.PRICE * item.QUANTITY | currency : "USD" }}
+            </li>
+          </ul>
+        </div>
+
+        <div class="border-t border-gray-200 pt-4 mt-4 text-sm space-y-2">
+          <div class="flex justify-between gap-4">
+            <span class="font-semibold text-gray-700">Price :</span>
+            <span class="text-gray-900">{{
+              (cartDetails.cartDetails[0].TOTAL_PRICE
+                ? cartDetails.cartDetails[0].TOTAL_PRICE
+                : 0
+              ) | currency : "USD" : "symbol" : "1.2-2"
+            }}</span>
+          </div>
+          <div class="flex justify-between gap-4">
+            <span class="font-semibold text-gray-700"
+              >Shipping and Handling Charges :</span
+            >
+            <span class="text-gray-900">
+              {{
+                cartDetails.cartDetails[0].NET_AMOUNT -
+                  cartDetails.cartDetails[0].TOTAL_PRICE || 0
+                  | currency : "USD" : "symbol" : "1.2-2"
+              }}
+            </span>
+          </div>
+          <div class="flex justify-between gap-4">
+            <span class="font-semibold text-green-600">Total Amount :</span>
+            <span class="text-green-600 font-semibold">{{
+              (cartDetails.cartDetails[0].NET_AMOUNT
+                ? cartDetails.cartDetails[0].NET_AMOUNT
+                : 0
+              ) | currency : "USD" : "symbol" : "1.2-2"
+            }}</span>
+          </div>
+        </div>
+
+        <div
+          class="fixed bottom-0 left-0 right-0 bg-white py-3 px-4 shadow-md text-right"
+        >
+          <button
+            (click)="proceedToPayment()"
+            class="bg-[#5a8f69] text-white px-6 py-2 rounded-md text-sm hover:bg-[#4a7a58] transition"
+          >
+            Proceed to Pay
+          </button>
+        </div>
+      </div>
+    </div>
     <!-- Address Form Section -->
     <div *ngIf="showAddressForm" class="flex-grow overflow-y-auto">
       <h3 class="text-lg font-semibold mb-4">
         {{ isEditingAddress ? "Edit Address" : "Add New Address" }}
       </h3>
-      <form #form="ngForm" (ngSubmit)="saveAddress(form)">
+      <form #form="ngForm" (ngSubmit)="saveAddress(form)" class="mr-2 ml-2">
+        <div class="flex-1 mb-4">
+          <label class="block mb-1 font-medium">* Address Type</label>
+          <div>
+            <label class="mr-2">
+              <input
+                type="radio"
+                [(ngModel)]="addressForm.ADDRESS_TYPE"
+                name="ADDRESS_TYPE"
+                value="R"
+                #ADDRESS_TYPE="ngModel"
+                required
+              />
+              Residential
+            </label>
+            <label>
+              <input
+                type="radio"
+                [(ngModel)]="addressForm.ADDRESS_TYPE"
+                name="ADDRESS_TYPE"
+                value="O"
+                required
+              />
+              Office
+            </label>
+          </div>
+
+          <p
+            *ngIf="
+              ADDRESS_TYPE.invalid && (ADDRESS_TYPE.touched || form.submitted)
+            "
+            class="text-red-500 text-xs mt-1"
+          >
+            Address Type is required.
+          </p>
+        </div>
         <div class="mb-2">
           <label class="block mb-1 font-medium">* Full Name</label>
           <input
@@ -441,121 +653,6 @@
             Address is required.
           </p>
         </div>
-
-        <div class="flex gap-2 mb-2">
-          <div class="flex-1">
-            <label class="block mb-1 font-medium">* Country</label>
-            <select
-              [(ngModel)]="addressForm.COUNTRY_ID"
-              name="COUNTRY_ID"
-              #COUNTRY_ID="ngModel"
-              (ngModelChange)="onCountryChange($event)"
-              class="w-full border rounded px-2 py-1 text-sm"
-              [ngClass]="
-                addressForm.COUNTRY_ID ? 'text-black' : 'text-gray-400'
-              "
-              required
-            >
-              <option value="">Select Country</option>
-              <option
-                *ngFor="let c of countryList"
-                [value]="c.ID"
-                style="color: black"
-              >
-                {{ c.NAME }}
-              </option>
-            </select>
-            <p
-              *ngIf="
-                COUNTRY_ID.invalid && (COUNTRY_ID.touched || form.submitted)
-              "
-              class="text-red-500 text-xs mt-1"
-            >
-              Country is required.
-            </p>
-          </div>
-
-          <div class="flex-1">
-            <label class="block mb-1 font-medium">* State</label>
-            <select
-              [(ngModel)]="addressForm.STATE_ID"
-              name="STATE_ID"
-              #STATE_ID="ngModel"
-              class="w-full border rounded px-2 py-1 text-sm"
-              [ngClass]="addressForm.STATE_ID ? 'text-black' : 'text-gray-400'"
-              required
-            >
-              <option value="">Select State</option>
-              <option
-                *ngFor="let s of stateList"
-                [value]="s.ID"
-                style="color: black"
-              >
-                {{ s.NAME }}
-              </option>
-            </select>
-            <p
-              *ngIf="STATE_ID.invalid && (STATE_ID.touched || form.submitted)"
-              class="text-red-500 text-xs mt-1"
-            >
-              State is required.
-            </p>
-          </div>
-        </div>
-
-        <div class="flex gap-2 mb-2">
-          <div class="flex-1">
-            <label class="block mb-1 font-medium">* City</label>
-            <input
-              [(ngModel)]="addressForm.CITY"
-              name="CITY"
-              #CITY="ngModel"
-              class="w-full border rounded px-2 py-1 text-sm"
-              placeholder="Enter City"
-              required
-            />
-            <p
-              *ngIf="CITY.invalid && (CITY.touched || form.submitted)"
-              class="text-red-500 text-xs mt-1"
-            >
-              City is required.
-            </p>
-          </div>
-
-          <div class="flex-1">
-            <label class="block mb-1 font-medium">* Zipcode</label>
-            <!-- <input
-              [(ngModel)]="addressForm.PINCODE"
-              name="PINCODE"
-              #PINCODE="ngModel"
-              class="w-full border rounded px-2 py-1 text-sm"
-              placeholder="Enter Zipcode"
-              required
-            /> -->
-            <select
-              [(ngModel)]="addressForm.PINCODE"
-              name="PINCODE"
-              #PINCODE="ngModel"
-              class="w-full border rounded px-2 py-1 text-sm"
-              required
-            >
-              <option value="">Select Pincode</option>
-              <option
-                *ngFor="let p of pincodeList"
-                [value]="p.PINCODE"
-                style="color: black"
-              >
-                {{ p.PINCODE }}
-              </option>
-            </select>
-            <p
-              *ngIf="PINCODE.invalid && (PINCODE.touched || form.submitted)"
-              class="text-red-500 text-xs mt-1"
-            >
-              Zipcode is required.
-            </p>
-          </div>
-        </div>
         <div class="flex gap-2 mb-2">
           <div class="flex-1">
             <label class="block mb-1 font-medium">Landmark</label>
@@ -577,43 +674,178 @@
           </div>
         </div>
 
-        <div class="flex gap-2 mb-2 items-center">
-          <div class="flex-1">
-            <label class="block mb-1 font-medium">* Address Type</label>
-            <div>
-              <label class="mr-2">
-                <input
-                  type="radio"
-                  [(ngModel)]="addressForm.ADDRESS_TYPE"
-                  name="ADDRESS_TYPE"
-                  value="R"
-                  #ADDRESS_TYPE="ngModel"
-                  required
-                />
-                Residential
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  [(ngModel)]="addressForm.ADDRESS_TYPE"
-                  name="ADDRESS_TYPE"
-                  value="O"
-                  required
-                />
-                Office
-              </label>
-            </div>
+        <div class="flex gap-2 mb-2">
+          <!-- COUNTRY -->
+          <div class="flex-1 relative">
+            <label class="block mb-1 font-medium">* Country</label>
+            <input
+              type="text"
+              [(ngModel)]="countrySearch"
+              (input)="filterCountries(); onCountryInputChange()"
+              (blur)="onCountryBlur()"
+              name="COUNTRY_NAME"
+              #COUNTRY_NAME="ngModel"
+              placeholder="Search or add country"
+              class="w-full border rounded px-2 py-1 text-sm"
+              required
+            />
 
-            <p
+            <div
               *ngIf="
-                ADDRESS_TYPE.invalid && (ADDRESS_TYPE.touched || form.submitted)
+                filteredCountries.length ||
+                showAddCountryOption ||
+                isLoadingCountries
               "
-              class="text-red-500 text-xs mt-1"
+              class="absolute z-10 bg-white border mt-1 rounded shadow w-full max-h-48 overflow-y-auto"
             >
-              Address Type is required.
-            </p>
+              <!-- Loader -->
+              <div
+                *ngIf="isLoadingCountries"
+                class="p-2 text-center text-gray-500 text-sm"
+              >
+                <i class="ri-loader-4-line animate-spin mr-1"></i> Loading
+                countries...
+              </div>
+
+              <!-- Partial match suggestions -->
+              <div
+                *ngFor="let c of filteredCountries"
+                (mousedown)="selectCountry(c)"
+                class="px-2 py-1 hover:bg-gray-100 cursor-pointer"
+              >
+                {{ c.NAME }}
+              </div>
+
+              <!-- Add button if no full match -->
+              <div
+                *ngIf="showAddCountryOption && !isLoadingCountries"
+                (mousedown)="createCountry(countrySearch)"
+                class="flex items-center px-2 py-1 text-green-600 hover:bg-gray-100 cursor-pointer border-t"
+              >
+                <i class="ri-add-circle-line mr-1"></i> Add "{{
+                  countrySearch
+                }}"
+              </div>
+            </div>
           </div>
 
+          <!-- STATE -->
+          <div class="flex-1 relative">
+            <label class="block mb-1 font-medium">* State</label>
+            <input
+              type="text"
+              [(ngModel)]="stateSearch"
+              (input)="filterStates()"
+              (blur)="onStateBlur()"
+              name="STATE_NAME"
+              #STATE_NAME="ngModel"
+              placeholder="Search or add state"
+              class="w-full border rounded px-2 py-1 text-sm"
+              required
+            />
+
+            <div
+              *ngIf="
+                filteredStates.length || showAddStateOption || isLoadingStates
+              "
+              class="absolute z-10 bg-white border mt-1 rounded shadow w-full max-h-48 overflow-y-auto"
+            >
+              <!-- Loader -->
+              <div
+                *ngIf="isLoadingStates"
+                class="p-2 text-center text-gray-500 text-sm"
+              >
+                <i class="ri-loader-4-line animate-spin mr-1"></i> Loading
+                states...
+              </div>
+
+              <!-- Partial match suggestions -->
+              <div
+                *ngFor="let s of filteredStates"
+                (mousedown)="selectState(s)"
+                class="px-2 py-1 hover:bg-gray-100 cursor-pointer"
+              >
+                {{ s.NAME }}
+              </div>
+
+              <!-- Add button if no full match -->
+              <div
+                *ngIf="showAddStateOption && !isLoadingStates"
+                (mousedown)="createState(stateSearch)"
+                class="flex items-center px-2 py-1 text-green-600 hover:bg-gray-100 cursor-pointer border-t"
+              >
+                <i class="ri-add-circle-line mr-1"></i> Add "{{ stateSearch }}"
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap-2 mb-2">
+          <!-- CITY -->
+          <div class="flex-1 relative">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >* City</label
+            >
+            <input
+              type="text"
+              [(ngModel)]="citySearch"
+              (input)="filterCities()"
+              (blur)="onCityBlur()"
+              name="CITY"
+              placeholder="Search or add city"
+              class="w-full border rounded px-2 py-1 text-sm"
+            />
+
+            <div
+              *ngIf="
+                filteredCities.length || showAddCityOption || isLoadingCities
+              "
+              class="absolute z-10 bg-white border mt-1 rounded shadow w-full max-h-48 overflow-y-auto"
+            >
+              <!-- Loader -->
+              <div
+                *ngIf="isLoadingCities"
+                class="p-2 text-center text-gray-500 text-sm"
+              >
+                <i class="ri-loader-4-line animate-spin mr-1"></i> Loading
+                cities...
+              </div>
+
+              <!-- Partial match suggestions -->
+              <div
+                *ngFor="let c of filteredCities"
+                (mousedown)="selectCity(c)"
+                class="px-2 py-1 hover:bg-gray-100 cursor-pointer"
+              >
+                {{ c.NAME }}
+              </div>
+
+              <!-- Add button if no full match -->
+              <div
+                *ngIf="showAddCityOption && !isLoadingCities"
+                (mousedown)="createCity(citySearch)"
+                class="flex items-center px-2 py-1 text-green-600 hover:bg-gray-100 cursor-pointer border-t"
+              >
+                <i class="ri-add-circle-line mr-1"></i> Add "{{ citySearch }}"
+              </div>
+            </div>
+          </div>
+
+          <!-- ZIPCODE -->
+          <div class="flex-1">
+            <label class="block mb-1 font-medium">* Zipcode</label>
+            <input
+              [(ngModel)]="addressForm.PINCODE"
+              name="PINCODE"
+              #PINCODE="ngModel"
+              class="w-full border rounded px-2 py-1 text-sm"
+              placeholder="Enter Zipcode"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="flex gap-2 mb-2 items-center">
           <div class="flex-1 flex items-center">
             <label class="block mb-1 font-medium mr-2"
               >Mark Default Address</label
@@ -718,7 +950,7 @@
       (click)="showOrderSummaryModal = false"
       class="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
     >
-      <i class="ri-close-line text-xl"></i>
+      <i class="ri-close-line text-xl" (click)="desteper()"></i>
     </button>
     <h3 class="text-lg font-semibold mb-4 text-gray-800">Order Summary</h3>
 
@@ -740,42 +972,6 @@
       </ul>
     </div>
 
-    <!-- <div
-      class="border-t border-gray-200 pt-2 mt-4 flex justify-between text-base"
-    >
-      <div class="flex justify-between gap-4">
-        <span class="font-semibold text-gray-700">Price :</span>
-        <span class="text-gray-900">{{
-          (cartDetails.cartDetails.Price ? cartDetails.cartDetails.Price : 0)
-            | currency : "USD" : "symbol" : "1.2-2"
-        }}</span>
-      </div>
-      <div class="flex justify-between gap-4">
-        <span class="font-semibold text-gray-700">Delivery Charges :</span>
-        <span class="text-gray-900">{{
-          (cartDetails.cartDetails.DELIVERY_CHARGES
-            ? cartDetails.cartDetails.DELIVERY_CHARGES
-            : 0
-          ) | currency : "USD" : "symbol" : "1.2-2"
-        }}</span>
-      </div>
-      <div class="flex justify-between gap-4">
-        <span class="font-semibold text-gray-700">Packing Charges :</span>
-        <span class="text-gray-900">{{
-          (cartDetails.cartDetails.PACKAGING_CHARGES
-            ? cartDetails.cartDetails.PACKAGING_CHARGES
-            : 0
-          ) | currency : "USD" : "symbol" : "1.2-2"
-        }}</span>
-      </div>
-      <div class="flex justify-between gap-4">
-        <span class="font-semibold text-green-600">Total Amount :</span>
-        <span class="text-green-600 font-semibold">{{
-          (subtotal ? subtotal : 0) | currency : "USD" : "symbol" : "1.2-2"
-        }}</span>
-      </div>
-    </div> -->
-
     <div class="border-t border-gray-200 text-sm space-y-2 text-right">
       <div class="flex justify-between gap-4">
         <span class="font-semibold text-gray-700">Price :</span>
@@ -787,24 +983,19 @@
         }}</span>
       </div>
       <div class="flex justify-between gap-4">
-        <span class="font-semibold text-gray-700">Delivery Charges :</span>
-        <!-- <span class="text-gray-900">
-          {{ selectedShippingCharge }}
-          {{ selectedShippingCharge | currency : "USD" : "symbol" : "1.2-2" }}
-        </span> -->
+        <span class="font-semibold text-gray-700"
+          >Shipping and Handling Charges :</span
+        >
+
         <span class="text-gray-900">
-          {{ selectedShippingCharge | currency : "USD" : "symbol" : "1.2-2" }}
+          {{
+            cartDetails.cartDetails[0].NET_AMOUNT -
+              cartDetails.cartDetails[0].TOTAL_PRICE || 0
+              | currency : "USD" : "symbol" : "1.2-2"
+          }}
         </span>
       </div>
-      <div class="flex justify-between gap-4">
-        <span class="font-semibold text-gray-700">Packing Charges :</span>
-        <span class="text-gray-900">{{
-          (cartDetails.cartDetails[0].PACKAGING_CHARGES
-            ? cartDetails.cartDetails[0].PACKAGING_CHARGES
-            : 0
-          ) | currency : "USD" : "symbol" : "1.2-2"
-        }}</span>
-      </div>
+
       <div class="flex justify-between gap-4">
         <span class="font-semibold text-green-600">Total Amount :</span>
         <span class="text-green-600 font-semibold">{{
@@ -825,6 +1016,7 @@
     </div>
   </div>
 </div>
+
 <div
   *ngIf="paymentSuccessModalVisible"
   class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
@@ -834,7 +1026,7 @@
       (click)="paymentSuccessModalVisible = false"
       class="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
     >
-      <i class="ri-close-line text-xl"></i>
+      <i class="ri-close-line text-xl" (click)="goToProductListing()"></i>
     </button>
     <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
       <i class="ri-check-line text-2xl mr-2"></i>

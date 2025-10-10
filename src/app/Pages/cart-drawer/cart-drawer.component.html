@@ -6,7 +6,7 @@
   [class.translate-x-full]="!visible"
 >
   <app-common-loader
-    *ngIf="loadingProducts"
+    *ngIf="loadingProducts || loader==true"
     class="overlay-loader"
   ></app-common-loader>
   <!-- Cart Content -->
@@ -48,14 +48,9 @@
             >
               <i class="ri-subtract-line"></i>
             </button>
-            <input
-              type="number"
-              [value]="item.quantity"
-              min="1"
-              max="{{ maxQuantity }}"
-              readonly
-              class="w-12 text-center border-none text-sm"
-            />
+            <span class="w-12 flex items-center justify-center text-sm">
+    {{ item.quantity }}
+  </span>
             <button
               (click)="increaseQty(item)"
               class="text-gray-500 hover:text-[#5a8f69]"
@@ -93,19 +88,54 @@
 
     <!-- Footer -->
     <div class="p-6 border-t border-gray-200" *ngIf="cartItems.length > 0">
-      <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center justify-between mb-2">
         <span class="text-base font-medium text-gray-900">Subtotal</span>
         <span class="text-base font-medium text-gray-900">${{ subtotal }}</span>
       </div>
       <div class="space-y-3" *ngIf="cartItems.length > 0">
         <button
           (click)="close()"
-          class="w-full bg-gray-100 text-gray-800 py-3 rounded-button font-medium hover:bg-gray-200 transition-colors whitespace-nowrap"
+          class="w-full bg-gray-100 text-gray-800 py-2 rounded-button font-medium hover:bg-gray-200 transition-colors whitespace-nowrap"
         >
           Continue Shopping
         </button>
+        <!-- Full-page overlay modal -->
+        <!-- <div
+          class="fixed inset-0 z-50 flex items-center justify-center bg-gray-200/40"
+          *ngIf="showLoginModal"
+        >
+          <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md mx-2">
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-xl font-bold">Please Login First</h2>
+              <button
+                class="text-gray-500 hover:text-gray-700"
+                (click)="onNotNow()"
+              >
+                &#10005;
+              </button>
+            </div>
+            <p class="mb-6 text-center">
+              You need to log in to proceed to checkout.
+            </p>
+            <div class="flex space-x-4 justify-center">
+              <button
+                class="bg-green-600 text-white px-6 py-2 rounded-button font-medium hover:bg-green-700 transition-colors"
+                (click)="onLogin()"
+              >
+                Login
+              </button>
+              <button
+                class="bg-gray-400 text-white px-6 py-2 rounded-button font-medium hover:bg-gray-500 transition-colors"
+                (click)="onNotNow()"
+              >
+                Not Now
+              </button>
+            </div>
+          </div>
+        </div> -->
+
         <button
-          class="w-full bg-[#5a8f69] text-white py-3 rounded-button font-medium hover:bg-[#5a8f69]/90 transition-colors whitespace-nowrap"
+          class="w-full bg-[#5a8f69] text-white py-2 rounded-button font-medium hover:bg-[#5a8f69]/90 transition-colors whitespace-nowrap"
           (click)="proceedToCheckout()"
         >
           Proceed to Checkout

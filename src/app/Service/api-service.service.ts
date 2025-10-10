@@ -60,9 +60,9 @@ export class ApiServiceService {
   commonapikey = 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY';
   commonapplicationkey = 'awlcQRwoZxAJQm7b';
 
-    //Live
-// commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
-//   commonapplicationkey = '26lLNSmaKlcFziHH';
+  //Live
+  // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
+  //   commonapplicationkey = '26lLNSmaKlcFziHH';
   // live ojasvi
   //   APPLICATION_KEY = '26lLNSmaKlcFziHH'
   // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla'
@@ -303,7 +303,7 @@ export class ApiServiceService {
       }
     );
   }
-  DeleteAddress(CUSTOMER_ID: any, ADDRESS_ID: any): Observable<any> {
+  DeleteAddress(ADDRESS_ID: any, CUSTOMER_ID: any): Observable<any> {
     var data = {
       CUSTOMER_ID: CUSTOMER_ID,
       ADDRESS_ID: ADDRESS_ID,
@@ -315,7 +315,7 @@ export class ApiServiceService {
       token: this.cookie.get('token'),
     });
     return this.httpClient.post<any>(
-      this.url + 'api/customerAddress/deleteAddress',
+      this.url + 'api/address/archeiveAddress',
       JSON.stringify(data),
       { headers }
     );
@@ -3967,6 +3967,178 @@ export class ApiServiceService {
 
       JSON.stringify(data),
 
+      {
+        headers,
+      }
+    );
+  }
+  getAllCharges(
+    pageIndex: number,
+    pageSize: number,
+    sortKey: string,
+    sortValue: string,
+    filter: string
+  ): Observable<any> {
+    var data = {
+      pageIndex: pageIndex,
+      pageSize: pageSize,
+      sortKey: sortKey,
+      sortValue: sortValue,
+      filter: filter,
+    };
+    // this.getheader();
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+
+      applicationkey: this.commonapplicationkey,
+
+      apikey: this.commonapikey,
+
+      token: this.cookie.get('token'),
+    });
+    // this.httpHeaders = new HttpHeaders({
+    //   'Content-Type': 'application/json',
+    //   'apikey': 'yxPlx4hTu5xzEXRiqB3dgKbFDDYNDl82',
+    //   'applicationkey': 'B71DIrzfXKPF97Ci',
+    //   'deviceid':this.cookie.get('deviceId'),
+    //   'supportkey':this.cookie.get('supportKey'),
+    //   'Token': this.cookie.get('token'),
+    //     });
+    //     this.options = {
+    //   headers: this.httpHeaders
+    // };/api/country/get
+    return this.httpClient.post<any>(
+      this.url + 'api/configurationDetails/get',
+      JSON.stringify(data),
+      {
+        headers,
+      }
+    );
+  }
+
+   createCountry(
+    payload:any
+  ): Observable<any> {
+    // data.CLIENT_ID = this.clientId; // Uncomment if needed
+    const requestData: any = payload
+ 
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      applicationkey: this.commonapplicationkey,
+      apikey: this.commonapikey,
+      token: this.cookie.get('token'),
+    });
+ 
+    return this.httpClient.post<any>(
+      this.baseUrl + 'web/country/create',
+      // JSON.stringify(data),
+      requestData,
+      {
+        headers: headers,
+        // observe: 'response',
+      }
+    );
+  }
+   createState(
+    payload:any
+  ): Observable<any> {
+    // data.CLIENT_ID = this.clientId; // Uncomment if needed
+    const requestData: any = payload
+ 
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      applicationkey: this.commonapplicationkey,
+      apikey: this.commonapikey,
+      token: this.cookie.get('token'),
+    });
+ 
+    return this.httpClient.post<any>(
+      this.baseUrl + 'web/state/create',
+      // JSON.stringify(data),
+      requestData,
+      {
+        headers: headers,
+        // observe: 'response',
+      }
+    );
+  }
+  createCity(
+   payload:any
+  ): Observable<any> {
+    // data.CLIENT_ID = this.clientId; // Uncomment if needed
+    const requestData: any = payload
+ 
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      applicationkey: this.commonapplicationkey,
+      apikey: this.commonapikey,
+      token: this.cookie.get('token'),
+    });
+ 
+    return this.httpClient.post<any>(
+      this.baseUrl + 'web/city/create',
+      // JSON.stringify(data),
+      requestData,
+      {
+        headers: headers,
+        // observe: 'response',
+      }
+    );
+  }
+
+  getCityData(
+    pageIndex: number,
+    pageSize: number,
+    sortKey: string = '',
+    sortValue: string = '',
+    filter: string = ''
+  ): Observable<any> {
+    const requestData = {
+      pageIndex,
+      pageSize,
+      sortKey,
+      sortValue,
+      filter,
+    };
+ 
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      applicationkey: this.commonapplicationkey,
+      apikey: this.commonapikey,
+      token: this.cookie.get('token'),
+    });
+ 
+    return this.httpClient.post<any>(
+      `${this.baseUrl}web/city/get`,
+      requestData,
+      {
+        headers,
+      }
+    );
+  }
+    getState(
+    pageIndex: number,
+    pageSize: number,
+    sortKey: string,
+    sortValue: string,
+    filter: string
+  ): Observable<any> {
+    var data = {
+      pageIndex: pageIndex,
+      pageSize: pageSize,
+      sortKey: sortKey,
+      sortValue: sortValue,
+      filter: filter,
+    };
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      applicationkey: this.commonapplicationkey,
+      apikey: this.commonapikey,
+      token: this.cookie.get('token'),
+    });
+    return this.httpClient.post<any>(
+      this.baseUrl + 'web/state/get',
+      JSON.stringify(data),
       {
         headers,
       }

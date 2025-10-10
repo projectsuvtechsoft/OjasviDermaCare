@@ -300,35 +300,52 @@
 
             <!-- Add to Cart Button -->
             <div>
-              <button
-                (click)="addToCart(data, true)"
-                [disabled]="
-                  data.status === 'disabled' ||
-                  data.IS_UPCOMING == 1 ||
-                  data.IS_VERIENT_AVAILABLE == 0 ||
-                  selectedVariantStock == 0 ||
-                  selectedVariantStock == null ||
-                  selectedVariantStock < 0
-                "
-                id="addToCartBtn"
-                class="w-full sm:w-auto bg-[#5a8f69] text-white py-3 px-6 rounded font-medium transition"
-                [ngClass]="{
-                  'hover:bg-green-700 cursor-pointer':
-                    data.status !== 'disabled' &&
-                    data.IS_UPCOMING != 1 &&
-                    data.IS_VERIENT_AVAILABLE == 1 &&
-                    selectedVariantStock > 0,
-                  'bg-gray-400 cursor-not-allowed':
-                    data.status !== 'disabled' ||
+              <div class="relative inline-block group">
+                <button
+                  (click)="addToCart(data, true)"
+                  [disabled]="
+                    data.status === 'disabled' ||
                     data.IS_UPCOMING == 1 ||
                     data.IS_VERIENT_AVAILABLE == 0 ||
                     selectedVariantStock == 0 ||
                     selectedVariantStock == null ||
                     selectedVariantStock < 0
-                }"
-              >
-                Add to Cart: ${{ totalPrice }}
-              </button>
+                  "
+                  id="addToCartBtn"
+                  class="w-full sm:w-auto text-white py-3 px-6 rounded font-medium transition"
+                  [ngClass]="{
+                    'bg-[#5a8f69] hover:bg-green-700 cursor-pointer':
+                      data.status !== 'disabled' &&
+                      data.IS_UPCOMING != 1 &&
+                      data.IS_VERIENT_AVAILABLE == 1 &&
+                      selectedVariantStock > 0,
+                    'bg-gray-400 cursor-not-allowed':
+                      data.status === 'disabled' ||
+                      data.IS_UPCOMING == 1 ||
+                      data.IS_VERIENT_AVAILABLE == 0 ||
+                      selectedVariantStock == 0 ||
+                      selectedVariantStock == null ||
+                      selectedVariantStock < 0
+                  }"
+                >
+                  Add to Cart: ${{ totalPrice }}
+                </button>
+
+                <!-- Tooltip: Only show if button disabled -->
+                <span
+                  *ngIf="
+                    data.status === 'disabled' ||
+                    data.IS_UPCOMING == 1 ||
+                    data.IS_VERIENT_AVAILABLE == 0 ||
+                    selectedVariantStock == 0 ||
+                    selectedVariantStock == null ||
+                    selectedVariantStock < 0
+                  "
+                  class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 hidden group-hover:block bg-black text-white text-xs rounded px-2 py-1 whitespace-nowrap"
+                >
+                  Not available right now
+                </span>
+              </div>
             </div>
           </div>
         </div>

@@ -1925,6 +1925,7 @@ export class LoginComponent {
   }
 
   goBack(): void {
+    //  sessionStorage.setItem('IS_GUEST', 'true');
     //  this.renderer.removeClass(document.body, 'modal-open');
 
     // document.body.classList.remove('modal-open');
@@ -1938,10 +1939,24 @@ export class LoginComponent {
     //   bootstrap.Modal.getInstance(loginModalEl) ||
     //   new bootstrap.Modal(loginModalEl);
     // modalInstance.hide();
+      if (!sessionStorage.getItem('IS_GUEST')) {
+        
+      sessionStorage.setItem('IS_GUEST', this.isGuest);
+        // console.log('setvalue', sessionStorage.getItem('IS_GUEST'));
+
+      // isGuest =sessionStorage.getItem('IS_GUEST');
+      // this.isGuest = isGuest;
+      // this.isGuest = sessionStorage.getItem('IS_GUEST');
+
+    } else {
+      sessionStorage.setItem('IS_GUEST', 'true');
+      this.isGuest = sessionStorage.getItem('IS_GUEST');
+    }
     const backdrop = document.querySelector('.modal-backdrop');
     if (backdrop) {
       backdrop.remove();
     }
+    
     // if (window.history.length > 1) {
     //   this.location.back();
     // } else {

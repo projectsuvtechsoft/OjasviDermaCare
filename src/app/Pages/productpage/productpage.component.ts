@@ -1152,4 +1152,19 @@ export class ProductpageComponent {
     }
     return chunks;
   }
+  
+  guest="false";
+verifylogin() {
+  // Refresh the userId from sessionStorage
+  const currentUserId = sessionStorage.getItem('userId');
+  this.guest=sessionStorage.getItem('IS_GUEST')||"false";
+  console.log('Updated userId:', this.userId);
+ 
+  if (!currentUserId && this.guest=="false") {
+    this.showLoginModal();
+  } else {
+    // User is logged in
+    console.log('User is logged in');
+  }
+}
 }

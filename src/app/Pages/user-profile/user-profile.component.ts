@@ -25,14 +25,14 @@ import { LoaderService } from 'src/app/Service/loader.service';
 import { ModalService } from 'src/app/Service/modal.service';
 export class AddressMaster {
   ADDRESS = '';
-  COUNTRY_ID = '';
-  STATE_ID = '';
-  CITY = '';
+  COUNTRY_ID:any = '';
+  STATE_ID:any = '';
+  CITY_ID:any = '';
   PINCODE = '';
   LANDMARK = '';
   ID = '';
   LOCALITY = '';
-  STATE_NAME = '';
+  // STATE_NAME = '';
   CUST_ID = '';
   MOBILE_NO = '';
   NAME = '';
@@ -119,9 +119,11 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           this.showSection('dashboard-section');
         }
       });
-      this.loadCountry();
-
-      this.getpincodes();
+      // this.loadCountry();
+ this.fetchCountries();
+    // console.log('this is cartdetails: ', this.cartDetails);
+    // this.fetchPincodes('1');
+    //   this.getpincodes();
       this.getUserData();
       this.checkScreenSize();
       // this.gettabledata();
@@ -159,9 +161,10 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   showSection(id: string): void {
     this.currentSection = id;
     if (this.currentSection === 'addresses-section') {
-      this.loadCountry();
+      // this.loadCountry();
+      this.fetchCountries();
       this.gettabledata();
-      this.getpincodes();
+      // this.getpincodes();
     }
     // Close sidebar on mobile when a menu is clicked
     if (this.isMobile) {
@@ -465,22 +468,40 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     );
   }
   pincodelist: any[] = [];
-  getpincodes() {
-    this.api.getPincodeData(0, 0, '', '', '  AND STATUS=1 ').subscribe(
-      (data) => {
-        if (data['code'] == 200) {
-          // this.totalRecords = data['count'];
-          this.pincodelist = data['data'];
-
-          // }
+   fetchPincodes(status: string) {
+    this.api.getPincodeData(0, 0, 'id', 'desc', 'AND STATUS=1').subscribe(
+      (response: any) => {
+        if (response['code'] === 200) {
+          this.pincodelist = response['data'];
+          // console.log(this.pincodeList,response,'Debug')
         } else {
+          // console.error('Failed to fetch pincode:', response['message']);
+          this.pincodelist = [];
         }
       },
-      (err) => {
-        console.log(err);
+      (error: any) => {
+        // console.error('Error fetching pincode:', error);
+        this.pincodeList = [];
+        this.toastr.error('Failed to load pincode.', 'Error');
       }
     );
   }
+  // getpincodes() {
+  //   this.api.getPincodeData(0, 0, '', '', '  AND STATUS=1 ').subscribe(
+  //     (data: any) => {
+  //       if (data['code'] == 200) {
+  //         // this.totalRecords = data['count'];
+  //         this.pincodelist = data['data'];
+
+  //         // }
+  //       } else {
+  //       }
+  //     },
+  //     (err) => {
+  //       console.log(err);
+  //     }
+  //   );
+  // }
   loadCountry() {
     this.api.getAllCountryMaster(0, 0, '', '', ' AND STATUS=1').subscribe(
       (data: any) => {
@@ -495,33 +516,36 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   state: any[] = [];
   country: any[] = [];
   isloadstate: boolean = false;
-  FilterCountry(event: any) {
-    // this.loadSTATE_ID();
-    this.isloadstate = true;
+  // FilterCountry(event: any) {
+  //   // this.loadSTATE_ID();
+  //   this.isloadstate = true;
 
-    this.api
-      .getAllStateMaster(
-        0,
-        0,
-        '',
-        '',
-        ' AND STATUS=1 AND COUNTRY_ID = ' + event
-      )
-      .subscribe(
-        (data: any) => {
-          if (data['code'] == 200) {
-            this.stateList = data['data'];
-            this.isloadstate = false;
-          } else {
-            this.toastr.error("Data Can't Load", '');
-          }
-        },
-        (err: any) => {
-          console.log(err);
-          this.isloadstate = false;
-        }
-      );
-  }
+  //   this.api
+  //     .getAllStateMaster(
+  //       0,
+  //       0,
+  //       '',
+  //       '',
+  //       ' AND STATE_NAME= AND COUNTRY_NAME = ' + event
+  //     )
+  //     .subscribe(
+  //       (data: any) => {
+  //         // console.log(event);
+  //         // console.log(data['data']);
+  //         if (data['code'] == 200) {
+  //           // console.log(event);
+  //           this.stateList = data['data'];
+  //           this.isloadstate = false;
+  //         } else {
+  //           this.toastr.error("Data Can't Load", '');
+  //         }
+  //       },
+  //       (err: any) => {
+  //         console.log(err);
+  //         this.isloadstate = false;
+  //       }
+  //     );
+  // }
 
   // Open modal for add/edit
   openAddressModal(address?: any) {
@@ -529,6 +553,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.addressForm = Object.assign({}, address);
     if (this.addressForm.ID) {
       this.onCountryChange(this.addressForm.COUNTRY_ID);
+      this
+      this.prefillCountryStateCity();
     }
 
     // console.log(this.addressForm);
@@ -568,7 +594,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   onCountryChange(country: string) {
     this.addressForm.COUNTRY_ID = country;
 
-    this.FilterCountry(country); // Load states for selected country
+    // this.FilterCountry(country); // Load states for selected country
   }
 
   // On state change (optional, for future use)
@@ -599,12 +625,15 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       (this.addressForm.LANDMARK == '' ||
         this.addressForm.LANDMARK == null ||
         this.addressForm.LANDMARK == undefined) &&
+        (this.addressForm.COUNTRY_ID == '' ||
+        this.addressForm.COUNTRY_ID == null ||
+        this.addressForm.COUNTRY_ID == undefined) &&
       (this.addressForm.STATE_ID == '' ||
         this.addressForm.STATE_ID == null ||
         this.addressForm.STATE_ID == undefined) &&
-      (this.addressForm.CITY == '' ||
-        this.addressForm.CITY == null ||
-        this.addressForm.CITY == undefined) &&
+      (this.addressForm.CITY_ID == '' ||
+        this.addressForm.CITY_ID == null ||
+        this.addressForm.CITY_ID == undefined) &&
       (this.addressForm.PINCODE == '' ||
         this.addressForm.PINCODE == null ||
         this.addressForm.PINCODE == undefined)
@@ -671,11 +700,11 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     //   this.toastr.error('Please Enter Area', '');
     // }
     else if (
-      this.addressForm.CITY == null ||
-      this.addressForm.CITY.trim() == ''
+      this.addressForm.CITY_ID == null ||
+      this.addressForm.CITY_ID == undefined
     ) {
       this.isOk = false;
-      this.toastr.error('Please Enter City', '');
+      this.toastr.error('Please Select City', '');
     } else if (
       this.addressForm.PINCODE == undefined ||
       this.addressForm.PINCODE == ''
@@ -817,7 +846,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       sessionStorage.getItem('userId') || ''
     );
     this.api
-      .getAddressMaster(0, 0, '', '', ' AND CUST_ID = ' + this.USER_ID)
+      .getAddressMaster(0, 0, '', '', ' AND CUST_ID = ' + USER_ID)
       .subscribe(
         (data: any) => {
           if (data['code'] == 200) {
@@ -840,9 +869,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       );
   }
 
-  deleteAddress(addressId: number) {
-    // call delete API or handle logic
-  }
+ 
 
   orders: any;
 
@@ -1767,4 +1794,369 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       this.updateTotalPrice();
     }
   }
+  deleteAddress(addressID: number, customer_id: number) {
+    console.log('Deleting Address ID:', addressID, 'Customer ID:',customer_id);
+    this.api.DeleteAddress(addressID, customer_id).subscribe(
+      (data: any) => {
+        if (data['code'] == 200) {
+          this.toastr.success(' Address Removed Successfully...', '');
+          this.gettabledata();
+        } else {
+          this.toastr.error('Address Remove Failed...', '');
+        }
+      },
+      (err: any) => {
+        console.log(err);
+      }
+    );
+  }
+   fetchCountries() {
+    this.api.getAllCountryMaster(0, 0, 'id', 'desc', '').subscribe(
+      (response: any) => {
+        if (response['code'] === 200) {
+          this.countryList = response['data'];
+        } else {
+          console.error('Failed to fetch countries:', response['message']);
+          this.countryList = [];
+        }
+      },
+      (error: any) => {
+        console.error('Error fetching countries:', error);
+        this.countryList = [];
+        this.toastr.error('Failed to load countries.', 'Error');
+      }
+    );
+  }
+  isLoadingCountries = false;
+isLoadingStates = false;
+isLoadingCities = false;
+ 
+  countrySearch = '';
+  stateSearch = '';
+  citySearch: string = '';
+  filteredCountries: any[] = [];
+  filteredStates: any[] = [];
+  filteredCities: any[] = [];
+  // Filter countries based on search (case-insensitive, partial match)
+  onCountryBlur() {
+    // Delay clearing so click on suggestion registers
+    setTimeout(() => (this.filteredCountries = []), 100);
+  }
+ 
+  onStateBlur() {
+    setTimeout(() => (this.filteredStates = []), 100);
+  }
+ 
+  selectCountry(country: any) {
+    // Set the selected value
+    this.addressForm.COUNTRY_ID = country.ID;
+    this.countrySearch = country.NAME;
+    this.filteredCountries = [];
+    this.fetchStates(country.ID);
+  }
+ 
+  selectState(state: any) {
+    this.addressForm.STATE_ID = state.ID;
+    this.stateSearch = state.NAME;
+    this.fetchCities(state.ID);
+    this.filteredStates = [];
+  }
+ 
+  filterCountries() {
+    const term = this.countrySearch.trim().toLowerCase();
+    if (!term) {
+      this.filteredCountries = [];
+      return;
+    }
+ 
+    this.filteredCountries = this.countryList.filter((c) =>
+      c.NAME.toLowerCase().includes(term)
+    );
+  }
+ 
+  filterStates() {
+    const term = this.stateSearch.trim().toLowerCase();
+    if (!term) {
+      this.filteredStates = [];
+      return;
+    }
+ 
+    this.filteredStates = this.stateList.filter((s) =>
+      s.NAME.toLowerCase().includes(term)
+    );
+  }
+ 
+  // Add button logic: only show if no exact match
+  get showAddCountryOption(): any {
+    const term = this.countrySearch.trim().toLowerCase();
+    return term && !this.countryList.some((c) => c.NAME.toLowerCase() === term);
+  }
+ 
+  get showAddStateOption(): any {
+    const term = this.stateSearch.trim().toLowerCase();
+    return term && !this.stateList.some((s) => s.NAME.toLowerCase() === term);
+  }
+ 
+ createCountry(name: string) {
+  const payload = {
+    ID: 0,
+    NAME: name,
+    STATUS: true,
+    SEQUENCE_NO: 0,
+    SHORT_CODE: this.generateShortCode(name),
+    CLIENT_ID: 1,
+  };
+ 
+  this.isLoadingCountries = true;
+  this.api.getAllCountryMaster(1, 1, '', '', 'AND STATUS=1').subscribe((res) => {
+    if (res.code == 200) {
+      payload.SEQUENCE_NO = res.data[0].SEQUENCE_NO + 1;
+      this.api.createCountry(payload).subscribe(
+        (response: any) => {
+          this.isLoadingCountries = false;
+          if (response.code === 200) {
+            this.toastr.success('Country added successfully');
+            const newCountry = { ID: response.ID, NAME: name };
+           
+             setTimeout(()=>{
+             this.fetchCountries();
+            // this.countryList.push(newCountry);
+            this.selectCountry(newCountry); // ✅ auto-select// ✅ auto-select
+ 
+            },200)
+          } else {
+            this.toastr.error(response.message || 'Failed to create country');
+          }
+        },
+        (error) => {
+          this.isLoadingCountries = false;
+          this.toastr.error('Error creating country');
+        }
+      );
+    }
+  });
+}
+  fetchStates(countryId: number) {
+  this.isLoadingStates = true;
+  this.api.getState(0, 0, 'id', 'desc', `AND COUNTRY_ID=${countryId} AND STATUS=1`).subscribe(
+    (res: any) => {
+      this.isLoadingStates = false;
+      if (res.code === 200) {
+        this.stateList = res.data;
+      } else {
+        this.stateList = [];
+      }
+    },
+    (error) => {
+      this.isLoadingStates = false;
+      console.error('Error fetching states:', error);
+    }
+  );
+}
+  // ------------------ CITY ------------------
+ 
+  onCityBlur() {
+    setTimeout(() => (this.filteredCities = []), 100);
+  }
+ 
+  selectCity(city: any) {
+    this.addressForm.CITY_ID = city.ID;
+    this.citySearch = city.NAME;
+    this.filteredCities = [];
+  }
+ cityList: any[] = [];
+  filterCities() {
+    const term = this.citySearch.trim().toLowerCase();
+    if (!term) {
+      this.filteredCities = [];
+      return;
+    }
+ 
+    this.filteredCities = this.cityList.filter((c) =>
+      c.NAME.toLowerCase().includes(term)
+    );
+  }
+ 
+  get showAddCityOption(): any {
+    const term = this.citySearch.trim().toLowerCase();
+    return term && !this.cityList.some((c) => c.NAME.toLowerCase() === term);
+  }
+ 
+ fetchCities(stateId: number) {
+  this.isLoadingCities = true;
+  this.api.getCityData(0, 0, 'id', 'desc', 'AND IS_ACTIVE=1 AND STATE_ID=' + stateId).subscribe(
+    (response: any) => {
+      this.isLoadingCities = false;
+      if (response.code === 200) {
+        this.cityList = response.data;
+      } else {
+        this.cityList = [];
+      }
+    },
+    (error: any) => {
+      this.isLoadingCities = false;
+      console.error('Error fetching cities:', error);
+      this.cityList = [];
+    }
+  );
+}
+ createState(name: string) {
+  if (!this.addressForm.COUNTRY_ID) {
+    this.toastr.warning('Please select a country first');
+    return;
+  }
+ 
+  const payload = {
+    ID: 0,
+    NAME: name,
+    STATUS: true,
+    SEQUENCE_NO: 0,
+    COUNTRY_ID: this.addressForm.COUNTRY_ID,
+    SHORT_CODE: this.generateShortCode(name),
+    CLIENT_ID: 1,
+  };
+ 
+  this.isLoadingStates = true;
+  this.api.getState(1, 1, '', '', 'AND STATUS=1').subscribe((res) => {
+    if (res.code == 200) {
+      payload.SEQUENCE_NO = res.data[0].SEQUENCE_NO + 1;
+      this.api.createState(payload).subscribe(
+        (response: any) => {
+          this.isLoadingStates = false;
+          if (response.code === 200) {
+            this.toastr.success('State added successfully');
+            const newState = { ID: response.ID, NAME: name };
+            // ✅ auto-select
+             setTimeout(()=>{
+            this.fetchStates(this.addressForm.COUNTRY_ID)
+            // this.stateList.push(newState);
+ 
+            this.selectState(newState);  // ✅ auto-select
+ 
+            },200)
+          } else {
+            this.toastr.error(response.message || 'Failed to create state');
+          }
+        },
+        (error) => {
+          this.isLoadingStates = false;
+          this.toastr.error('Error creating state');
+        }
+      );
+    }
+  });
+}
+ 
+prefillCountryStateCity() {
+  // --- Prefill Country ---
+  const selectedCountry = this.countryList.find(
+    (c) => c.ID === this.addressForm.COUNTRY_ID
+  );
+ 
+  if (selectedCountry) {
+    this.countrySearch = selectedCountry.NAME;
+    this.fetchStates(selectedCountry.ID);
+ 
+    // Wait for states to load, then prefill state
+    // setTimeout(() => {
+      const selectedState = this.stateList.find(
+        (s) => s.ID === this.addressForm.STATE_ID
+      );
+ 
+      if (selectedState) {
+        this.stateSearch = selectedState.NAME;
+        this.fetchCities(selectedState.ID);
+ 
+        // Wait for cities to load, then prefill city
+        // setTimeout(() => {
+          const selectedCity = this.cityList.find(
+            (c) => c.ID === this.addressForm.CITY_ID
+          );
+          this.citySearch = selectedCity ? selectedCity.NAME : '';
+        // }, 300);
+      } else {
+        this.stateSearch = '';
+      }
+    // }, 300);
+  } else {
+    this.countrySearch = '';
+  }
+}
+ 
+  // Called on input change for country
+  onCountryInputChange() {
+    // If country input is empty, clear selection
+    if (!this.countrySearch || this.countrySearch.trim() === '') {
+      this.addressForm.COUNTRY_ID = null; // clear selected ID
+      this.filteredCountries = [];
+ 
+      // Clear state too
+      this.addressForm.STATE_ID = null;
+      this.stateSearch = '';
+      this.filteredStates = [];
+      this.stateList = []; // optional: reset state list
+    }
+  }
+  generateShortCode(name: string): string {
+    if (!name) return '';
+    // Take the first two letters, uppercase
+    return name.trim().substring(0, 2).toUpperCase();
+  }
+  generateShortCodeCity(name: string): string {
+  if (!name) return '';
+  return name
+    .trim()
+    .replace(/\s+/g, '') // remove spaces
+    .substring(0, 3)     // take first 3 letters
+    .toUpperCase();
+}
+ createCity(name: string) {
+  if (!this.addressForm.COUNTRY_ID) {
+    this.toastr.warning('Please select a country first');
+    return;
+  }
+  if (!this.addressForm.STATE_ID) {
+    this.toastr.warning('Please select a state first');
+    return;
+  }
+ 
+  const payload = {
+    ID: 0,
+    NAME: name,
+    IS_ACTIVE: true,
+    SEQUENCE_NO: 0,
+    COUNTRY_ID: this.addressForm.COUNTRY_ID,
+    STATE_ID: this.addressForm.STATE_ID,
+    SHORT_CODE: this.generateShortCodeCity(name),
+    CLIENT_ID: 1,
+  };
+ 
+  this.isLoadingCities = true;
+  this.api.getCityData(1, 1, '', '', 'AND IS_ACTIVE=1').subscribe((res) => {
+    if (res.code == 200) {
+      payload.SEQUENCE_NO = res.data[0].SEQUENCE_NO + 1;
+      this.api.createCity(payload).subscribe(
+        (response: any) => {
+          this.isLoadingCities = false;
+          if (response.code === 200) {
+            this.toastr.success('City added successfully');
+            const newCity = { ID: response.ID, NAME: name };
+            // this.cityList.push(newCity);
+            setTimeout(()=>{
+             this.fetchCities(this.addressForm.STATE_ID)
+            this.selectCity(newCity); // ✅ auto-select
+ 
+            },200)
+          } else {
+            this.toastr.error(response.message || 'Failed to create city');
+          }
+        },
+        (error) => {
+          this.isLoadingCities = false;
+          this.toastr.error('Error creating city');
+        }
+      );
+    }
+  });
+}
 }

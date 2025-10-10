@@ -177,48 +177,45 @@
             </div>
             <hr style="color: #716f6f !important" />
             <!-- Price Range Filter -->
-            <div
-              class="mb-6 relative"
-              style="padding: 15px !important; margin-bottom: 5px !important"
-            >
-              <h4 class="font-medium text-gray-900 mb-3">Price Range</h4>
-
-              <input
-                type="range"
-                min="0"
-                max="10"
-                [(ngModel)]="priceRange"
-                (input)="onSliderInput()"
-                (mouseenter)="showTooltip = true"
-                (mouseleave)="showTooltip = false"
-                class="custom-range mb-3 w-full"
-                [ngStyle]="{
-                  background: getSliderBackground(priceRange)
-                }"
-              />
-
-              <!-- Min and Max labels -->
-              <div class="flex justify-between">
-                <span class="text-sm text-gray-600">
-                  ${{ priceRange && priceRange > 0 ? priceRange : 0 }}
-                </span>
-                <span class="text-sm text-gray-600">$10</span>
-              </div>
-
-              <!-- Floating tooltip (visible when sliding or hovering) -->
-              <!-- <div
-                *ngIf="showTooltip"
-                class="absolute top-0"
-                [style.left.%]="(priceRange / 20) * 100"
-                style="transform: translateX(-50%); margin-top: 28px"
-              >
-                <span class="text-sm text-gray-600">${{ priceRange }}</span>
-              </div> -->
-            </div>
+        <div class="mb-6 relative" style="padding: 15px !important; margin-bottom: 5px !important">
+  <h4 class="font-medium text-gray-900 mb-3">Price Range</h4>
+ 
+  <input
+    type="range"
+    min="0"
+    max="50"
+    [(ngModel)]="priceRange"
+    (input)="onSliderInput()"
+    class="custom-range mb-3 w-full"
+    [ngStyle]="{ background: getSliderBackground(priceRange) }"
+  />
+ 
+  <!-- Min and Max labels -->
+  <div class="flex justify-between relative">
+    <span class="text-sm text-gray-600">$0</span>
+ 
+    <!-- Dynamic price label only when slider is not at 0 or 10 -->
+<span
+  *ngIf="priceRange > 0 && priceRange < 50"
+  class="absolute text-sm text-gray-600"
+  [style.left.%]="10 + (priceRange / 50) * 70"
+  style="transform: translateX(-50%);"
+>
+  ${{ priceRange }}
+</span>
+ 
+ 
+ 
+ 
+    <span class="text-sm text-gray-600">$50</span>
+  </div>
+</div>
+ 
+ 
 
             <hr style="color: #716f6f !important" />
             <!-- Ingredients Filter -->
-            <div
+            <!-- <div
               class="mb-6"
               style="padding: 15px !important; margin-bottom: 5px !important"
             >
@@ -244,7 +241,6 @@
                 </label>
               </div>
 
-              <!-- Load More Button -->
               <div
                 class="mt-4"
                 *ngIf="visibleIngredients.length < ingredients.length"
@@ -261,7 +257,7 @@
                   Load More
                 </button>
               </div>
-            </div>
+            </div> -->
             <hr style="color: #716f6f !important" />
             <button
               style="padding: 15px !important; margin-top: 15px !important"
@@ -318,7 +314,7 @@
               "
               >Sort By</span
             >
-            <div class="relative">
+           <div class="relative">
               <select
                 style="
                   padding: 10px 12px !important;
@@ -328,9 +324,9 @@
                 class="appearance-none bg-gray-50 border border-gray-200 rounded-button py-2 px-4 pr-8 focus:outline-none focus:ring-2 focus:ring-primary/50"
                 (change)="onSortChange($event)"
               >
-                <option value="default" style="font-size: 12px !important">
+                <!-- <option value="default" style="font-size: 12px !important">
                   Default Sorting
-                </option>
+                </option> -->
                 <option value="RATE:asc" style="font-size: 12px !important">
                   Price: Low to High
                 </option>
@@ -345,7 +341,7 @@
                 </option>
                 <option
                   value="IS_POPULAR:desc"
-                  style="font-size: 12px !important"
+                  style="font-size: 12px !important" selected
                 >
                   Popularity
                 </option>
@@ -372,17 +368,11 @@
             </button>
           </div>
           <div class="flex items-center space-x-4">
-            <span
-              class="font-medium"
-              style="font-weight: 400; font-size: 15px !important"
-              >Showing {{ showTotalProducts == 1 ? totalProducts : 1 }}-{{
-                showTotalProducts == 1
-                  ? productsPerPage + showTotalProducts
-                  : totalProducts
-              }}
-              of {{ totalProducts }} products</span
-            >
-          </div>
+  <span class="font-medium" style=" font-weight: 400;
+                font-size: 15px  !important">
+    Showing {{ currentPageCount }} of {{ totalProducts }} products
+  </span>
+</div>
         </div>
         <div
           class="grid product-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
@@ -396,19 +386,18 @@
             "
           >
             <div class="relative">
-              <div
-                class="w-full h-48 md:h-60 bg-white flex items-center justify-center overflow-hidden"
-              >
-                <img
-                  *ngIf="initImageIndex(product.ID) === undefined || true"
-                  [src]="
-                    producctImageurl +
-                    getImageArray(product)[imageIndices[product.ID]]
-                  "
-                  [alt]="product.NAME"
-                  class="max-h-full max-w-full object-contain mt-2"
-                />
-              </div>
+                     <div class="w-full h-48 md:h-60 bg-white flex items-center justify-center overflow-hidden">
+  <!-- Initialize index -->
+  <ng-container *ngIf="initImageIndex(product.ID) === undefined"></ng-container>
+ 
+  <img
+    *ngIf="getImageArray(product).length > 0"
+    [src]="productImageUrl + getImageArray(product)[imageIndices[product.ID]]"
+    [alt]="product.NAME"
+    class="max-h-full max-w-full object-contain mt-2"
+  />
+</div>
+ 
 
               <!-- Dots as Indicators -->
               <div
@@ -588,8 +577,8 @@
                 style="margin-top: 15px !important"
               >
                 <button
-                  style="font-size: 15px !important"
-                  class="flex-1 bg-[#5a8f69] text-white py-2 rounded-button font-medium transition-colors !rounded-button whitespace-nowrap add-to-cart-btn"
+                  style="font-size: 15px !important; position: relative"
+                  class="flex-1 bg-[#5a8f69] text-white py-2 rounded-button font-medium transition-colors !rounded-button whitespace-nowrap add-to-cart-btn group"
                   (click)="addToCart(product); $event.stopPropagation()"
                   [disabled]="
                     product.IS_UPCOMING == 1 ||
@@ -602,7 +591,8 @@
                     'hover:bg-green-700 cursor-pointer':
                       product.IS_UPCOMING != 1 &&
                       product.CURRENT_STOCK_VARIENT > 0 &&
-                      currentStockMap[product.ID] > 0,
+                      currentStockMap[product.ID] > 0 &&
+                      hasActiveVariants(product.ID),
                     'bg-gray-400 cursor-not-allowed':
                       product.IS_UPCOMING == 1 ||
                       product.CURRENT_STOCK_VARIENT <= 0 ||
@@ -611,7 +601,21 @@
                   }"
                 >
                   Add to Cart
+
+                  <!-- Tooltip inside button (visible only if disabled) -->
+                  <span
+                    *ngIf="
+                      product.IS_UPCOMING == 1 ||
+                      product.CURRENT_STOCK_VARIENT <= 0 ||
+                      currentStockMap[product.ID] <= 0 ||
+                      !hasActiveVariants(product.ID)
+                    "
+                    class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block bg-black text-white text-xs rounded px-2 py-1 whitespace-nowrap"
+                  >
+                    Not available right now
+                  </span>
                 </button>
+
                 <a
                   (click)="addtodetail(product)"
                   style="font-size: 15px !important"

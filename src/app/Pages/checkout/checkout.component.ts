@@ -13,19 +13,20 @@ interface Address {
   ID?: string; // Made optional for new addresses
   NAME: string;
   ADDRESS: string;
-  CITY: string;
+  CITY_ID: any;
   PINCODE: string;
-  COUNTRY_ID?: string; // New field
-  STATE_ID?: string; // New field
+  COUNTRY_ID?: any; // New field
+  STATE_ID?: any; // New field
   MOBILE_NO: string;
   LANDMARK?: string; // New field
   LOCALITY?: string; // New field
-  ADDRESS_TYPE?: 'Residential' | 'Office'; // New field
+  ADDRESS_TYPE?: any; // New field
   IS_DEFAULT?: boolean; // New field
   IS_DEFUALT_ADDRESS?: boolean;
   CUST_ID?: string; // Assuming CUST_ID is for customer association
   SESSION_KEY: any;
 }
+ 
 @Component({
   selector: 'app-checkout',
   templateUrl: './checkout.component.html',
@@ -33,25 +34,27 @@ interface Address {
 })
 export class CheckoutComponent {
   @Input() cartDetails: any;
-  savedAddresses: Address[] = [];
+  savedAddresses: any[] = [];
   @Input() subtotal: any;
   @Input() userId: any;
-
+  cityList: any[] = [];
+ 
   @Output() orderPlaced = new EventEmitter<boolean>(); // Changed output to reflect order placement
 
   // New properties for drawer management
   @Input() addressDrawerOpen: boolean = false; // Controls the overall drawer visibility
   @Output() visibleChange = new EventEmitter<boolean>();
+  currentStep: number = 2;
   showAddressForm: boolean = false; // Controls which view is shown inside the drawer (list or form)
 
   isEditingAddress: boolean = false;
   currentAddressId: string | null = null;
 
-  addressForm: Address = {
+ addressForm: Address = {
     NAME: '',
     ADDRESS: '',
     MOBILE_NO: '',
-    CITY: '',
+    CITY_ID: '',
     PINCODE: '',
     COUNTRY_ID: '',
     STATE_ID: '',
@@ -66,6 +69,7 @@ export class CheckoutComponent {
   countryList: any[] = [];
   stateList: any[] = [];
   pincodeList: any[] = [];
+  Shiping_Charge: any = '';
 
   public commonFunction = new CommonFunctionService(); // Ensure this path is correct
   encryptedmail: string = sessionStorage.getItem('email') || '';
@@ -101,6 +105,7 @@ export class CheckoutComponent {
     this.fetchCountries();
     // console.log('this is cartdetails: ', this.cartDetails);
     this.fetchPincodes('1');
+    this.fetchShipingcharges();
     // this.addressDrawerOpen=true
     // console.log(this.fetchPincodes('1'));
   }
@@ -144,13 +149,14 @@ export class CheckoutComponent {
       const addressToEdit = this.savedAddresses.find(
         (addr) => addr.ID === addressId
       );
-
+ 
       // console.log('Address to edit:', addressToEdit);
       if (addressToEdit) {
         this.addressForm = { ...addressToEdit }; // Create a copy for editing
         if (this.addressForm.COUNTRY_ID) {
           this.fetchStates(this.addressForm.COUNTRY_ID); // Load states for the selected country
           // this.fetchPincodes(this.addressForm.PINCODE);
+          this.prefillCountryStateCity();
         }
       } else {
         // console.error('Address not found for editing:', addressId);
@@ -165,6 +171,7 @@ export class CheckoutComponent {
       this.resetAddressForm(); // Reset for a new address
     }
   }
+ 
 
   /**
    * Switches the drawer view back to the list of saved addresses.
@@ -177,7 +184,7 @@ export class CheckoutComponent {
 
   // --- Address Management Core Functions ---
 
-  fetchSavedAddresses() {
+fetchSavedAddresses() {
     if (this.userId) {
       var filter = ` AND CUST_ID = ${this.userId}`;
     } else {
@@ -191,7 +198,7 @@ export class CheckoutComponent {
             ID: addr.ID,
             NAME: addr.NAME,
             ADDRESS: addr.ADDRESS,
-            CITY: addr.CITY,
+            CITY_ID: addr.CITY_ID,
             PINCODE: addr.PINCODE,
             COUNTRY_ID: addr.COUNTRY_ID,
             STATE_ID: addr.STATE_ID,
@@ -204,8 +211,9 @@ export class CheckoutComponent {
             MOBILE_NO: addr.MOBILE_NO,
           }));
           this.selectedAddress =
-            this.savedAddresses.find((a) => a.IS_DEFAULT) || null;
-
+            this.savedAddresses.find((a) => a.IS_DEFAULT) ||
+            this.savedAddresses[0];
+ 
           if (this.selectedAddress && this.selectedAddress.COUNTRY_ID != null) {
             sessionStorage.setItem(
               'address',
@@ -282,7 +290,7 @@ export class CheckoutComponent {
       NAME: '',
       MOBILE_NO: '',
       ADDRESS: '',
-      CITY: '',
+      CITY_ID: '',
       PINCODE: '',
       COUNTRY_ID: '',
       STATE_ID: '',
@@ -305,7 +313,7 @@ export class CheckoutComponent {
     console.log('Checkbox changed to:', this.addressForm.IS_DEFAULT);
   }
 
-  saveAddress(form: NgForm) {
+   saveAddress(form: NgForm) {
     // if (form.invalid) {
     //   this.toastr.error('Please fill all required fields.', '');
     //   return;
@@ -323,12 +331,15 @@ export class CheckoutComponent {
       (this.addressForm.LANDMARK == '' ||
         this.addressForm.LANDMARK == null ||
         this.addressForm.LANDMARK == undefined) &&
+      (this.addressForm.COUNTRY_ID == '' ||
+        this.addressForm.COUNTRY_ID == null ||
+        this.addressForm.COUNTRY_ID == undefined) &&
       (this.addressForm.STATE_ID == '' ||
         this.addressForm.STATE_ID == null ||
         this.addressForm.STATE_ID == undefined) &&
-      (this.addressForm.CITY == '' ||
-        this.addressForm.CITY == null ||
-        this.addressForm.CITY == undefined) &&
+      (this.addressForm.CITY_ID == '' ||
+        this.addressForm.CITY_ID == null ||
+        this.addressForm.CITY_ID == undefined) &&
       (this.addressForm.PINCODE == '' ||
         this.addressForm.PINCODE == null ||
         this.addressForm.PINCODE == undefined) &&
@@ -375,11 +386,11 @@ export class CheckoutComponent {
       this.toastr.error('Please Select State', '');
       return;
     } else if (
-      this.addressForm.CITY == null ||
-      this.addressForm.CITY.trim() == ''
+      this.addressForm.CITY_ID == null ||
+      this.addressForm.CITY_ID == undefined
     ) {
       // this.isOk = false;
-      this.toastr.error('Please Enter City', '');
+      this.toastr.error('Please Select City', '');
       return;
     } else if (
       this.addressForm.PINCODE == undefined ||
@@ -400,13 +411,13 @@ export class CheckoutComponent {
     //   this.toastr.error('Please specify if this is default', '');
     //   return;
     // }
-
+ 
     if (this.userId) {
       this.addressForm.CUST_ID = this.userId;
     } else {
       this.addressForm.SESSION_KEY = this.SESSION_KEYS;
     }
-
+ 
     sessionStorage.setItem('pincode', String(this.addressForm.PINCODE));
     if (this.isEditingAddress && this.currentAddressId) {
       this.addressForm.IS_DEFAULT = Boolean(this.addressForm.IS_DEFAULT);
@@ -417,7 +428,7 @@ export class CheckoutComponent {
         next: (response: any) => {
           if (response.code === 200) {
             this.toastr.success('Address updated successfully!', 'Success');
-            console.log(this.addressForm);
+            // console.log(this.addressForm);
             this.fetchSavedAddresses();
             this.goBackToAddressList();
           } else {
@@ -459,39 +470,23 @@ export class CheckoutComponent {
       });
     }
   }
+ 
 
-  deleteAddress(addressId: string) {
-    if (confirm('Are you sure you want to delete this address?')) {
-      // Uncomment and test your API call for deletion
-      // this.api.deleteCustomerAddressWeb(addressId).subscribe({
-      //   next: (response: any) => {
-      //     if (response['code'] === 200) {
-      //       this.toastr.success('Address deleted successfully!', 'Success');
-      //       this.fetchSavedAddresses();
-      //     } else {
-      //       this.toastr.error(
-      //         'Failed to delete address: ' + response['message'],
-      //         'Error'
-      //       );
-      //     }
-      //   },
-      //   error: (error: any) => {
-      //     console.error('Error deleting address:', error);
-      //     this.toastr.error(
-      //       'Error deleting address. Please try again.',
-      //       'Error'
-      //     );
-      //   },
-      // });
-      // For demonstration if API is commented out:
-      this.savedAddresses = this.savedAddresses.filter(
-        (addr) => addr.ID !== addressId
-      );
-      this.toastr.success(
-        'Address deleted successfully (simulated)!',
-        'Success'
-      );
-    }
+ deleteAddress(addressID: any, customer_id: any) {
+    console.log('Deleting Address ID:', addressID, 'Customer ID:', customer_id);
+    this.api.DeleteAddress(addressID, customer_id).subscribe(
+      (data: any) => {
+        if (data['code'] == 200) {
+          this.toastr.success(' Address Removed Successfully...', '');
+          this.fetchSavedAddresses();
+        } else {
+          this.toastr.error('Address Remove Failed...', '');
+        }
+      },
+      (err: any) => {
+        console.log(err);
+      }
+    );
   }
 
   // // Modified to directly proceed to checkout without payment gateway
@@ -564,36 +559,35 @@ export class CheckoutComponent {
     );
   }
 
-  onCountryChange(countryId: string) {
+onCountryChange(countryname: number) {
     this.addressForm.STATE_ID = ''; // Clear state selection on country change
     this.stateList = []; // Clear state list
-    if (countryId) {
-      this.fetchStates(countryId);
+    if (countryname) {
+      this.fetchStates(countryname);
     }
     // if (countryId == '1') {
     //   this.fetchPincodes(countryId);
     // }
   }
 
-  fetchStates(countryId: string) {
-    this.api
-      .getStateData(0, 0, 'id', 'desc', 'AND COUNTRY_ID=' + countryId)
-      .subscribe(
-        (response: any) => {
-          if (response['code'] === 200) {
-            this.stateList = response['data'];
-          } else {
-            console.error('Failed to fetch states:', response['message']);
-            this.stateList = [];
-          }
-        },
-        (error: any) => {
-          console.error('Error fetching states:', error);
-          this.stateList = [];
-          this.toastr.error('Failed to load states.', 'Error');
-        }
-      );
-  }
+    fetchStates(countryId: number) {
+  this.isLoadingStates = true;
+  this.api.getState(0, 0, 'id', 'desc', `AND COUNTRY_ID=${countryId} AND STATUS=1`).subscribe(
+    (res: any) => {
+      this.isLoadingStates = false;
+      if (res.code === 200) {
+        this.stateList = res.data;
+      } else {
+        this.stateList = [];
+      }
+    },
+    (error) => {
+      this.isLoadingStates = false;
+      console.error('Error fetching states:', error);
+    }
+  );
+}
+ 
   get selectedShippingCharge(): number {
     // console.log(this.pincodeList)
     if (!this.pincodeList?.length || !this.selectedAddress.PINCODE) return 0;
@@ -607,7 +601,27 @@ export class CheckoutComponent {
     // console.log(match.SHIPPING_CHARGES);
     return match ? Number(match.SHIPPING_CHARGES) : 0;
   }
-
+  fetchShipingcharges() {
+    this.api.getAllCharges(0, 0, 'id', 'desc', '').subscribe(
+      (response: any) => {
+        if (response['code'] === 200) {
+          this.Shiping_Charge = response['data'][0]['VALUE_1'];
+          // console.log('dataaaly ', response['data']);
+          // console.log('charges ', this.Shiping_Charge);
+          // console.log(this.pincodeList,response,'Debug')
+        } else {
+          // console.error('Failed to fetch pincode:', response['message']);
+          // this.pincodeList = [];
+          console.log('failed shipping', response['data']);
+        }
+      },
+      (error: any) => {
+        // console.error('Error fetching pincode:', error);
+        this.pincodeList = [];
+        this.toastr.error('Failed to load shipping charges.', 'Error');
+      }
+    );
+  }
   fetchPincodes(status: string) {
     this.api.getPincodeData(0, 0, 'id', 'desc', 'AND STATUS=1').subscribe(
       (response: any) => {
@@ -732,6 +746,7 @@ export class CheckoutComponent {
             // );
             if (response.code == 200) {
               this.toastr.success('Payment successful!', 'Success');
+              this.currentStep = 4;
               // this.closePaymentModal();
               // this.orderPlaced.emit(true);
               // this.visibleChange.emit(false);
@@ -840,4 +855,340 @@ export class CheckoutComponent {
     this.visibleChange.emit(false); // Notify parent to close drawer
     // Optionally: show cart drawer if controlled separately
   }
+  steped() {
+    this.currentStep = 3;
+  }
+  desteper() {
+    this.currentStep = 2;
+  }
+
+showOrderSummaryInDrawer: boolean = false;
+ 
+openr(){
+ 
+  this.currentStep=2;
+  this.showOrderSummaryInDrawer=false;
+ 
+  this.showAddressForm=true;
+  this.openAddressDrawer();
+}
+ 
+ isLoadingCountries = false;
+isLoadingStates = false;
+isLoadingCities = false;
+ 
+  countrySearch = '';
+  stateSearch = '';
+  citySearch: string = '';
+  filteredCountries: any[] = [];
+  filteredStates: any[] = [];
+  filteredCities: any[] = [];
+  // Filter countries based on search (case-insensitive, partial match)
+  onCountryBlur() {
+    // Delay clearing so click on suggestion registers
+    setTimeout(() => (this.filteredCountries = []), 100);
+  }
+ 
+  onStateBlur() {
+    setTimeout(() => (this.filteredStates = []), 100);
+  }
+ 
+  selectCountry(country: any) {
+    // Set the selected value
+    this.addressForm.COUNTRY_ID = country.ID;
+    this.countrySearch = country.NAME;
+    this.filteredCountries = [];
+    this.fetchStates(country.ID);
+  }
+ 
+  selectState(state: any) {
+    this.addressForm.STATE_ID = state.ID;
+    this.stateSearch = state.NAME;
+    this.fetchCities(state.ID);
+    this.filteredStates = [];
+  }
+ 
+  filterCountries() {
+    const term = this.countrySearch.trim().toLowerCase();
+    if (!term) {
+      this.filteredCountries = [];
+      return;
+    }
+ 
+    this.filteredCountries = this.countryList.filter((c) =>
+      c.NAME.toLowerCase().includes(term)
+    );
+  }
+ 
+  filterStates() {
+    const term = this.stateSearch.trim().toLowerCase();
+    if (!term) {
+      this.filteredStates = [];
+      return;
+    }
+ 
+    this.filteredStates = this.stateList.filter((s) =>
+      s.NAME.toLowerCase().includes(term)
+    );
+  }
+ 
+  // Add button logic: only show if no exact match
+  get showAddCountryOption(): any {
+    const term = this.countrySearch.trim().toLowerCase();
+    return term && !this.countryList.some((c) => c.NAME.toLowerCase() === term);
+  }
+ 
+  get showAddStateOption(): any {
+    const term = this.stateSearch.trim().toLowerCase();
+    return term && !this.stateList.some((s) => s.NAME.toLowerCase() === term);
+  }
+ 
+ createCountry(name: string) {
+  const payload = {
+    ID: 0,
+    NAME: name,
+    STATUS: true,
+    SEQUENCE_NO: 0,
+    SHORT_CODE: this.generateShortCode(name),
+    CLIENT_ID: 1,
+  };
+ 
+  this.isLoadingCountries = true;
+  this.api.getAllCountryMaster(1, 1, '', '', 'AND STATUS=1').subscribe((res) => {
+    if (res.code == 200) {
+      payload.SEQUENCE_NO = res.data[0].SEQUENCE_NO + 1;
+      this.api.createCountry(payload).subscribe(
+        (response: any) => {
+          this.isLoadingCountries = false;
+          if (response.code === 200) {
+            this.toastr.success('Country added successfully');
+            const newCountry = { ID: response.ID, NAME: name };
+           
+             setTimeout(()=>{
+             this.fetchCountries();
+            // this.countryList.push(newCountry);
+            this.selectCountry(newCountry); // ✅ auto-select// ✅ auto-select
+ 
+            },200)
+          } else {
+            this.toastr.error(response.message || 'Failed to create country');
+          }
+        },
+        (error) => {
+          this.isLoadingCountries = false;
+          this.toastr.error('Error creating country');
+        }
+      );
+    }
+  });
+}
+ 
+  // ------------------ CITY ------------------
+ 
+  onCityBlur() {
+    setTimeout(() => (this.filteredCities = []), 100);
+  }
+ 
+  selectCity(city: any) {
+    this.addressForm.CITY_ID = city.ID;
+    this.citySearch = city.NAME;
+    this.filteredCities = [];
+  }
+ 
+  filterCities() {
+    const term = this.citySearch.trim().toLowerCase();
+    if (!term) {
+      this.filteredCities = [];
+      return;
+    }
+ 
+    this.filteredCities = this.cityList.filter((c) =>
+      c.NAME.toLowerCase().includes(term)
+    );
+  }
+ 
+  get showAddCityOption(): any {
+    const term = this.citySearch.trim().toLowerCase();
+    return term && !this.cityList.some((c) => c.NAME.toLowerCase() === term);
+  }
+ 
+ fetchCities(stateId: number) {
+  this.isLoadingCities = true;
+  this.api.getCityData(0, 0, 'id', 'desc', 'AND IS_ACTIVE=1 AND STATE_ID=' + stateId).subscribe(
+    (response: any) => {
+      this.isLoadingCities = false;
+      if (response.code === 200) {
+        this.cityList = response.data;
+      } else {
+        this.cityList = [];
+      }
+    },
+    (error: any) => {
+      this.isLoadingCities = false;
+      console.error('Error fetching cities:', error);
+      this.cityList = [];
+    }
+  );
+}
+ createState(name: string) {
+  if (!this.addressForm.COUNTRY_ID) {
+    this.toastr.warning('Please select a country first');
+    return;
+  }
+ 
+  const payload = {
+    ID: 0,
+    NAME: name,
+    STATUS: true,
+    SEQUENCE_NO: 0,
+    COUNTRY_ID: this.addressForm.COUNTRY_ID,
+    SHORT_CODE: this.generateShortCode(name),
+    CLIENT_ID: 1,
+  };
+ 
+  this.isLoadingStates = true;
+  this.api.getState(1, 1, '', '', 'AND STATUS=1').subscribe((res) => {
+    if (res.code == 200) {
+      payload.SEQUENCE_NO = res.data[0].SEQUENCE_NO + 1;
+      this.api.createState(payload).subscribe(
+        (response: any) => {
+          this.isLoadingStates = false;
+          if (response.code === 200) {
+            this.toastr.success('State added successfully');
+            const newState = { ID: response.ID, NAME: name };
+            // ✅ auto-select
+             setTimeout(()=>{
+            this.fetchStates(this.addressForm.COUNTRY_ID)
+            // this.stateList.push(newState);
+ 
+            this.selectState(newState);  // ✅ auto-select
+ 
+            },200)
+          } else {
+            this.toastr.error(response.message || 'Failed to create state');
+          }
+        },
+        (error) => {
+          this.isLoadingStates = false;
+          this.toastr.error('Error creating state');
+        }
+      );
+    }
+  });
+}
+ 
+prefillCountryStateCity() {
+  // --- Prefill Country ---
+  const selectedCountry = this.countryList.find(
+    (c) => c.ID === this.addressForm.COUNTRY_ID
+  );
+ 
+  if (selectedCountry) {
+    this.countrySearch = selectedCountry.NAME;
+    this.fetchStates(selectedCountry.ID);
+ 
+    // Wait for states to load, then prefill state
+    // setTimeout(() => {
+      const selectedState = this.stateList.find(
+        (s) => s.ID === this.addressForm.STATE_ID
+      );
+ 
+      if (selectedState) {
+        this.stateSearch = selectedState.NAME;
+        this.fetchCities(selectedState.ID);
+ 
+        // Wait for cities to load, then prefill city
+        // setTimeout(() => {
+          const selectedCity = this.cityList.find(
+            (c) => c.ID === this.addressForm.CITY_ID
+          );
+          this.citySearch = selectedCity ? selectedCity.NAME : '';
+        // }, 300);
+      } else {
+        this.stateSearch = '';
+      }
+    // }, 300);
+  } else {
+    this.countrySearch = '';
+  }
+}
+ 
+  // Called on input change for country
+  onCountryInputChange() {
+    // If country input is empty, clear selection
+    if (!this.countrySearch || this.countrySearch.trim() === '') {
+      this.addressForm.COUNTRY_ID = null; // clear selected ID
+      this.filteredCountries = [];
+ 
+      // Clear state too
+      this.addressForm.STATE_ID = null;
+      this.stateSearch = '';
+      this.filteredStates = [];
+      this.stateList = []; // optional: reset state list
+    }
+  }
+  generateShortCode(name: string): string {
+    if (!name) return '';
+    // Take the first two letters, uppercase
+    return name.trim().substring(0, 2).toUpperCase();
+  }
+  generateShortCodeCity(name: string): string {
+  if (!name) return '';
+  return name
+    .trim()
+    .replace(/\s+/g, '') // remove spaces
+    .substring(0, 3)     // take first 3 letters
+    .toUpperCase();
+}
+ createCity(name: string) {
+  if (!this.addressForm.COUNTRY_ID) {
+    this.toastr.warning('Please select a country first');
+    return;
+  }
+  if (!this.addressForm.STATE_ID) {
+    this.toastr.warning('Please select a state first');
+    return;
+  }
+ 
+  const payload = {
+    ID: 0,
+    NAME: name,
+    IS_ACTIVE: true,
+    SEQUENCE_NO: 0,
+    COUNTRY_ID: this.addressForm.COUNTRY_ID,
+    STATE_ID: this.addressForm.STATE_ID,
+    SHORT_CODE: this.generateShortCodeCity(name),
+    CLIENT_ID: 1,
+  };
+ 
+  this.isLoadingCities = true;
+  this.api.getCityData(1, 1, '', '', 'AND IS_ACTIVE=1').subscribe((res) => {
+    if (res.code == 200) {
+      payload.SEQUENCE_NO = res.data[0].SEQUENCE_NO + 1;
+      this.api.createCity(payload).subscribe(
+        (response: any) => {
+          this.isLoadingCities = false;
+          if (response.code === 200) {
+            this.toastr.success('City added successfully');
+            const newCity = { ID: response.ID, NAME: name };
+            // this.cityList.push(newCity);
+            setTimeout(()=>{
+             this.fetchCities(this.addressForm.STATE_ID)
+            this.selectCity(newCity); // ✅ auto-select
+ 
+            },200)
+          } else {
+            this.toastr.error(response.message || 'Failed to create city');
+          }
+        },
+        (error) => {
+          this.isLoadingCities = false;
+          this.toastr.error('Error creating city');
+        }
+      );
+    }
+  });
+}
+ 
+  
 }
