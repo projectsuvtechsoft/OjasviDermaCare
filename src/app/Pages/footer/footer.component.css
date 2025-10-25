@@ -1,0 +1,9 @@
+.newsletter-section {
+  background-image: linear-gradient(to right,
+      rgba(90, 143, 105, 0.9),
+      rgba(90, 143, 105, 0.7)),
+    url("/assets/img/contactUsBanner.png");
+  background-size: cover;
+  background-position: center;
+ 
+}

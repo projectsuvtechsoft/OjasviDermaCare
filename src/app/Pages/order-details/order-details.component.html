@@ -1,0 +1,279 @@
+<div
+  class="min-h-screen flex items-center justify-center bg-gray-50 py-4 px-3 md:px-6"
+>
+  <div
+    class="bg-white rounded-xl shadow-2xl w-full max-w-5xl p-4 md:p-6 border border-gray-100 grid grid-cols-1 lg:grid-cols-3 gap-4"
+  >
+    <!-- Header -->
+    <div class="lg:col-span-3 flex justify-between items-center mb-2">
+      <h2 class="text-xl font-bold text-gray-800">Order Confirmation</h2>
+      <!-- <button
+        (click)="goBack()"
+        class="text-gray-400 hover:text-gray-600 transition"
+        aria-label="Go back"
+      >
+        <i class="ri-arrow-left-line text-xl"></i>
+      </button> -->
+    </div>
+
+    <!-- Left Section -->
+    <div class="lg:col-span-2 space-y-4">
+      <p class="text-sm text-gray-600 border-b pb-2">
+        Thank you for ordering our
+        <span class="font-semibold">{{
+          cartDetails?.cartDetails?.length > 1 ? "products" : "product"
+        }}</span
+        >! Your order has been successfully placed.
+      </p>
+
+      <!-- Product Details -->
+      <div
+        class="bg-white rounded-lg p-3 border border-gray-200 shadow-sm space-y-2"
+      >
+        <div class="flex justify-between items-center pb-1 border-b">
+          <span class="text-base font-semibold text-gray-800"
+            >Product Details</span
+          >
+        </div>
+
+        <ul class="text-sm text-gray-700 divide-y divide-gray-100">
+          <li
+            *ngFor="let item of convertStringtoArray(cartDetails?.cartDetails?.[0]['CART_ITEMS'])"
+            class="flex justify-between items-start py-2"
+          >
+            <ng-container
+              *ngIf="initImageIndex(item.ID) === undefined"
+            ></ng-container>
+            <div class="flex items-start gap-2 w-2/3">
+              <img
+                *ngIf="item.PHOTO_URL && item.PHOTO_URL.length"
+                [src]="photoURL + item.PHOTO_URL[imageIndices[item.ID]]"
+                alt="{{ item.PRODUCT_NAME }}"
+                class="w-10 h-10 rounded-md object-cover border border-gray-200"
+              />
+              <div class="flex-grow leading-tight">
+                <span class="font-medium text-gray-800 block text-sm">{{
+                  item.PRODUCT_NAME
+                }}</span>
+                <span class="text-gray-500 text-xs block"
+                  >{{ item.QUANTITY }} Qty</span
+                >
+                <span class="text-gray-500 text-xs block"
+                  >{{ item.VERIENT_SIZE }}
+                  {{ item.VERIENT_UNIT_NAME }} Varient</span
+                >
+              </div>
+            </div>
+
+            <span
+              class="text-gray-900 font-semibold text-right w-1/3 text-sm"
+              >{{ item.PRICE * item.QUANTITY | currency : "USD" }}</span
+            >
+          </li>
+        </ul>
+      </div>
+
+      <!-- Order Progress -->
+      <div
+        class="bg-white rounded-lg p-3 border border-gray-200 shadow-sm space-y-2"
+      >
+        <span class="text-base font-semibold text-gray-800"
+          >Order Progress</span
+        >
+
+        <div class="flex items-center justify-between text-center pt-3">
+          <!-- Step 1 -->
+          <div class="flex flex-col items-center">
+            <div
+              class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold transition-colors duration-300"
+              [ngClass]="{
+                'bg-green-500': orderStatus !== 'A' && orderStatus !== 'DC',
+                'bg-yellow-500': orderStatus === 'A',
+                'bg-gray-400': orderStatus === 'DC'
+              }"
+            >
+              <i
+                *ngIf="orderStatus !== 'A' && orderStatus !== 'DC'"
+                class="ri-check-line text-sm"
+              ></i>
+              <span *ngIf="orderStatus === 'A' || orderStatus === 'DC'">1</span>
+            </div>
+            <span class="text-[11px] mt-1 text-gray-800 font-medium"
+              >Placed</span
+            >
+          </div>
+
+          <div
+            class="h-1 mx-1 flex-1"
+            [ngClass]="{
+              'bg-green-500': orderStatus !== 'A' && orderStatus !== 'DC',
+              'bg-gray-200': orderStatus === 'A' || orderStatus === 'DC'
+            }"
+            style="margin-top: -20px"
+          ></div>
+
+          <!-- Step 2 -->
+          <div class="flex flex-col items-center">
+            <div
+              class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold transition-colors duration-300"
+              [ngClass]="{
+                'bg-green-500': isStatusComplete(orderStatus, 'D'),
+                'bg-yellow-500': orderStatus === 'BP' || orderStatus === 'SP',
+                'bg-gray-400':
+                  isStatusPending(orderStatus, 'BP') || orderStatus === 'DC'
+              }"
+            >
+              <i
+                *ngIf="isStatusComplete(orderStatus, 'D')"
+                class="ri-check-line text-sm"
+              ></i>
+              <span *ngIf="!isStatusComplete(orderStatus, 'D')">2</span>
+            </div>
+            <span class="text-[11px] mt-1 text-gray-800 font-medium"
+              >Preparing</span
+            >
+          </div>
+
+          <div
+            class="h-1 mx-1 flex-1"
+            [ngClass]="{
+              'bg-green-500': isStatusComplete(orderStatus, 'D'),
+              'bg-gray-200': isStatusPending(orderStatus, 'D')
+            }"
+            style="margin-top: -20px"
+          ></div>
+
+          <!-- Step 3 -->
+          <div class="flex flex-col items-center">
+            <div
+              class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold transition-colors duration-300"
+              [ngClass]="{
+                'bg-green-500': isStatusComplete(orderStatus, 'DD'),
+                'bg-yellow-500': orderStatus === 'D',
+                'bg-gray-400':
+                  isStatusPending(orderStatus, 'D') || orderStatus === 'DC'
+              }"
+            >
+              <i
+                *ngIf="isStatusComplete(orderStatus, 'DD')"
+                class="ri-check-line text-sm"
+              ></i>
+              <span *ngIf="!isStatusComplete(orderStatus, 'DD')">3</span>
+            </div>
+            <span class="text-[11px] mt-1 text-gray-800 font-medium"
+              >Shipped</span
+            >
+          </div>
+
+          <div
+            class="h-1 mx-1 flex-1"
+            [ngClass]="{
+              'bg-green-500': orderStatus === 'DD',
+              'bg-gray-200': orderStatus !== 'DD'
+            }"
+            style="margin-top: -20px"
+          ></div>
+
+          <!-- Step 4 -->
+          <div class="flex flex-col items-center">
+            <div
+              class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold transition-colors duration-300"
+              [ngClass]="{
+                'bg-green-500': orderStatus === 'DD',
+                'bg-gray-400': orderStatus !== 'DD' && orderStatus !== 'DC'
+              }"
+            >
+              <i *ngIf="orderStatus === 'DD'" class="ri-check-line text-sm"></i>
+              <span *ngIf="orderStatus !== 'DD'">4</span>
+            </div>
+            <span class="text-[11px] mt-1 text-gray-800 font-medium"
+              >Delivered</span
+            >
+          </div>
+        </div>
+
+        <div *ngIf="orderStatus === 'DC'" class="text-center pt-2">
+          <span class="text-sm font-bold text-red-600">Order Canceled</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Section -->
+    <div class="space-y-4">
+      <!-- Delivery -->
+      <div class="bg-gray-50 rounded-lg p-3 border border-gray-200 space-y-1.5">
+        <h3 class="text-sm font-semibold text-gray-800">Delivery Details</h3>
+        <div class="flex items-center text-xs text-gray-600 space-x-2">
+          <i class="ri-user-line text-base text-yellow-600"></i>
+          <p>{{ cartDetails?.cartDetails?.[0].CUSTOMER_ADDRESS_NAME }}</p>
+        </div>
+        <div class="flex items-start text-xs text-gray-600 space-x-2">
+          <i class="ri-map-pin-2-line text-base text-yellow-600 mt-0.5"></i>
+          <p>
+            {{ cartDetails?.cartDetails?.[0].ADDRESS }}, {{ cartDetails?.cartDetails?.[0].CITY }},
+            {{ cartDetails?.cartDetails?.[0].STATE_NAME }},
+            {{ cartDetails?.cartDetails?.[0].COUNTRY_NAME }} - {{ cartDetails?.cartDetails?.[0].PINCODE }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Price -->
+      <div class="bg-gray-50 rounded-lg p-3 border border-gray-200 space-y-1.5">
+        <h3 class="text-sm font-semibold text-gray-800">Price Details</h3>
+        <div class="text-xs space-y-1">
+          <div class="flex justify-between">
+            <span class="text-gray-600">Subtotal</span>
+            <span class="text-gray-900 font-medium">
+              ${{ cartDetails?.cartDetails?.[0]?.TOTAL_PRICE | number : "1.2-2" }}
+            </span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600">Shipping</span>
+            <span class="text-yellow-600 font-medium">
+              {{
+                cartDetails?.cartDetails?.[0]?.NET_AMOUNT -
+                  cartDetails?.cartDetails?.[0]?.TOTAL_PRICE | currency : "USD"
+              }}
+            </span>
+          </div>
+        </div>
+
+        <div
+          class="flex justify-between border-t border-gray-300 pt-2 text-sm font-bold text-gray-800"
+        >
+          <span>Total:</span>
+          <span class="text-green-600">{{
+            cartDetails?.cartDetails?.[0]?.NET_AMOUNT | currency : "USD"
+          }}</span>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+        <div class="text-center">
+        <button
+          class="w-full py-2 bg-[#5a8f69] text-white text-sm font-semibold rounded-lg shadow-md hover:bg-emerald-700 transition"
+          (click)="downloadInvoice()"
+          [disabled]="isDownloading"
+        >
+        <ng-container *ngIf="isDownloading; else normalText">
+    <span class="loader border-t-2 border-white rounded-full w-4 h-4 animate-spin"></span>
+    Downloading...
+  </ng-container>
+  <ng-template #normalText>
+    <span><i class="ri-file-download-line mr-2"></i> Download Invoice</span>
+  </ng-template>
+          
+        </button>
+      </div>
+
+      <p class="mt-2 text-[11px] text-gray-400 text-center">
+        Any questions? Email us at
+        <a
+          href="mailto:ojasvidermacare@gmail.com"
+          class="text-blue-500 hover:underline"
+          >ojasvidermacare@gmail.com</a
+        >
+      </p>
+    </div>
+  </div>
+</div>

@@ -1,22 +1,107 @@
-<footer class="bg-white pt-16 pb-8">
+<footer
+  class="bg-white"
+  style="
+    font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+      Helvetica, Arial, sans-serif !important;
+  "
+>
+  <section
+    class="newsletter-section text-white max-h-full mb-6"
+    style="
+      font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI,
+        Roboto, Helvetica, Arial, sans-serif;
+      padding-top: 30px;
+      padding-bottom: 30px;
+    "
+  >
+    <div class="container mx-auto px-4">
+      <div class="max-w-3xl mx-auto text-center">
+        <h3
+          class="text-2xl md:text-2xl font-bold mb-6"
+          style="margin-bottom: 8px !important"
+        >
+          Subscribe to Our Newsletter
+        </h3>
+
+        <p class="text-white/90 mb-8">
+          Stay updated with our latest products, offers, and Ayurvedic wellness
+          tips.
+        </p>
+
+        <div
+          class="d-flex justify-content-center align-items-center flex flex-col sm:flex-row gap-4 max-w-lg mx-auto"
+        >
+          <!-- <input type="text" [(ngModel)]="emailaddress" maxlength="40" name="emailad"
+          placeholder="Enter your email address"
+          class="flex-1 px-4 py-3 rounded-button border-none focus:outline-none focus:ring-2 focus:ring-white/50 text-gray-800" /> -->
+
+          <input
+            type="text"
+            [(ngModel)]="emailaddress"
+            maxlength="40"
+            name="emailad"
+            placeholder="Enter your email address"
+            class="px-3 py-3 border-none focus:outline-none focus:ring-2 focus:ring-white/50 text-gray-800 w-52 sm:w-64 md:w-80 lg:w-92"
+            style="height: 45px; border-radius: 10px"
+          />
+
+          <!-- <button *ngIf="!loadingRecords" (click)="SubsribeToNewsLetter()"
+          class="text-white px-6 py-3 rounded-button font-medium hover:bg-secondary/90 transition-colors !rounded-button whitespace-nowrap"
+          style="background-color: rgb(233 180 76)">
+          Subscribe
+        </button> -->
+
+          <button
+            *ngIf="!loadingRecords"
+            (click)="SubsribeToNewsLetter()"
+            class="text-white rounded-button font-medium hover:bg-secondary/90 transition-colors px-3"
+            style="background-color: rgb(233 180 76); height: 45px"
+          >
+            Subscribe
+          </button>
+
+          <button
+            *ngIf="loadingRecords"
+            class="text-white rounded-button font-medium hover:bg-secondary/90 transition-colors px-3"
+            style="background-color: rgb(233 180 76); height: 45px"
+          >
+            Subscribe &nbsp;
+            <div
+              class="spinner-border text-warning"
+              role="status"
+              style="
+                font-size: 10px !important;
+                height: 15px;
+                width: 15px;
+                color: white !important;
+              "
+            >
+              <span class="sr-only">Loading...</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
   <div class="container mx-auto px-4">
-    <!-- Adjusted layout -->
-    <div class="flex flex-col lg:flex-row lg:justify-between gap-12 mb-12">
-      <!-- About (takes more width) -->
+    <div class="flex flex-col lg:flex-row lg:justify-between gap-12 mb-8">
       <div class="lg:w-2/3">
         <h3
-          class="text-xl font-bold text-gray-900 mb-4"
+          class="text-xl font-bold text-gray-900 mb-3"
           [routerLink]="'/about-us'"
-          style="cursor: pointer"
+          style="
+            cursor: pointer;
+            font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI,
+              Roboto, Helvetica, Arial, sans-serif !important;
+          "
         >
           About Ojasvi Derma Care
         </h3>
+
         <p class="text-gray-600 mb-4">
-          <!-- Ojasvi is dedicated to bringing the ancient wisdom of Ayurveda to
-          modern skincare and haircare. Our products are handcrafted with love,
-          tradition, and the finest natural ingredients. -->
           <strong>Ojasvi DermaCare</strong> — where radiance meets rejuvenation.
         </p>
+
         <div class="flex space-x-4">
           <a
             href="https://www.facebook.com/p/Ojasvi-DermaCare-61579256384552/"
@@ -25,6 +110,7 @@
           >
             <i class="ri-facebook-fill"></i>
           </a>
+
           <a
             target="_blank"
             href="https://www.instagram.com/ojasvi_dermacare/"
@@ -32,41 +118,33 @@
           >
             <i class="ri-instagram-line"></i>
           </a>
-          <!-- <a
-            href="#"
-            class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-[#5a8f69] hover:text-white transition-colors"
-          >
-            <i class="ri-twitter-x-line"></i>
-          </a>
-          <a
-            href="#"
-            class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-[#5a8f69] hover:text-white transition-colors"
-          >
-            <i class="ri-pinterest-line"></i>
-          </a> -->
         </div>
       </div>
 
-      <!-- Contact (smaller width) -->
       <div class="lg:w-1/3">
         <h3
-          class="text-xl font-bold text-gray-900 mb-4"
+          class="text-xl font-bold text-gray-900 mb-3"
           [routerLink]="'/contact-us'"
-          style="cursor: pointer"
+          style="
+            cursor: pointer;
+            font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI,
+              Roboto, Helvetica, Arial, sans-serif !important;
+          "
         >
           Contact Us
         </h3>
 
-        <ul class="space-y-3">
-          <li class="flex items-start"></li>
+        <ul class="space-y-1">
           <li class="flex items-center">
             <i class="ri-phone-line text-[#5a8f69] mr-3"></i>
             <span class="text-gray-600">650-279-1487</span>
           </li>
+
           <li class="flex items-center">
             <i class="ri-mail-line text-[#5a8f69] mr-3"></i>
             <span class="text-gray-600">ojasvidermacare&#64;gmail.com</span>
           </li>
+
           <li class="flex items-center">
             <i class="ri-time-line text-[#5a8f69] mr-3"></i>
             <span class="text-gray-600">Monday-Friday: 9am-6pm (PDT) </span>
@@ -75,25 +153,21 @@
       </div>
     </div>
 
-    <!-- Bottom Footer -->
-    <div class="pt-8 border-t border-gray-200">
+    <div class="border-t border-gray-200">
       <div class="flex flex-col md:flex-row justify-between items-center">
-        <p class="text-gray-600 mb-4 md:mb-0">
+        <p class="text-gray-600">
           &copy; 2025 Ojasvi Derma Care. All rights reserved.
         </p>
+
         <div class="flex items-center space-x-4">
           <span class="text-gray-600">We Accept:</span>
           <div class="flex space-x-3 items-center">
-            <!-- Square (Image + Text) -->
             <div class="flex items-center space-x-2">
-              <!-- Square Logo Image -->
               <img
                 src="assets/img/square logo.jfif"
                 alt="Square Logo"
                 class="h-16 w-16 object-contain rounded"
               />
-              <!-- Square Text -->
-              <!-- <span class="text-black font-semibold text-xl">Square</span> -->
             </div>
           </div>
         </div>

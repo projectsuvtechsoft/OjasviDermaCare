@@ -15,3 +15,8 @@ body {
   padding: 0;
   overflow: auto;
 }
+.toast-bottom-center {
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}

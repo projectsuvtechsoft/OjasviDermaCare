@@ -3,12 +3,13 @@
 }
 
 .playfair {
-  font-family: "Playfair Display", serif;
+  font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
 }
 
 .open-sans {
-  font-family: "Open Sans", sans-serif;
+  font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
 }
+
 
 .hero-bg {
   background-image: url("https://readdy.ai/api/search-image?query=soft%20botanical%20texture%20background%20with%20delicate%20leaves%20and%20flowers%20in%20muted%20green%20tones%2C%20elegant%20ayurvedic%20herbs%20pattern%2C%20very%20subtle%20and%20light%2C%20perfect%20for%20text%20overlay%2C%20minimalist%20natural%20design%2C%20high%20quality%20botanical%20illustration&width=1920&height=1080&seq=hero-bg&orientation=landscape");
@@ -196,4 +197,8 @@ ul > li {
     height: 400px;
     object-fit: cover;
   }
+}
+:host {
+  font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif !important;
+ 
 }

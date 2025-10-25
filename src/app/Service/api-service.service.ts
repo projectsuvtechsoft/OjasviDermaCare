@@ -43,8 +43,8 @@ export class ApiServiceService {
   // commonimgUrl = 'https://h10rqczh-9878.inc1.devtunnels.ms/api/upload/';
 
   // pooja
-  // commoncode = 'https://h10rqczh-9878.inc1.devtunnels.ms';
-  // commonimgUrl = 'https://h10rqczh-9878.inc1.devtunnels.ms/api/upload/';
+  // commoncode = 'https://h10rqczh-9090.inc1.devtunnels.ms';
+  // commonimgUrl = 'https://h10rqczh-9090.inc1.devtunnels.ms/api/upload/';
 
   // commoncode = 'https://p8rhkmb7-9878.inc1.devtunnels.ms';
   // commonimgUrl = 'https://p8rhkmb7-9878.inc1.devtunnels.ms/api/upload/';
@@ -4016,19 +4016,17 @@ export class ApiServiceService {
     );
   }
 
-   createCountry(
-    payload:any
-  ): Observable<any> {
+  createCountry(payload: any): Observable<any> {
     // data.CLIENT_ID = this.clientId; // Uncomment if needed
-    const requestData: any = payload
- 
+    const requestData: any = payload;
+
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       applicationkey: this.commonapplicationkey,
       apikey: this.commonapikey,
       token: this.cookie.get('token'),
     });
- 
+
     return this.httpClient.post<any>(
       this.baseUrl + 'web/country/create',
       // JSON.stringify(data),
@@ -4039,19 +4037,17 @@ export class ApiServiceService {
       }
     );
   }
-   createState(
-    payload:any
-  ): Observable<any> {
+  createState(payload: any): Observable<any> {
     // data.CLIENT_ID = this.clientId; // Uncomment if needed
-    const requestData: any = payload
- 
+    const requestData: any = payload;
+
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       applicationkey: this.commonapplicationkey,
       apikey: this.commonapikey,
       token: this.cookie.get('token'),
     });
- 
+
     return this.httpClient.post<any>(
       this.baseUrl + 'web/state/create',
       // JSON.stringify(data),
@@ -4062,19 +4058,17 @@ export class ApiServiceService {
       }
     );
   }
-  createCity(
-   payload:any
-  ): Observable<any> {
+  createCity(payload: any): Observable<any> {
     // data.CLIENT_ID = this.clientId; // Uncomment if needed
-    const requestData: any = payload
- 
+    const requestData: any = payload;
+
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       applicationkey: this.commonapplicationkey,
       apikey: this.commonapikey,
       token: this.cookie.get('token'),
     });
- 
+
     return this.httpClient.post<any>(
       this.baseUrl + 'web/city/create',
       // JSON.stringify(data),
@@ -4100,14 +4094,14 @@ export class ApiServiceService {
       sortValue,
       filter,
     };
- 
+
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       applicationkey: this.commonapplicationkey,
       apikey: this.commonapikey,
       token: this.cookie.get('token'),
     });
- 
+
     return this.httpClient.post<any>(
       `${this.baseUrl}web/city/get`,
       requestData,
@@ -4116,7 +4110,7 @@ export class ApiServiceService {
       }
     );
   }
-    getState(
+  getState(
     pageIndex: number,
     pageSize: number,
     sortKey: string,
@@ -4142,6 +4136,93 @@ export class ApiServiceService {
       {
         headers,
       }
+    );
+  }
+
+  verifyEmail(EMAIL_ID: any): Observable<any> {
+    // data.CLIENT_ID = this.clientId; // Uncomment if needed
+    const requestData: any = {
+      EMAIL_ID: EMAIL_ID,
+    };
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      applicationkey: this.commonapplicationkey,
+      apikey: this.commonapikey,
+      token: this.cookie.get('token'),
+    });
+
+    return this.httpClient.post<any>(
+      this.baseUrl + 'web/guestUserEmailSendOtp',
+      // JSON.stringify(data),
+      requestData,
+      {
+        headers: headers,
+        // observe: 'response',
+      }
+    );
+  }
+  verifyEmailOTP(
+    // TYPE: any,
+    // TYPE_VALUE: any,
+    VERIFY_OTP: any,
+    // USER_ID: any,
+    EMAIL_ID: any
+    // CUSTOMER_CATEGORY_ID: any,
+    // CLOUD_ID: any
+  ): Observable<any> {
+    // Uncomment if needed
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      applicationkey: this.commonapplicationkey,
+      apikey: this.commonapikey,
+    });
+    var data: any = {
+      // TYPE_VALUE: TYPE_VALUE,
+      VERIFY_OTP,
+      // USER_ID: USER_ID,
+      EMAIL_ID,
+      // CUSTOMER_CATEGORY_ID: CUSTOMER_CATEGORY_ID,
+      // CLOUD_ID: CLOUD_ID,
+    };
+
+    // if (TYPE === 'M') {
+    //   data.MOBILE_NO = TYPE_VALUE;
+    // }
+
+    return this.httpClient.post<any[]>(
+      this.baseUrl + 'web/guestUserVerifyOtp',
+      JSON.stringify(data),
+      {
+        headers: headers,
+        observe: 'response',
+      }
+    );
+  }
+
+  getOpenOrders(id: any): Observable<any> {
+    // var data = {
+    //   pageIndex: pageIndex,
+    //   pageSize: pageSize,
+    //   sortKey: sortKey,
+    //   sortValue: sortValue,
+    //   filter: filter,
+    // };
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      applicationkey: this.commonapplicationkey,
+      apikey: this.commonapikey,
+      token: this.cookie.get('token'),
+    });
+    // const params = new HttpParams().set('id', id);
+    return this.httpClient.post<any>(
+      `${this.baseUrl}web/getOrderData`,
+      {
+        ORDER_ID: id,
+      }, // empty body
+      {
+        headers,
+      } // ✅ attach headers and params
     );
   }
 }

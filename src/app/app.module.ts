@@ -25,6 +25,7 @@ import { AboutComponent } from './Pages/about/about.component';
 import { CheckoutComponent } from './Pages/checkout/checkout.component';
 import { ForgotPasswordComponent } from './Pages/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './Pages/reset-password/reset-password.component';
+import { OrderDetailsComponent } from './Pages/order-details/order-details.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { ResetPasswordComponent } from './Pages/reset-password/reset-password.co
     CheckoutComponent,
     ForgotPasswordComponent,
     ResetPasswordComponent,
+    OrderDetailsComponent,
     
   ],
   imports: [
@@ -60,13 +62,13 @@ import { ResetPasswordComponent } from './Pages/reset-password/reset-password.co
     CommonModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot({
-      positionClass: 'toast-top-right',
+      positionClass: 'toast-bottom-center',
       timeOut: 3000,
       preventDuplicates: true,
     }),
      BrowserAnimationsModule,
     ToastrModule.forRoot({
-      positionClass: 'toast-top-right',
+      positionClass: 'toast-bottom-center',
       timeOut: 3000,
       preventDuplicates: true,
     }),

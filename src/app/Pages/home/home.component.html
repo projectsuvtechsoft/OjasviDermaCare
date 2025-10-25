@@ -1,8 +1,8 @@
-<!-- <app-header></app-header> -->
 <div
   id="mobileNavOverlay"
   class="fixed inset-0 bg-black bg-opacity-40 z-50 hidden md:hidden"
 ></div>
+
 <nav
   id="mobileNavDrawer"
   class="fixed top-0 left-0 h-full w-4/5 max-w-xs bg-white shadow-lg z-50 transform -translate-x-full transition-transform duration-300 md:hidden flex flex-col"
@@ -74,7 +74,8 @@
     display: none;
     z-index: 9999;
     width: 360px;
-    font-family: sans-serif;
+    font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+      Helvetica, Arial, sans-serif;
   "
 >
   <div class="flex items-center space-x-3">
@@ -133,152 +134,133 @@
   ></app-common-loader>
 
   <div class="container mx-auto px-4">
-    <!-- <h2 class="text-3xl font-bold text-center mb-10">Our Featured Products</h2> -->
     <div class="flex flex-col lg:flex-row gap-8">
-      <!-- Sidebar Filters: Desktop -->
       <div class="lg:w-1/4 sidebar-filters-desktop">
         <div
-          class="bg-white rounded-lg shadow-sm p-6 sticky top-32"
+          class="sticky top-32"
           style="padding: 0px !important"
           #desktopFilters
         >
           <ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
+
           <ng-template #filtersTemplate>
-            <!-- <h3 class="text-xl font-bold mb-6">Filters</h3> -->
-            <!-- Categories Filter -->
-            <div
-              class="mb-6"
-              style="padding: 15px !important; margin-bottom: 5px !important"
-            >
-              <h4 class="font-medium text-gray-900 mb-3">Categories</h4>
-              <div class="space-y-2">
-                <label
-                  class="custom-checkbox flex items-center"
-                  *ngFor="let category of categories; let i = index"
-                >
-                  <input
-                    name="checkbox{{ i }}"
-                    [disabled]="loadingCategories"
-                    type="checkbox"
-                    [attr.data-type]="'category'"
-                    [attr.data-index]="i"
-                    [checked]="selectedCategories.includes(category)"
-                    (change)="onCategoryChange($event, category)"
-                  />
-                  <span class="checkmark mr-2"></span>
-                  <span style="font-size: 14px"
-                    >{{ category?.CATEGORY_NAME }}
-                    <span style="font-size: 10px"
-                      >({{ category?.cnt || 0 }})</span
-                    >
-                  </span>
-                </label>
-              </div>
-            </div>
-            <hr style="color: #716f6f !important" />
-            <!-- Price Range Filter -->
-        <div class="mb-6 relative" style="padding: 15px !important; margin-bottom: 5px !important">
-  <h4 class="font-medium text-gray-900 mb-3">Price Range</h4>
- 
-  <input
-    type="range"
-    min="0"
-    max="50"
-    [(ngModel)]="priceRange"
-    (input)="onSliderInput()"
-    class="custom-range mb-3 w-full"
-    [ngStyle]="{ background: getSliderBackground(priceRange) }"
-  />
- 
-  <!-- Min and Max labels -->
-  <div class="flex justify-between relative">
-    <span class="text-sm text-gray-600">$0</span>
- 
-    <!-- Dynamic price label only when slider is not at 0 or 10 -->
-<span
-  *ngIf="priceRange > 0 && priceRange < 50"
-  class="absolute text-sm text-gray-600"
-  [style.left.%]="10 + (priceRange / 50) * 70"
-  style="transform: translateX(-50%);"
->
-  ${{ priceRange }}
-</span>
- 
- 
- 
- 
-    <span class="text-sm text-gray-600">$50</span>
-  </div>
-</div>
- 
- 
-
-            <hr style="color: #716f6f !important" />
-            <!-- Ingredients Filter -->
-            <!-- <div
-              class="mb-6"
-              style="padding: 15px !important; margin-bottom: 5px !important"
-            >
-              <h4 class="font-medium text-gray-900 mb-3">
-                Natural Ingredients
-              </h4>
-              <div class="space-y-2">
-                <label
-                  class="custom-checkbox flex items-center"
-                  *ngFor="let category of visibleIngredients; let i = index"
-                >
-                  <input
-                    name="checkbox{{ i }}"
-                    [disabled]="loadingIngredients"
-                    type="checkbox"
-                    [attr.data-type]="'ingredient'"
-                    [attr.data-index]="i"
-                    [checked]="selectedIngredient.includes(category)"
-                    (change)="onIngredientChange($event, category)"
-                  />
-                  <span class="checkmark mr-2"></span>
-                  <span style="font-size: 14px">{{ category?.NAME }}</span>
-                </label>
-              </div>
-
-              <div
-                class="mt-4"
-                *ngIf="visibleIngredients.length < ingredients.length"
-              >
+            <div class="bg-white rounded-lg shadow-sm p-4">
+              <!-- Filters Header -->
+              <div class="flex items-center justify-between mb-2 border-b pb-2">
+                <h3 class="text-lg font-semibold text-gray-900">Filters</h3>
                 <button
-                  style="
-                    font-size: 10px;
-                    padding: 7px 13px !important;
-                    background-color: #5a8f69;
+                  (click)="clearFilters()"
+                  [disabled]="!isFilterApplied()"
+                  [ngClass]="
+                    isFilterApplied()
+                      ? 'bg-[rgb(90,143,105)] text-white hover:bg-[rgb(80,130,95)]'
+                      : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
                   "
-                  class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                  (click)="loadMore()"
+                  class="text-sm px-3 py-1.5 rounded-md font-medium transition-colors whitespace-nowrap"
                 >
-                  Load More
+                  Clear All
                 </button>
               </div>
-            </div> -->
-            <hr style="color: #716f6f !important" />
-            <button
-              style="padding: 15px !important; margin-top: 15px !important"
-              (click)="clearFilters()"
-              class="w-full bg-gray-100 text-gray-800 py-2 rounded-button font-medium hover:bg-gray-200 transition-colors !rounded-button whitespace-nowrap"
-            >
-              Clear All Filters
-            </button>
+
+              <!-- Categories -->
+              <div class="mb-4">
+                <h4 class="text-gray-900 mb-2 font-medium">Categories</h4>
+                <div class="space-y-2 px-3">
+                  <label
+                    class="custom-checkbox flex items-center"
+                    *ngFor="let category of categories; let i = index"
+                  >
+                    <input
+                      name="checkbox{{ i }}"
+                      [disabled]="loadingCategories"
+                      type="checkbox"
+                      [checked]="selectedCategories.includes(category)"
+                      (change)="onCategoryChange($event, category)"
+                    />
+                    <span class="checkmark mr-2"></span>
+                    <span class="text-[12px]">
+                      {{ category?.CATEGORY_NAME }}
+                      <span class="text-[10px] text-gray-500"
+                        >({{ category?.cnt || 0 }})</span
+                      >
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Discount -->
+              <div class="mb-4">
+                <h4 class="text-gray-900 mb-2 font-medium">Discount</h4>
+                <div class="space-y-2 px-3">
+                  <label
+                    class="custom-checkbox flex items-center"
+                    *ngFor="let discount of discounts; let i = index"
+                  >
+                    <input
+                      name="discount{{ i }}"
+                      type="checkbox"
+                      [checked]="selectedCategories.includes(discount)"
+                      (change)="onProductChange($event, discount)"
+                    />
+                    <span class="checkmark mr-2"></span>
+                    <span class="text-[12px]">{{ discount }}% and above</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Price Range -->
+              <div class="mb-7">
+                <h4 class="text-gray-900 mb-3 font-medium">Price Range</h4>
+
+                <div class="relative w-full px-3">
+                  <div
+                    class="range-container relative w-full h-1 rounded-full bg-gray-300"
+                  >
+                    <div
+                      class="absolute h-1 bg-[rgb(90,143,105)] rounded-full"
+                      [style.left.%]="(minRange / 400) * 100"
+                      [style.width.%]="((maxRange - minRange) / 400) * 100"
+                    ></div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="400"
+                      step="10"
+                      [(ngModel)]="minRange"
+                      (input)="onMinSliderChange()"
+                      class="range-input"
+                    />
+                    <input
+                      type="range"
+                      min="0"
+                      max="400"
+                      step="10"
+                      [(ngModel)]="maxRange"
+                      (input)="onMaxSliderChange()"
+                      class="range-input"
+                    />
+                  </div>
+
+                  <div class="flex justify-between text-sm text-gray-600 mt-3">
+                    <span>${{ minRange }}</span>
+                    <span>${{ maxRange }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </ng-template>
         </div>
       </div>
-      <!-- Sidebar Filters: Mobile/Tablet Drawer Trigger -->
+
       <div
-        class="w-full sidebar-filters-mobile mb-4"
+        class="w-85 sidebar-filters-mobile mb-4"
         style="display: none; margin: 0px !important"
       >
         <div
           id="mobileFiltersDrawer"
           [class.hidden]="!isDrawerOpen"
           (click)="onDrawerClick($event)"
-          class="fixed inset-0 z-50 bg-black bg-opacity-40 hidden"
+          class="fixed inset-0 z-50 bg-[rgba(178,190,181,0.4)] backdrop-blur hidden"
         >
           <div
             class="absolute top-0 left-0 w-4/5 max-w-xs h-full bg-white shadow-lg p-6 overflow-y-auto"
@@ -293,6 +275,7 @@
                 <i class="ri-close-line ri-lg"></i>
               </button>
             </div>
+
             <div id="mobileFiltersContent" #mobileContent></div>
           </div>
         </div>
@@ -301,293 +284,269 @@
       <!-- Product Grid -->
       <div class="lg:w-3/4 w-full" id="product-grids">
         <div
-          style="padding: 15px !important"
-          class="bg-white rounded-lg shadow-sm p-4 mb-6 flex flex-wrap items-center justify-between gap-4 filter-bar-responsive"
+          class="bg-white rounded-lg shadow-sm p-2 mb-4 flex flex-wrap items-center justify-between gap-4 filter-bar-responsive"
         >
-          <div class="flex items-center flexjustofy">
+          <div class="flex items-center space-x-4">
+            <span
+              class="font-medium"
+              style="
+                font-weight: 400;
+                font-size: 14px !important;
+                color: #8b8b8b;
+              "
+            >
+              Showing {{ currentPageCount }} of {{ totalProducts }} products
+            </span>
+          </div>
+          <div class="flex items-center flexjustify">
             <span
               class="font-medium visiblenone"
               style="
                 font-weight: 400;
-                font-size: 15px !important;
+                font-size: 14px !important;
                 margin-right: 5px !important;
               "
               >Sort By</span
             >
-           <div class="relative">
-              <select
-                style="
-                  padding: 10px 12px !important;
-                  width: 165px !important;
-                  font-size: 13px !important;
-                "
-                class="appearance-none bg-gray-50 border border-gray-200 rounded-button py-2 px-4 pr-8 focus:outline-none focus:ring-2 focus:ring-primary/50"
-                (change)="onSortChange($event)"
+            <div class="relative w-40">
+              <!-- Dropdown button -->
+              <button
+                (click)="dropdownOpen = !dropdownOpen"
+                class="w-full bg-[#5a8f69] text-white px-2 py-1 rounded flex justify-between items-center"
               >
-                <!-- <option value="default" style="font-size: 12px !important">
-                  Default Sorting
-                </option> -->
-                <option value="RATE:asc" style="font-size: 12px !important">
+                {{ selectedOptionLabel || "Popularity" }}
+                <span>▼</span>
+              </button>
+
+              <!-- Dropdown list -->
+              <ul
+                *ngIf="dropdownOpen"
+                class="absolute w-full bg-white border border-gray-300 rounded shadow mt-1 max-h-60 overflow-auto z-50"
+              >
+                <li
+                  (click)="selectOption('RATE:asc', 'Price: Low to High')"
+                  class="px-2 py-1 hover:bg-[#5a8f69] hover:text-white cursor-pointer"
+                >
                   Price: Low to High
-                </option>
-                <option value="RATE:desc" style="font-size: 12px !important">
+                </li>
+                <li
+                  (click)="selectOption('RATE:desc', 'Price: High to Low')"
+                  class="px-2 py-1 hover:bg-[#5a8f69] hover:text-white cursor-pointer"
+                >
                   Price: High to Low
-                </option>
-                <option
-                  value="CREATED_MODIFIED_DATE:desc"
-                  style="font-size: 12px !important"
+                </li>
+                <li
+                  (click)="
+                    selectOption('CREATED_MODIFIED_DATE:desc', 'Newest First')
+                  "
+                  class="px-2 py-1 hover:bg-[#5a8f69] hover:text-white cursor-pointer"
                 >
                   Newest First
-                </option>
-                <option
-                  value="IS_POPULAR:desc"
-                  style="font-size: 12px !important" selected
+                </li>
+                <li
+                  (click)="selectOption('IS_POPULAR:desc', 'Popularity')"
+                  class="px-2 py-1 hover:bg-[#5a8f69] hover:text-white cursor-pointer"
                 >
                   Popularity
-                </option>
-              </select>
-              <div
-                class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none"
-              >
-                <i class="ri-arrow-down-s-line text-gray-400"></i>
-              </div>
+                </li>
+              </ul>
             </div>
-            <div>
-              <!-- <svg id="openFiltersMobile"
-          (click)="openMobileFilters()" xmlns="http://www.w3.org/2000/svg" fill="#000000" width="25px" height="25px" viewBox="0 0 256 256" id="Flat">
-  <path d="M112.00244,237.05762A20.01473,20.01473,0,0,1,92,217.05176V140.63965L27.28564,69.4541A20.00033,20.00033,0,0,1,42.08447,36H213.91553a20.00008,20.00008,0,0,1,14.79931,33.45312L164,140.63965v55.0791a19.95861,19.95861,0,0,1-8.90723,16.6416l-31.999,21.332A19.97037,19.97037,0,0,1,112.00244,237.05762ZM51.12646,60l59.67237,65.63965A19.95228,19.95228,0,0,1,116,139.09277v70.48438l24-15.999V139.09277a19.95374,19.95374,0,0,1,5.2041-13.45605L204.87354,60ZM93.043,141.78711h0ZM213.91553,60h0Z"/>
-</svg> -->
-            </div>
+ 
+
+            <!-- <div>
+              <svg id="openFiltersMobile"
+                (click)="openMobileFilters()" xmlns="http://www.w3.org/2000/svg" fill="#000000" width="25px" height="25px" viewBox="0 0 256 256" id="Flat">
+                <path d="M112.00244,237.05762A20.01473,20.01473,0,0,1,92,217.05176V140.63965L27.28564,69.4541A20.00033,20.00033,0,0,1,42.08447,36H213.91553a20.00008,20.00008,0,0,1,14.79931,33.45312L164,140.63965v55.0791a19.95861,19.95861,0,0,1-8.90723,16.6416l-31.999,21.332A19.97037,19.97037,0,0,1,112.00244,237.05762ZM51.12646,60l59.67237,65.63965A19.95228,19.95228,0,0,1,116,139.09277v70.48438l24-15.999V139.09277a19.95374,19.95374,0,0,1,5.2041-13.45605L204.87354,60ZM93.043,141.78711h0ZM213.91553,60h0Z"/>
+              </svg>
+            </div> -->
+
             <button
               id="openFiltersMobile"
-              style="padding: 7px 10px !important; font-size: 13px !important"
+              style="font-size: 13px !important"
               (click)="openMobileFilters()"
-              class="bg-[#5a8f69] text-white py-3 rounded-button font-medium mb-2 visiblenoneFilt"
+              class="bg-[#5a8f69] text-white py-2 px-2 rounded-button font-medium mb-2 visiblenoneFilt"
             >
-              <i class="ri-filter-3-line mr-2"></i> Filters
+              <i class="ri-filter-3-line mr-1"></i>
+              <span class="ml-2">Filters</span>
             </button>
           </div>
-          <div class="flex items-center space-x-4">
-  <span class="font-medium" style=" font-weight: 400;
-                font-size: 15px  !important">
-    Showing {{ currentPageCount }} of {{ totalProducts }} products
-  </span>
-</div>
         </div>
+
         <div
           class="grid product-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           <div
-            class="product-card bg-white rounded-lg shadow-sm overflow-hidden"
+            class="product-card bg-white rounded-lg shadow-md overflow-hidden p-0"
+            style="cursor: pointer"
             *ngFor="
               let product of products;
               trackBy: trackByProductId;
               let i = index
             "
           >
-            <div class="relative">
-                     <div class="w-full h-48 md:h-60 bg-white flex items-center justify-center overflow-hidden">
-  <!-- Initialize index -->
-  <ng-container *ngIf="initImageIndex(product.ID) === undefined"></ng-container>
- 
-  <img
-    *ngIf="getImageArray(product).length > 0"
-    [src]="productImageUrl + getImageArray(product)[imageIndices[product.ID]]"
-    [alt]="product.NAME"
-    class="max-h-full max-w-full object-contain mt-2"
-  />
-</div>
- 
-
-              <!-- Dots as Indicators -->
-              <div
-                class="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex space-x-1"
-              >
-                <ng-container
-                  *ngFor="let img of getImageArray(product); let idx = index"
+            <span
+              (click)="addtodetail(product)"
+              [routerLink]="
+                selectedVariantMap[product.ID]
+                  ? [
+                      '/product_details',
+                      product.ID,
+                      selectedVariantMap[product.ID]
+                    ]
+                  : ['/product_details', product.ID]
+              "
+            >
+              <div class="relative">
+                <div
+                  class="w-full h-48 md:h-60 bg-white flex items-center justify-center overflow-hidden"
                 >
-                  <span
-                    class="w-2.5 h-2.5 rounded-full cursor-pointer"
-                    [ngClass]="{
+                  <ng-container
+                    *ngIf="initImageIndex(product.ID) === undefined"
+                  ></ng-container>
+
+                  <img
+                    *ngIf="getImageArray(product).length > 0"
+                    [src]="
+                      productImageUrl +
+                      getImageArray(product)[imageIndices[product.ID]]
+                    "
+                    [alt]="product.NAME"
+                    class="rounded-lg object-cover w-full h-full"
+                  />
+                </div>
+
+                <!-- Dots as Indicators -->
+                <!-- <div class="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex space-x-1">
+                <ng-container *ngFor="let img of getImageArray(product); let idx = index">
+                  <span class="w-2.5 h-2.5 rounded-full cursor-pointer" [ngClass]="{
                       'bg-[#5a8f69]': imageIndices[product.ID] === idx,
                       'bg-gray-300': imageIndices[product.ID] !== idx
-                    }"
-                    (click)="goToImage(product.ID, idx)"
-                  ></span>
-                </ng-container>
-              </div>
-              <div class="absolute top-3 right-3 flex space-x-2">
-                <button
-                  class="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm"
-                  [ngClass]="{
-                    'text-green-500': product.isLiked,
-                    'text-gray-600 hover:text-[#5a8f69]': !product.isLiked
-                  }"
-                  (click)="toggleLike(product, $event)"
-                >
-                  <i
-                    [class]="
-                      product.isLiked ? 'ri-heart-fill' : 'ri-heart-line'
-                    "
-                  ></i>
-                </button>
-              </div>
-              <div class="absolute top-3 left-3">
-                <span
-                  class="text-white text-xs px-2 py-1 rounded"
-                  [ngClass]="{
-                    'bg-[#5a8f69]/90': product.IS_NEW_ARRIVAL === 1,
-                    'bg-secondary/90': product.IS_BEST_SELLER === 1,
-                    'bg-green-500/90': product.IS_POPULAR === 1,
-                    
-                  }"
-                  >{{
-                    product.IS_NEW_ARRIVAL == "1"
-                      ? "New"
-                      : product.IS_BEST_SELLER == "1"
-                      ? "Best Seller"
-                      : product.IS_POPULAR == "1"
-                      ? "Popular"
-                      : ""
-                  }}</span
-                >
-              </div>
-            </div>
-            <div class="p-4" style="padding: 8px 17px !important">
-              <span class="text-xs text-gray-500">{{
-                product.CATEGORY_NAME
-              }}</span>
-              <span
-                *ngIf="product.DISCOUNT"
-                class="text-green-800 px-2 py-1 rounded text-sm float-right"
-              >
-                <span>{{ product.DISCOUNT }}% off</span>
-              </span>
-              <!-- <h3
-                class="text-lg font-medium text-gray-900 mt-1 hover:text-[rgb(90,143,105)]"
-                style="margin-top: 0px !important; cursor: pointer"
-                (click)="addtodetail(product)"
-                [routerLink]="
-                  selectedVariantMap[product.ID]
-                    ? [
-                        '/product_details',
-                        product.ID,
-                        selectedVariantMap[product.ID]
-                      ]
-                    : ['/product_details', product.ID]
-                "
-              >
-                {{ product.NAME }}
-              </h3> -->
-              <h3
-                class="text-lg font-medium text-gray-900 mt-1 hover:text-[rgb(90,143,105)] truncate"
-                style="cursor: pointer; margin-top: 0 !important"
-                (click)="addtodetail(product)"
-                [routerLink]="
-                  selectedVariantMap[product.ID]
-                    ? [
-                        '/product_details',
-                        product.ID,
-                        selectedVariantMap[product.ID]
-                      ]
-                    : ['/product_details', product.ID]
-                "
-                [title]="product.NAME"
-              >
-                {{ product.NAME }}
-              </h3>
-
-              <!-- <p class="text-sm text-gray-600 mt-2 line-clamp-2">
-                {{ product.DESCRIPTION }}
-              </p> -->
-              <p
-                class="text-sm text-gray-600 mt-2 line-clamp-2"
-                [title]="product.DESCRIPTION"
-              >
-                {{ product.DESCRIPTION }}
-              </p>
-
-              <div
-                class="flex items-center justify-between mt-4"
-                style="margin-top: 10px !important"
-              >
-                <div>
-                  <span
-                    class="text-[#5a8f69] font-medium"
-                    *ngIf="product.IS_VERIENT_AVAILABLE == 0"
-                  >
-                    ${{ product.RATE }}
+                    }" (click)="goToImage(product.ID, idx)">
                   </span>
-                  <span
-                    class="text-[#5a8f69] font-medium"
-                    *ngIf="product.IS_VERIENT_AVAILABLE == 1"
+                </ng-container>
+              </div> -->
+
+                <div class="absolute top-3 right-3 flex space-x-2">
+                  <button
+                    class="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm"
+                    [ngClass]="{
+                      'text-green-500': product.isLiked,
+                      'text-gray-600 hover:text-[#5a8f69]': !product.isLiked
+                    }"
+                    (click)="toggleLike(product, $event)"
                   >
-                    ${{ variantRateMap[product.ID] || "0" }}</span
-                  >
+                    <i
+                      [class]="
+                        product.isLiked ? 'ri-heart-fill' : 'ri-heart-line'
+                      "
+                    >
+                    </i>
+                  </button>
                 </div>
 
-                <!-- <select
-                    *ngIf="product.IS_VERIENT_AVAILABLE == 1"
-                    class="sm:w-auto border border-green-400 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-300"
-                    [(ngModel)]="selectedVariantMap[product.ID]"
-                    (ngModelChange)="change($event, product.ID)"
-                    (click)="getvarientDetails(product.ID)"
-                    style="width: 80px; height: 32px; font-size: 10px; padding: 2px !important;"
-                  >
-                    <option value="" disabled>Select Variant</option>
-                    <option *ngFor="let item of variantMap[product.ID] || []" [value]="item.ID">
-                      {{ item.SIZE }} {{ item.UNIT_NAME }}
-                    </option>
-                </select> -->
-                <select
-                  *ngIf="
-                    product.IS_VERIENT_AVAILABLE == 1 &&
-                    (product.VARIENTS != null ||
-                      product.VARIENTS != undefined) &&
-                    hasActiveVariants(product.ID)
-                  "
-                  class="sm:w-auto border border-green-400 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-300"
-                  [(ngModel)]="selectedVariantMap[product.ID]"
-                  (ngModelChange)="change($event, product.ID)"
-                  style="
-                    width: 80px;
-                    height: 32px;
-                    font-size: 10px;
-                    padding: 2px !important;
-                  "
-                >
-                  <option value="" disabled>Select Variant</option>
-                  <option
-                    *ngFor="let item of variantMap[product.ID] || []"
-                    [value]="item.VARIENT_ID"
-                  >
-                    {{ item.SIZE }} {{ item.UNIT_NAME }}
-                  </option>
-                </select>
-
-                <div class="flex items-center">
-                  <div
-                    class="flex text-yellow-400"
-                    [innerHTML]="getStarIcons(product.CUSTOMER_RATINGS)"
-                  ></div>
+                <div class="absolute top-3 left-3">
+                  <span
+                    class="text-white text-xs px-2 py-1 rounded-full"
+                    [ngClass]="{
+                    'bg-[#5a8f69]/100': product.IS_NEW_ARRIVAL === 1,
+                    'bg-secondary/100': product.IS_BEST_SELLER === 1,
+                    'bg-green-500/100': product.IS_POPULAR === 1,
+                  }"
+                    >{{
+                      product.IS_NEW_ARRIVAL == "1"
+                        ? "New"
+                        : product.IS_BEST_SELLER == "1"
+                        ? "Best Seller"
+                        : product.IS_POPULAR == "1"
+                        ? "Popular"
+                        : ""
+                    }}
+                  </span>
                 </div>
               </div>
-              <div
-                class="mt-4 flex space-x-2 btn-row"
-                style="margin-top: 15px !important"
-              >
-                <button
-                  style="font-size: 15px !important; position: relative"
+
+              <div class="text-danger text-sm text-center pt-1">
+                <!-- <small *ngIf="
+                      product.IS_UPCOMING == 1 ||
+                      product.CURRENT_STOCK_VARIENT <= 0 ||
+                      currentStockMap[product.ID] <= 0 ||
+                      !hasActiveVariants(product.ID)|| product.VARIENTS == null || product.VARIENTS == undefined || product.VARIENTS.length == 0
+                    ">
+                  Out of stock
+                </small> -->
+                <small
+                  *ngIf="
+                    product.IS_UPCOMING == 1 ||
+                    product.VARIENTS == null ||
+                    product.VARIENTS == undefined ||
+                    product.VARIENTS.length == 0 ||
+                    !hasActiveVariants(product.ID) ||
+                    currentStockMap[product.ID] <= 0
+                  "
+                >
+                  Out of stock
+                </small>
+              </div>
+
+              <div class="pt-1 px-3">
+                <span
+                  class="text-xs text-gray-500 rounded-full bg-[rgb(233,180,76)] text-white text-xs font-small px-2 py-1"
+                >
+                  {{ product.CATEGORY_NAME }}
+                </span>
+
+                <div
+                  *ngIf="product.CUSTOMER_RATINGS"
+                  class="inline-flex justify-center items-center bg-[#72BB81E5] text-white text-xs font-small px-2 py-1 rounded-full float-right"
+                  style="width: 58.67px"
+                >
+                  <span>{{ product.CUSTOMER_RATINGS | number : "1.1-1" }}</span>
+
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-3 w-3 ml-1"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.782 1.4 8.17L12 18.896l-7.334 3.866 1.4-8.17L.132 9.21l8.2-1.192z"
+                    />
+                  </svg>
+                </div>
+
+                <h3
+                  class="font-medium text-gray-900 mt-2 hover:text-[#5a8f69] truncate"
+                  (click)="addtodetail(product)"
+                  [routerLink]="
+                    selectedVariantMap[product.ID]
+                      ? [
+                          '/product_details',
+                          product.ID,
+                          selectedVariantMap[product.ID]
+                        ]
+                      : ['/product_details', product.ID]
+                  "
+                  [title]="product.NAME"
+                >
+                  {{ product.NAME }}
+                </h3>
+
+                <small
+                  class="text-gray-600 mt-2 line-clamp-2"
+                  [title]="product.DESCRIPTION"
+                >
+                  {{ product.DESCRIPTION }}
+                </small>
+
+                <!-- <div class="mt-2 flex space-x-2 btn-row">
+                <button style="font-size: 15px !important; position: relative"
                   class="flex-1 bg-[#5a8f69] text-white py-2 rounded-button font-medium transition-colors !rounded-button whitespace-nowrap add-to-cart-btn group"
-                  (click)="addToCart(product); $event.stopPropagation()"
-                  [disabled]="
+                  (click)="addToCart(product); $event.stopPropagation()" [disabled]="
                     product.IS_UPCOMING == 1 ||
                     product.CURRENT_STOCK_VARIENT <= 0 ||
                     currentStockMap[product.ID] <= 0 ||
                     !hasActiveVariants(product.ID)
-                  "
-                  id="addToCartBtn"
-                  [ngClass]="{
+                  " id="addToCartBtn" [ngClass]="{
                     'hover:bg-green-700 cursor-pointer':
                       product.IS_UPCOMING != 1 &&
                       product.CURRENT_STOCK_VARIENT > 0 &&
@@ -598,28 +557,20 @@
                       product.CURRENT_STOCK_VARIENT <= 0 ||
                       currentStockMap[product.ID] <= 0 ||
                       !hasActiveVariants(product.ID)
-                  }"
-                >
+                  }">
                   Add to Cart
-
-                  <!-- Tooltip inside button (visible only if disabled) -->
-                  <span
-                    *ngIf="
+                  <span *ngIf="
                       product.IS_UPCOMING == 1 ||
                       product.CURRENT_STOCK_VARIENT <= 0 ||
                       currentStockMap[product.ID] <= 0 ||
                       !hasActiveVariants(product.ID)
                     "
-                    class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block bg-black text-white text-xs rounded px-2 py-1 whitespace-nowrap"
-                  >
+                    class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block bg-black text-white text-xs rounded px-2 py-1 whitespace-nowrap">
                     Not available right now
                   </span>
                 </button>
 
-                <a
-                  (click)="addtodetail(product)"
-                  style="font-size: 15px !important"
-                  [routerLink]="
+                <a (click)="addtodetail(product)" style="font-size: 15px !important" [routerLink]="
                     selectedVariantMap[product.ID]
                       ? [
                           '/product_details',
@@ -628,78 +579,146 @@
                         ]
                       : ['/product_details', product.ID]
                   "
-                  class="product-details-link details-btn bg-gray-100 text-gray-800 px-4 py-2 rounded-button font-medium hover:bg-gray-200 transition-colors whitespace-nowrap mrgLeft"
-                  >Details</a
-                >
+                  class="product-details-link details-btn bg-gray-100 text-gray-800 px-4 py-2 rounded-button font-medium hover:bg-gray-200 transition-colors whitespace-nowrap mrgLeft">
+                  Details
+                </a>
+              </div> -->
               </div>
+            </span>
+
+            <div class="row px-3 mb-3">
+              <div class="col-12 col-lg-12 mt-2">
+                <!-- <select *ngIf="
+                      product.IS_VERIENT_AVAILABLE == 1 &&
+                      (product.VARIENTS != null ||
+                        product.VARIENTS != undefined) &&
+                      hasActiveVariants(product.ID)
+                      "
+                    class="sm:w-auto border border-green-400 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-300"
+                    [(ngModel)]="selectedVariantMap[product.ID]" (ngModelChange)="change($event, product.ID)" style="
+                          width: 65px;
+                          height: 24px;
+                          font-size: 10px;
+                          padding: 2px !important;
+                        ">
+                    <option *ngFor="let item of variantMap[product.ID] || []" [value]="item.VARIENT_ID">
+                      {{ item.SIZE }} {{ item.UNIT_NAME }}
+                    </option>
+                  </select> -->
+
+                <div class="flex flex-wrap gap-2 mt-2">
+                  <ng-container
+                    *ngFor="let item of variantMap[product.ID] || []"
+                  >
+                    <small
+                      [ngClass]="{
+                        'border border-black bg-gray-100':
+                          selectedVariantMap[product.ID] == item.VARIENT_ID,
+                        'bg-white border border-gray-300 hover:border-black':
+                          selectedVariantMap[product.ID] != item.VARIENT_ID
+                      }"
+                      class="cursor-pointer text-gray-800 text-xs font-medium px-3 py-1 rounded-full transition-all duration-150"
+                      (click)="change(item.VARIENT_ID, product.ID)"
+                    >
+                      {{ item.SIZE }} {{ item.UNIT_NAME }}
+                    </small>
+                  </ng-container>
+                </div>
+              </div>
+
+              <div
+                class="col-12 col-lg-12 mt-2"
+                (click)="addtodetail(product)"
+                [routerLink]="
+                  selectedVariantMap[product.ID]
+                    ? [
+                        '/product_details',
+                        product.ID,
+                        selectedVariantMap[product.ID]
+                      ]
+                    : ['/product_details', product.ID]
+                "
+              >
+                <span
+                  class="text-black font-medium me-1"
+                  *ngIf="product.IS_VERIENT_AVAILABLE == 0"
+                >
+                  ${{ product.RATE }}
+                </span>
+
+                <span
+                  class="text-black font-medium me-1"
+                  *ngIf="product.IS_VERIENT_AVAILABLE == 1"
+                >
+                  ${{
+                    product.DISCOUNT_TYPE == "Amount"
+                      ? variantRateMap[product.ID] - product.DISCOUNT
+                      : variantRateMap[product.ID] -
+                        (variantRateMap[product.ID] * product.DISCOUNT) / 100
+                  }}
+                </span>
+
+                <span
+                  class="text-sm line-through text-[#D1D5DB] me-1"
+                  *ngIf="product.DISCOUNT && product.DISCOUNT > 0"
+                >
+                  ${{ variantRateMap[product.ID] || 0 }}
+                </span>
+
+                <span
+                  class="text-sm text-[#5a8f69] whitespace-nowrap"
+                  *ngIf="product.DISCOUNT && product.DISCOUNT > 0"
+                >
+                  {{
+                    product.DISCOUNT_TYPE == "Amount"
+                      ? "$" + product.DISCOUNT
+                      : product.DISCOUNT + "%"
+                  }}
+                  off
+                </span>
+              </div>
+
+              <!-- <div class="flex items-center">
+                  <div class="flex text-yellow-400" [innerHTML]="getStarIcons(product.CUSTOMER_RATINGS)"></div>
+                </div> -->
             </div>
           </div>
         </div>
-        <button
-          style="display: none"
-          id="loginmodaltrack"
-          data-bs-toggle="modal"
-          data-bs-target="#loginmodal"
-        >
+
+        <!-- <button style="display: none" id="loginmodaltrack" data-bs-toggle="modal" data-bs-target="#loginmodal">
           data
         </button>
 
-        <div
-          class="modal fade"
-          id="loginmodal"
-          tabindex="-1"
-          aria-labelledby="loginmodalLabel"
-          aria-hidden="true"
-        >
-          <div
-            class="modal-dialog modal-dialog-centered"
-            style="width: 300px; margin: auto"
-          >
-            <div
-              class="modal-content p-3 rounded-3"
-              style="padding: 0px !important; border: none !important"
-            >
+        <div class="modal fade" id="loginmodal" tabindex="-1" aria-labelledby="loginmodalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" style="width: 300px; margin: auto">
+            <div class="modal-content p-3 rounded-3" style="padding: 0px !important; border: none !important">
               <div class="modal-body">
                 <div class="popup">
-                  <header
-                    style="
+                  <header style="
                       justify-content: end;
                       display: flex;
                       padding: 9px 10px;
                       cursor: pointer;
-                    "
-                  >
-                    <div
-                      class="close"
-                      data-bs-dismiss="modal"
-                      #closelogin
-                      aria-label="Close"
-                      style="display: none"
-                    >
+                    ">
+                    <div class="close" data-bs-dismiss="modal" #closelogin aria-label="Close" style="display: none">
                       <i class="fa-solid fa-xmark"></i>
                     </div>
-                    <div
-                      class="close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    >
+                    <div class="close" data-bs-dismiss="modal" aria-label="Close">
                       <i class="fa-solid fa-xmark"></i>
                     </div>
                   </header>
-                  <hr
-                    style="
+
+                  <hr style="
                       margin-top: 0px !important;
                       color: #808080ad !important;
-                    "
-                  />
+                    " />
+
                   <div class="content">
                     <div style="justify-content: center; display: flex">
                       <img src="assets/img/login.png" alt="login" />
                     </div>
-                    <button
-                      class="book-btn btn bg-[rgb(90 143 105)] mt-3 w-100 w-md-auto"
-                      (click)="openlogin()"
-                    >
+
+                    <button class="book-btn btn bg-[rgb(90 143 105)] mt-3 w-100 w-md-auto" (click)="openlogin()">
                       Sign In To Continue &nbsp;
                       <i class="fa-solid fa-arrow-right"></i>
                     </button>
@@ -708,7 +727,8 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
+
         <div
           *ngIf="products.length === 0"
           class="flex items-center justify-center min-h-[60vh] w-full"
@@ -733,6 +753,7 @@
             >
               <i class="ri-arrow-left-s-line"></i>
             </a>
+
             <a
               *ngFor="let page of pagesArray"
               class="w-10 h-10 flex items-center justify-center rounded-full cursor-pointer"
@@ -742,8 +763,8 @@
                   page !== currentPage
               }"
               (click)="scrollToSection('product-grids'); setCurrentPage(page)"
-              >{{ page }}</a
-            >
+              >{{ page }}
+            </a>
 
             <a
               class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 text-gray-600 hover:bg-gray-50 cursor-pointer"
@@ -762,8 +783,9 @@
     </div>
   </div>
 </section>
+
 <!-- Newsletter Section -->
-<section class="newsletter-section py-16 text-white">
+<!-- <section class="newsletter-section py-16 text-white">
   <div class="container mx-auto px-4">
     <div class="max-w-3xl mx-auto text-center">
       <h2 class="text-3xl font-bold mb-4">Subscribe to Our Newsletter</h2>
@@ -810,7 +832,8 @@
       </div>
     </div>
   </div>
-</section>
+</section> -->
+
 <!-- Quick View Modal -->
 <div class="quick-view-modal" id="quickViewModal">
   <div class="modal-content p-6">
@@ -900,12 +923,14 @@
     </div>
   </div>
 </div>
+
 <button
   id="backToTop"
   class="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-[#5a8f69] text-white shadow-lg flex items-center justify-center opacity-0 invisible transition-all duration-300"
 >
   <i class="ri-arrow-up-line ri-lg"></i>
 </button>
+
 <!-- Quick View Modal -->
 <div class="quick-view-modal" id="quickViewModal">
   <div class="modal-content p-6">
@@ -995,6 +1020,7 @@
     </div>
   </div>
 </div>
+
 <div *ngIf="viewCart">
   <app-cart-drawer
     [visible]="viewCart"

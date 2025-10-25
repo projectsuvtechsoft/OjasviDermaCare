@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { ApiServiceService } from 'src/app/Service/api-service.service';
 import { CommonFunctionService } from 'src/app/Service/CommonFunctionService';
 declare var Razorpay: any;
@@ -9,24 +17,27 @@ import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
 import { CartService } from 'src/app/Service/cart.service';
 import { NgForm } from '@angular/forms';
+import { interval, takeWhile } from 'rxjs';
 interface Address {
   ID?: string; // Made optional for new addresses
   NAME: string;
   ADDRESS: string;
-  CITY_ID: any;
+  EMAIL_ID?: string;
+  CITY_NAME: any;
   PINCODE: string;
-  COUNTRY_ID?: any; // New field
-  STATE_ID?: any; // New field
+  COUNTRY_NAME?: any; // New field
+  STATE_NAME?: any; // New field
   MOBILE_NO: string;
   LANDMARK?: string; // New field
   LOCALITY?: string; // New field
   ADDRESS_TYPE?: any; // New field
   IS_DEFAULT?: boolean; // New field
   IS_DEFUALT_ADDRESS?: boolean;
+  AREA: '';
   CUST_ID?: string; // Assuming CUST_ID is for customer association
   SESSION_KEY: any;
 }
- 
+
 @Component({
   selector: 'app-checkout',
   templateUrl: './checkout.component.html',
@@ -38,7 +49,7 @@ export class CheckoutComponent {
   @Input() subtotal: any;
   @Input() userId: any;
   cityList: any[] = [];
- 
+  hasAddresses: boolean = false;
   @Output() orderPlaced = new EventEmitter<boolean>(); // Changed output to reflect order placement
 
   // New properties for drawer management
@@ -49,18 +60,29 @@ export class CheckoutComponent {
 
   isEditingAddress: boolean = false;
   currentAddressId: string | null = null;
+  // For the "Add New Address" button on the prompt screen (optional, if delay is expected)
+  isTransitioning: boolean = false;
 
- addressForm: Address = {
+  // For the action buttons on the Address List screen
+  // isEditingID: number | null = null; // ID of the address currently being edited/loaded for edit
+  isDeletingID: number | null = null; // ID of the address currently being deleted
+  isContinuingToPay: boolean = false; // For the sticky footer button
+
+  // For the Save/Update button on the Address Form
+  isSavingAddress: boolean = false;
+  addressForm: Address = {
     NAME: '',
     ADDRESS: '',
     MOBILE_NO: '',
-    CITY_ID: '',
+    EMAIL_ID: '',
+    CITY_NAME: '',
     PINCODE: '',
-    COUNTRY_ID: '',
-    STATE_ID: '',
+    COUNTRY_NAME: '',
+    STATE_NAME: '',
     LANDMARK: '',
     LOCALITY: '',
     ADDRESS_TYPE: 'Residential',
+    AREA: '',
     IS_DEFAULT: false,
     IS_DEFUALT_ADDRESS: false,
     SESSION_KEY: '',
@@ -96,13 +118,12 @@ export class CheckoutComponent {
   }
 
   showOrderSummaryModal: boolean = false;
+  public isMobile: boolean = false;
   ngOnInit() {
     // console.log(this.cartDetails);
-
-    // this.addressDrawerOpen=false
-    this.fetchSavedAddresses();
-    this.cartId = this.cartDetails.cartDetails[0]?.CART_ID || '';
     this.fetchCountries();
+    // this.addressDrawerOpen=false
+    this.cartId = this.cartDetails.cartDetails[0]?.CART_ID || '';
     // console.log('this is cartdetails: ', this.cartDetails);
     this.fetchPincodes('1');
     this.fetchShipingcharges();
@@ -110,8 +131,42 @@ export class CheckoutComponent {
     // console.log(this.fetchPincodes('1'));
   }
 
-  // --- Drawer Management Functions ---
+  MOBILE_BREAKPOINT = 768;
+  // 2. Decorator to listen for the 'resize' event on the global 'window' object
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    this.checkMobile();
+    // Use ChangeDetectorRef to explicitly trigger change detection if needed
+    // this.cdr.detectChanges();
+  }
 
+  // 3. The core logic: updates the 'isMobile' flag based on screen width
+  private checkMobile(): void {
+    // If the window width is less than 992px, it's considered mobile
+    this.isMobile = window.innerWidth < this.MOBILE_BREAKPOINT;
+  }
+  photoURL = this.api.retriveimgUrl + 'productImages/';
+  // --- Drawer Management Functions ---
+  imageIndices: { [productId: string]: number } = {};
+
+  getImageArray(product: any): string[] {
+    try {
+      const images = JSON.parse(product.PHOTO_URL);
+      // console.log(images,'images')
+      // console.log(this.imageIndices,'imagesIndices')
+      return images.map((img: any) => img);
+    } catch (e) {
+      console.error('Invalid image format', e);
+      return [];
+    }
+  }
+
+  // Initialize index safely
+  initImageIndex(productId: number) {
+    if (!(productId in this.imageIndices)) {
+      this.imageIndices[productId] = 0;
+    }
+  }
   /**
    * Opens the main address management drawer, showing the list of addresses by default.
    */
@@ -140,7 +195,38 @@ export class CheckoutComponent {
    * either for adding a new address or editing an existing one.
    * @param addressId The ID of the address to edit, or null for a new address.
    */
-  openAddressForm(addressId: string | null = null) {
+  // openAddressForm(addressId: string | null = null) {
+  //   // console.log('Opening address form for ID:', addressId);
+  //   this.showAddressForm = true; // Switch to the form view inside the drawer
+  //   if (addressId) {
+  //     this.isEditingAddress = true;
+  //     this.currentAddressId = addressId;
+  //     const addressToEdit = this.savedAddresses.find(
+  //       (addr) => addr.ID === addressId
+  //     );
+
+  //     // console.log('Address to edit:', addressToEdit);
+  //     if (addressToEdit) {
+  //       this.addressForm = { ...addressToEdit }; // Create a copy for editing
+  //       // if (this.addressForm.COUNTRY_ID) {
+  //       // this.fetchStates(this.addressForm.COUNTRY_ID); // Load states for the selected country
+  //       // this.fetchPincodes(this.addressForm.PINCODE);
+  //       this.prefillCountryStateCity();
+  //       // }
+  //     } else {
+  //       // console.error('Address not found for editing:', addressId);
+  //       this.toastr.error('Address not found.', 'Error');
+  //       this.resetAddressForm(); // Reset if address not found
+  //       this.isEditingAddress = false;
+  //       this.currentAddressId = null;
+  //     }
+  //   } else {
+  //     this.isEditingAddress = false;
+  //     this.currentAddressId = null;
+  //     this.resetAddressForm(); // Reset for a new address
+  //   }
+  // }
+openAddressForm(addressId: string | null = null) {
     // console.log('Opening address form for ID:', addressId);
     this.showAddressForm = true; // Switch to the form view inside the drawer
     if (addressId) {
@@ -149,15 +235,16 @@ export class CheckoutComponent {
       const addressToEdit = this.savedAddresses.find(
         (addr) => addr.ID === addressId
       );
- 
+
       // console.log('Address to edit:', addressToEdit);
       if (addressToEdit) {
         this.addressForm = { ...addressToEdit }; // Create a copy for editing
-        if (this.addressForm.COUNTRY_ID) {
-          this.fetchStates(this.addressForm.COUNTRY_ID); // Load states for the selected country
-          // this.fetchPincodes(this.addressForm.PINCODE);
-          this.prefillCountryStateCity();
-        }
+        // if (this.addressForm.COUNTRY_ID) {
+        // this.fetchStates(this.addressForm.COUNTRY_ID); // Load states for the selected country
+        // this.fetchPincodes(this.addressForm.PINCODE);
+        this.prefillCountryStateCity();
+        this.verificationStatus = 'initial';
+        // }
       } else {
         // console.error('Address not found for editing:', addressId);
         this.toastr.error('Address not found.', 'Error');
@@ -168,11 +255,11 @@ export class CheckoutComponent {
     } else {
       this.isEditingAddress = false;
       this.currentAddressId = null;
-      this.resetAddressForm(); // Reset for a new address
+      this.resetAddressForm();
+      this.verificationStatus = 'initial'; // Reset for a new address
     }
   }
  
-
   /**
    * Switches the drawer view back to the list of saved addresses.
    */
@@ -183,8 +270,8 @@ export class CheckoutComponent {
   }
 
   // --- Address Management Core Functions ---
-
-fetchSavedAddresses() {
+  loadingScreen = true;
+  fetchSavedAddresses() {
     if (this.userId) {
       var filter = ` AND CUST_ID = ${this.userId}`;
     } else {
@@ -193,15 +280,24 @@ fetchSavedAddresses() {
     this.api.getCustomeraddressweb(0, 0, 'id', 'desc', filter).subscribe(
       (response: any) => {
         if (response['code'] === 200) {
+          this.loadingScreen = false;
+
+          if (response['count'] == 0) {
+            this.hasAddresses = false;
+          } else {
+            this.hasAddresses = true;
+          }
+
           this.addressDrawerOpen = true; // Ensure drawer is open when addresses are fetched
           this.savedAddresses = response['data'].map((addr: any) => ({
             ID: addr.ID,
             NAME: addr.NAME,
             ADDRESS: addr.ADDRESS,
-            CITY_ID: addr.CITY_ID,
+            CITY_NAME: addr.CITY_NAME,
             PINCODE: addr.PINCODE,
-            COUNTRY_ID: addr.COUNTRY_ID,
-            STATE_ID: addr.STATE_ID,
+            COUNTRY_NAME: addr.COUNTRY_NAME,
+            EMAIL_ID: addr.EMAIL_ID,
+            STATE_NAME: addr.STATE_NAME,
             LANDMARK: addr.LANDMARK,
             LOCALITY: addr.LOCALITY,
             ADDRESS_TYPE: addr.ADDRESS_TYPE,
@@ -213,11 +309,14 @@ fetchSavedAddresses() {
           this.selectedAddress =
             this.savedAddresses.find((a) => a.IS_DEFAULT) ||
             this.savedAddresses[0];
- 
-          if (this.selectedAddress && this.selectedAddress.COUNTRY_ID != null) {
+
+          if (
+            this.selectedAddress &&
+            this.selectedAddress.COUNTRY_NAME != null
+          ) {
             sessionStorage.setItem(
               'address',
-              String(this.selectedAddress.COUNTRY_ID)
+              String(this.selectedAddress.COUNTRY_NAME)
             );
           }
           if (this.selectedAddress && this.selectedAddress.PINCODE != null) {
@@ -227,11 +326,15 @@ fetchSavedAddresses() {
             );
           }
           if (this.selectedAddress) {
+            sessionStorage.setItem(
+              'COUNTRY_NAME',
+              this.getCountryFromID(this.selectedAddress.COUNTRY_NAME)
+            );
             var CART_ID = this.cartDetails.cartDetails[0].CART_ID;
             var CART_ITEM_ID = this.cartDetails.cartDetails[0].ID;
-            var COUNTRY_ID = this.addressForm.COUNTRY_ID;
+            var COUNTRY_NAME = this.addressForm.COUNTRY_NAME;
             var ADDRESS_ID = this.addressForm.ID;
-            this.cartDetails.cartDetails[0]['COUNTRY_ID'] = COUNTRY_ID;
+            this.cartDetails.cartDetails[0]['COUNTRY_ID'] = COUNTRY_NAME;
             this.cartDetails.cartDetails[0]['ADDRESS_ID'] = ADDRESS_ID;
             this.cartDetails.cartDetails[0]['CART_ID'] = CART_ID;
             this.cartDetails.cartDetails[0]['CART_ITEM_ID'] = CART_ITEM_ID;
@@ -248,26 +351,46 @@ fetchSavedAddresses() {
         } else {
           this.toastr.error('Failed to load saved addresses.', 'Error');
           this.savedAddresses = [];
+          this.loadingScreen = false;
         }
       },
       (error) => {
         console.error('Error fetching addresses:', error);
         this.savedAddresses = [];
         this.toastr.error('Failed to load saved addresses.', 'Error');
+        this.loadingScreen = false;
       }
     );
   }
-
+  getCountryFromID(countryId: number): any {
+    const findCountryindex = this.countryList.findIndex(
+      (data) => data.ID == countryId
+    );
+    // console.log(findCountryindex, this.countryList, countryId);
+    if (findCountryindex > -1) {
+      return this.countryList[findCountryindex].NAME;
+    } else {
+      return '';
+    }
+  }
   onSelectAddress(address: any) {
-    if (address && address.COUNTRY_ID != null) {
+    if (address && address.COUNTRY_NAME != null) {
       this.selectedAddress = address; // Update selected address
-      sessionStorage.setItem('address', String(address.COUNTRY_ID)); // Update sessionStorage
+      // console.log('Selected address')
+      sessionStorage.setItem('address', String(address.COUNTRY_NAME));
+      sessionStorage.setItem(
+        'COUNTRY_NAME',
+        this.getCountryFromID(address.COUNTRY_NAME)
+      ); // Update sessionStorage
+      // Update sessionStorage
       sessionStorage.setItem('pincode', String(address.PINCODE));
       var CART_ID = this.cartDetails.cartDetails[0].CART_ID;
       var CART_ITEM_ID = this.cartDetails.cartDetails[0].ID;
-      var COUNTRY_ID = address.COUNTRY_ID;
+      var COUNTRY_NAME = address.COUNTRY_NAME;
       var ADDRESS_ID = address.ID;
-      this.cartDetails.cartDetails[0]['COUNTRY_ID'] = COUNTRY_ID;
+      this.cartDetails.cartDetails[0]['COUNTRY_ID'] = COUNTRY_NAME;
+      this.cartDetails.cartDetails[0]['COUNTRY_NAME'] =
+        this.getCountryFromID(COUNTRY_NAME);
       this.cartDetails.cartDetails[0]['ADDRESS_ID'] = ADDRESS_ID;
       this.cartDetails.cartDetails[0]['CART_ID'] = CART_ID;
       this.cartDetails.cartDetails[0]['CART_ITEM_ID'] = CART_ITEM_ID;
@@ -290,14 +413,15 @@ fetchSavedAddresses() {
       NAME: '',
       MOBILE_NO: '',
       ADDRESS: '',
-      CITY_ID: '',
+      CITY_NAME: '',
       PINCODE: '',
-      COUNTRY_ID: '',
-      STATE_ID: '',
+      COUNTRY_NAME: '',
+      STATE_NAME: '',
       LANDMARK: '',
       LOCALITY: '',
       ADDRESS_TYPE: undefined,
       IS_DEFAULT: false,
+      AREA: '',
       SESSION_KEY: '',
     };
     // this.stateList = []; // Clear states when resetting country
@@ -313,11 +437,12 @@ fetchSavedAddresses() {
     console.log('Checkbox changed to:', this.addressForm.IS_DEFAULT);
   }
 
-   saveAddress(form: NgForm) {
+  saveAddress(form: NgForm) {
     // if (form.invalid) {
     //   this.toastr.error('Please fill all required fields.', '');
     //   return;
     // }
+     console.log(this.addressForm)
     if (
       (this.addressForm.NAME == '' ||
         this.addressForm.NAME == null ||
@@ -325,21 +450,24 @@ fetchSavedAddresses() {
       (this.addressForm.MOBILE_NO == '' ||
         this.addressForm.MOBILE_NO == null ||
         this.addressForm.MOBILE_NO == undefined) &&
+      (this.addressForm.EMAIL_ID == '' ||
+        this.addressForm.EMAIL_ID == null ||
+        this.addressForm.EMAIL_ID == undefined) &&
       (this.addressForm.ADDRESS == '' ||
         this.addressForm.ADDRESS == null ||
         this.addressForm.ADDRESS == undefined) &&
       (this.addressForm.LANDMARK == '' ||
         this.addressForm.LANDMARK == null ||
         this.addressForm.LANDMARK == undefined) &&
-      (this.addressForm.COUNTRY_ID == '' ||
-        this.addressForm.COUNTRY_ID == null ||
-        this.addressForm.COUNTRY_ID == undefined) &&
-      (this.addressForm.STATE_ID == '' ||
-        this.addressForm.STATE_ID == null ||
-        this.addressForm.STATE_ID == undefined) &&
-      (this.addressForm.CITY_ID == '' ||
-        this.addressForm.CITY_ID == null ||
-        this.addressForm.CITY_ID == undefined) &&
+      (this.addressForm.COUNTRY_NAME == '' ||
+        this.addressForm.COUNTRY_NAME == null ||
+        this.addressForm.COUNTRY_NAME == undefined) &&
+      (this.addressForm.STATE_NAME == '' ||
+        this.addressForm.STATE_NAME == null ||
+        this.addressForm.STATE_NAME == undefined) &&
+      (this.addressForm.CITY_NAME == '' ||
+        this.addressForm.CITY_NAME == null ||
+        this.addressForm.CITY_NAME == undefined) &&
       (this.addressForm.PINCODE == '' ||
         this.addressForm.PINCODE == null ||
         this.addressForm.PINCODE == undefined) &&
@@ -365,6 +493,21 @@ fetchSavedAddresses() {
       this.toastr.error('Please Enter Mobile Number', '');
       return;
     } else if (
+      this.addressForm.EMAIL_ID == null ||
+      this.addressForm.EMAIL_ID == undefined
+    ) {
+      // this.isOk = false;
+      this.toastr.error('Please Enter Email', '');
+      return;
+    } else if (
+      this.addressForm.EMAIL_ID &&
+      !this.commonFunction.emailpattern.test(this.addressForm.EMAIL_ID)
+    ) {
+      // this.isOk = false;
+
+      this.toastr.error('Please Enter Valid Email', '');
+      return;
+    } else if (
       this.addressForm.ADDRESS == null ||
       this.addressForm.ADDRESS.trim() == ''
     ) {
@@ -372,22 +515,22 @@ fetchSavedAddresses() {
       this.toastr.error('Please Enter Address', '');
       return;
     } else if (
-      this.addressForm.COUNTRY_ID == undefined ||
-      this.addressForm.COUNTRY_ID == ''
+      this.addressForm.COUNTRY_NAME == undefined ||
+      this.addressForm.COUNTRY_NAME == ''
     ) {
       // this.isOk = false;
       this.toastr.error('Please Select Country', '');
       return;
     } else if (
-      this.addressForm.STATE_ID == undefined ||
-      this.addressForm.STATE_ID == ''
+      this.addressForm.STATE_NAME == undefined ||
+      this.addressForm.STATE_NAME == ''
     ) {
       // this.isOk = false;
       this.toastr.error('Please Select State', '');
       return;
     } else if (
-      this.addressForm.CITY_ID == null ||
-      this.addressForm.CITY_ID == undefined
+      this.addressForm.CITY_NAME == null ||
+      this.addressForm.CITY_NAME == undefined
     ) {
       // this.isOk = false;
       this.toastr.error('Please Select City', '');
@@ -411,21 +554,27 @@ fetchSavedAddresses() {
     //   this.toastr.error('Please specify if this is default', '');
     //   return;
     // }
- 
+
     if (this.userId) {
       this.addressForm.CUST_ID = this.userId;
     } else {
       this.addressForm.SESSION_KEY = this.SESSION_KEYS;
     }
- 
+    this.loadingScreen = true;
+
     sessionStorage.setItem('pincode', String(this.addressForm.PINCODE));
     if (this.isEditingAddress && this.currentAddressId) {
       this.addressForm.IS_DEFAULT = Boolean(this.addressForm.IS_DEFAULT);
       this.addressForm.IS_DEFUALT_ADDRESS = Boolean(
         this.addressForm.IS_DEFAULT
       );
+      this.isSavingAddress = true;
+
       this.api.updateAddressMaster(this.addressForm).subscribe({
         next: (response: any) => {
+          this.isSavingAddress = false;
+          this.loadingScreen = false;
+
           if (response.code === 200) {
             this.toastr.success('Address updated successfully!', 'Success');
             // console.log(this.addressForm);
@@ -436,6 +585,7 @@ fetchSavedAddresses() {
               'Failed to update address: ' + response.message,
               'Error'
             );
+            this.loadingScreen = false;
           }
         },
         error: () => {
@@ -443,18 +593,25 @@ fetchSavedAddresses() {
             'Error updating address. Please try again.',
             'Error'
           );
+          this.isSavingAddress = false;
+          this.loadingScreen = false;
         },
       });
     } else {
       this.addressForm.IS_DEFUALT_ADDRESS = Boolean(
         this.addressForm.IS_DEFAULT
       );
+      this.isSavingAddress = true;
+
       this.api.createAddressMaster(this.addressForm).subscribe({
         next: (response: any) => {
+          this.isSavingAddress = false;
+          this.loadingScreen = false;
+
           if (response.code === 200) {
             this.toastr.success('Address added successfully!', 'Success');
             this.addressForm.ID = response.data?.ID || String(Date.now());
-            console.log(this.addressForm);
+            // console.log(this.addressForm);
             this.fetchSavedAddresses();
             this.goBackToAddressList();
           } else {
@@ -462,17 +619,20 @@ fetchSavedAddresses() {
               'Failed to add address: ' + response.message,
               'Error'
             );
+            this.loadingScreen = false;
           }
         },
         error: () => {
+          this.isSavingAddress = false;
+          this.loadingScreen = false;
+
           this.toastr.error('Error adding address. Please try again.', 'Error');
         },
       });
     }
   }
- 
 
- deleteAddress(addressID: any, customer_id: any) {
+  deleteAddress(addressID: any, customer_id: any) {
     console.log('Deleting Address ID:', addressID, 'Customer ID:', customer_id);
     this.api.DeleteAddress(addressID, customer_id).subscribe(
       (data: any) => {
@@ -546,6 +706,7 @@ fetchSavedAddresses() {
       (response: any) => {
         if (response['code'] === 200) {
           this.countryList = response['data'];
+          this.fetchSavedAddresses();
         } else {
           console.error('Failed to fetch countries:', response['message']);
           this.countryList = [];
@@ -559,8 +720,8 @@ fetchSavedAddresses() {
     );
   }
 
-onCountryChange(countryname: number) {
-    this.addressForm.STATE_ID = ''; // Clear state selection on country change
+  onCountryChange(countryname: number) {
+    this.addressForm.STATE_NAME = ''; // Clear state selection on country change
     this.stateList = []; // Clear state list
     if (countryname) {
       this.fetchStates(countryname);
@@ -570,24 +731,41 @@ onCountryChange(countryname: number) {
     // }
   }
 
-    fetchStates(countryId: number) {
-  this.isLoadingStates = true;
-  this.api.getState(0, 0, 'id', 'desc', `AND COUNTRY_ID=${countryId} AND STATUS=1`).subscribe(
-    (res: any) => {
-      this.isLoadingStates = false;
-      if (res.code === 200) {
-        this.stateList = res.data;
-      } else {
-        this.stateList = [];
-      }
-    },
-    (error) => {
-      this.isLoadingStates = false;
-      console.error('Error fetching states:', error);
-    }
-  );
-}
- 
+  fetchStates(countryId: number) {
+    this.isLoadingStates = true;
+    this.api
+      .getState(0, 0, 'id', 'desc', `AND COUNTRY_ID=${countryId} AND STATUS=1`)
+      .subscribe(
+        (res: any) => {
+          this.isLoadingStates = false;
+          if (res.code === 200) {
+            this.stateList = res.data;
+            const selectedState = this.stateList.find(
+              (s) => s.ID === this.addressForm.STATE_NAME
+            );
+
+            if (selectedState) {
+              this.stateSearch = selectedState.NAME;
+              this.fetchCities(selectedState.ID);
+
+              // Wait for cities to load, then prefill city
+              // setTimeout(() => {
+
+              // }, 300);
+            } else {
+              this.stateSearch = '';
+            }
+          } else {
+            this.stateList = [];
+          }
+        },
+        (error) => {
+          this.isLoadingStates = false;
+          console.error('Error fetching states:', error);
+        }
+      );
+  }
+
   get selectedShippingCharge(): number {
     // console.log(this.pincodeList)
     if (!this.pincodeList?.length || !this.selectedAddress.PINCODE) return 0;
@@ -605,7 +783,8 @@ onCountryChange(countryname: number) {
     this.api.getAllCharges(0, 0, 'id', 'desc', '').subscribe(
       (response: any) => {
         if (response['code'] === 200) {
-          this.Shiping_Charge = response['data'][0]['VALUE_1'];
+          // const index=response['data'].findIndex(data=>data.KEY1=='')
+          // this.Shiping_Charge = response['data'][0]['VALUE_1'];
           // console.log('dataaaly ', response['data']);
           // console.log('charges ', this.Shiping_Charge);
           // console.log(this.pincodeList,response,'Debug')
@@ -688,6 +867,7 @@ onCountryChange(countryname: number) {
   }
 
   isProcessingPayment = false;
+  enableDownload=false
   async processPaymentWithToken() {
     this.isProcessingPayment = true;
     if (!this.selectedAddress) {
@@ -730,6 +910,11 @@ onCountryChange(countryname: number) {
             CART_ID: this.cartId,
             CUSTOMER_ID: this.userId ? this.userId : 0,
             SESSION_KEY: this.SESSION_KEYS,
+            COUNTRY_NAME: this.selectedAddress.COUNTRY_NAME,
+            STATE_NAME: this.selectedAddress.STATE_NAME,
+            CITY_NAME: this.selectedAddress.CITY,
+            PINCODE: this.selectedAddress.PINCODE,
+            COUNTRY_CODE:'+1',
             CLIENT_ID: 1,
           },
           {
@@ -746,6 +931,8 @@ onCountryChange(countryname: number) {
             // );
             if (response.code == 200) {
               this.toastr.success('Payment successful!', 'Success');
+              this.cartDetails.cartDetails[0]['INVOICE_NUMBER']=response.invoiceNumber
+
               this.currentStep = 4;
               // this.closePaymentModal();
               // this.orderPlaced.emit(true);
@@ -753,7 +940,11 @@ onCountryChange(countryname: number) {
               this.isProcessingPayment = false;
 
               this.showPaymentModal = false;
-              this.paymentSuccessModalVisible = true;
+              this.showReceiptModal = true;
+              setTimeout(()=>{
+                this.enableDownload=true
+              },5000)
+              // this.paymentSuccessModalVisible = true;
             } else {
               this.toastr.error('Payment failed!', 'Error');
               this.isProcessingPayment = false;
@@ -857,26 +1048,32 @@ onCountryChange(countryname: number) {
   }
   steped() {
     this.currentStep = 3;
+    this.isStepActive('payment');
   }
   desteper() {
     this.currentStep = 2;
   }
 
-showOrderSummaryInDrawer: boolean = false;
- 
-openr(){
- 
-  this.currentStep=2;
-  this.showOrderSummaryInDrawer=false;
- 
-  this.showAddressForm=true;
-  this.openAddressDrawer();
-}
- 
- isLoadingCountries = false;
-isLoadingStates = false;
-isLoadingCities = false;
- 
+  showOrderSummaryInDrawer: boolean = false;
+
+  openr() {
+    this.currentStep = 2;
+    this.showOrderSummaryInDrawer = false;
+    this.isEditingAddress = false;
+    this.showAddressForm = true;
+    this.countrySearch = '';
+    this.citySearch = '';
+    this.stateSearch = '';
+    this.filteredStates = [];
+    this.filteredCities = [];
+    this.resetAddressForm();
+    // this.openAddressDrawer();
+  }
+
+  isLoadingCountries = false;
+  isLoadingStates = false;
+  isLoadingCities = false;
+
   countrySearch = '';
   stateSearch = '';
   citySearch: string = '';
@@ -888,244 +1085,245 @@ isLoadingCities = false;
     // Delay clearing so click on suggestion registers
     setTimeout(() => (this.filteredCountries = []), 100);
   }
- 
+
   onStateBlur() {
+    this.addressForm.STATE_NAME=this.stateSearch
     setTimeout(() => (this.filteredStates = []), 100);
   }
- 
+
   selectCountry(country: any) {
     // Set the selected value
-    this.addressForm.COUNTRY_ID = country.ID;
+    this.addressForm.COUNTRY_NAME = country.NAME ?? this.countrySearch;
     this.countrySearch = country.NAME;
     this.filteredCountries = [];
     this.fetchStates(country.ID);
   }
- 
+
   selectState(state: any) {
-    this.addressForm.STATE_ID = state.ID;
+    this.addressForm.STATE_NAME = state.NAME ?? this.stateSearch;
     this.stateSearch = state.NAME;
     this.fetchCities(state.ID);
     this.filteredStates = [];
   }
- 
+
   filterCountries() {
     const term = this.countrySearch.trim().toLowerCase();
     if (!term) {
       this.filteredCountries = [];
       return;
     }
- 
+
     this.filteredCountries = this.countryList.filter((c) =>
       c.NAME.toLowerCase().includes(term)
     );
   }
- 
+
   filterStates() {
     const term = this.stateSearch.trim().toLowerCase();
     if (!term) {
       this.filteredStates = [];
       return;
     }
- 
+
     this.filteredStates = this.stateList.filter((s) =>
       s.NAME.toLowerCase().includes(term)
     );
   }
- 
+
   // Add button logic: only show if no exact match
   get showAddCountryOption(): any {
     const term = this.countrySearch.trim().toLowerCase();
     return term && !this.countryList.some((c) => c.NAME.toLowerCase() === term);
   }
- 
+
   get showAddStateOption(): any {
     const term = this.stateSearch.trim().toLowerCase();
     return term && !this.stateList.some((s) => s.NAME.toLowerCase() === term);
   }
- 
- createCountry(name: string) {
-  const payload = {
-    ID: 0,
-    NAME: name,
-    STATUS: true,
-    SEQUENCE_NO: 0,
-    SHORT_CODE: this.generateShortCode(name),
-    CLIENT_ID: 1,
-  };
- 
-  this.isLoadingCountries = true;
-  this.api.getAllCountryMaster(1, 1, '', '', 'AND STATUS=1').subscribe((res) => {
-    if (res.code == 200) {
-      payload.SEQUENCE_NO = res.data[0].SEQUENCE_NO + 1;
-      this.api.createCountry(payload).subscribe(
-        (response: any) => {
-          this.isLoadingCountries = false;
-          if (response.code === 200) {
-            this.toastr.success('Country added successfully');
-            const newCountry = { ID: response.ID, NAME: name };
-           
-             setTimeout(()=>{
-             this.fetchCountries();
-            // this.countryList.push(newCountry);
-            this.selectCountry(newCountry); // ✅ auto-select// ✅ auto-select
- 
-            },200)
-          } else {
-            this.toastr.error(response.message || 'Failed to create country');
-          }
-        },
-        (error) => {
-          this.isLoadingCountries = false;
-          this.toastr.error('Error creating country');
+
+  createCountry(name: string) {
+    const payload = {
+      ID: 0,
+      NAME: name,
+      STATUS: true,
+      SEQUENCE_NO: 0,
+      SHORT_CODE: this.generateShortCode(name),
+      CLIENT_ID: 1,
+    };
+
+    this.isLoadingCountries = true;
+    this.api
+      .getAllCountryMaster(1, 1, '', '', 'AND STATUS=1')
+      .subscribe((res) => {
+        if (res.code == 200) {
+          payload.SEQUENCE_NO = res.data[0].SEQUENCE_NO + 1;
+          this.api.createCountry(payload).subscribe(
+            (response: any) => {
+              this.isLoadingCountries = false;
+              if (response.code === 200) {
+                this.toastr.success('Country added successfully');
+                const newCountry = { ID: response.ID, NAME: name };
+
+                setTimeout(() => {
+                  this.fetchCountries();
+                  // this.countryList.push(newCountry);
+                  this.selectCountry(newCountry); // ✅ auto-select// ✅ auto-select
+                }, 200);
+              } else {
+                this.toastr.error(
+                  response.message || 'Failed to create country'
+                );
+              }
+            },
+            (error) => {
+              this.isLoadingCountries = false;
+              this.toastr.error('Error creating country');
+            }
+          );
         }
-      );
-    }
-  });
-}
- 
+      });
+  }
+
   // ------------------ CITY ------------------
- 
+
   onCityBlur() {
+    this.addressForm.CITY_NAME=this.citySearch
     setTimeout(() => (this.filteredCities = []), 100);
   }
- 
+
   selectCity(city: any) {
-    this.addressForm.CITY_ID = city.ID;
+    this.addressForm.CITY_NAME = city.NAME ??  this.citySearch;
     this.citySearch = city.NAME;
     this.filteredCities = [];
   }
- 
+
   filterCities() {
     const term = this.citySearch.trim().toLowerCase();
     if (!term) {
       this.filteredCities = [];
       return;
     }
- 
+
     this.filteredCities = this.cityList.filter((c) =>
       c.NAME.toLowerCase().includes(term)
     );
   }
- 
+
   get showAddCityOption(): any {
     const term = this.citySearch.trim().toLowerCase();
     return term && !this.cityList.some((c) => c.NAME.toLowerCase() === term);
   }
- 
- fetchCities(stateId: number) {
-  this.isLoadingCities = true;
-  this.api.getCityData(0, 0, 'id', 'desc', 'AND IS_ACTIVE=1 AND STATE_ID=' + stateId).subscribe(
-    (response: any) => {
-      this.isLoadingCities = false;
-      if (response.code === 200) {
-        this.cityList = response.data;
-      } else {
-        this.cityList = [];
-      }
-    },
-    (error: any) => {
-      this.isLoadingCities = false;
-      console.error('Error fetching cities:', error);
-      this.cityList = [];
-    }
-  );
-}
- createState(name: string) {
-  if (!this.addressForm.COUNTRY_ID) {
-    this.toastr.warning('Please select a country first');
-    return;
-  }
- 
-  const payload = {
-    ID: 0,
-    NAME: name,
-    STATUS: true,
-    SEQUENCE_NO: 0,
-    COUNTRY_ID: this.addressForm.COUNTRY_ID,
-    SHORT_CODE: this.generateShortCode(name),
-    CLIENT_ID: 1,
-  };
- 
-  this.isLoadingStates = true;
-  this.api.getState(1, 1, '', '', 'AND STATUS=1').subscribe((res) => {
-    if (res.code == 200) {
-      payload.SEQUENCE_NO = res.data[0].SEQUENCE_NO + 1;
-      this.api.createState(payload).subscribe(
+
+  fetchCities(stateId: number) {
+    this.isLoadingCities = true;
+    this.api
+      .getCityData(
+        0,
+        0,
+        'id',
+        'desc',
+        'AND IS_ACTIVE=1 AND STATE_ID=' + stateId
+      )
+      .subscribe(
         (response: any) => {
-          this.isLoadingStates = false;
+          this.isLoadingCities = false;
           if (response.code === 200) {
-            this.toastr.success('State added successfully');
-            const newState = { ID: response.ID, NAME: name };
-            // ✅ auto-select
-             setTimeout(()=>{
-            this.fetchStates(this.addressForm.COUNTRY_ID)
-            // this.stateList.push(newState);
- 
-            this.selectState(newState);  // ✅ auto-select
- 
-            },200)
+            this.cityList = response.data;
+            const selectedCity = this.cityList.find(
+              (c) => c.ID === this.addressForm.CITY_NAME
+            );
+            this.citySearch = selectedCity ? selectedCity.NAME : '';
           } else {
-            this.toastr.error(response.message || 'Failed to create state');
+            this.cityList = [];
           }
         },
-        (error) => {
-          this.isLoadingStates = false;
-          this.toastr.error('Error creating state');
+        (error: any) => {
+          this.isLoadingCities = false;
+          console.error('Error fetching cities:', error);
+          this.cityList = [];
         }
       );
-    }
-  });
-}
- 
-prefillCountryStateCity() {
-  // --- Prefill Country ---
-  const selectedCountry = this.countryList.find(
-    (c) => c.ID === this.addressForm.COUNTRY_ID
-  );
- 
-  if (selectedCountry) {
-    this.countrySearch = selectedCountry.NAME;
-    this.fetchStates(selectedCountry.ID);
- 
-    // Wait for states to load, then prefill state
-    // setTimeout(() => {
-      const selectedState = this.stateList.find(
-        (s) => s.ID === this.addressForm.STATE_ID
-      );
- 
-      if (selectedState) {
-        this.stateSearch = selectedState.NAME;
-        this.fetchCities(selectedState.ID);
- 
-        // Wait for cities to load, then prefill city
-        // setTimeout(() => {
-          const selectedCity = this.cityList.find(
-            (c) => c.ID === this.addressForm.CITY_ID
-          );
-          this.citySearch = selectedCity ? selectedCity.NAME : '';
-        // }, 300);
-      } else {
-        this.stateSearch = '';
-      }
-    // }, 300);
-  } else {
-    this.countrySearch = '';
   }
-}
- 
+  createState(name: string) {
+    if (!this.addressForm.COUNTRY_NAME) {
+      this.toastr.warning('Please select a country first');
+      return;
+    }
+
+    const payload = {
+      ID: 0,
+      NAME: name,
+      STATUS: true,
+      SEQUENCE_NO: 0,
+      COUNTRY_ID: this.addressForm.COUNTRY_NAME,
+      SHORT_CODE: this.generateShortCode(name),
+      CLIENT_ID: 1,
+    };
+
+    this.isLoadingStates = true;
+    this.api.getState(1, 1, '', '', 'AND STATUS=1').subscribe((res) => {
+      if (res.code == 200) {
+        payload.SEQUENCE_NO = res.data[0].SEQUENCE_NO + 1;
+        this.api.createState(payload).subscribe(
+          (response: any) => {
+            this.isLoadingStates = false;
+            if (response.code === 200) {
+              this.toastr.success('State added successfully');
+              const newState = { ID: response.ID, NAME: name };
+              // ✅ auto-select
+              setTimeout(() => {
+                this.fetchStates(this.addressForm.COUNTRY_NAME);
+                // this.stateList.push(newState);
+
+                this.selectState(newState); // ✅ auto-select
+              }, 200);
+            } else {
+              this.toastr.error(response.message || 'Failed to create state');
+            }
+          },
+          (error) => {
+            this.isLoadingStates = false;
+            this.toastr.error('Error creating state');
+          }
+        );
+      }
+    });
+  }
+
+  prefillCountryStateCity() {
+    // --- Prefill Country ---
+    const selectedCountry = this.countryList.find(
+      (c) => c.ID === this.addressForm.COUNTRY_NAME
+    );
+
+    if (selectedCountry) {
+      this.countrySearch = selectedCountry.NAME;
+      this.fetchStates(selectedCountry.ID);
+
+      // Wait for states to load, then prefill state
+      // setTimeout(() => {
+
+      // }, 300);
+    } else {
+      this.countrySearch = '';
+    }
+  }
+
   // Called on input change for country
   onCountryInputChange() {
+    // console.log(this.countrySearch)
     // If country input is empty, clear selection
     if (!this.countrySearch || this.countrySearch.trim() === '') {
-      this.addressForm.COUNTRY_ID = null; // clear selected ID
+      this.addressForm.COUNTRY_NAME = null; // clear selected ID
       this.filteredCountries = [];
- 
+
       // Clear state too
-      this.addressForm.STATE_ID = null;
+      this.addressForm.STATE_NAME = null;
       this.stateSearch = '';
       this.filteredStates = [];
       this.stateList = []; // optional: reset state list
     }
+    this.addressForm.COUNTRY_NAME=this.countrySearch
   }
   generateShortCode(name: string): string {
     if (!name) return '';
@@ -1133,62 +1331,505 @@ prefillCountryStateCity() {
     return name.trim().substring(0, 2).toUpperCase();
   }
   generateShortCodeCity(name: string): string {
-  if (!name) return '';
-  return name
-    .trim()
-    .replace(/\s+/g, '') // remove spaces
-    .substring(0, 3)     // take first 3 letters
-    .toUpperCase();
-}
- createCity(name: string) {
-  if (!this.addressForm.COUNTRY_ID) {
-    this.toastr.warning('Please select a country first');
-    return;
+    if (!name) return '';
+    return name
+      .trim()
+      .replace(/\s+/g, '') // remove spaces
+      .substring(0, 3) // take first 3 letters
+      .toUpperCase();
   }
-  if (!this.addressForm.STATE_ID) {
-    this.toastr.warning('Please select a state first');
-    return;
-  }
- 
-  const payload = {
-    ID: 0,
-    NAME: name,
-    IS_ACTIVE: true,
-    SEQUENCE_NO: 0,
-    COUNTRY_ID: this.addressForm.COUNTRY_ID,
-    STATE_ID: this.addressForm.STATE_ID,
-    SHORT_CODE: this.generateShortCodeCity(name),
-    CLIENT_ID: 1,
-  };
- 
-  this.isLoadingCities = true;
-  this.api.getCityData(1, 1, '', '', 'AND IS_ACTIVE=1').subscribe((res) => {
-    if (res.code == 200) {
-      payload.SEQUENCE_NO = res.data[0].SEQUENCE_NO + 1;
-      this.api.createCity(payload).subscribe(
-        (response: any) => {
-          this.isLoadingCities = false;
-          if (response.code === 200) {
-            this.toastr.success('City added successfully');
-            const newCity = { ID: response.ID, NAME: name };
-            // this.cityList.push(newCity);
-            setTimeout(()=>{
-             this.fetchCities(this.addressForm.STATE_ID)
-            this.selectCity(newCity); // ✅ auto-select
- 
-            },200)
-          } else {
-            this.toastr.error(response.message || 'Failed to create city');
-          }
-        },
-        (error) => {
-          this.isLoadingCities = false;
-          this.toastr.error('Error creating city');
-        }
-      );
+  createCity(name: string) {
+    if (!this.addressForm.COUNTRY_NAME) {
+      this.toastr.warning('Please select a country first');
+      return;
     }
-  });
-}
- 
+    if (!this.addressForm.STATE_NAME) {
+      this.toastr.warning('Please select a state first');
+      return;
+    }
+
+    const payload = {
+      ID: 0,
+      NAME: name,
+      IS_ACTIVE: true,
+      SEQUENCE_NO: 0,
+      COUNTRY_ID: this.addressForm.COUNTRY_NAME,
+      STATE_ID: this.addressForm.STATE_NAME,
+      SHORT_CODE: this.generateShortCodeCity(name),
+      CLIENT_ID: 1,
+    };
+
+    this.isLoadingCities = true;
+    this.api.getCityData(1, 1, '', '', 'AND IS_ACTIVE=1').subscribe((res) => {
+      if (res.code == 200) {
+        payload.SEQUENCE_NO = res.data[0].SEQUENCE_NO + 1;
+        this.api.createCity(payload).subscribe(
+          (response: any) => {
+            this.isLoadingCities = false;
+            if (response.code === 200) {
+              this.toastr.success('City added successfully');
+              const newCity = { ID: response.ID, NAME: name };
+              // this.cityList.push(newCity);
+              setTimeout(() => {
+                this.fetchCities(this.addressForm.STATE_NAME);
+                this.selectCity(newCity); // ✅ auto-select
+              }, 200);
+            } else {
+              this.toastr.error(response.message || 'Failed to create city');
+            }
+          },
+          (error) => {
+            this.isLoadingCities = false;
+            this.toastr.error('Error creating city');
+          }
+        );
+      }
+    });
+  }
   
+  goToStep(step: 'cart' | 'address' | 'payment') {
+    // Only allow navigation to completed or active steps
+    if (step === 'cart') {
+      this.currentStep = 1;
+      sessionStorage.setItem('step',this.currentStep.toString())
+      this.visibleChange.emit(true)
+      this.closeAddressDrawer(); // Close the drawer first
+      // Note: If they click 'address', it just closes the drawer
+      // if it's already the active step, or navigates to the address page.
+      // If (step === 'address') { this.router.navigate(['/address']); }
+    } else if (step === 'address') {
+      this.currentStep = 2;
+      this.hasAddresses = true;
+      this.showOrderSummaryInDrawer = false;
+      // Logic for future steps like 'payment' (maybe show a warning)
+      // console.log('Cannot navigate to payment yet.');
+    }
+    // else if(step === 'payment'){
+    //   // this.isStepActive(step)
+    //   this.hasAddresses=false
+    //   this.showOrderSummaryInDrawer=true
+    // }
+  }
+  isStepActive(step: 'cart' | 'address' | 'payment'): boolean {
+    // Simple logic: true if currentStep is the target step OR a step after it.
+    if (step === 'cart') return true;
+    if (step === 'address')
+      return this.currentStep === 1 || this.currentStep === 2;
+    if (step === 'payment') return this.currentStep === 3;
+    return false;
+  }
+
+  isEmailValid(): boolean {
+    const email = this.addressForm.EMAIL_ID;
+    if (!email) return false;
+
+    // A simple check against the regex.
+    // In a real app, you would reference the form control's validity state.
+    const regex = new RegExp(this.commonFunction.emailpattern);
+    return regex.test(email);
+  }
+
+  verificationStatus: 'initial' | 'pending' | 'verified' | 'failed' = 'initial';
+  // 2. The verification function
+  verifyEmail(): void {
+    if (!this.isEmailValid()) {
+      this.toastr.info('Please enter a valid email address before verifying.');
+      return;
+    }
+
+    this.verificationStatus = 'pending';
+    // this.visible=true
+    // --- REAL-WORLD SCENARIO: Call an API ---
+    // In a real application, you would make an API call here
+    // (e.g., using a service to send a verification code or token).
+
+    // console.log(`Attempting to verify email: ${this.addressForm.EMAIL_ID}`);
+
+    // Simulate an API delay and success/failure logic
+    // setTimeout(() => {
+    //   // Logic for verification success (e.g., if API returns status 200)
+    //   const success = true; // Replace with actual API response check
+
+    //   if (success) {
+    //     this.verificationStatus = 'verified';
+    //     // Optionally, disable the input after verification
+    //     // document.getElementById('emailId')?.setAttribute('disabled', 'true');
+    //   } else {
+    //     this.verificationStatus = 'failed';
+    //   }
+    // }, 2000); // 2-second simulation delay
+    this.api.verifyEmail(this.addressForm.EMAIL_ID).subscribe(
+      (res) => {
+        if (res['code'] == 200) {
+          this.toastr.success('Otp Sent Successfully');
+          this.startTimer();
+          this.visible = true;
+        } else {
+          this.toastr.error('Failed to send otp');
+          this.verificationStatus = 'failed';
+        }
+      },
+      (err) => {
+        this.verificationStatus = 'failed';
+      }
+    );
+  }
+  otp: string[] = ['', '', '', ''];
+  otpSent: boolean = false;
+  otpVerified: boolean = false;
+  resendOTP: boolean = false;
+  showRegisterOtp: boolean = false;
+  countdownTime: number = 60; // Countdown time in seconds
+  remainingTime: number = this.countdownTime;
+  // otp: string[] = ['', '', '', '']; // For 4-digit OTP
+  // statusCode: string = '';
+  // remainingTime: number = 60;
+  isverifyOTP: boolean = false;
+  timerSubscription: any;
+  statusCode: any = '';
+  visible: boolean = false;
+  dismiss() {
+    this.visible = false;
+  }
+  @ViewChild('otpInputs') otpInputs: ElementRef | undefined;
+
+  // Method to move to the next input field
+  // Method to move to the next input field
+  //   @ViewChild('otpInputs') otpInputs: ElementRef | undefined;
+  // otp: string[] = ['', '', '', '', '', ''];  // OTP Array to store individual digits
+
+  // Method to move to the next input field
+  moveToNext(event: KeyboardEvent, index: number) {
+    if (event.key === 'Backspace' && !this.otp[index] && index > 0) {
+      // If backspace is pressed on empty input, move to previous input
+      const prevInput = document.getElementsByClassName('otp-input')[
+        index - 1
+      ] as HTMLInputElement;
+      if (prevInput) {
+        prevInput.focus();
+      }
+    }
+  }
+
+  onChange(value: string, index: number) {
+    // Ensure the input is a number
+    if (/^\d*$/.test(value)) {
+      // If a value is entered and there's a next input, move to it
+      if (value && index < 3) {
+        const nextInput = document.getElementsByClassName('otp-input')[
+          index + 1
+        ] as HTMLInputElement;
+        if (nextInput) {
+          nextInput.focus();
+        }
+      }
+    } else {
+      // If not a number, clear the input
+      this.otp[index] = '';
+    }
+  }
+
+  // Handle focus event to select the input value when clicked
+  onFocus(index: number) {
+    const input = this.otpInputs?.nativeElement.querySelectorAll('input')[
+      index
+    ] as HTMLInputElement;
+    input?.select(); // Select the value when clicked for easier editing
+  }
+
+  // Method to clear OTP fields
+  forgotclearOTPFields() {
+    this.otp = ['', '', '', ''];
+  }
+  // handleEnterKey(content: any) {
+  //   if (this.isSendOpt) {
+  //   } else {
+  //     // Otherwise, call the existing function for the second button
+  //     this.loginforgot(content);
+  //   }
+  // }
+  allowOnlyNumbers(event: KeyboardEvent) {
+    const charCode = event.which ? event.which : event.keyCode;
+    if (charCode < 48 || charCode > 57) {
+      event.preventDefault();
+    }
+  }
+  handlePaste(event: ClipboardEvent) {
+    event.preventDefault();
+    const pastedData = event.clipboardData?.getData('text');
+    if (pastedData && /^\d{4}$/.test(pastedData)) {
+      // If pasted data is 4 digits, distribute across inputs
+      for (let i = 0; i < 4; i++) {
+        this.otp[i] = pastedData[i];
+      }
+    }
+  }
+  // handleLoginEnterKey(content: any) {
+  //   if (this.isloginSendOTP) {
+  //   } else {
+  //     // Otherwise, call the existing function for the second button
+  //     this.loginotpverification(content);
+  //   }
+  // }
+  // Method to handle OTP verification
+  // isverifyOTP: boolean = false;
+  resendOtp() {
+    this.otp = ['', '', '', ''];
+    this.otp[0] = '';
+    this.otp[1] = '';
+    this.otp[2] = '';
+    this.otp[3] = '';
+    if (this.remainingTime > 0) {
+      this.toastr.info(
+        `Please wait ${this.remainingTime} seconds before resending OTP.`,
+        ''
+      );
+      return; // stop execution if timer is running
+    }
+
+    this.otpSent = false;
+    this.remainingTime = 60; // reset timer
+    this.startTimer();
+    //  if (this.whichOTP == 'login') {
+    //    this.loginotpverification();
+    //  } else if (this.whichOTP == 'register') {
+    //    this.save();
+    //  }
+  }
+  resendforgotOtp(content: any) {
+    this.otpSent = false; // Resend OTP action
+    this.remainingTime = 60; // Reset timer
+    this.startTimer();
+  }
+
+  startTimer(): void {
+    if (this.timerSubscription) {
+      return;
+    }
+
+    const maxDuration = 60; // 30 seconds max
+    this.remainingTime = Math.min(this.remainingTime, maxDuration);
+
+    this.timerSubscription = interval(1000)
+      .pipe(takeWhile(() => this.remainingTime > 0))
+      .subscribe({
+        next: () => this.remainingTime--,
+        complete: () => (this.timerSubscription = null),
+      });
+  }
+
+  ngOnDestroy() {
+    // Unsubscribe from the timer when the component is destroyed
+    if (this.timerSubscription) {
+      this.timerSubscription.unsubscribe();
+    }
+  }
+  isOk = true;
+  VerifyOTP() {
+    if (this.otp.join('').length < 4) {
+      this.toastr.error('Please Enter OTP...', '');
+      return;
+    }
+    // this.isverifyOTP = true; // Set true before API call
+    // console.log(this.isverifyOTP,'this.isverifyOTP')
+    const otp1 = Number(this.otp.join(''));
+    this.isverifyOTP = true; // Set true before API call
+    // this.loadData();
+    // console.log(this.whichOTP)
+    // if (this.whichOTP == 'login') {
+    // let CLOUD_ID = this.cookie.get('CLOUD_ID');
+    //  this.USER_NAME = this.data.CUSTOMER_NAME
+    // this.USER_NAME = sessionStorage.getItem('USER_NAME');
+    // console.log(this.USER_NAME, ' this.USER_NAME');
+    this.api
+      .verifyEmailOTP(
+        otp1,
+        this.addressForm.EMAIL_ID // this.USER_ID,
+        // this.USER_NAME,
+        // 1,
+        // CLOUD_ID
+      )
+      .subscribe({
+        next: (successCode: any) => {
+          // console.log('successCode', successCode.body.code);
+          // console.log(this.isverifyOTP, 'this.isverifyOTP');
+          if (successCode.body.code === 200) {
+            // console.log('wertyuiko');
+            //  this.USER_NAME = this.data.CUSTOMER_NAME
+            // this.isverifyOTP = false; // Set true before API call
+            // console.log(this.isverifyOTP, 'this.isverifyOTP');
+            this.toastr.success('OTP verified successfully...', '');
+            // this.modalService.dismissAll();
+            this.isOk = false;
+            // this.createCustomer();
+            this.visible = false;
+            this.verificationStatus = 'verified';
+            // this.openRegister = false;
+            // this.openVerify = false;
+
+            this.otp = ['', '', '', '', '', ''];
+            // this.isverifyOTP = false;
+            this.statusCode = '';
+          } else {
+            this.toastr.error('Invalid OTP');
+          }
+          // console.log('successCode.body.code', successCode.body.code);
+          this.isverifyOTP = false;
+          // this.stopLoader();
+        },
+        error: (errorResponse) => {
+          // console.error('verifyOTP API failed:', errorResponse);s
+          if (errorResponse.error.code === 300) {
+            this.toastr.error(
+              'Invalid request. Please check the entered details.'
+            );
+            // console.log('xxx');
+            this.statusCode = 'invalid OTP';
+            // this.stopLoader();
+          } else {
+            // console.log('sss');
+            this.toastr.error('Something went wrong. Please try again.');
+            this.statusCode = '';
+            // this.stopLoader();
+          }
+          // console.log('kkkkk');
+          this.isverifyOTP = false;
+          // this.stopLoader();
+        },
+      });
+    // }
+  }
+
+  today = new Date();
+  showReceiptModal = false;
+
+  closeReceiptModal() {
+    this.showReceiptModal = false;
+    this.addressDrawerOpen = false;
+    this.visibleChange.emit(false);
+    this.orderPlaced.emit(true);
+    this.cartService.cartItems = [];
+    this.cartService.cartUpdated.next(this.cartService.cartItems);
+    this.cartService.updateCartCount();
+  }
+  // Add this method to handle modal closing
+  closeModal(): void {
+    this.showAddressForm = false;
+
+    // Optional: Reset form state when closing
+
+    // Optional: Add any other cleanup logic here
+    // this.resetForm(); // If you have a reset method
+  }
+
+//     downloadInvoice() {
+//   // console.log(this.cartDetails.cartDetails)
+//   const fileUrl = this.api.retriveimgUrl + 'Invoice/' + this.cartDetails.cartDetails[0]['INVOICE_NUMBER'] + '.pdf';
+//   const link = document.createElement('a');
+//   link.href = fileUrl;
+//   link.target='_blank'
+//   link.download = 'invoice.pdf';
+//   link.click();
+// }
+// async downloadInvoice() {
+//   const invoiceNumber = this.cartDetails.cartDetails[0]['INVOICE_NUMBER'];
+//     const fileUrl = this.api.retriveimgUrl + 'Invoice/' + this.cartDetails.cartDetails[0]['INVOICE_NUMBER'] + '.pdf';
+
+//   try {
+//     const response = await fetch(fileUrl, { method: 'GET', mode: 'no-cors' });
+//     if (response.ok) {
+//       const link = document.createElement('a');
+//       link.href = fileUrl;
+//       link.target = '_blank';
+//       link.download = 'invoice.pdf';
+//       link.click();
+//     } else {
+//       console.error('Invoice not ready yet');
+//     }
+//   } catch (error) {
+//     console.error('Error checking invoice:', error);
+//   }
+// }
+isDownloading = false;
+
+downloadInvoice() {
+  this.isDownloading = true;
+
+  const fileUrl =
+    this.api.retriveimgUrl +
+    'Invoice/' +
+    this.cartDetails.cartDetails[0]['INVOICE_NUMBER'] +
+    '.pdf';
+
+  // Simulating delay (e.g. 5 seconds for invoice generation)
+  setTimeout(() => {
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.target = '_blank';
+    link.download = 'invoice.pdf';
+    link.click();
+    this.isDownloading = false; // stop loader
+  }, 5000);
+}
+
+
+
+orderStatus: 'A' | 'BP' | 'SP' | 'D' | 'DD' | 'DC' = 'A'; // Example initial status 'A' (Pending)
+
+  // Mapping the statuses to a numerical step for progress bar calculation
+  private statusMap: { [key: string]: number } = {
+    A: 1, // Pending
+    BP: 2, // Preparing
+    SP: 2, // Packaging (Treated as the same step as Preparing for progress display)
+    D: 3, // Dispatching
+    DD: 4, // Delivered
+    DC: 0, // Canceled - special case
+  };
+
+  /**
+   * Checks if a specific step is completed based on the current order status.
+   * @param currentStatus The current order status code.
+   * @param stepCode The status code for the step being checked (e.g., 'BP' for Preparing).
+   */
+  isStatusComplete(currentStatus: string, stepCode: string): boolean {
+    if (currentStatus === 'DD') return true; // Delivered means everything before it is complete
+
+    const currentStep = this.statusMap[currentStatus] || 0;
+    const checkStep = this.statusMap[stepCode] || 0;
+
+    // A step is complete if the current status is greater than the step's numerical value
+    // or if the current status is one of the later stages
+    return currentStep > checkStep;
+  }
+
+  /**
+   * Checks if a specific step is pending (not yet active or complete).
+   * Used to apply the gray color.
+   * @param currentStatus The current order status code.
+   * @param stepCode The status code for the step being checked (e.g., 'BP' for Preparing).
+   */
+  isStatusPending(currentStatus: string, stepCode: string): boolean {
+    const currentStep = this.statusMap[currentStatus] || 0;
+    const checkStep = this.statusMap[stepCode] || 0;
+
+    // A step is pending if the current status's step number is less than the check step number
+    return currentStep < checkStep;
+  }
+
+  /**
+   * Calculates the width of the green progress bar.
+   * @param currentStatus The current order status code.
+   * @returns A string for the CSS width property (e.g., '66%').
+   */
+  getProgressWidth(currentStatus: string): string {
+    const totalSteps = 4; // Total number of main steps (Placed, Preparing, Shipped, Delivered)
+    const currentStep = this.statusMap[currentStatus] || 0;
+
+    if (currentStatus === 'DC') return '0%'; // Canceled
+    if (currentStep === totalSteps) return '100%'; // Delivered
+
+    // We have 3 gaps between 4 steps. Percentage steps are 0, 33.33, 66.66, 100
+    const percentage = ((currentStep - 1) / (totalSteps - 1)) * 100;
+    return `${percentage.toFixed(2)}%`;
+  }
 }

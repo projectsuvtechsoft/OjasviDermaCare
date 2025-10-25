@@ -1,0 +1,1689 @@
+/* -----------------------------------------------------------------
+   1. DRAWER OVERLAY AND POSITIONING
+   ----------------------------------------------------------------- */
+
+   body{
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+}
+.drawer-overlay {
+  /* Hides the overlay by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  visibility: hidden;
+  opacity: 0;
+  /* Smooth transition for fading in/out */
+  transition: visibility 0s, opacity 0.3s linear;
+}
+
+.drawer-overlay.open {
+  visibility: visible;
+  opacity: 1;
+}
+
+.drawer-content {
+  /* The panel itself - slides in from the right */
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  /* Ensures it behaves as a full-page drawer/modal */
+  max-width: 100%;
+  height: 100%;
+  background-color: white;
+  /* Initially push the panel completely out to the right */
+  transform: translateX(100%);
+  transition: transform 0.3s ease-out;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* Allows scrolling if content is long */
+}
+
+.drawer-overlay.open .drawer-content {
+  /* Slide the panel into view */
+  transform: translateX(0);
+}
+
+/* -----------------------------------------------------------------
+   2. NAVBAR & LOGO STYLING (Logo Left, Progress Bar Centered)
+   ----------------------------------------------------------------- */
+.navbar {
+  display: flex;
+  /* Pushes logo-section to left and progress-bar to center/right */
+  justify-content: space-between;
+  align-items: center; /* Vertically centers items in the header */
+  padding: 15px 30px;
+  border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 10;
+  flex-wrap: nowrap; /* Prevents wrapping on smaller screens */
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0; /* Ensures the logo section doesn't shrink */
+  padding-left: 20px;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 30px;
+  font-weight: 300;
+  color: #333;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  margin-right: 15px;
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logo-image-placeholder {
+  width: 40px;
+  height: 40px;
+  background-color: transparent;
+}
+
+.logo-text-wrapper {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  margin-left: 8px;
+}
+
+.logo-text-oj {
+  font-size: 18px;
+  font-weight: bold;
+  color: #3e6b4b; /* Dark Green */
+}
+
+.logo-text-glow {
+  font-size: 12px;
+  color: #ffc200; /* Orange/Yellow */
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+}
+
+/* -----------------------------------------------------------------
+   3. PROGRESS BAR (HORIZONTAL & CENTERED)
+   ----------------------------------------------------------------- */
+/* ... Section 1 & 2 remain the same ... */
+
+/* -----------------------------------------------------------------
+   3. PROGRESS BAR (HORIZONTAL & CENTERED)
+   ----------------------------------------------------------------- */
+.progress-bar {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.progress-step {
+  color: #aaa; /* Default gray for all steps */
+  padding: 0;
+  cursor: pointer; /* Indicates the step is clickable */
+}
+
+/* ------------------ NEW & UPDATED CLASSES ------------------ */
+
+/* 1. COMPLETED STEP (CART) - Now Green */
+.completed-step {
+  color: #3e6b4b; /* Green color for completed steps */
+  font-weight: bold;
+}
+
+/* 2. ACTIVE STEP (ADDRESS) - Remains Green */
+.active-step {
+  color: #3e6b4b;
+  font-weight: bold;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+}
+
+/* 3. INACTIVE STEP (PAYMENT) - Remains Gray */
+.inactive-step {
+  color: #aaa;
+  font-weight: 500;
+  cursor: default; /* Optional: Make future steps look unclickable */
+}
+
+/* SEPARATORS */
+.progress-separator {
+  display: flex;
+  font-weight: normal;
+  line-height: 1;
+  margin: 0 5px;
+}
+
+/* Separator after a COMPLETED step (Should be Green/Darker) */
+.completed-separator {
+  color: #3e6b4b; /* Darker dash for completed segment */
+}
+
+/* Separator after the ACTIVE step (Should be Gray) */
+.inactive-separator {
+  color: #ccc;
+}
+
+/* ... Section 4 remains the same ... */
+
+/* -----------------------------------------------------------------
+   4. MAIN CONTENT & MAP PIN STYLING
+   ----------------------------------------------------------------- */
+.content-container {
+  position: relative;
+  left: 0;
+  max-width: 1000px;
+  // padding: 10px;
+  padding: 5px;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: bold;
+  //   margin-bottom: 50px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+}
+
+.address-prompt-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  //   padding: 30px 0;
+}
+
+/* Large Map Pin Icon Styling */
+.map-icon-placeholder.large-pin {
+  //   width: 150px;
+  //   height: 150px;
+  margin-bottom: 20px;
+}
+
+.map-icon-large {
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+}
+
+.prompt-heading {
+  font-size: 24px;
+  font-weight: 600;
+  color: #9e9e9e;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
+
+.prompt-subtext {
+  font-size: 16px;
+  color: #9e9e9e;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.add-new-button {
+  background-color: #3e6b4b;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+.add-new-button:hover {
+  background-color: #639151;
+}
+@media (max-width: 767px) {
+  .navbar {
+    /* Align logo and progress bar to the top edges */
+    align-items: flex-start;
+    padding: 10px 20px; /* Smaller padding */
+  }
+
+  /* Logo Image Sizing for Mobile */
+  .logo-section img {
+    height: 35px; /* Smaller image on mobile */
+  }
+
+  /* Hide descriptive logo text on mobile to save space */
+  // .logo-text-container {
+  //     display: none !important;
+  // }
+
+  /* Vertical Progress Bar on the Right */
+  .progress-bar {
+    flex-direction: column; /* Vertical */
+    flex-grow: 0; /* Prevents it from taking up center space */
+    justify-content: flex-start;
+    align-items: flex-end; /* Right-aligns the text */
+
+    /* Add some margin to the left of the progress bar if needed */
+    margin-left: 10px;
+  }
+
+  /* Hide horizontal separators on mobile */
+  .progress-separator {
+    display: none;
+  }
+
+  /* Adjust vertical spacing for steps */
+  .progress-step {
+    padding: 4px 0;
+  }
+}
+
+/* -----------------------------------------------------------------
+   SECTION 1: HEADER & LAYOUT ADJUSTMENTS
+   ----------------------------------------------------------------- */
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Override the default section-title margin if needed */
+.list-header .section-title {
+  margin-bottom: 0;
+}
+
+.add-new-address-btn {
+  background: none;
+  border: none;
+  color: #3e6b4b; /* Green color */
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+}
+
+.add-new-address-btn .plus-icon {
+  font-size: 20px;
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+/* -----------------------------------------------------------------
+   SECTION 2: ADDRESS CARDS
+   ----------------------------------------------------------------- */
+
+.address-card {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  margin-bottom: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+/* Styling for the selected card */
+.selected-card {
+  border-color: #3e6b4b; /* Green border for active selection */
+  background-color: #f7fff7; /* Very light green background */
+}
+
+.card-left {
+  padding-right: 15px;
+  padding-top: 3px;
+}
+
+.card-middle {
+  flex-grow: 1;
+}
+
+.card-right {
+  display: flex;
+  gap: 10px;
+}
+
+.address-type {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.default-tag {
+  font-size: 12px;
+  color: #3e6b4b;
+  font-weight: normal;
+  margin-left: 8px;
+}
+
+.contact-details {
+  font-size: 14px;
+  color: #555;
+  margin-top: 5px;
+}
+
+.location-row,
+.phone-row {
+  display: flex;
+  align-items: center;
+  margin-top: 3px;
+}
+
+/* Icon Placeholders (Use Font Icons like Font Awesome or Remixicon in a real app) */
+.location-icon::before {
+  margin-right: 5px;
+  font-size: 16px;
+  opacity: 0.6;
+}
+.phone-icon::before {
+  margin-right: 5px;
+  font-size: 14px;
+  opacity: 0.6;
+}
+.edit-icon::before {
+  opacity: 0.5;
+}
+.delete-icon::before {
+  opacity: 0.5;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  line-height: 1;
+}
+
+/* --- Custom Radio Button Styling --- */
+/* Hide the default radio button */
+.radio-button-container input[type="radio"] {
+  display: none;
+}
+
+/* Style the custom indicator (the outer circle) */
+.custom-radio {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  position: relative;
+}
+
+/* Style the inner dot for the unchecked state */
+.custom-radio::after {
+  content: "";
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.1s ease;
+}
+
+/* Style the inner dot for the CHECKED state */
+.radio-button-container input[type="radio"]:checked + .custom-radio {
+  border-color: #558b2f; /* Green border when checked */
+}
+
+.radio-button-container input[type="radio"]:checked + .custom-radio::after {
+  background: #558b2f; /* Green inner dot when checked */
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* -----------------------------------------------------------------
+   SECTION 3: STICKY FOOTER BUTTON
+   ----------------------------------------------------------------- */
+.sticky-footer {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100vw; /* Ensures it spans full screen width */
+  padding: 20px 0;
+  background-color: white;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: center; /* Centers the content horizontally */
+  align-items: center; /* Centers vertically (optional) */
+  text-align: center;
+  z-index: 5;
+}
+
+.continue-button {
+  background-color: #3e6b4b; /* Green button color */
+  color: white;
+  border: none;
+  padding: 15px 50px;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%; /* Full width within the padding of .sticky-footer */
+  max-width: 400px; /* Optional: Constrain max width for design */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+.continue-button:hover {
+  background-color: #639151;
+}
+
+/* -----------------------------------------------------------------
+   6. ADDRESS ENTRY FORM STYLING (Centered Card)
+   ----------------------------------------------------------------- */
+
+.address-form-view {
+  /* Ensures the view fills the container and allows for vertical centering/max-width */
+  padding-bottom: 50px;
+}
+
+/* New Wrapper to Center the Form */
+.form-centered-wrapper {
+  /* Max width to create the card look */
+  max-width: 700px;
+  /* Centers the block element horizontally */
+  margin: 0 auto;
+  /* Adds padding inside the drawer, above the content */
+  // padding: 30px;
+}
+
+/* Custom Back Link Header (Mimics "Add New Address" on top left) */
+.section-title.back-link {
+  cursor: pointer;
+  text-decoration: none;
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.section-title.back-link .form-title {
+  font-weight: bold;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  margin-left: 5px;
+  font-size: 14px;
+  color: #333;
+}
+
+/* Form Sections and Headings (Container Card Look) */
+.address-form {
+  /* Main container for the form, creating the white 'card' appearance */
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.address-form h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+  color: #333;
+}
+
+/* Section dividers/spacing */
+.contact-details-section,
+.address-details-section,
+.address-type-section {
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="tel"],
+.form-group select {
+  width: 100%;
+  padding: 4px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 15px;
+  box-sizing: border-box;
+  color: #333;
+}
+
+/* Styles for the Country/State row */
+.row-group {
+  display: flex;
+  gap: 20px;
+}
+
+.form-control-half {
+  flex: 1;
+}
+
+/* --- Radio and Checkbox Styling --- */
+.radio-group {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 15px;
+}
+
+.radio-label,
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+
+.radio-label input[type="radio"],
+.checkbox-label input[type="checkbox"] {
+  margin-right: 8px;
+  accent-color: #3e6b4b;
+  transform: scale(1.1);
+}
+
+/* Save Button (Matches the design's full-width green button) */
+.save-button {
+  background-color: #3e6b4b;
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%; /* Important: Makes it span the width of the centered form */
+  margin-top: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+.save-button:hover {
+  background-color: #639151;
+}
+
+/* =================================================================
+   LOADER & DISABLED STYLES
+   ================================================================= */
+
+/* Global button disable style for visual feedback */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  /* Optional: Disable pointer events completely for safety */
+  pointer-events: none;
+}
+
+/* Spinner Styles (Base for large buttons) */
+.button-loader {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+/* Spinner Styles (For smaller action buttons like Edit/Delete) */
+.loader-small {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(0, 0, 0, 0.2); /* Use dark border for light background */
+  border-radius: 50%;
+  border-top-color: #3e6b4b; /* Use theme color for the spin part */
+  animation: spin 1s ease-in-out infinite;
+  vertical-align: middle;
+  /* This centers the small loader icon in the button space */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Helper text for large buttons, to show status while loading */
+.button-loader-text {
+  margin-right: 5px;
+}
+
+/* Keyframe for the spinning animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Specific button overrides for loading state visibility */
+
+/* Ensure the action buttons can properly contain the loader-small */
+.action-btn {
+  position: relative; /* Make sure loader-small is positioned relative to the button */
+  padding: 5px; /* Add padding to accommodate the loader if needed */
+  width: 24px; /* Give a fixed width/height for consistent centering */
+  height: 24px;
+}
+
+/* When the action button is disabled (loading), hide the default content */
+.action-btn:disabled i {
+  display: none;
+}
+
+/* When a large button is disabled/loading, prevent text wrapping and align loader */
+// .add-new-button, .continue-button, .save-button {
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+// }
+
+/* =================================================================
+   CHECKOUT PAGE LAYOUT (General Containers)
+   ================================================================= */
+
+// .checkout-page-container {
+//     display: flex;
+//     max-width: 1200px;
+//     margin: 30px auto;
+//     padding: 0 20px;
+//     gap: 40px;
+// }
+
+// .order-details-container {
+//     flex: 3; /* Takes up a larger portion of the space */
+// }
+
+// .sidebar-container {
+//     flex: 1.5; /* Takes up a smaller portion of the space */
+//     border: 1px solid #e0e0e0;
+//     border-radius: 8px;
+//     padding: 20px;
+//     height: fit-content; /* Ensure the sidebar box doesn't stretch */
+// }
+
+// .section-heading {
+//     font-size: 1.2rem;
+//     font-weight: 600;
+//     color: #333;
+//     padding-bottom: 15px;
+//     margin-bottom: 15px;
+//     border-bottom: 1px solid #ddd;
+// }
+
+/* =================================================================
+   ORDER DETAILS (Table)
+   ================================================================= */
+
+// .summary-table {
+//     width: 100%;
+//     margin-bottom: 30px;
+//     font-size: 0.95rem;
+// }
+
+// .table-header, .table-row {
+//     display: flex;
+//     padding: 12px 0;
+//     border-bottom: 1px solid #f0f0f0;
+//     align-items: center;
+// }
+
+// .table-header {
+//     font-weight: 500;
+//     color: #888;
+//     text-transform: uppercase;
+//     font-size: 0.85rem;
+//     border-bottom: 1px solid #ccc;
+// }
+
+// .col-item { flex: 4; }
+// .col-price { flex: 1.5; text-align: center; }
+// .col-quantity { flex: 1.5; text-align: center; }
+// .col-total { flex: 2; text-align: right; font-weight: 500; }
+
+// .product-info {
+//     display: flex;
+//     align-items: center;
+//     gap: 15px;
+// }
+
+// .product-image {
+//     width: 60px;
+//     height: 60px;
+//     object-fit: cover;
+//     border-radius: 4px;
+//     border: 1px solid #eee;
+// }
+
+// .product-details {
+//     display: flex;
+//     flex-direction: column;
+//     text-align: left;
+// }
+
+// .product-name {
+//     font-weight: 600;
+//     color: #333;
+// }
+
+// .product-type {
+//     font-size: 0.85rem;
+//     color: #777;
+//     margin-top: 2px;
+// }
+
+// .total-price-value {
+//     color: #000; /* Black for final total price */
+// }
+
+// /* =================================================================
+//    FINANCIAL SUMMARY & BUTTON
+//    ================================================================= */
+
+// .financial-summary {
+//     width: 450px; /* Aligns with the width in the image */
+//     margin-left: auto;
+//     font-size: 1rem;
+// }
+
+// .summary-row {
+//     display: flex;
+//     justify-content: space-between;
+//     padding: 8px 0;
+//     color: #555;
+// }
+
+// .total-row {
+//     font-weight: 700;
+//     font-size: 1.1rem;
+//     padding-top: 15px;
+//     border-top: 1px solid #ccc;
+//     margin-top: 10px;
+//     color: #333;
+// }
+
+// .proceed-to-payment-btn {
+//     width: 100%;
+//     padding: 15px 20px;
+//     margin-top: 25px;
+//     background-color: #3E6B4B; /* The shade of green in the image */
+//     color: white;
+//     font-size: 1rem;
+//     font-weight: 500;
+//     border: none;
+//     border-radius: 4px;
+//     cursor: pointer;
+//     transition: background-color 0.2s;
+//     text-transform: uppercase;
+// }
+
+// .proceed-to-payment-btn:hover {
+//     background-color: #61906a;
+// }
+
+/* =================================================================
+   SIDEBAR (Customer & Address)
+   ================================================================= */
+
+.customer-header {
+  display: flex;
+  align-items: center;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.profile-icon {
+  font-size: 1.5rem;
+  background-color: #e6e6e6;
+  color: #666;
+  border-radius: 50%;
+  padding: 8px;
+  line-height: 1;
+  margin-right: 15px;
+}
+
+.name-and-arrow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.customer-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.arrow-icon {
+  font-weight: bold;
+  color: #888;
+}
+
+.info-section {
+  margin-bottom: 25px;
+}
+
+.info-title {
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+
+.info-line,
+.address-line {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+.info-line i {
+  font-size: 1rem;
+  margin-right: 10px;
+  color: #777;
+  /* Using emojis as placeholders for icons (📧, 📞). Replace with font icons (like Font Awesome) if available. */
+}
+
+.delivery-address-section .address-line {
+  padding-left: 20px; /* Indent address lines */
+  display: block; /* Remove flex display */
+}
+
+/* =================================================================
+   RESPONSIVENESS (Optional but Recommended)
+   ================================================================= */
+
+@media (max-width: 900px) {
+  .checkout-page-container {
+    flex-direction: column;
+    gap: 20px;
+    padding: 0 10px;
+  }
+  .sidebar-container {
+    order: -1; /* Move sidebar above the order details on mobile */
+    width: 100%;
+  }
+  .financial-summary {
+    width: 100%;
+    margin-left: 0;
+    padding: 0 10px;
+  }
+  .col-price,
+  .col-quantity,
+  .col-total {
+    flex: 1;
+    text-align: right;
+  }
+  .table-row {
+    flex-wrap: wrap;
+  }
+  .col-item {
+    flex-basis: 100%; /* Product info takes full width */
+    margin-bottom: 5px;
+  }
+  .col-price,
+  .col-quantity,
+  .col-total {
+    /* Align price columns horizontally below product info */
+    flex-basis: 33%;
+    padding-top: 0;
+  }
+  .table-header {
+    display: none; /* Hide header on small screens */
+  }
+  /* =================================================================
+   PROGRESS BAR STYLES
+   ================================================================= */
+  .checkout-progress-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Align right as seen in the images */
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 10px 0;
+  }
+
+  .step {
+    color: #999; /* Default inactive color */
+    margin: 0 5px;
+    transition: color 0.3s;
+  }
+
+  .separator {
+    color: #999; /* Default inactive color */
+    margin: 0 5px;
+    transition: color 0.3s;
+  }
+
+  /* 🟢 ACTIVE STATE STYLES 🟢 */
+
+  .step.active-step {
+    color: #3e6b4b; /* Your brand green */
+    font-weight: 700;
+  }
+
+  .separator.active-separator {
+    color: #3e6b4b; /* Your brand green */
+  }
+}
+
+/* ==================================== */
+/* MOBILE STYLES (Image 2)     */
+/* ==================================== */
+
+.checkout-page-container {
+  max-width: 100%;
+}
+
+/* Mobile Header/Nav (Top of Image 2) */
+.mobile-header-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  /* Basic styling to match the header in Image 2 */
+}
+
+.progress-bar {
+  display: flex;
+  font-size: 0.8em;
+  color: #aaa;
+}
+.progress-bar .active {
+  color: #38761d; /* Green for active step */
+  font-weight: bold;
+}
+.back-arrow {
+  font-size: 1.1em;
+  font-weight: 500;
+}
+.section-heading-desktop,
+.mobile-header-nav {
+  display: block; /* Show on mobile */
+}
+
+/* Mobile Customer Details (Under Nav in Image 2) */
+.customer-details-mobile {
+  padding: 10px 15px;
+  border-bottom: 8px solid #f5f5f5; /* Separator color */
+}
+
+.customer-header-mobile {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.customer-header-mobile .customer-info {
+  flex-grow: 1;
+  margin-left: 15px;
+}
+
+.customer-header-mobile .customer-name {
+  font-weight: bold;
+  display: block;
+}
+
+.customer-header-mobile .customer-email {
+  color: gray;
+  font-size: 0.9em;
+}
+
+.customer-header-mobile .customer-address-summary {
+  font-size: 0.8em;
+  margin-top: 5px;
+  color: #555;
+}
+
+.arrow-icon {
+  font-weight: bold;
+  color: #777;
+}
+
+/* Hide Desktop Details by default */
+.customer-details-desktop {
+  display: none;
+}
+
+.order-summary-layout {
+  display: flex;
+  flex-direction: column; /* Stacked columns for mobile */
+  padding: 0 15px 20px 15px;
+  gap: 0;
+}
+
+/* Mobile Order Table Layout */
+.summary-table {
+  border-bottom: 8px solid #f5f5f5;
+  padding-bottom: 10px;
+}
+
+.table-header {
+  display: none; /* Hide header row on mobile (Image 2) */
+}
+
+.table-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.product-info {
+  flex-basis: 100%; /* Product info takes full width */
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.product-image {
+  width: 60px;
+  height: 60px;
+  margin-right: 15px;
+  border-radius: 4px;
+}
+
+.product-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.product-name {
+  font-weight: 500;
+}
+
+.product-type {
+  font-size: 0.9em;
+  color: #777;
+}
+
+.col-price,
+.col-quantity,
+.col-total {
+  flex: 1;
+  font-size: 1.1em;
+  padding: 0 5px;
+  text-align: right;
+}
+
+/* Re-position columns for mobile: Price/Quantity/Total on same line */
+.col-price {
+  text-align: left;
+  font-weight: bold;
+  color: #38761d;
+}
+
+.col-quantity {
+  flex: 0 0 40px; /* fixed width for quantity box */
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 2px;
+  font-size: 1em;
+  color: #555;
+  order: 3; /* Move quantity to the end of its row */
+}
+
+.col-total {
+  display: none; /* Total price per item is hidden on mobile */
+}
+
+/* Financial Summary (Image 2) */
+.financial-summary {
+  padding: 15px 0;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+/* Hide Tax row on mobile (Image 2) */
+.tax-row {
+  display: none;
+}
+
+.shipping-value {
+  color: #38761d; /* Green 'Free' for mobile */
+  font-weight: bold;
+}
+
+.total-row {
+  border-top: 1px solid #eee;
+  margin-top: 10px;
+  padding-top: 15px !important;
+  font-size: 1.1em;
+}
+
+.final-total {
+  color: #38761d;
+  font-weight: bold;
+}
+
+.proceed-to-payment-btn {
+  width: 100%;
+  padding: 15px;
+  background-color: #5d9260; /* Match button color */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+/* ==================================== */
+/* DESKTOP STYLES (Image 1)    */
+/* ==================================== */
+
+@media (min-width: 992px) {
+  .checkout-page-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 0;
+  }
+
+  /* Hide Mobile elements */
+  .mobile-header-nav,
+  .customer-details-mobile,
+  .summary-table {
+    display: none;
+  }
+
+  /* Desktop Layout */
+  .order-summary-layout {
+    flex-direction: row; /* Side-by-side layout */
+    gap: 30px;
+    padding: 20px;
+  }
+
+  .order-details-container {
+    flex: 2; /* Main content takes more space */
+  }
+
+  /* Show Desktop Details */
+  .customer-details-desktop {
+    display: block;
+    flex: 1; /* Sidebar takes less space */
+    padding: 25px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    min-width: 300px;
+  }
+
+  .section-heading-desktop {
+    display: none; /* Hide the generic H2 in desktop view since the progress bar acts as the title */
+  }
+
+  /* Desktop Order Table Layout */
+  .summary-table {
+    display: block; /* Show the entire table structure on desktop */
+    border: none;
+    padding: 0;
+    margin-top: 20px;
+  }
+
+  .table-header {
+    display: flex; /* Show header row on desktop */
+    color: #777;
+    font-weight: 500;
+    font-size: 0.9em;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+  }
+
+  .table-row {
+    flex-wrap: nowrap; /* Keep items in a single row */
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+  }
+
+  .col-item {
+    flex: 3;
+    flex-basis: auto;
+  }
+
+  .col-price,
+  .col-quantity,
+  .col-total {
+    flex: 1;
+    text-align: right;
+    font-size: 1em;
+    padding: 0;
+    order: 0;
+    font-weight: normal;
+  }
+
+  .col-price {
+    text-align: center;
+    color: #000;
+  }
+
+  .col-quantity {
+    text-align: center;
+    border: none;
+    padding: 0;
+  }
+
+  .col-total {
+    display: block; /* Show total per item on desktop */
+    font-weight: bold;
+    color: #000;
+  }
+
+  /* Desktop Financial Summary */
+  .financial-summary-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Align summary to the right */
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+    margin-top: 20px;
+  }
+
+  .financial-summary {
+    width: 350px; /* Fixed width for the summary box */
+    padding: 0;
+  }
+
+  /* Show Tax row on desktop (Image 1) */
+  .tax-row {
+    display: flex;
+  }
+
+  #shipping-row span:last-child {
+    font-weight: normal;
+    color: #000;
+  }
+
+  .total-row {
+    border-top: none;
+    margin-top: 0;
+    padding-top: 8px !important;
+  }
+
+  .final-total {
+    color: #000;
+  }
+
+  .proceed-to-payment-btn {
+    width: 350px;
+  }
+
+  /* Desktop Sidebar Styling */
+  .customer-header-desktop {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .profile-icon-large {
+    font-size: 2em;
+    margin-right: 15px;
+    /* Circular background style from Image 1 */
+    background-color: #e0e0e0;
+    border-radius: 50%;
+    padding: 5px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .customer-header-desktop .customer-name {
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+
+  .info-section {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 10px;
+  }
+
+  .info-section:last-child {
+    border-bottom: none;
+  }
+
+  .info-title {
+    font-weight: bold;
+    font-size: 1em;
+    margin-bottom: 10px;
+  }
+
+  .info-line,
+  .address-line {
+    display: flex;
+    align-items: center;
+    font-size: 0.95em;
+    color: #555;
+    margin-bottom: 5px;
+  }
+
+  .info-line i {
+    margin-right: 10px;
+    color: #5d9260;
+  }
+}
+/* Container for the input and button to align them horizontally */
+.email-control-group {
+  display: flex;
+  gap: 10px; /* Space between input and button */
+}
+
+.email-control-group input {
+  flex-grow: 1; /* Input takes up available space */
+}
+
+.verify-email-btn {
+  padding: 8px 15px;
+  background-color: #4caf50; /* Green color */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  white-space: nowrap; /* Prevents button text from wrapping */
+}
+
+.verify-email-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Styles for the verification messages */
+.verification-message {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.85em;
+}
+
+.verification-message.pending {
+  color: orange;
+}
+
+.verification-message.verified {
+  color: #4caf50; /* Green */
+  font-weight: bold;
+}
+
+.verification-message.failed {
+  color: red;
+}
+/* ==================================== */
+/* DEFAULT (MOBILE) STYLES */
+/* Input and button stack vertically. */
+/* ==================================== */
+.email-control-group {
+  display: flex;
+  flex-direction: column; /* Stacks items vertically on small screens */
+  gap: 8px; /* Space between input and button */
+}
+
+.email-control-group input {
+  /* Input takes full width on mobile */
+  width: 100%;
+  box-sizing: border-box; /* Include padding and border in the element's total width */
+}
+
+.verify-email-btn {
+  /* Button takes full width on mobile, simplifying the click target */
+  width: 100%;
+  padding: 10px 15px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.verify-email-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* ==================================== */
+/* DESKTOP STYLES (Screen width >= 600px) */
+/* Input and button sit side-by-side. */
+/* ==================================== */
+@media (min-width: 600px) {
+  .email-control-group {
+    flex-direction: row; /* Aligns items horizontally */
+    align-items: center;
+    gap: 10px;
+  }
+
+  .email-control-group input {
+    /* Input takes most of the available space */
+    flex-grow: 1;
+  }
+
+  .verify-email-btn {
+    /* Button shrinks to fit content (but has padding) and maintains fixed height */
+    width: auto;
+    flex-shrink: 0; /* Prevents the button from shrinking too much */
+    padding: 8px 15px; /* Adjust padding back to a smaller size for desktop look */
+    height: 38px; /* Match input height roughly for better vertical alignment */
+  }
+}
+/* --- Modal Structure --- */
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.modal-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+  width: 90%;
+  max-width: 400px; /* Standard modal width */
+}
+
+.modal-header {
+  display: flex;
+  justify-content: flex-end;
+  //   margin-bottom: 1px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #888;
+}
+
+/* --- OTP Content Styling --- */
+
+.otp-content {
+  text-align: center;
+}
+
+.otp-content h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+}
+
+.verification-text {
+  color: #636363;
+  margin-bottom: 20px;
+}
+
+.phone-number {
+  font-weight: bold;
+  color: #333;
+}
+
+/* --- OTP Input Group --- */
+
+.otp-input-group {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.otp-input {
+  width: 45px;
+  height: 45px;
+  text-align: center;
+  font-size: 1.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  // Custom focus ring color
+  &:focus {
+    border-color: #5a8f69;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(90, 143, 105, 0.3);
+  }
+}
+
+/* --- Timer and Resend --- */
+
+.timer-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.timer-display {
+  color: #5a8f69;
+  font-weight: bold;
+}
+
+.resend-text {
+  color: #636363;
+  margin: 0;
+}
+
+.resend-text a {
+  text-decoration: none;
+  font-weight: bold;
+
+  &.disabled {
+    cursor: default !important;
+    color: #636363 !important;
+  }
+}
+
+/* --- Verify Button --- */
+
+.verify-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #5a8f69;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover:not([disabled]) {
+    background-color: #4a7755;
+  }
+
+  &[disabled] {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+}
+
+/* Add a basic spinner style if you don't use Bootstrap/Angular Material */
+.spinner-border {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  vertical-align: text-bottom;
+  border: 0.1em solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spinner-border 0.75s linear infinite;
+}
+
+@keyframes spinner-border {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.step-container {
+  @apply w-10 h-10 rounded-full border-2 flex items-center justify-center transition-colors;
+}
+.step-label {
+  @apply text-sm font-semibold;
+}
+.step-separator {
+  @apply flex-1 h-0.5 bg-gray-300;
+}
+.step-incomplete {
+  @apply bg-white border-[#5a8f69] text-[#5a8f69];
+}
+.step-active {
+  @apply bg-[#5a8f69] border-[#5a8f69] text-white;
+}
+.step-completed {
+  @apply bg-[#5a8f69] border-[#5a8f69] text-white;
+}
+

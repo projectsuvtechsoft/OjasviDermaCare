@@ -1,149 +1,156 @@
-<!-- Drawer -->
-
 <div
-  class="fixed top-0 right-0 h-full w-85 bg-white shadow-lg z-50 transform transition-transform duration-300"
-  [class.translate-x-0]="visible"
-  [class.translate-x-full]="!visible"
+  class="bg-gray-50 w-full max-w-5xl mx-auto flex flex-col rounded-lg shadow-lg overflow-hidden my-6"
+  style="max-height: calc(100vh - 8rem)"
+  (click)="$event.stopPropagation()"
 >
+  <!-- Header -->
+  <div
+    class="border-b border-gray-200 px-4 py-3 flex justify-between items-center flex-shrink-0"
+  >
+    <h2 class="text-lg font-semibold text-gray-900">Shopping Cart</h2>
+    <!-- <button
+      (click)="close()"
+      class="text-gray-500 hover:text-gray-700 transition"
+    >
+      <i class="ri-close-line ri-lg"></i>
+    </button> -->
+  </div>
+
+  <!-- Loader -->
   <app-common-loader
-    *ngIf="loadingProducts || loader==true"
+    *ngIf="loadingProducts"
     class="overlay-loader"
   ></app-common-loader>
-  <!-- Cart Content -->
-  <div class="flex flex-col h-full">
-    <div class="p-6 border-b border-gray-200">
-      <div class="flex items-center justify-between">
-        <h2 class="text-2xl font-bold text-gray-900">Shopping Cart</h2>
-        <button (click)="close()" class="text-gray-500 hover:text-gray-700">
-          <i class="ri-close-line ri-lg"></i>
-        </button>
-      </div>
-    </div>
 
-    <div
-      class="flex-1 overflow-y-auto p-6 space-y-6"
-      *ngIf="cartItems.length > 0"
-    >
-      <div
-        *ngFor="let item of cartItems"
-        class="flex items-center border-b border-gray-200 pb-4"
-      >
-        <img
-          [src]="producctImageurl + getImageArray(item)"
-          [alt]="item.NAME"
-          class="w-20 h-20 object-cover rounded-lg"
-        />
-        <div class="ml-4 flex-1">
-          <h3 class="text-sm font-medium text-gray-900">
-            {{ item.NAME ? item.NAME : item.PRODUCT_NAME }}
-          </h3>
-          <p class="text-sm text-gray-500 mt-1">
-            ${{ item.RATE ? item.RATE : item.VERIENT_RATE }}
-          </p>
-          <div class="flex items-center mt-2 space-x-2">
-            <button
-              (click)="decreaseQty(item)"
-              class="text-gray-500 hover:text-[#5a8f69]"
-              aria-label="Decrease quantity"
-            >
-              <i class="ri-subtract-line"></i>
-            </button>
-            <span class="w-12 flex items-center justify-center text-sm">
-    {{ item.quantity }}
-  </span>
-            <button
-              (click)="increaseQty(item)"
-              class="text-gray-500 hover:text-[#5a8f69]"
-              aria-label="Increase quantity"
-            >
-              <i class="ri-add-line"></i>
-            </button>
+  <!-- Scrollable Main Area -->
+  <div
+    class="flex-1 flex flex-col lg:flex-row gap-4 p-4 sm:p-5 overflow-y-auto"
+    style="max-height: calc(100vh - 12rem)"
+  >
+    <!-- Cart Items -->
+    <div class="flex-1 flex flex-col space-y-3 lg:max-w-3xl">
+      <ng-container *ngIf="cartItems.length > 0; else emptyCart">
+        <div
+          *ngFor="let item of cartItems"
+          class="flex items-center border border-gray-200 rounded-lg p-3 relative bg-white"
+          style="height: 130px"
+        >
+          <!-- Checkbox -->
+          <input
+            type="checkbox"
+            [(ngModel)]="item.selected"
+            (change)="updateTotals()"
+            class="absolute top-2 left-2 z-10 w-4 h-4 accent-[#5a8f69] cursor-pointer"
+          />
+
+          <!-- Delete Button (Top Right Corner) -->
+          <button
+            (click)="deleteItem(item); updateTotals()"
+            class="absolute top-2 right-2 text-red-500 hover:text-red-600 transition"
+            title="Remove Item"
+          >
+            <i class="ri-delete-bin-line ri-lg"></i>
+          </button>
+
+          <!-- Product Image -->
+          <img
+            [src]="producctImageurl + getImageArray(item)"
+            [alt]="item.NAME"
+            class="w-24 h-[110px] rounded-md object-cover flex-shrink-0"
+          />
+
+          <!-- Product Details -->
+          <div class="ml-3 flex-1 flex flex-col justify-between">
+            <h3 class="font-semibold text-gray-900 text-sm truncate">
+              {{ item.NAME || item.PRODUCT_NAME }}
+            </h3>
+            <p class="text-gray-500 text-xs">
+              {{ item.VERIENT_SIZE }} {{ item.VERIENT_UNIT_NAME }}
+            </p>
+            <p class="text-gray-700 font-medium text-sm">
+              ${{ item.ITEM_DISCOUNT_AMOUNT || item.RATE || item.VERIENT_RATE }}
+            </p>
+
+            <!-- Quantity Controls -->
+            <div class="flex items-center space-x-2">
+              <ng-container *ngIf="item.quantity > 1; else deleteBtn">
+                <button
+                  (click)="decreaseQty(item); updateTotals()"
+                  class="text-gray-500 hover:text-[#5a8f69] text-sm"
+                >
+                  <i class="ri-subtract-line"></i>
+                </button>
+              </ng-container>
+              <ng-template #deleteBtn>
+                <button
+                  (click)="deleteItem(item); updateTotals()"
+                  class="text-gray-500 hover:text-red-500 text-sm"
+                >
+                  <i class="ri-delete-bin-line"></i>
+                </button>
+              </ng-template>
+              <span class="w-6 text-center text-sm font-medium">
+                {{ item.quantity }}
+              </span>
+              <button
+                (click)="increaseQty(item); updateTotals()"
+                class="text-gray-500 hover:text-[#5a8f69] text-sm"
+              >
+                <i class="ri-add-line"></i>
+              </button>
+            </div>
           </div>
         </div>
-        <button
-          (click)="deleteItem(item)"
-          class="ml-4 text-gray-400 hover:text-red-500"
-          aria-label="Remove item"
-          title="Remove item"
+      </ng-container>
+
+      <!-- Empty Cart -->
+      <ng-template #emptyCart>
+        <div
+          class="flex flex-col items-center justify-center text-center py-2 text-gray-500"
         >
-          <i class="ri-delete-bin-line"></i>
-        </button>
-      </div>
+          <img
+            src="assets/img/empty-cart.png"
+            alt="Empty Cart"
+            class="w-32 h-32 mb-4"
+          />
+          <h2 class="text-base font-semibold mb-2">Your cart is empty</h2>
+          <p class="text-sm mb-5">
+            Looks like you haven't added anything to your cart yet.
+          </p>
+          <button
+            (click)="close()"
+            class="bg-[#5a8f69] text-white px-3 py-1.5 rounded-md hover:bg-[#4a7f59] transition text-sm"
+          >
+            Continue Shopping
+          </button>
+        </div>
+      </ng-template>
     </div>
 
+    <!-- Order Summary -->
     <div
-      *ngIf="cartItems.length === 0"
-      class="flex flex-col items-center justify-center p-10 text-center text-gray-500"
+      class="w-full lg:w-72 border border-gray-200 rounded-lg p-3 flex flex-col space-y-3 flex-shrink-0 lg:self-start bg-white sticky top-4"
     >
-      <img
-        src="assets/img/empty-cart.png"
-        alt="Empty Cart"
-        class="w-40 h-40 mb-4"
-      />
-      <h2 class="text-xl font-semibold mb-2">Your cart is empty</h2>
-      <p class="text-sm">
-        Looks like you haven't added <br />anything to your cart yet.
-      </p>
-    </div>
-
-    <!-- Footer -->
-    <div class="p-6 border-t border-gray-200" *ngIf="cartItems.length > 0">
-      <div class="flex items-center justify-between mb-2">
-        <span class="text-base font-medium text-gray-900">Subtotal</span>
-        <span class="text-base font-medium text-gray-900">${{ subtotal }}</span>
+      <h3 class="text-base font-semibold text-gray-900">Order Summary</h3>
+      <div class="flex justify-between text-gray-700 text-sm">
+        <span>Subtotal</span> <span>${{ selectedSubtotal }}</span>
       </div>
-      <div class="space-y-3" *ngIf="cartItems.length > 0">
-        <button
-          (click)="close()"
-          class="w-full bg-gray-100 text-gray-800 py-2 rounded-button font-medium hover:bg-gray-200 transition-colors whitespace-nowrap"
-        >
-          Continue Shopping
-        </button>
-        <!-- Full-page overlay modal -->
-        <!-- <div
-          class="fixed inset-0 z-50 flex items-center justify-center bg-gray-200/40"
-          *ngIf="showLoginModal"
-        >
-          <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md mx-2">
-            <div class="flex justify-between items-center mb-6">
-              <h2 class="text-xl font-bold">Please Login First</h2>
-              <button
-                class="text-gray-500 hover:text-gray-700"
-                (click)="onNotNow()"
-              >
-                &#10005;
-              </button>
-            </div>
-            <p class="mb-6 text-center">
-              You need to log in to proceed to checkout.
-            </p>
-            <div class="flex space-x-4 justify-center">
-              <button
-                class="bg-green-600 text-white px-6 py-2 rounded-button font-medium hover:bg-green-700 transition-colors"
-                (click)="onLogin()"
-              >
-                Login
-              </button>
-              <button
-                class="bg-gray-400 text-white px-6 py-2 rounded-button font-medium hover:bg-gray-500 transition-colors"
-                (click)="onNotNow()"
-              >
-                Not Now
-              </button>
-            </div>
-          </div>
-        </div> -->
-
-        <button
-          class="w-full bg-[#5a8f69] text-white py-2 rounded-button font-medium hover:bg-[#5a8f69]/90 transition-colors whitespace-nowrap"
-          (click)="proceedToCheckout()"
-        >
-          Proceed to Checkout
-        </button>
+      <div
+        class="flex justify-between font-semibold text-gray-900 text-base border-t border-gray-200 pt-2"
+      >
+        <span>Total</span> <span>${{ selectedTotal }}</span>
       </div>
+      <button
+        [disabled]="!hasSelectedItems()"
+        (click)="proceedToCheckout()"
+        class="w-full bg-[#5a8f69] text-white px-3 py-2 rounded-md font-medium hover:bg-[#4a7f59] transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        Proceed to Checkout
+      </button>
     </div>
   </div>
 </div>
+
 <div *ngIf="isCheckoutVisible">
   <app-checkout
     [cartDetails]="senddatatoCheckout"

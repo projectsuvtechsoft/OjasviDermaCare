@@ -1,6 +1,12 @@
 <!-- <app-header ></app-header> -->
 
-<section class="hero-bg relative min-h-96 flex items-center justify-center">
+<section
+  style="
+    font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+      Helvetica, Arial, sans-serif !important;
+  "
+  class="hero-bg relative min-h-96 flex items-center justify-center"
+>
   <div class="absolute inset-0 bg-opacity-70"></div>
   <div class="relative z-10 text-center max-w-4xl mx-auto px-4">
     <div
@@ -13,6 +19,10 @@
     </div>
     <h1
       class="text-4xl md:text-5xl font-['Playfair_Display'] font-semibold text-white mb-6"
+      style="
+        font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI,
+          Roboto, Helvetica, Arial, sans-serif !important;
+      "
     >
       Contact Us
     </h1>
@@ -31,7 +41,13 @@
   </div>
 </section>
 
-<Section class="py-5 bg-white justify-center">
+<Section
+  style="
+    font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+      Helvetica, Arial, sans-serif !important;
+  "
+  class="py-4 bg-white justify-center"
+>
   <!-- <h2 class="text-4xl font-['Playfair_Display'] text-center font-semibold text-gray-800 mb-8">
     Contact Us
   </h2> -->
@@ -80,18 +96,33 @@
   </p>
 </Section>
 
-<section class="py-10 bg-white" style="padding-top: 0.5rem">
+<section
+  style="
+    font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+      Helvetica, Arial, sans-serif !important;
+  "
+  class="py-4 bg-white"
+  style="padding-top: 0.5rem"
+>
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
       <!-- Contact Info -->
       <div>
         <h2
-          class="text-2xl sm:text-3xl font-['Playfair_Display'] font-semibold text-gray-800 mb-6 sm:mb-8"
+          class="text-2xl sm:text-3xl font-semibold text-gray-800 mb-3 sm:mb-8"
+          style="
+            font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI,
+              Roboto, Helvetica, Arial, sans-serif !important;
+          "
         >
           Get in Touch
         </h2>
         <p
           class="text-gray-600 mb-6 sm:mb-8 leading-relaxed text-sm sm:text-base text-justify"
+          style="
+            font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI,
+              Roboto, Helvetica, Arial, sans-serif !important;
+          "
         >
           We would love to hear from you. Whether you have questions about our
           products, need skincare advice, or want to share your experience with
@@ -100,7 +131,7 @@
 
         <!-- Email -->
         <div
-          class="bg-white shadow-sm rounded-xl p-6 sm:p-8 mb-6 border border-gray-100"
+          class="bg-white shadow-sm rounded-xl p-2.5 sm:p-5 mb-6 border border-gray-100"
         >
           <div class="flex items-start space-x-4">
             <div
@@ -122,10 +153,14 @@
 
         <!-- Business Hours -->
         <div
-          class="bg-white shadow-sm rounded-xl p-6 sm:p-8 border border-gray-100"
+          class="bg-white shadow-sm rounded-xl p-2.5 sm:p-5 border border-gray-100"
+          style="
+            font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI,
+              Roboto, Helvetica, Arial, sans-serif !important;
+          "
         >
-          <h3 class="font-medium text-gray-800 mb-4">Business Hours (PDT)</h3>
-          <div class="space-y-3 text-sm sm:text-base">
+          <h3 class="font-medium text-gray-800 mb-2">Business Hours (PDT)</h3>
+          <div class="space-y-1 text-sm sm:text-base">
             <div class="flex items-center justify-between">
               <span class="text-gray-600">Monday - Friday</span>
               <span class="text-gray-800">9:00 AM - 6:00 PM </span>
@@ -143,20 +178,28 @@
       </div>
 
       <!-- Contact Form -->
-      <div class="bg-white rounded-lg shadow-lg p-6 sm:p-8">
-        <h2 class="text-xl sm:text-2xl font-semibold mb-6">
+      <div
+        class="bg-white rounded-lg shadow-sm p-2.5 sm:p-5 border border-gray-100"
+      >
+        <h2
+          class="text-2xl sm:text-3xl font-semibold text-gray-800 mb-4"
+          style="
+            font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI,
+              Roboto, Helvetica, Arial, sans-serif !important;
+          "
+        >
           Send us a Message
         </h2>
         <form
           #contactForm="ngForm"
           (ngSubmit)="onSubmit(contactForm)"
-          class="space-y-4"
+          class="space-y-2"
         >
           <input
             type="text"
             name="fullName"
-            placeholder="Enter Full Name"
-            class="w-full h-12 px-4 border border-gray-200 rounded focus:outline-none focus:border-[#5a8f69] text-sm"
+            placeholder="e.g. John Doe"
+            class="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#5a8f69] text-sm"
             [(ngModel)]="contactData.NAME"
             required
             (keypress)="alphaOnly($event)"
@@ -165,8 +208,8 @@
           <input
             type="email"
             name="email"
-            placeholder="Email Id"
-            class="w-full h-12 px-4 border border-gray-200 rounded focus:outline-none focus:border-[#5a8f69] text-sm"
+            placeholder="e.g xyz@gmail.com"
+            class="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#5a8f69] text-sm"
             [(ngModel)]="contactData.EMAIL_ID"
             required
             pattern="commonFunction.emailpattern"
@@ -175,8 +218,8 @@
           <input
             type="tel"
             name="mobile"
-            placeholder="Enter Mobile No."
-            class="w-full h-12 px-4 border border-gray-200 rounded focus:outline-none focus:border-[#5a8f69] text-sm"
+            placeholder="e.g (555) 123-4567"
+            class="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#5a8f69] text-sm"
             [(ngModel)]="contactData.MOBILE_NO"
             required
             minlength="10"
@@ -188,7 +231,7 @@
             type="text"
             name="subject"
             placeholder="Enter Subject"
-            class="w-full h-12 px-4 border border-gray-200 rounded focus:outline-none focus:border-[#5a8f69] text-sm"
+            class="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#5a8f69] text-sm"
             [(ngModel)]="contactData.SUBJECT"
             required
           />
@@ -196,8 +239,8 @@
           <textarea
             name="message"
             placeholder="Enter Message"
-            rows="4"
-            class="w-full p-4 border border-gray-200 rounded focus:outline-none focus:border-[#5a8f69] text-sm"
+            rows="3"
+            class="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#5a8f69] text-sm"
             [(ngModel)]="contactData.MESSAGE"
             required
           ></textarea>
@@ -210,7 +253,7 @@
           </button> -->
           <button
             type="submit"
-            class="w-full bg-[#5a8f69] text-white py-3 rounded-button hover:bg-opacity-90 transition-colors flex justify-center items-center"
+            class="w-full bg-[#5a8f69] text-white py-2 rounded-button hover:bg-opacity-90 transition-colors flex justify-center items-center"
             [disabled]="isSpinning"
           >
             <!-- Loader -->
@@ -231,23 +274,41 @@
 </section>
 
 <!-- Disclaimer  -->
-<Section class="py-5 bg-white justify-center">
+<Section
+  style="
+    font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+      Helvetica, Arial, sans-serif !important;
+  "
+  class="py-2 bg-white justify-center"
+>
   <h2
-    class="text-4xl font-['Playfair_Display'] text-center font-semibold text-gray-800 mb-8 px-20"
+    class="text-4xl text-center font-semibold text-gray-800 mb-2 px-20"
+    style="
+      font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI,
+        Roboto, Helvetica, Arial, sans-serif !important;
+    "
   >
     Disclaimer
   </h2>
   <p
-    class="text-gray-600 mb-3 px-20 leading-relaxed"
-    style="text-align: justify"
+    class="text-gray-600 mb-2 px-20 leading-relaxed"
+    style="
+      text-align: justify;
+      font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI,
+        Roboto, Helvetica, Arial, sans-serif !important;
+    "
   >
     Please be advised that the products for sale on Ojasvi Dermacare' website
     are not intended to diagnose, cure, mitigate, prevent or treat any disease
     or health condition and they are not to be considered a Medical Device.
   </p>
   <p
-    class="text-gray-600 mb-3 px-20 leading-relaxed"
-    style="text-align: justify"
+    class="text-gray-600 mb-2 px-20 leading-relaxed"
+    style="
+      text-align: justify;
+      font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI,
+        Roboto, Helvetica, Arial, sans-serif !important;
+    "
   >
     Ojasvi Dermacare, LLC. products have not been evaluated by the Food & Drug
     Administration. Test each product on a small portion of skin before usage.
@@ -261,8 +322,12 @@
     messaging.
   </p>
   <p
-    class="text-gray-600 mb-3 px-20 leading-relaxed"
-    style="text-align: justify"
+    class="text-gray-600 mb-2 px-20 leading-relaxed"
+    style="
+      text-align: justify;
+      font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI,
+        Roboto, Helvetica, Arial, sans-serif !important;
+    "
   >
     Ojasvi Dermacare is not liable for any individual reaction to any particular
     ingredient. Remember to read our labels and ingredient lists carefully and
@@ -271,12 +336,22 @@
     patch test is highly recommended if there is any doubt or history of skin
     reactions.
   </p>
-  <p class="text-gray-600 mb-3 px-20 leading-relaxed text-center">
-    * Discontinue use if a reaction occurs.*
+  <p
+    class="text-red-600 mb-2 px-20 leading-relaxed text-center"
+    style="
+      font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI,
+        Roboto, Helvetica, Arial, sans-serif !important;
+    "
+  >
+    Discontinue use if a reaction occurs.
   </p>
   <p
-    class="text-gray-600 mb-3 px-20 leading-relaxed"
-    style="text-align: justify"
+    class="text-gray-600 mb-2 px-20 leading-relaxed"
+    style="
+      text-align: justify;
+      font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI,
+        Roboto, Helvetica, Arial, sans-serif !important;
+    "
   >
     If the product contains an allergen please alert the owner directly of all
     allergies to better accommodate. If this is not done prior to purchase, then
@@ -285,19 +360,29 @@
     continued use of Ojasvi Dermacares' site and products.
   </p>
   <p
-    class="text-gray-600 mb-3 px-20 leading-relaxed text-center"
-    style="margin-bottom: 0px !important"
+    class="text-red-600 mb-2 px-20 leading-relaxed text-center"
+    style="
+      margin-bottom: 0px !important;
+      font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI,
+        Roboto, Helvetica, Arial, sans-serif !important;
+    "
   >
-    **PLEASE AVOID CONTACT WITH EYES. DO NOT EAT.**
+    PLEASE AVOID CONTACT WITH EYES. DO NOT EAT.
   </p>
 </Section>
 
 <!-- Newsletter Section -->
-<section class="newsletter-section py-16 text-white">
+<!-- <section
+  style="
+    font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+      Helvetica, Arial, sans-serif !important;
+  "
+  class="newsletter-section py-14 text-white"
+>
   <div class="container mx-auto px-4">
     <div class="max-w-3xl mx-auto text-center">
-      <h2 class="text-3xl font-bold mb-4">Subscribe to Our Newsletter</h2>
-      <p class="text-white/90 mb-8">
+      <h2 class="text-3xl font-bold mb-2">Subscribe to Our Newsletter</h2>
+      <p class="text-white/90 mb-6">
         Stay updated with our latest products, offers, and Ayurvedic wellness
         tips.
       </p>
@@ -340,7 +425,7 @@
       </div>
     </div>
   </div>
-</section>
+</section> -->
 
 <script id="form-handler">
   document.addEventListener("DOMContentLoaded", function () {

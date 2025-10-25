@@ -2,17 +2,17 @@
   content: "\f3c2";
 }
 body {
-  font-family: "Poppins", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
 }
 h1,
 h2,
 h3,
 h4,
 .serif {
-  font-family: "Playfair Display", serif;
+ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
 }
 .logo {
-  font-family: "Playfair Display", serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
   font-weight: 700;
 }
 .hero-section {
@@ -241,4 +241,29 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
 }
+.font-style{
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+}
+
+body {
+  font-family: "Assistant", "-apple-system", "BlinkMacSystemFont", "Segoe UI",
+    "Roboto", Helvetica, Arial, sans-serif;
+}
+h1,
+h2,
+h3,
+h4,
+.serif {
+  font-family: "Assistant", "-apple-system", "BlinkMacSystemFont", "Segoe UI",
+    "Roboto", Helvetica, Arial, sans-serif;
+}
+.logo {
+  font-family: "Assistant", "-apple-system", "BlinkMacSystemFont", "Segoe UI",
+    "Roboto", Helvetica, Arial, sans-serif;
+  font-weight: 700;
+}
+
+ 
+

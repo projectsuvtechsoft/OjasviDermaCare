@@ -6,7 +6,7 @@ import {
   Renderer2,
   ElementRef,
 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { ApiServiceService } from 'src/app/Service/api-service.service';
 import { ToastrService } from 'ngx-toastr';
 import { CartService } from 'src/app/Service/cart.service';
@@ -14,7 +14,7 @@ import { DatePipe } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
 import { CommonFunctionService } from 'src/app/Service/CommonFunctionService';
 import { ProductDataService } from 'src/app/Service/ProductData.service ';
-
+declare var bootstrap: any;
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -30,6 +30,7 @@ export class HomeComponent {
   sortDirection: string | null = 'desc';
   variantRateMap: { [productId: number]: number } = {};
   currentStockMap: { [productId: number]: number } = {};
+  discounts: number[] = [70, 60, 50, 40, 30];
 
   constructor(
     private renderer: Renderer2,
@@ -46,26 +47,32 @@ export class HomeComponent {
   goToLogin() {
     this.router.navigate(['/login']);
   }
-  is_guest:any=sessionStorage.getItem('IS_GUEST');
+  is_guest: any = sessionStorage.getItem('IS_GUEST');
 
-   ngOnInit() {
-      this.sortKey = 'IS_POPULAR';
-  this.sortDirection = 'desc';
+  ngOnInit() {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+    this.sortKey = 'IS_POPULAR';
+    this.sortDirection = 'desc';
     this.getFilters();
     this.getProducts();
     this.getsession();
     // sessionStorage.setItem('IS_GUEST', 'false');
-     this.is_guest=sessionStorage.getItem('IS_GUEST')
+    this.is_guest = sessionStorage.getItem('IS_GUEST');
     //  document.body.classList.remove('modal-open');
     // document.querySelectorAll('.modal-backdrop').forEach((el) => el.remove());
     // if (this.categories?.length > 0) {
     //   this.selectedCategories = [this.categories[0]];
     // }
   }
- 
+
   categories: any[] = [];
   products: any[] = [];
   selectedCategories: any = [];
+  selectedDiscounts: any = [];
   ingredients: any[] = [];
 
   visibleIngredients: any[] = []; // For displaying in UI
@@ -91,18 +98,16 @@ export class HomeComponent {
 
   getFilters() {
     this.api
-      .getAllCategoryMaster(0, 0, 'SEQUENCE_NO', 'asc', ' AND STATUS=1')
+      .getAllCategoryMaster(0, 0, 'SEQUENCE_NO', 'asc', ' AND STATUS = 1')
       .subscribe(
         (res: any) => {
-          // console.log('Categories fetched successfully:', res);
           this.loadingCategories = true;
+
           if (res && res.data && Array.isArray(res.data)) {
             this.categories = res.data;
-
             const id = this.route.snapshot.paramMap.get('categoryid');
 
             if (id) {
-              // Find category from id
               const matchedCategory = this.categories.find(
                 (cat) => cat.CATEGORY_ID == id
               );
@@ -111,7 +116,6 @@ export class HomeComponent {
                 matchedCategory &&
                 !this.selectedCategories.includes(matchedCategory)
               ) {
-                // Manually create a mock event like a checkbox is checked
                 const mockEvent = {
                   target: { checked: true },
                 };
@@ -119,6 +123,7 @@ export class HomeComponent {
                 this.onCategoryChange(mockEvent, matchedCategory);
               }
             }
+
             this.loadingCategories = false;
           } else {
             // conso('', '');
@@ -127,11 +132,11 @@ export class HomeComponent {
           }
         },
         (err: any) => {
-          console.error('Error fetching categories:', err);
           this.loadingCategories = false;
           this.categories = [];
         }
       );
+
     this.api
       .getAllIngredientMaster(0, 0, 'id', 'asc', ' AND STATUS=1')
       .subscribe(
@@ -168,16 +173,34 @@ export class HomeComponent {
   clearFilters() {
     this.selectedCategories = [];
     this.selectedIngredient = [];
+    this.selectedDiscounts = [];
+    this.minRange = 0;
+    this.maxRange = 400;
     this.priceRange = 0;
     this.rangeQuery = '';
     // this.selectedSubCategory = null;
+    this.priceRangeBetween =
+      ' AND ((RATE BETWEEN ' +
+      this.minRange +
+      ' AND ' +
+      this.maxRange +
+      ') OR (MIN_DISCOUNTED_PRICE BETWEEN ' +
+      this.minRange +
+      ' AND ' +
+      this.maxRange +
+      ') OR (MAX_DISCOUNTED_PRICE BETWEEN ' +
+      this.minRange +
+      ' AND ' +
+      this.maxRange +
+      '))';
     this.getProducts();
   }
 
   getProducts() {
     this.loadingProducts = true;
-
     var filter = '';
+
+    // Filter by selected categories
     if (this.selectedCategories.length > 0) {
       const selectedCategoryIds = this.selectedCategories.map(
         (category: any) => category.CATEGORY_ID
@@ -185,19 +208,38 @@ export class HomeComponent {
 
       filter += ' AND CATEGORY_ID IN (' + selectedCategoryIds.join(',') + ')';
     }
+
+    // Filter by selected discounts
+    if (this.selectedDiscounts.length > 0) {
+      this.selectedDiscounts = this.selectedDiscounts.sort(
+        (a: any, b: any) => a - b
+      );
+      const selectedCategoryIds = this.selectedDiscounts.map(
+        (discount: any) => discount
+      );
+
+      filter +=
+        ' AND DISCOUNT BETWEEN ' + selectedCategoryIds[0] + ' AND ' + 80;
+    }
+
     let selectedIngredientIds = [];
+
     if (this.selectedIngredient.length > 0) {
       selectedIngredientIds = this.selectedIngredient.map(
         (ingredient: any) => ingredient.ID
       );
     }
+
     this.api
       .getAllProductMaster(
         this.currentPage,
         this.productsPerPage,
         this.sortKey || 'id',
         this.sortDirection || 'desc',
-        filter + this.rangeQuery + ' AND IS_VERIENT_AVAILABLE=1 AND STATUS=1',
+        filter +
+          this.rangeQuery +
+          ' AND IS_VERIENT_AVAILABLE = 1 AND STATUS = 1' +
+          this.priceRangeBetween,
         selectedIngredientIds?.join(',')
       )
       .subscribe(
@@ -207,6 +249,7 @@ export class HomeComponent {
             this.loadingProducts = false;
             this.totalProducts = res.count;
             this.showTotalProducts = res.count;
+
             this.products.forEach((product: any) => {
               this.loadProductVariantsFromData(product);
               let variants = product.VARIENTS;
@@ -279,6 +322,7 @@ export class HomeComponent {
       let Variants =
         variants?.filter((v: any) => v.STATUS === true || v.STATUS === 1) || [];
       this.variantMap[product.ID] = Variants;
+
       if (!this.selectedVariantMap[product.ID]) {
         const firstVariant = variants[0];
         this.selectedVariantMap[product.ID] = firstVariant.VARIENT_ID;
@@ -289,6 +333,7 @@ export class HomeComponent {
         let selectedvarientproductId = this.products.findIndex(
           (id) => id.ID === product.ID
         );
+
         this.products[selectedvarientproductId].CURRENT_STOCK_VARIENT =
           firstVariant.CURRENT_STOCK ? firstVariant.CURRENT_STOCK : 0;
         //  console.log('selectedvarientproductId',this.products[selectedvarientproductId])
@@ -296,6 +341,7 @@ export class HomeComponent {
         const selectedVariant = Variants.find(
           (v) => v.VARIENT_ID === this.selectedVariantMap[product.ID]
         );
+
         if (selectedVariant) {
           this.unitIdMap[product.ID] = selectedVariant.UNIT_ID;
           let selectedvarientproductId = this.products.findIndex(
@@ -306,9 +352,7 @@ export class HomeComponent {
           //  this.products[selectedvarientproductId].CURRENT_STOCK_VARIENT=firstVariant.CURRENT_STOCK
         }
       }
-      // console.log('this.variantMap[product.ID]', this.variantMap[product.ID]);
     }
-    // console.log(this.products)
   }
 
   change(selectedId: string, productId: number): void {
@@ -325,13 +369,6 @@ export class HomeComponent {
       this.currentStockMap[productId] = selected.CURRENT_STOCK
         ? selected.CURRENT_STOCK
         : 0;
-      // let selectedvarientproductId=this.products.findIndex(id=> id.ID === productId && )
-      //  this.products[selectedvarientproductId].CURRENT_STOCK_VARIENT=firstVariant.CURRENT_STOCK
-      console.log(
-        'this.unitIdMap[productId]jkkk',
-        this.currentStockMap[productId]
-      );
-      // this
       this.updateTotalPrice();
     }
   }
@@ -339,43 +376,41 @@ export class HomeComponent {
   onCartDrawerClose(isVisible: boolean) {
     this.viewCart = isVisible;
   }
- productImageUrl: string = this.api.retriveimgUrl + 'productImages/';
-imageIndices: { [productId: string]: number } = {};
- 
-getImageArray(product: any): string[] {
-  try {
-    const images = JSON.parse(product.Images);
-    return images.map((img: any) => img.PHOTO_URL);
-  } catch (e) {
-    console.error('Invalid image format', e);
-    return [];
+  productImageUrl: string = this.api.retriveimgUrl + 'productImages/';
+  imageIndices: { [productId: string]: number } = {};
+
+  getImageArray(product: any): string[] {
+    try {
+      const images = JSON.parse(product.Images);
+      return images.map((img: any) => img.PHOTO_URL);
+    } catch (e) {
+      console.error('Invalid image format', e);
+      return [];
+    }
   }
-}
- 
-// Initialize index safely
-initImageIndex(productId: number) {
-  if (!(productId in this.imageIndices)) {
-    this.imageIndices[productId] = 0;
+
+  // Initialize index safely
+  initImageIndex(productId: number) {
+    if (!(productId in this.imageIndices)) {
+      this.imageIndices[productId] = 0;
+    }
   }
-}
- 
- 
+
   prevImage(productId: string) {
     if (this.imageIndices[productId] > 0) {
       this.imageIndices[productId]--;
     }
   }
- 
+
   nextImage(productId: string, total: number) {
     if (this.imageIndices[productId] < total - 1) {
       this.imageIndices[productId]++;
     }
   }
- 
+
   goToImage(productId: string, index: number) {
     this.imageIndices[productId] = index;
   }
-
 
   get totalPages(): number {
     return Math.ceil(this.totalProducts / this.productsPerPage);
@@ -424,16 +459,27 @@ initImageIndex(productId: number) {
     // Implement your quick view modal logic here
   }
   showLoginModal() {
-     this.renderer.removeClass(document.body, 'modal-open');
-    document.body.classList.remove('modal-open');
-    // const loginModalEl = document.getElementById('loginmodal');
-    const backdrop = document.querySelector('.modal-backdrop');
-    if (backdrop) {
-      backdrop.remove();
-    }
+      const modalEl = document.getElementById('loginmodal');
+    const modalInstance =
+      bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+
+    // Remove any leftover backdrops
     document.querySelectorAll('.modal-backdrop').forEach((el) => el.remove());
-    var d: any = document.getElementById('loginmodaltrack') as HTMLElement;
-    d.click();
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+
+    modalInstance.show();
+    // this.renderer.removeClass(document.body, 'modal-open');
+    // document.body.classList.remove('modal-open');
+    // // const loginModalEl = document.getElementById('loginmodal');
+    // const backdrop = document.querySelector('.modal-backdrop');
+    // if (backdrop) {
+    //   backdrop.remove();
+    // }
+    // document.querySelectorAll('.modal-backdrop').forEach((el) => el.remove());
+    // var d: any = document.getElementById('loginmodaltrack') as HTMLElement;
+    // d.click();
   }
 
   @ViewChild('closelogin') closelogin!: ElementRef;
@@ -453,88 +499,56 @@ initImageIndex(productId: number) {
     this.is_guest = sessionStorage.getItem('IS_GUEST') === 'true';
     // this.is_guest=sessionStorage.getItem('IS_GUEST')
     // console.log(this.is_guest);
-    
-    if(!this.is_guest && !this.userId){
+
+    if (!this.is_guest && !this.userId) {
       //  console.log(this.is_guest);
-       
-       this.showLoginModal()
-        const existingProductIndex = this.productsArray.findIndex(
-      (p: any) => p.ID === product.ID
-    );
 
-    const selectedVariantId = this.selectedVariantMap[product.ID];
-    const variants = this.variantMap[product.ID] || [];
-    const selectedVariant = variants.find(
-      (v) => v.VARIENT_ID === selectedVariantId
-    );
-
-    if (selectedVariant) {
-      product.UNIT_ID = selectedVariant.UNIT_ID;
-      product.VERIENT_ID = selectedVariantId;
-      product.SIZE = selectedVariant.SIZE;
-    }
-
-    if (existingProductIndex !== -1) {
-      // Product already exists, increment quantity
-      // this.productsArray[existingProductIndex].quantity += 1;
-      // this.toastr.success(`${product.name} added to cart`);
-      this.cartService.addToCart(product);
-
-      // this.cartService.addToCart(product);
+      this.showLoginModal();
     } else {
-      // New product, add with quantity 1
-      // this.toastr.success(`${product.name} added to cart`);
-      const productWithQuantity = { ...product, quantity: 1 };
-      this.productsArray = [...this.productsArray, productWithQuantity];
-      // this.cartService.addToCart(product);
-      this.cartService.addToCart(product);
-    }
-    }
-    else{
-        this.renderer.removeClass(document.body, 'modal-open');
-    document.body.classList.remove('modal-open');
-    // const loginModalEl = document.getElementById('loginmodal');
-    const backdrop = document.querySelector('.modal-backdrop');
-    if (backdrop) {
-      backdrop.remove();
-    }
-    document.querySelectorAll('.modal-backdrop').forEach((el) => el.remove());
-    // else{
-    //   if(sessionStorage.getItem('userId')){
-    const existingProductIndex = this.productsArray.findIndex(
-      (p: any) => p.ID === product.ID
-    );
+      this.renderer.removeClass(document.body, 'modal-open');
+      document.body.classList.remove('modal-open');
+      // const loginModalEl = document.getElementById('loginmodal');
+      const backdrop = document.querySelector('.modal-backdrop');
+      if (backdrop) {
+        backdrop.remove();
+      }
+      document.querySelectorAll('.modal-backdrop').forEach((el) => el.remove());
+      // else{
+      //   if(sessionStorage.getItem('userId')){
+      const existingProductIndex = this.productsArray.findIndex(
+        (p: any) => p.ID === product.ID
+      );
 
-    const selectedVariantId = this.selectedVariantMap[product.ID];
-    const variants = this.variantMap[product.ID] || [];
-    const selectedVariant = variants.find(
-      (v) => v.VARIENT_ID === selectedVariantId
-    );
+      const selectedVariantId = this.selectedVariantMap[product.ID];
+      const variants = this.variantMap[product.ID] || [];
+      const selectedVariant = variants.find(
+        (v) => v.VARIENT_ID === selectedVariantId
+      );
 
-    if (selectedVariant) {
-      product.UNIT_ID = selectedVariant.UNIT_ID;
-      product.VERIENT_ID = selectedVariantId;
-      product.SIZE = selectedVariant.SIZE;
+      if (selectedVariant) {
+        product.UNIT_ID = selectedVariant.UNIT_ID;
+        product.VERIENT_ID = selectedVariantId;
+        product.SIZE = selectedVariant.SIZE;
+      }
+
+      if (existingProductIndex !== -1) {
+        // Product already exists, increment quantity
+        // this.productsArray[existingProductIndex].quantity += 1;
+        // this.toastr.success(`${product.name} added to cart`);
+        this.cartService.addToCart(product);
+
+        // this.cartService.addToCart(product);
+      } else {
+        // New product, add with quantity 1
+        // this.toastr.success(`${product.name} added to cart`);
+        const productWithQuantity = { ...product, quantity: 1 };
+        this.productsArray = [...this.productsArray, productWithQuantity];
+        // this.cartService.addToCart(product);
+        this.cartService.addToCart(product);
+      }
+
+      this.viewCart = true;
     }
-
-    if (existingProductIndex !== -1) {
-      // Product already exists, increment quantity
-      // this.productsArray[existingProductIndex].quantity += 1;
-      // this.toastr.success(`${product.name} added to cart`);
-      this.cartService.addToCart(product);
-
-      // this.cartService.addToCart(product);
-    } else {
-      // New product, add with quantity 1
-      // this.toastr.success(`${product.name} added to cart`);
-      const productWithQuantity = { ...product, quantity: 1 };
-      this.productsArray = [...this.productsArray, productWithQuantity];
-      // this.cartService.addToCart(product);
-      this.cartService.addToCart(product);
-    }
-
-    if(!this.is_guest && this.userId)this.viewCart = true;
-  }
     // }
     // else{
     //   this.toastr.error('Please login to add items to the cart');
@@ -545,10 +559,12 @@ initImageIndex(productId: number) {
     // Optional: Show a toast or notification
     // this.toastr.success(`${product.NAME} added to cart!`);
   }
+
   hasActiveVariants(productId: number): boolean {
     const variants = this.variantMap[productId] || [];
     return variants.some((v) => v.STATUS === 1);
   }
+
   removeFromCart(productId: string) {
     // this.productsArray = this.productsArray.filter(
     //   (p: any) => p.ID !== productId
@@ -557,24 +573,34 @@ initImageIndex(productId: number) {
   }
 
   onCategoryChange(event: any, category: any) {
-    console.log('clickcked');
     if (event.target.checked) {
-      // Add only if not already present
       if (!this.selectedCategories.includes(category)) {
         this.selectedCategories.push(category);
       }
     } else {
-      // Remove only if it's not the default category (optional safeguard)
-      // const isDefault = category === this.categories[0];
-      // if (!isDefault) {
       this.selectedCategories = this.selectedCategories.filter(
         (c: any) => c !== category
       );
-      // }
     }
+
     this.getProducts();
-    // console.log('Selected Categories:', this.selectedCategories);
   }
+
+  onProductChange(event: any, product: any) {
+    if (event.target.checked) {
+      if (!this.selectedDiscounts.includes(product)) {
+        this.selectedDiscounts.push(product);
+      }
+    } else {
+      this.selectedDiscounts = this.selectedDiscounts.filter(
+        (d: any) => d !== product
+      );
+    }
+
+    console.log(this.selectedDiscounts);
+    this.getProducts();
+  }
+
   onIngredientChange(event: any, ingredient: any) {
     if (event.target.checked) {
       // Add only if not already present
@@ -593,6 +619,7 @@ initImageIndex(productId: number) {
     this.getProducts();
     // console.log('Selected Ingredients:', this.selectedIngredient);
   }
+
   @ViewChild('mobileContent', { read: ViewContainerRef })
   mobileContent!: ViewContainerRef;
   @ViewChild('desktopFilters', { static: false }) desktopFilters!: ElementRef;
@@ -617,68 +644,64 @@ initImageIndex(productId: number) {
       this.closeMobileFilters();
     }
   }
-onSortChange(event: Event) {
-  const select = event.target as HTMLSelectElement; // cast here
-  const value = select.value; // now TypeScript knows 'value' exists
- 
-  if (value === 'default') {
-    this.sortKey = 'ID';
-    this.sortDirection = 'desc';
-    this.getProducts();
-  } else {
-    const [key, direction] = value.split(':');
-    if (key === 'RATE') {
-      this.sortKey = "JSON_EXTRACT(VARIENTS, '$[0].RATE')";
+  onSortChange(event: Event) {
+    const select = event.target as HTMLSelectElement; // cast here
+    const value = select.value; // now TypeScript knows 'value' exists
+
+    if (value === 'default') {
+      this.sortKey = 'ID';
+      this.sortDirection = 'desc';
+      this.getProducts();
     } else {
-      this.sortKey = key;
+      const [key, direction] = value.split(':');
+      if (key === 'RATE') {
+        this.sortKey = "JSON_EXTRACT(VARIENTS, '$[0].RATE')";
+      } else {
+        this.sortKey = key;
+      }
+      this.sortDirection = direction;
+      this.getProducts();
     }
-    this.sortDirection = direction;
-    this.getProducts();
   }
-}
- 
-priceRange: number = 0;
-rangeQuery = '';
-showTooltip = false;
-tooltipTimeout: any;
- 
-onSliderInput() {
-  this.showTooltip = true;
- 
-  // Hide tooltip shortly after sliding stops
-  if (this.tooltipTimeout) {
-    clearTimeout(this.tooltipTimeout);
+
+  priceRange: number = 0;
+  rangeQuery = '';
+  showTooltip = false;
+  tooltipTimeout: any;
+
+  onSliderInput() {
+    this.showTooltip = true;
+
+    if (this.tooltipTimeout) {
+      clearTimeout(this.tooltipTimeout);
+    }
+
+    this.tooltipTimeout = setTimeout(() => {
+      this.showTooltip = false;
+    }, 4000);
+
+    this.onPriceChange();
   }
-  this.tooltipTimeout = setTimeout(() => {
-    this.showTooltip = false;
-  }, 4000);
- 
-  this.onPriceChange();
-}
- 
-getSliderBackground(value: number): string {
-  const percent = (value / 50) * 100;
-  return `linear-gradient(to right, #5a8f69 ${percent}%, #e5e7eb ${percent}%)`;
-}
- 
-// Optional: helper for range text
-get priceLabel(): string {
-  return `$0 - $${this.priceRange}`;
-}
- 
- 
-onPriceChange() {
-  if (this.priceRange != null && this.priceRange > 0) {
-    // Build rangeQuery for API only if priceRange > 0
-    this.rangeQuery = ` AND ((IS_VERIENT_AVAILABLE=1 AND JSON_EXTRACT(VARIENTS, '$[0].RATE') <= ${this.priceRange}) OR (IS_VERIENT_AVAILABLE=0 AND RATE <= ${this.priceRange}))`;
-   
-    this.getProducts(); // Call API with updated rangeQuery
-  } else {
-    // priceRange is 0 or null, reset filter
-    this.rangeQuery = '';
-    this.getProducts(); // Reload all products without price filter
+
+  getSliderBackground(value: number): string {
+    const percent = (value / 50) * 100;
+    return `linear-gradient(to right, #5a8f69 ${percent}%, #e5e7eb ${percent}%)`;
   }
-}
+
+  // Optional: helper for range text
+  get priceLabel(): string {
+    return `$0 - $${this.priceRange}`;
+  }
+
+  onPriceChange() {
+    if (this.priceRange != null && this.priceRange > 0) {
+      this.rangeQuery = ` AND ((IS_VERIENT_AVAILABLE = 1 AND JSON_EXTRACT(VARIENTS, '$[0].RATE') <= ${this.priceRange}) OR (IS_VERIENT_AVAILABLE=0 AND RATE <= ${this.priceRange}))`;
+      this.getProducts();
+    } else {
+      this.rangeQuery = '';
+      this.getProducts();
+    }
+  }
 
   SubsribeToNewsLetter() {
     if (
@@ -751,7 +774,12 @@ onPriceChange() {
     this.userID = this.commonFunction.decryptdata(this.euserID);
     let sessionKey = sessionStorage.getItem('SESSION_KEYS') || '';
     this.decyptedsessionKey = this.commonFunction.decryptdata(sessionKey);
-
+    const currentUserId = sessionStorage.getItem('userId');
+    const isGuest = (sessionStorage.getItem('IS_GUEST') || 'false') === 'true';
+    if (!currentUserId || isGuest) {
+      this.showLoginModal();
+      return;
+    }
     if (this.userID) {
       this.decyptedsessionKey = '';
     }
@@ -846,20 +874,98 @@ onPriceChange() {
   }
 
   get currentPageCount(): number {
-  return Math.min(this.productsPerPage, this.totalProducts);
-}
-guest="false";
-verifylogin() {
-  // Refresh the userId from sessionStorage
-  this.userId = sessionStorage.getItem('userId') || '';
-  this.guest=sessionStorage.getItem('IS_GUEST')||"false";
-  console.log('Updated userId:', this.userId);
- 
-  if (!this.userId && this.guest=="false") {
-    this.showLoginModal();
-  } else {
-    // User is logged in
-    console.log('User is logged in');
+    return Math.min(this.productsPerPage, this.totalProducts);
   }
-}
+  guest = 'false';
+  verifylogin() {
+    // Refresh the userId from sessionStorage
+    this.userId = sessionStorage.getItem('userId') || '';
+    this.guest = sessionStorage.getItem('IS_GUEST') || 'false';
+    console.log('Updated userId:', this.userId);
+
+    if (!this.userId && this.guest == 'false') {
+      this.showLoginModal();
+    } else {
+      // User is logged in
+      console.log('User is logged in');
+    }
+  }
+
+  isFilterApplied(): boolean {
+    return (
+      this.selectedCategories.length > 0 ||
+      this.priceRange > 0 ||
+      this.selectedDiscounts.length > 0 ||
+      this.minRange > 0 ||
+      this.maxRange < 400
+    );
+  }
+
+  minRange: number = 0;
+  maxRange: number = 400;
+
+  onMinSliderChange() {
+    if (this.minRange > this.maxRange) {
+      this.minRange = this.maxRange;
+    }
+
+    this.onSliderInput1(this.minRange, this.maxRange);
+  }
+
+  onMaxSliderChange() {
+    if (this.maxRange < this.minRange) {
+      this.maxRange = this.minRange;
+    }
+
+    this.onSliderInput1(this.minRange, this.maxRange);
+  }
+
+  onSliderInput1(minRange: number, maxRange: number) {
+    // this.showTooltip = true;
+
+    // if (this.tooltipTimeout) {
+    //   clearTimeout(this.tooltipTimeout);
+    // }
+
+    // this.tooltipTimeout = setTimeout(() => {
+    //   this.showTooltip = false;
+    // }, 4000);
+    console.log(minRange);
+    console.log(maxRange);
+    this.onPriceChange1(minRange, maxRange);
+  }
+
+  priceRangeBetween: any = '';
+
+  onPriceChange1(minRange: number, maxRange: number) {
+    this.priceRangeBetween =
+      ' AND ((RATE BETWEEN ' +
+      minRange +
+      ' AND ' +
+      maxRange +
+      ') OR (MIN_DISCOUNTED_PRICE BETWEEN ' +
+      minRange +
+      ' AND ' +
+      maxRange +
+      ') OR (MAX_DISCOUNTED_PRICE BETWEEN ' +
+      minRange +
+      ' AND ' +
+      maxRange +
+      '))';
+    // this.priceRangeBetween = " AND (DISCOUNTED_PRICE BETWEEN " + minRange + " AND " + maxRange + ")";
+    this.getProducts();
+  }
+  dropdownOpen = false;
+  selectedOptionLabel = 'Popularity'; // default selected
+
+  selectOption(value: string, label: string) {
+    this.selectedOptionLabel = label;
+    this.dropdownOpen = false;
+
+    // Simulate a select change event
+    const event = { target: { value } } as unknown as Event;
+
+    this.onSortChange(event);
+  }
+ 
 }

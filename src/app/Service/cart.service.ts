@@ -85,18 +85,18 @@ export class CartService {
         this.updateCartToServer();
       });
   }
-  euserID: any = sessionStorage.getItem('userId') || '';
+  euserID: any = sessionStorage.getItem('userId') || 0;
   etoken: any = sessionStorage.getItem('token') || '';
   userID: any;
   token: any;
   quantityChange$ = new Subject<any>();
   ngOnInit() {
-    this.euserID = sessionStorage.getItem('userId');
+    this.euserID = sessionStorage.getItem('userId') || 0;
     this.etoken = sessionStorage.getItem('token');
-    console.log(
-      this.commonFunction.decryptdata(this.euserID),
-      this.commonFunction.decryptdata(this.etoken)
-    );
+    // console.log(
+    //   this.commonFunction.decryptdata(this.euserID),
+    //   this.commonFunction.decryptdata(this.etoken)
+    // );
 
     if (this.euserID && this.etoken) {
       this.userID = this.commonFunction.decryptdata(this.euserID);
@@ -141,14 +141,23 @@ export class CartService {
             var DELIVERY_CHARGES = cartData.data[0]['ADDON_AMOUNT'];
             var TOTAL_PRICE = cartData.data[0]['TOTAL_PRICE'];
             var NET_AMOUNT = cartData.data[0]['NET_AMOUNT'];
-            this.cartItems = cartData.cartItemDetails.map((item: any) => ({
-              ...item,
-              quantity: item.QUANTITY || 1,
-              PACKAGING_CHARGES: PACKAGING_CHARGES,
-              DELIVERY_CHARGES: DELIVERY_CHARGES,
-              NET_AMOUNT: NET_AMOUNT,
-              TOTAL_PRICE: TOTAL_PRICE,
-            }));
+            var DATA=cartData.data[0]
+            this.cartItems = cartData.cartItemDetails.map((item: any) => {
+              const category = cartData.categoryDetails?.find(
+                (cat: any) => cat.NAME === item.PRODUCT_NAME
+              );
+
+              return {
+                ...item,
+                CATEGORY_NAME: category ? category.CATEGORY_NAME : 'Unknown',
+                quantity: item.QUANTITY || 1,
+                PACKAGING_CHARGES,
+                DELIVERY_CHARGES,
+                NET_AMOUNT,
+                TOTAL_PRICE,
+                DATA
+              };
+            });
             // console.log(this.cartItems);
           }
           this.cartUpdated.next(this.cartItems);
@@ -164,16 +173,27 @@ export class CartService {
   currentProduct: any = {};
   addToCart(product: any): void {
     // console.log(product);
-
+    this.euserID = sessionStorage.getItem('userId') || 0;
+    this.userID = this.commonFunction.decryptdata(this.euserID) || 0;
     const index = this.cartItems.findIndex((p) => p.ID === product.ID);
     if (index !== -1) {
+      this.cartItems[index].CUSTOMER_ID=this.userID
       this.cartItems[index].quantity = this.cartItems[index].QUANTITY
         ? this.cartItems[index].QUANTITY
         : this.cartItems[index].quantity;
       this.currentProduct = this.cartItems[index];
+      this.currentProduct.CUSTOMER_ID=this.userID
     } else {
-      this.currentProduct = { ...product, quantity: 1 };
-      this.cartItems.push({ ...product, quantity: 1 });
+      this.currentProduct = {
+        ...product,
+        quantity: 1,
+        CUSTOMER_ID: this.userID,
+      };
+      this.cartItems.push({
+        ...product,
+        quantity: 1,
+        CUSTOMER_ID: this.userID,
+      });
     }
 
     this.updateCartCount();
@@ -208,14 +228,51 @@ export class CartService {
       // 🔄 Sync after change
     }
   }
+  removeFromCartnotoast(productId: any): void {
+    const index = this.cartItems.findIndex((p) => p.ID === productId.ID);
+    // console.log(this.cartItems[index],productId);
 
+    if (index !== -1) {
+      // }
+      this.currentProduct = this.cartItems[index];
+      if (this.currentProduct.CART_ID && this.currentProduct.CART_ITEM_ID) {
+        this.removeItemforServerwithouttoast();
+        this.cartUpdated.next(this.cartItems);
+      } else {
+        this.cartItems.splice(index, 1);
+        this.currentProduct.CART_ID = productId.CART_ID;
+        this.currentProduct.CART_ITEM_ID = productId.CART_ITEM_ID
+          ? productId.CART_ITEM_ID
+          : productId.ID;
+        this.removeItemforServerwithouttoast();
+      }
+      // console.log(this.currentProduct);
+
+      // if (this.currentProduct.CART_ID && this.currentProduct.CART_ITEM_ID) {
+      this.updateCartCount();
+      // 🔄 Sync after change
+    }
+  }
   updateCartCount(): void {
-    const total = this.cartItems.reduce((sum, item) => sum + item.quantity, 0);
-    this.cartCountSubject.next(total);
+    // Create a map to store unique items by ID
+    const uniqueItemsMap = new Map<number | string, any>();
+    console.log(this.cartItems);
+    this.cartItems.forEach((item) => {
+      if (!uniqueItemsMap.has(item.ID)) {
+        uniqueItemsMap.set(item.ID, item);
+      }
+    });
+
+    // Count the number of unique items
+    const totalUniqueItems = uniqueItemsMap.size;
+
+    this.cartCountSubject.next(totalUniqueItems);
   }
 
   private saveCartToServer(): void {
-    this.userID = this.commonFunction.decryptdata(this.euserID);
+    this.euserID = sessionStorage.getItem('userId') || 0;
+    // this.etoken = sessionStorage.getItem('token') || '';
+    this.userID = this.commonFunction.decryptdata(this.euserID) || 0;
     let sessionKey = sessionStorage.getItem('SESSION_KEYS') || '';
     let decypted = this.commonFunction.decryptdata(sessionKey);
     if (this.userID) {
@@ -227,11 +284,11 @@ export class CartService {
       // userId: userId,
       // items: this.cartItems.map((item) => ({
       //   // ID: item.ID,
-      CUSTOMER_ID: this.userID ? this.userID : 0,
+      CUSTOMER_ID: this.userID ? this.userID : this.currentProduct.CUSTOMER_ID,
       SESSION_KEY: decypted,
       CLIENT_ID: 1,
       PRODUCT_ID: this.currentProduct.ID,
-      VERIENT_ID: this.currentProduct.VERIENT_ID,
+      VERIENT_ID: this.currentProduct.VERIENT_ID ?? 0,
       QUANTITY: this.currentProduct.QUANTITY
         ? this.currentProduct.QUANTITY
         : this.currentProduct.quantity,
@@ -256,10 +313,10 @@ export class CartService {
       .subscribe(
         (response: any) => {
           if (response.code === 200) {
-            this.toastr.success('Cart updated successfully');
+            // this.toastr.success('Cart updated successfully');
             this.fetchCartFromServer(this.userID, this.etoken);
           } else {
-            this.toastr.error('Failed to update cart:', '');
+            // this.toastr.error('Failed to update cart:', '');
           }
         },
         (error) => {
@@ -271,7 +328,9 @@ export class CartService {
       );
   }
   updateCartToServer(): void {
-    this.userID = this.commonFunction.decryptdata(this.euserID);
+    this.euserID = sessionStorage.getItem('userId') || 0;
+    // this.etoken = sessionStorage.getItem('token') || '';
+    this.userID = this.commonFunction.decryptdata(this.euserID) || 0;
     let sessionKey = sessionStorage.getItem('SESSION_KEYS') || '';
     let decypted = this.commonFunction.decryptdata(sessionKey);
     if (this.userID) {
@@ -368,6 +427,50 @@ export class CartService {
             'Something went wrong please try again later',
             error
           );
+        }
+      );
+  }
+  private removeItemforServerwithouttoast(): void {
+    this.userID = this.commonFunction.decryptdata(this.euserID);
+    // if (!this.userID) return;
+
+    const payload = {
+      // userId: userId,
+      // items: this.cartItems.map((item) => ({
+      //   // ID: item.ID,
+      CART_ID: this.currentProduct.CART_ID,
+      CART_ITEM_ID: this.currentProduct.ID,
+      // CUSTOMER_ID: this.userID,
+      // SESSION_KEY: this.etoken,
+      // CLIENT_ID: 1,
+      // PRODUCT_ID: this.currentProduct.ID,
+      // VERIENT_ID: this.currentProduct.VERIENT_ID,
+      // QUANTITY: this.currentProduct.quantity,
+      // SIZE: this.currentProduct.SIZE,
+      // })),
+    };
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      applicationkey: this.commonapplicationkey,
+      apikey: this.commonapikey,
+      token: this.etoken,
+    });
+    this.http
+      .post(this.api.baseUrl + 'web/removeItem', payload, { headers })
+      .subscribe(
+        (response: any) => {
+          if (response.code === 200) {
+            // this.toastr.info('Cart item removed successfully');
+            this.fetchCartFromServer(this.userID, this.etoken); // Refresh cart after removal
+          } else {
+            // this.toastr.error('Failed to update cart:', '');
+          }
+        },
+        (error) => {
+          // this.toastr.error(
+          //   'Something went wrong please try again later',
+          //   error
+          // );
         }
       );
   }

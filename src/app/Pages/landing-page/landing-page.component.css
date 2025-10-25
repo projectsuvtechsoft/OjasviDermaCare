@@ -10,12 +10,11 @@
   content: "";
   position: absolute;
   inset: 0;
-  background-color: rgba(
-    0,
-    0,
-    0,
-    0.4
-  ); /* Black with 40% opacity (adjust as needed) */
+  background-color: rgba(0,
+      0,
+      0,
+      0.4);
+  /* Black with 40% opacity (adjust as needed) */
   z-index: 2;
   pointer-events: none;
 }
@@ -48,13 +47,16 @@
   from {
     transform: translateX(0);
   }
+
   to {
     transform: translateX(-50%);
   }
 }
+
 .testimonials-track {
   animation: slide 20s linear infinite;
 }
+
 .testimonials-track:hover {
   animation-play-state: paused;
 }
@@ -62,22 +64,28 @@
 tab-content {
   display: none;
 }
+
 .tab-content.active {
   display: block;
 }
+
 .carousel-container {
   scroll-behavior: smooth;
 }
+
 .product-card {
   transition: all 0.3s ease;
 }
+
 .product-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
+
 .tab-button {
   transition: all 0.3s ease;
 }
+
 .tab-button.active {
   color: rgb(90, 143, 105);
   border-bottom: 2px solid rgb(90, 143, 105);
@@ -86,9 +94,11 @@ tab-content {
 .carousel-container {
   scroll-behavior: smooth;
 }
+
 .product-card {
   transition: all 0.3s ease;
 }
+
 .tab-button {
   transition: all 0.3s ease;
 }
@@ -132,7 +142,8 @@ tab-content {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  position: relative; /* Change from absolute to relative */
+  position: relative;
+  /* Change from absolute to relative */
   z-index: 1;
 }
 
@@ -145,9 +156,11 @@ tab-content {
   overflow: hidden;
 } */
 .hero .carousel-item {
-  position: relative; /* Change from absolute to relative */
+  position: relative;
+  /* Change from absolute to relative */
   width: 100%;
-  height: auto; /* Ensures full height */
+  height: auto;
+  /* Ensures full height */
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -195,21 +208,26 @@ tab-content {
 .hero .owl-nav button:hover {
   background: rgba(0, 0, 0, 0.8);
 }
+
 @media (max-width: 768px) {
   .hero .carousel {
-    min-height: 30vh !important; /* Further reduce height for mobile */
+    min-height: 30vh !important;
+    /* Further reduce height for mobile */
   }
+
   .hero .carousel-item {
-    height: 30vh !important;
+    height: max-content !important;
   }
 
   .hero .carousel-container {
-    inset: 50px 20px; /* Reduce padding */
+    inset: 50px 20px;
+    /* Reduce padding */
     text-align: center;
   }
 
   .hero .carousel-title {
-    font-size: 20px; /* Reduce title size */
+    font-size: 20px;
+    /* Reduce title size */
   }
 
   .hero .carousel-location {
@@ -221,13 +239,15 @@ tab-content {
     padding: 8px 12px;
   }
 }
+
 @media (max-width: 575px) {
   .hero .owl-nav {
     top: 40%;
   }
 
   .hero .owl-nav button {
-    font-size: 18px; /* Reduce button size */
+    font-size: 18px;
+    /* Reduce button size */
     padding: 8px 12px;
   }
 }
@@ -295,6 +315,7 @@ tab-content {
 }
 
 @media (min-width: 1024px) {
+
   .hero .carousel-control-prev,
   .hero .carousel-control-next {
     width: 5%;
@@ -332,14 +353,13 @@ tab-content {
 
 .ojasvi-philosophy {
   background-color: #f5fdf7;
-  padding: 40px 20px;
-  font-family: "Segoe UI", sans-serif;
+  padding: 30px 20px;
+  font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
   color: #2e4b3b;
   text-align: center;
 }
 
 .ojasvi-philosophy h2 {
-  font-size: 28px;
   color: #4c7c5b;
   margin-bottom: 15px;
 }
@@ -365,7 +385,8 @@ tab-content {
   padding: 0;
   margin: 0 auto;
   max-width: 100%;
-  display: flex; /* Changed from grid to flex */
+  display: flex;
+  /* Changed from grid to flex */
 
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
@@ -413,6 +434,7 @@ tab-content {
     width: 100% !important;
   }
 }
+
 @media (min-width: 501px) {
   .widths-50 {
     width: 60% !important;
@@ -424,46 +446,55 @@ tab-content {
     font-size: 14px !important;
   }
 }
+
 @media (min-width: 501px) {
   .fontsizee {
     font-size: 16px !important;
   }
 }
+
 @media (min-width: 800px) {
   .fontsizee {
     font-size: 28px !important;
   }
 }
+
 @media (min-width: 900px) {
   .fontsizee {
     font-size: 30px !important;
   }
 }
+
 @media (min-width: 1100px) {
   .fontsizee {
     font-size: 34px !important;
   }
 }
+
 @media (min-width: 1200px) {
   .fontsizee {
     font-size: 40px !important;
   }
 }
+
 @media (max-width: 500px) {
   .fontsizee1 {
     font-size: 14px !important;
   }
 }
+
 @media (min-width: 501px) {
   .fontsizee1 {
     font-size: 16px !important;
   }
 }
+
 @media (min-width: 900px) {
   .fontsizee1 {
     font-size: 18px !important;
   }
 }
+
 @media (min-width: 1200px) {
   .fontsizee1 {
     font-size: 20px !important;
@@ -478,6 +509,7 @@ tab-content {
     padding: 12px 10px !important;
   }
 }
+
 @media (min-width: 501px) {
   .buttonwidd {
     line-height: 0.1 !important;
@@ -486,6 +518,7 @@ tab-content {
     padding: 12px 10px !important;
   }
 }
+
 @media (min-width: 700px) {
   .buttonwidd {
     line-height: 0.1 !important;
@@ -494,6 +527,7 @@ tab-content {
     padding: 16px 14px !important;
   }
 }
+
 @media (min-width: 900px) {
   .buttonwidd {
     line-height: 0.1 !important;
@@ -530,6 +564,7 @@ tab-content {
   .text-base {
     font-size: 15px !important;
   }
+
   .text-4xl {
     font-size: 1.6rem !important;
     line-height: 1.5rem !important;
@@ -538,6 +573,7 @@ tab-content {
   .text-sm {
     font-size: 11px !important;
   }
+
   .prodnam {
     font-size: 13px !important;
   }
@@ -553,10 +589,12 @@ tab-content {
   .w-20 {
     width: 3rem !important;
   }
+
   .h-20 {
     height: 3rem !important;
   }
 }
+
 .product-card img {
   height: 100% !important;
   min-height: 100% !important;
@@ -566,6 +604,7 @@ tab-content {
 .star {
   cursor: pointer;
 }
+
 .star.selected {
   color: gold !important;
 }
@@ -573,6 +612,7 @@ tab-content {
 .text-warning {
   color: #ffc107 !important;
 }
+
 .text-secondary {
   color: #6c757d !important;
 }
@@ -591,6 +631,7 @@ tab-content {
   0% {
     transform: translateX(0%);
   }
+
   100% {
     transform: translateX(-100%);
   }
@@ -599,59 +640,102 @@ tab-content {
 .scroll-disabled .testimonials-track:hover {
   animation-play-state: paused;
 }
+
 .tooltip-container {
   position: relative;
   display: inline-block;
   cursor: pointer;
 }
+
 .tooltip-container .custom-tooltip {
   font-size: 12px;
   visibility: hidden;
   background-color: #444;
   color: #fff;
-  text-align: left;
-  padding: 8px 10px 40px;
+  padding: 8px;
   border-radius: 6px;
   position: absolute;
-  z-index: 999;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: normal;
-  max-width: 400px;
-  width: max-content;
+  z-index: 10;
   opacity: 0;
   transition: opacity 0.3s ease;
-  word-wrap: break-word;
+  max-width: 500px;
+  /* Allow the tooltip to expand */
+  width: auto;
+  /* Adjust to content size */
+  word-break: break-word;
+  /* Break long words */
+  white-space: normal;
+  left: 50%;
+  transform: translateX(-50%);
+  /* Center the tooltip */
 }
 
 .tooltip-container:hover .custom-tooltip {
   visibility: visible;
   opacity: 1;
 }
+
+.tooltip-container .custom-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  /* Adjust the position of the arrow */
+  border-width: 5px;
+  border-style: solid;
+  border-color: #444 transparent transparent transparent;
+  /* Tooltip arrow */
+}
+
 @keyframes slide {
   from {
     transform: translateX(0);
   }
+
   to {
     transform: translateX(-20%);
   }
 }
+
 .testimonials-track {
   animation: slide 9s linear infinite;
 }
+
 .testimonials-track:hover {
   animation-play-state: paused;
 }
+
 /* Hide scrollbar for mobile horizontal scroll */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 .no-scrollbar {
-  -ms-overflow-style: none;  /* IE/Edge */
-  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
-html, body {
-  overflow: hidden;   /* disables both vertical & horizontal scroll */
+html,
+body {
+  overflow: hidden;
+  /* disables both vertical & horizontal scroll */
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 25s linear infinite;
 }

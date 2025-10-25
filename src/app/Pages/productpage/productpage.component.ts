@@ -41,6 +41,7 @@ export class ProductpageComponent {
   propertyId: any;
   Imgurl: any;
   varientId: any;
+  similarProducts: any[] = [];
 
   //  vaishnavi
   ngOnInit() {
@@ -82,6 +83,7 @@ export class ProductpageComponent {
       let project = sessionStorage.getItem('propertyId');
       this.userID = this.commonFunction.decryptdata(this.userId);
     });
+    this.calculateStarCounts();
   }
   private forceTop() {
     // 1) window/html/body
@@ -430,15 +432,16 @@ export class ProductpageComponent {
     const content = button.nextElementSibling as HTMLElement;
     const icon = button.querySelector('.accordion-icon');
 
-    const isOpen = content.style.display === 'block';
+    const isOpen = content.classList.contains('active');
 
     // Toggle visibility
-    content.style.display = isOpen ? 'none' : 'block';
+    content.classList.toggle('active', !isOpen);
 
     // Toggle icon
-    icon?.classList.toggle('ri-add-line', isOpen);
-    icon?.classList.toggle('ri-subtract-line', !isOpen);
+    icon?.classList.toggle('ri-arrow-up-s-line', isOpen);
+    icon?.classList.toggle('ri-arrow-down-s-line', !isOpen);
   }
+ 
 
   collapseAllAccordionsOnLoad(): void {
     window.addEventListener('load', () => {
@@ -447,6 +450,10 @@ export class ProductpageComponent {
         (content as HTMLElement).style.display = 'none';
       });
     });
+  }
+   hasActiveVariants(productId: number): boolean {
+    const variants = this.variantMap[productId] || [];
+    return variants.some((v) => v.STATUS === 1);
   }
   show: any;
   propertyyData: any = [];
@@ -493,6 +500,11 @@ export class ProductpageComponent {
             // this.totalPrice = this.propertyyData[0].RATE || 0;
             this.totalPrice =
               this.variantRateMap[this.propertyyData[0].ID] || 0;
+            // Load similar products by category of current product
+            const categoryId = this.propertyyData[0]?.CATEGORY_ID;
+            if (categoryId) {
+              this.loadSimilarProductsByCategory(categoryId);
+            }
           }
           this.show = false;
         }
@@ -712,7 +724,7 @@ export class ProductpageComponent {
         if (data && data.data && Array.isArray(data.data)) {
           this.propertyyData1 = data.data;
           this.loadingProducts = false;
-          console.log(' this.propertyyData1', this.propertyyData1);
+          // console.log(' this.propertyyData1', this.propertyyData1);
 
           // this.propertyyData1.forEach((product: any) => {
           //   const filter = `AND PRODUCT_ID = ${product.ID}`;
@@ -793,7 +805,7 @@ export class ProductpageComponent {
   }
   imageIndices: { [productId: string]: number } = {};
 
-  getImageArray(product: any): string[] {
+ getImageArray(product: any): string[] {
     try {
       const images = JSON.parse(product.Images);
       return images.map((img: any) => img.PHOTO_URL);
@@ -806,7 +818,7 @@ export class ProductpageComponent {
   producctImageurl: string = this.api.retriveimgUrl;
   producctImageurl2: string = this.api.retriveimgUrl + 'prdoctImages/';
 
-  IMAGEuRL = 'https://your-backend.com/uploads/';
+  IMAGEuRL = this.api.retriveimgUrl;
 
   getImageUrl(photo: string): string {
     if (!photo) {
@@ -816,7 +828,8 @@ export class ProductpageComponent {
   }
   selectedImages: { [index: number]: string } = {};
   changeMainImage(photoUrl: string, index: number): void {
-    this.selectedImages[index] = photoUrl;
+    // this.selectedImages[index] = photoUrl;
+    this.selectedImages = { ...this.selectedImages, [index]: photoUrl };
   }
 
   getImages(data: any): { PHOTO_URL: string }[] {
@@ -832,7 +845,7 @@ export class ProductpageComponent {
     }
   }
   updateTotalPrice(): void {
-    // console.log(this.selectedPrice,this.quantity);
+    console.log(this.selectedPrice,this.quantity);
 
     this.totalPrice = this.selectedPrice * this.quantity;
   }
@@ -848,7 +861,7 @@ export class ProductpageComponent {
     // console.log(data,'data');
     if (data.IS_VERIENT_AVAILABLE === 1 && data.VARIENTS) {
       const varients = JSON.parse(data.VARIENTS);
-      // console.log(varients,'varients');
+      console.log(varients,'varients');
       const selectedVarientdata = varients.find(
         (data: any) => data.VARIENT_ID === Number(varientId)
       );
@@ -908,7 +921,7 @@ export class ProductpageComponent {
   userID = this.commonFunction.decryptdata(this.userId);
   currentStockMap: { [productId: number]: number } = {};
   addToCart(product: any, isdetailschange: boolean): void {
-    console.log(product);
+    // console.log(product);
     // console.log(product.COUNTRY_ID);
     // console.log(product.ADDRESS_ID);
     // if (!this.userID) {
@@ -991,55 +1004,55 @@ export class ProductpageComponent {
 
   isLiked: boolean = false;
 
-  toggleLike(product: any) {
-    this.userID = this.commonFunction.decryptdata(this.euserID);
-    let sessionKey = sessionStorage.getItem('SESSION_KEYS') || '';
-    this.decyptedsessionKey = this.commonFunction.decryptdata(sessionKey);
+  // toggleLike(product: any) {
+  //   this.userID = this.commonFunction.decryptdata(this.euserID);
+  //   let sessionKey = sessionStorage.getItem('SESSION_KEYS') || '';
+  //   this.decyptedsessionKey = this.commonFunction.decryptdata(sessionKey);
 
-    if (this.userID) {
-      this.decyptedsessionKey = '';
-    }
+  //   if (this.userID) {
+  //     this.decyptedsessionKey = '';
+  //   }
 
-    const Data = {
-      PRODUCT_ID: product.ID,
-      CUSTOMER_ID: this.userID || 0,
-      SESSION_KEY: this.decyptedsessionKey,
-    };
+  //   const Data = {
+  //     PRODUCT_ID: product.ID,
+  //     CUSTOMER_ID: this.userID || 0,
+  //     SESSION_KEY: this.decyptedsessionKey,
+  //   };
 
-    if (product.isLiked) {
-      this.api.removeFavoriteProduct(Data).subscribe(
-        (res) => {
-          if (res['code'] === 200) {
-            this.toastr.success('Removed from Favourites');
-            product.isLiked = false;
-            this.getFavoriteProducts();
-          } else {
-            this.toastr.error('Failed to remove from favourites.');
-          }
-        },
-        (err) => {
-          this.toastr.error('Something went wrong. Try again later.');
-        }
-      );
-    } else {
-      const addData = { ...Data, CLIENT_ID: 1 };
+  //   if (product.isLiked) {
+  //     this.api.removeFavoriteProduct(Data).subscribe(
+  //       (res) => {
+  //         if (res['code'] === 200) {
+  //           this.toastr.success('Removed from Favourites');
+  //           product.isLiked = false;
+  //           this.getFavoriteProducts();
+  //         } else {
+  //           this.toastr.error('Failed to remove from favourites.');
+  //         }
+  //       },
+  //       (err) => {
+  //         this.toastr.error('Something went wrong. Try again later.');
+  //       }
+  //     );
+  //   } else {
+  //     const addData = { ...Data, CLIENT_ID: 1 };
 
-      this.api.addFavoriteProduct(addData).subscribe(
-        (res) => {
-          if (res['code'] === 200) {
-            this.toastr.success('Added to Favourites');
-            product.isLiked = true;
-            this.getFavoriteProducts();
-          } else {
-            this.toastr.error('Failed to add to favourites.');
-          }
-        },
-        (err) => {
-          this.toastr.error('Something went wrong. Try again later.');
-        }
-      );
-    }
-  }
+  //     this.api.addFavoriteProduct(addData).subscribe(
+  //       (res) => {
+  //         if (res['code'] === 200) {
+  //           this.toastr.success('Added to Favourites');
+  //           product.isLiked = true;
+  //           this.getFavoriteProducts();
+  //         } else {
+  //           this.toastr.error('Failed to add to favourites.');
+  //         }
+  //       },
+  //       (err) => {
+  //         this.toastr.error('Something went wrong. Try again later.');
+  //       }
+  //     );
+  //   }
+  // }
 
   totalFavourites: any;
   FavouritesData: any;
@@ -1139,6 +1152,11 @@ export class ProductpageComponent {
         this.selectedVariantId1 = this.propertyyData[0].ID;
         this.selectedPrice = this.variantRateMap[this.propertyyData[0].ID] || 0;
         this.totalPrice = this.variantRateMap[this.propertyyData[0].ID] || 0;
+        // Load similar products by category of current product
+        const categoryId = this.propertyyData[0]?.CATEGORY_ID;
+        if (categoryId) {
+          this.loadSimilarProductsByCategory(categoryId);
+        }
       }
     } else {
       this.getpropertyDetails(this.propertyId);
@@ -1152,19 +1170,223 @@ export class ProductpageComponent {
     }
     return chunks;
   }
-  
-  guest="false";
-verifylogin() {
-  // Refresh the userId from sessionStorage
-  const currentUserId = sessionStorage.getItem('userId');
-  this.guest=sessionStorage.getItem('IS_GUEST')||"false";
-  console.log('Updated userId:', this.userId);
- 
-  if (!currentUserId && this.guest=="false") {
-    this.showLoginModal();
+
+  guest = 'false';
+  verifylogin() {
+    // Refresh the userId from sessionStorage
+    const currentUserId = sessionStorage.getItem('userId');
+    this.guest = sessionStorage.getItem('IS_GUEST') || 'false';
+    console.log('Updated userId:', this.userId);
+
+    if (!currentUserId && this.guest == 'false') {
+      this.showLoginModal();
+    } else {
+      // User is logged in
+      console.log('User is logged in');
+    }
+  }
+  getThumbnailStyle(photoUrl: string, i: number, data: any) {
+    const isSelected =
+      this.selectedImages[i] === photoUrl ||
+      (!this.selectedImages[i] &&
+        this.getImages(data)[0]?.PHOTO_URL === photoUrl);
+    return {
+      'box-shadow': isSelected ? '0px 0px 4px 1px #00000040' : 'none',
+    };
+  }
+  getRoundedRating(value: number): number {
+    return Math.round(value);
+  }
+
+  starCounts: { [key: number]: number } = {};
+  calculateStarCounts() {
+    // Initialize counts
+    this.starCounts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+
+    // Count ratings
+    this.ReviewData.forEach((review) => {
+      const rating = review.RATINGS;
+      if (rating >= 1 && rating <= 5) {
+        this.starCounts[rating]++;
+      }
+    });
+  }
+
+  // Return count for a given star
+  // Calculate count of reviews for a specific rating
+  getRatingCount(rating: number): number {
+    if (!this.ReviewData || this.ReviewData.length === 0) return 0;
+    return this.ReviewData.filter((review) => review.RATINGS === rating).length;
+  }
+
+  // Calculate percentage for the rating bar
+  getRatingPercentage(rating: number): number {
+    if (!this.ReviewData || this.ReviewData.length === 0) return 0;
+    const count = this.getRatingCount(rating);
+    return (count / this.ReviewData.length) * 100;
+  }
+
+   toggleLike(product: any, event: any) {
+    event.preventDefault(); // stop link navigation
+    event.stopPropagation();
+    // Gate behind login: if not logged in or logged in as guest, show login modal
+    const currentUserId = sessionStorage.getItem('userId');
+    const isGuest = (sessionStorage.getItem('IS_GUEST') || 'false') === 'true';
+    if (!currentUserId || isGuest) {
+      this.showLoginModal();
+      return;
+    }
+    this.userID = this.commonFunction.decryptdata(this.euserID);
+    let sessionKey = sessionStorage.getItem('SESSION_KEYS') || '';
+    this.decyptedsessionKey = this.commonFunction.decryptdata(sessionKey);
+
+    if (this.userID) {
+      this.decyptedsessionKey = '';
+    }
+
+    const Data = {
+      PRODUCT_ID: product.ID,
+      CUSTOMER_ID: this.userID || 0,
+      SESSION_KEY: this.decyptedsessionKey,
+    };
+
+    if (product.isLiked) {
+      this.api.removeFavoriteProduct(Data).subscribe(
+        (res) => {
+          if (res['code'] === 200) {
+            this.toastr.success('Removed from Favourites');
+            product.isLiked = false;
+            this.getFavoriteProducts();
+          } else {
+            this.toastr.error('Failed to remove from favourites.');
+          }
+        },
+        (err) => {
+          this.toastr.error('Something went wrong. Try again later.');
+        }
+      );
+    } else {
+      const addData = { ...Data, CLIENT_ID: 1 };
+
+      this.api.addFavoriteProduct(addData).subscribe(
+        (res) => {
+          if (res['code'] === 200) {
+            this.toastr.success('Added to Favourites');
+            product.isLiked = true;
+            this.getFavoriteProducts();
+          } else {
+            this.toastr.error('Failed to add to favourites.');
+          }
+        },
+        (err) => {
+          this.toastr.error('Something went wrong. Try again later.');
+        }
+      );
+    }
+  }
+
+
+
+shareProduct(product: any): void {
+  const productUrl = `${window.location.origin}/product_details/${product.ID}`;
+
+  if (navigator.share) {
+    navigator.share({
+      title: product.NAME,
+      text: `Check out ${product.NAME}!`,
+      url: productUrl
+    }).then(() => {
+      console.log('Product shared successfully');
+    }).catch((error) => {
+      console.log('Error sharing:', error);
+      this.fallbackShare(productUrl);
+    });
   } else {
-    // User is logged in
-    console.log('User is logged in');
+    this.fallbackShare(productUrl);
   }
 }
+fallbackShare(url: string): void {
+  navigator.clipboard.writeText(url).then(() => {
+    this.showShareToast('Link copied to clipboard!');
+  }).catch(err => {
+    console.error('Failed to copy:', err);
+    alert('Failed to copy link. Please copy manually: ' + url);
+  });
+}
+
+showShareToast(message: string): void {
+  const toast = document.createElement('div');
+  toast.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    color: #16a34a;
+    border: 2px solid #16a34a;
+    padding: 16px 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    z-index: 9999;
+    font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    animation: slideInRight 0.4s ease;
+  `;
+  toast.innerHTML = `
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <i class="ri-share-line" style="font-size: 20px;"></i>
+      <span style="font-weight: 600; font-size: 14px;">${message}</span>
+    </div>
+  `;
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(100%)';
+    toast.style.transition = 'all 0.4s ease';
+    setTimeout(() => {
+      if (document.body.contains(toast)) {
+        document.body.removeChild(toast);
+      }
+    }, 400);
+  }, 3000);
+}
+
+ loadSimilarProductsByCategory(categoryId: number) {
+    const filter = `AND STATUS = 1 AND IS_VERIENT_AVAILABLE = 1 AND CATEGORY_ID = ${categoryId} AND ID <> ${this.productId}`;
+    this.api
+      .getAllProductMaster(0, 0, 'id', 'desc', filter, '')
+      .subscribe((res: any) => {
+        if (res && res.data && Array.isArray(res.data)) {
+          this.similarProducts = res.data.slice(0, 4);
+          // prepare variant maps for price/stock display
+          this.similarProducts.forEach((product: any) => {
+            let variants = product.VARIENTS;
+            if (typeof variants === 'string') {
+              try {
+                variants = JSON.parse(variants);
+              } catch (e) {
+                variants = [];
+              }
+            }
+            if (Array.isArray(variants) && variants.length > 0) {
+              this.variantRateMap1[product.ID] = variants[0].RATE;
+              this.selectedVariantMap1[product.ID] = variants[0].VARIENT_ID;
+              const activeVariants = variants.filter((v: any) => v.STATUS === true || v.STATUS === 1) || [];
+              this.variantMap1[product.ID] = activeVariants;
+              this.selectedVarientrecent[product.ID] = variants[0];
+            } else {
+              this.variantRateMap1[product.ID] = 0;
+            }
+            // ensure an image index exists per product for safe access
+            if (!(product.ID in this.imageIndices)) {
+              this.imageIndices[product.ID] = 0;
+            }
+          });
+        } else {
+          this.similarProducts = [];
+        }
+      });
+  }
+
+
+
 }
