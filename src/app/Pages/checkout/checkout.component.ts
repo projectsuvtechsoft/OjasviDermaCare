@@ -47,6 +47,8 @@ export class CheckoutComponent {
   @Input() cartDetails: any;
   savedAddresses: any[] = [];
   @Input() subtotal: any;
+  @Input() selectedDiscount: number = 0;
+  @Input() selectedPrice: number = 0;
   @Input() userId: any;
   cityList: any[] = [];
   hasAddresses: boolean = false;
@@ -226,7 +228,7 @@ export class CheckoutComponent {
   //     this.resetAddressForm(); // Reset for a new address
   //   }
   // }
-openAddressForm(addressId: string | null = null) {
+  openAddressForm(addressId: string | null = null) {
     // console.log('Opening address form for ID:', addressId);
     this.showAddressForm = true; // Switch to the form view inside the drawer
     if (addressId) {
@@ -259,7 +261,7 @@ openAddressForm(addressId: string | null = null) {
       this.verificationStatus = 'initial'; // Reset for a new address
     }
   }
- 
+
   /**
    * Switches the drawer view back to the list of saved addresses.
    */
@@ -442,7 +444,7 @@ openAddressForm(addressId: string | null = null) {
     //   this.toastr.error('Please fill all required fields.', '');
     //   return;
     // }
-     console.log(this.addressForm)
+    console.log(this.addressForm);
     if (
       (this.addressForm.NAME == '' ||
         this.addressForm.NAME == null ||
@@ -867,7 +869,7 @@ openAddressForm(addressId: string | null = null) {
   }
 
   isProcessingPayment = false;
-  enableDownload=false
+  enableDownload = false;
   async processPaymentWithToken() {
     this.isProcessingPayment = true;
     if (!this.selectedAddress) {
@@ -904,7 +906,14 @@ openAddressForm(addressId: string | null = null) {
           baseUrl + 'web/cart/proceedToPayment',
           {
             nonce: token,
-            amount: this.subtotal * 100,
+            amount:
+              Math.round(
+                this.selectedPrice -
+                  this.selectedDiscount +
+                  (this.cartDetails.cartDetails[0]['DATA'].NET_AMOUNT -
+                    this.cartDetails.cartDetails[0]['DATA']
+                      .TOTAL_DISCOUNT_AMOUNT)
+              ) * 100,
             PAYMENT_MODE: 'O',
             ADDRESS_ID: this.selectedAddress!.ID,
             CART_ID: this.cartId,
@@ -914,7 +923,7 @@ openAddressForm(addressId: string | null = null) {
             STATE_NAME: this.selectedAddress.STATE_NAME,
             CITY_NAME: this.selectedAddress.CITY,
             PINCODE: this.selectedAddress.PINCODE,
-            COUNTRY_CODE:'+1',
+            COUNTRY_CODE: '+1',
             CLIENT_ID: 1,
           },
           {
@@ -931,7 +940,8 @@ openAddressForm(addressId: string | null = null) {
             // );
             if (response.code == 200) {
               this.toastr.success('Payment successful!', 'Success');
-              this.cartDetails.cartDetails[0]['INVOICE_NUMBER']=response.invoiceNumber
+              this.cartDetails.cartDetails[0]['INVOICE_NUMBER'] =
+                response.invoiceNumber;
 
               this.currentStep = 4;
               // this.closePaymentModal();
@@ -941,9 +951,9 @@ openAddressForm(addressId: string | null = null) {
 
               this.showPaymentModal = false;
               this.showReceiptModal = true;
-              setTimeout(()=>{
-                this.enableDownload=true
-              },5000)
+              setTimeout(() => {
+                this.enableDownload = true;
+              }, 5000);
               // this.paymentSuccessModalVisible = true;
             } else {
               this.toastr.error('Payment failed!', 'Error');
@@ -1087,7 +1097,7 @@ openAddressForm(addressId: string | null = null) {
   }
 
   onStateBlur() {
-    this.addressForm.STATE_NAME=this.stateSearch
+    this.addressForm.STATE_NAME = this.stateSearch;
     setTimeout(() => (this.filteredStates = []), 100);
   }
 
@@ -1187,12 +1197,12 @@ openAddressForm(addressId: string | null = null) {
   // ------------------ CITY ------------------
 
   onCityBlur() {
-    this.addressForm.CITY_NAME=this.citySearch
+    this.addressForm.CITY_NAME = this.citySearch;
     setTimeout(() => (this.filteredCities = []), 100);
   }
 
   selectCity(city: any) {
-    this.addressForm.CITY_NAME = city.NAME ??  this.citySearch;
+    this.addressForm.CITY_NAME = city.NAME ?? this.citySearch;
     this.citySearch = city.NAME;
     this.filteredCities = [];
   }
@@ -1323,7 +1333,7 @@ openAddressForm(addressId: string | null = null) {
       this.filteredStates = [];
       this.stateList = []; // optional: reset state list
     }
-    this.addressForm.COUNTRY_NAME=this.countrySearch
+    this.addressForm.COUNTRY_NAME = this.countrySearch;
   }
   generateShortCode(name: string): string {
     if (!name) return '';
@@ -1386,13 +1396,13 @@ openAddressForm(addressId: string | null = null) {
       }
     });
   }
-  
+
   goToStep(step: 'cart' | 'address' | 'payment') {
     // Only allow navigation to completed or active steps
     if (step === 'cart') {
       this.currentStep = 1;
-      sessionStorage.setItem('step',this.currentStep.toString())
-      this.visibleChange.emit(true)
+      sessionStorage.setItem('step', this.currentStep.toString());
+      this.visibleChange.emit(true);
       this.closeAddressDrawer(); // Close the drawer first
       // Note: If they click 'address', it just closes the drawer
       // if it's already the active step, or navigates to the address page.
@@ -1722,59 +1732,57 @@ openAddressForm(addressId: string | null = null) {
     // this.resetForm(); // If you have a reset method
   }
 
-//     downloadInvoice() {
-//   // console.log(this.cartDetails.cartDetails)
-//   const fileUrl = this.api.retriveimgUrl + 'Invoice/' + this.cartDetails.cartDetails[0]['INVOICE_NUMBER'] + '.pdf';
-//   const link = document.createElement('a');
-//   link.href = fileUrl;
-//   link.target='_blank'
-//   link.download = 'invoice.pdf';
-//   link.click();
-// }
-// async downloadInvoice() {
-//   const invoiceNumber = this.cartDetails.cartDetails[0]['INVOICE_NUMBER'];
-//     const fileUrl = this.api.retriveimgUrl + 'Invoice/' + this.cartDetails.cartDetails[0]['INVOICE_NUMBER'] + '.pdf';
+  //     downloadInvoice() {
+  //   // console.log(this.cartDetails.cartDetails)
+  //   const fileUrl = this.api.retriveimgUrl + 'Invoice/' + this.cartDetails.cartDetails[0]['INVOICE_NUMBER'] + '.pdf';
+  //   const link = document.createElement('a');
+  //   link.href = fileUrl;
+  //   link.target='_blank'
+  //   link.download = 'invoice.pdf';
+  //   link.click();
+  // }
+  // async downloadInvoice() {
+  //   const invoiceNumber = this.cartDetails.cartDetails[0]['INVOICE_NUMBER'];
+  //     const fileUrl = this.api.retriveimgUrl + 'Invoice/' + this.cartDetails.cartDetails[0]['INVOICE_NUMBER'] + '.pdf';
 
-//   try {
-//     const response = await fetch(fileUrl, { method: 'GET', mode: 'no-cors' });
-//     if (response.ok) {
-//       const link = document.createElement('a');
-//       link.href = fileUrl;
-//       link.target = '_blank';
-//       link.download = 'invoice.pdf';
-//       link.click();
-//     } else {
-//       console.error('Invoice not ready yet');
-//     }
-//   } catch (error) {
-//     console.error('Error checking invoice:', error);
-//   }
-// }
-isDownloading = false;
+  //   try {
+  //     const response = await fetch(fileUrl, { method: 'GET', mode: 'no-cors' });
+  //     if (response.ok) {
+  //       const link = document.createElement('a');
+  //       link.href = fileUrl;
+  //       link.target = '_blank';
+  //       link.download = 'invoice.pdf';
+  //       link.click();
+  //     } else {
+  //       console.error('Invoice not ready yet');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error checking invoice:', error);
+  //   }
+  // }
+  isDownloading = false;
 
-downloadInvoice() {
-  this.isDownloading = true;
+  downloadInvoice() {
+    this.isDownloading = true;
 
-  const fileUrl =
-    this.api.retriveimgUrl +
-    'Invoice/' +
-    this.cartDetails.cartDetails[0]['INVOICE_NUMBER'] +
-    '.pdf';
+    const fileUrl =
+      this.api.retriveimgUrl +
+      'Invoice/' +
+      this.cartDetails.cartDetails[0]['INVOICE_NUMBER'] +
+      '.pdf';
 
-  // Simulating delay (e.g. 5 seconds for invoice generation)
-  setTimeout(() => {
-    const link = document.createElement('a');
-    link.href = fileUrl;
-    link.target = '_blank';
-    link.download = 'invoice.pdf';
-    link.click();
-    this.isDownloading = false; // stop loader
-  }, 5000);
-}
+    // Simulating delay (e.g. 5 seconds for invoice generation)
+    setTimeout(() => {
+      const link = document.createElement('a');
+      link.href = fileUrl;
+      link.target = '_blank';
+      link.download = 'invoice.pdf';
+      link.click();
+      this.isDownloading = false; // stop loader
+    }, 5000);
+  }
 
-
-
-orderStatus: 'A' | 'BP' | 'SP' | 'D' | 'DD' | 'DC' = 'A'; // Example initial status 'A' (Pending)
+  orderStatus: 'A' | 'BP' | 'SP' | 'D' | 'DD' | 'DC' = 'A'; // Example initial status 'A' (Pending)
 
   // Mapping the statuses to a numerical step for progress bar calculation
   private statusMap: { [key: string]: number } = {

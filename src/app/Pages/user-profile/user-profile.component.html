@@ -815,7 +815,7 @@
                   </div>
                 </div>
 
-               
+
                 <div
                   class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow"
                 >
@@ -1451,7 +1451,8 @@
           Cancel
         </button>
         <button
-          type="submit"
+          type="button"
+          (click)="openVerifyModal()"
           [disabled]="isUpdatingUserDetails"
           class="bg-[#5a8f69] text-white px-3 py-1.5 rounded text-sm font-medium hover:bg-opacity-90 transition"
         >
@@ -1459,6 +1460,123 @@
         </button>
       </div>
     </form>
+  </div>
+</div>
+
+<div class="auth-card-container fixed inset-0 z-[60]" *ngIf="openVerify">
+  <div
+    class="min-h-screen d-flex justify-content-center align-items-center"
+    style="min-height: 100vh"
+  >
+    <div class="auth-wrapper">
+      <div
+        class="auth-card frosted-glass shadow-sm p-4 rounded-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-8 relative overflow-hidden"
+        style="width: 380px !important"
+      >
+        <div
+          class="d-flex align-items-center justify-content-center mb-3"
+          style="gap: 12px"
+        >
+          <img
+            src="assets/img/logo1.png"
+            alt="Logo"
+            class="img-fluid"
+            style="height: 60px; width: 60px; min-width: 45px; margin-top: 8px"
+          />
+          <div
+            class="d-flex flex-column justify-content-center"
+            style="margin-left: -10px !important"
+          >
+            <div
+              class="fw-bold"
+              style="
+                font-size: 28px;
+                color: rgb(90, 143, 105);
+                text-align: left;
+                line-height: 1.5;
+              "
+            >
+              Ojasvi Derma care
+            </div>
+            <div
+              class="subtext"
+              style="
+                font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+                color: #ffc200;
+                line-height: 1;
+                text-align: left;
+              "
+            >
+              From Garden To Glow
+            </div>
+          </div>
+        </div>
+
+        <div class="otp-content">
+          <h2>Enter Verification Code</h2>
+          <p class="verification-text">
+            We've sent a 4-digit verification code to<br />
+            <span class="phone-number">{{ user.email }} </span>
+          </p>
+
+          <div style="color: red; margin-bottom: 15px" *ngIf="statusCode != ''">
+            {{ statusCode }}
+          </div>
+
+          <form (ngSubmit)="VerifyOTP()" class="otp-form">
+            <div class="otp-input-group">
+              <input
+                *ngFor="let i of [0, 1, 2, 3]"
+                class="otp-input"
+                type="text"
+                [(ngModel)]="otp[i]"
+                [name]="'otp-' + i"
+                maxlength="1"
+                (keydown)="moveToNext($event, i)"
+                (keypress)="allowOnlyNumbers($event)"
+                (ngModelChange)="onChange($event, i)"
+                (paste)="handlePaste($event)"
+                required
+                autocomplete="off"
+              />
+            </div>
+
+            <div class="timer-section">
+              <span *ngIf="remainingTime > 0" >{{ remainingTime }}</span>
+              <p class="resend-text" style="color: #636363">
+                Didn’t receive the code?
+                <a
+                  (click)="remainingTime == 0 ? resendOtp() : ''"
+                  [ngStyle]="{
+                    cursor: remainingTime > 0 ? 'wait' : 'pointer',
+                    color:
+                      remainingTime > 0
+                        ? '#636363 !important'
+                        : 'rgb(90, 143, 105) !important'
+                  }"
+                  [class.disabled]="remainingTime > 0"
+                  [ngClass]="{ 'finished-time': remainingTime <= 0 }"
+                >
+                  <span> Resend </span>
+                </a>
+              </p>
+            </div>
+
+            <button
+              type="submit"
+              class="verify-button"
+              [disabled]="isverifyOTP"
+            >
+              <span
+                *ngIf="isverifyOTP"
+                class="spinner-border spinner-border-sm me-2"
+              ></span>
+              Verify
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 

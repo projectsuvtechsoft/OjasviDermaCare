@@ -1,4 +1,6 @@
 import { DatePipe } from '@angular/common';
+import { interval, takeWhile } from 'rxjs';
+
 import {
   HttpErrorResponse,
   HttpEventType,
@@ -8,6 +10,7 @@ import {
   Component,
   OnInit,
   OnDestroy,
+  inject,
   HostListener,
   ChangeDetectorRef,
   Renderer2,
@@ -23,6 +26,8 @@ import { CartService } from 'src/app/Service/cart.service';
 import { CommonFunctionService } from 'src/app/Service/CommonFunctionService';
 import { LoaderService } from 'src/app/Service/loader.service';
 import { ModalService } from 'src/app/Service/modal.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
 export class AddressMaster {
   ADDRESS = '';
   COUNTRY_NAME = '';
@@ -67,6 +72,15 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   sidebarOpen = false;
   isMobile = false;
   totalOrders: any;
+  openVerify: boolean = false;
+  isverifyOTP: boolean = false;
+  statusCode: any = '';
+  otp: string[] = ['', '', '', '', '', ''];
+  remainingTime: number = 60;
+  otpSent: boolean = false;
+  USER_NAME: any;
+  modalVisible: boolean = false;
+  type: any;
   dataList1: {
     ID: number;
     CUST_ID: number;
@@ -296,6 +310,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       name: '',
       mobile: '',
     };
+    // this.remainingTime=60;
+    // this.timerSubscription=null
   }
 
   updateUserDetails() {
@@ -348,11 +364,13 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
         if (response?.code === 200) {
           this.toastr.success('User details updated successfully!', 'Success');
+          this.openVerify=false;
           this.user.NAME = this.userDetailsForm.name.trim();
           this.user.mobile = this.userDetailsForm.mobile.trim();
           this.closeUserDetailsModal();
         } else {
           this.toastr.error('Update failed.', 'Error');
+          this.openVerify=false;
         }
       },
       error: (err) => {
@@ -849,7 +867,7 @@ isTransitioning: boolean = false;
       );
   }
 
- 
+
 
     orders: any;
 cartItemsMap: { [orderId: string]: any[] } = {}; // key: ORDER_ID, value: cart items array
@@ -858,15 +876,15 @@ getOrders() {
   const customerId = this.commonFunction.decryptdata(
     sessionStorage.getItem('userId') || ''
   );
- 
+
   this.isloadstate = true;
- 
+
   this.api
     .Ordermaster(0, 0, 'id', '', ' AND CUSTOMER_ID = ' + customerId)
     .subscribe(
       (data: any) => {
         if (data['code'] == 200) {
- 
+
           this.orders = data['data'].map((order: any) => {
             // console.log(this.orders)
             // Set invoice URL
@@ -877,20 +895,20 @@ getOrders() {
     ? `${this.api.retriveimgUrl}Invoice/${order.INVOICE_NUMBER}.pdf`
     : null;
   //  this.invoicePdfUrl  = `${this.api.retriveimgUrl}Invoice/${  order.invoicePdfUrl }.pdf`;
- 
+
             // Parse CART_ITEMS into a separate map
             try {
               this.cartItemsMap[order.ID] = JSON.parse(order.CART_ITEMS || '[]');
               console.log(this.cartItemsMap);
-             
+
             } catch (e) {
               console.error('Error parsing CART_ITEMS for order', order.ID, e);
               this.cartItemsMap[order.ID] = [];
             }
- 
+
             return order;
           });
- 
+
           // Show first few orders
 this.visibleOrders = this.orders.slice(0, this.itemsToShow);
           // Load more check
@@ -1849,7 +1867,7 @@ navigateToProduct(productId: number) {
     // Navigate to product detail page
     this.router.navigate(['product_details', productId]);
   }
- 
+
   today = new Date();
  removeFromWishlist(product: any): void {
     this.userID = this.commonFunction.decryptdata(this.euserID);
@@ -1962,5 +1980,196 @@ Clearfilter(){
   this.getOrders()
    this.showFilter = false;
 }
- 
+moveToNext(event: KeyboardEvent, index: number) {
+    if (event.key === 'Backspace' && !this.otp[index] && index > 0) {
+      // If backspace is pressed on empty input, move to previous input
+      const prevInput = document.getElementsByClassName('otp-input')[
+        index - 1
+      ] as HTMLInputElement;
+      if (prevInput) {
+        prevInput.focus();
+      }
+    }
+  }
+  allowOnlyNumbers(event: KeyboardEvent) {
+    const charCode = event.which ? event.which : event.keyCode;
+    if (charCode < 48 || charCode > 57) {
+      event.preventDefault();
+    }
+  }
+
+  onChange(value: string, index: number) {
+    // Ensure the input is a number
+    if (/^\d*$/.test(value)) {
+      // If a value is entered and there's a next input, move to it
+      if (value && index < 3) {
+        const nextInput = document.getElementsByClassName('otp-input')[
+          index + 1
+        ] as HTMLInputElement;
+        if (nextInput) {
+          nextInput.focus();
+        }
+      }
+    } else {
+      // If not a number, clear the input
+      this.otp[index] = '';
+    }
+  }
+  handlePaste(event: ClipboardEvent) {
+    event.preventDefault();
+    const pastedData = event.clipboardData?.getData('text');
+    if (pastedData && /^\d{4}$/.test(pastedData)) {
+      // If pasted data is 4 digits, distribute across inputs
+      for (let i = 0; i < 4; i++) {
+        this.otp[i] = pastedData[i];
+      }
+    }
+  }
+  VerifyOTP() {
+    if (this.otp.join('').length < 4) {
+      this.toastr.error('Please Enter OTP...', '');
+      return;
+    }
+    // this.isverifyOTP = true; // Set true before API call
+    // console.log(this.isverifyOTP,'this.isverifyOTP')
+    const otp1 = this.otp.join('');
+    this.isverifyOTP = true; // Set true before API call
+    // this.loadData();
+    // console.log(this.whichOTP)
+    // if (this.whichOTP == 'login') {
+    // let CLOUD_ID = this.cookie.get('CLOUD_ID');
+    //  this.USER_NAME = this.data.CUSTOMER_NAME
+    this.USER_NAME = sessionStorage.getItem('USER_NAME');
+    // console.log(this.USER_NAME, ' this.USER_NAME');
+    this.api
+      .verifyOTP(
+        this.type,
+        otp1,
+        this.user.email // this.USER_ID,
+        // this.USER_NAME,
+        // 1,
+        // CLOUD_ID
+      )
+      .subscribe({
+        next: (successCode: any) => {
+          // console.log('successCode', successCode.body.code);
+          // console.log(this.isverifyOTP, 'this.isverifyOTP');
+          if (successCode.body.code === 200) {
+            // console.log('wertyuiko');
+            //  this.USER_NAME = this.data.CUSTOMER_NAME
+            // this.isverifyOTP = false; // Set true before API call
+            // console.log(this.isverifyOTP, 'this.isverifyOTP');
+            // this.toastr.success('OTP verified successfully...', '');
+            this.remainingTime=60;
+            this.updateUserDetails();
+            this.modalService.dismissAll();
+            this.isOk = false;
+            // this.createCustomer();
+            this.modalVisible = false;
+            // this.openRegister = false;
+            this.openVerify = false;
+
+            this.otp = ['', '', '', ''];
+            // this.isverifyOTP = false;
+            this.statusCode = '';
+          } else {
+            this.toastr.error('Invalid OTP');
+          }
+          // console.log('successCode.body.code', successCode.body.code);
+          this.isverifyOTP = false;
+          // this.stopLoader();
+        },
+        error: (errorResponse) => {
+          console.error('verifyOTP API failed:', errorResponse);
+          if (errorResponse.error.code === 300) {
+            this.toastr.error(
+              'Invalid request. Please check the entered details.'
+            );
+            // console.log('xxx');
+            this.statusCode = 'invalid OTP';
+            this.stopLoader();
+          } else {
+            // console.log('sss');
+            this.toastr.error('Something went wrong. Please try again.');
+            this.statusCode = '';
+            this.stopLoader();
+          }
+          // console.log('kkkkk');
+          this.isverifyOTP = false;
+          this.stopLoader();
+        },
+      });
+    // }
+  }
+  private modalService: any = inject(NgbModal);
+  timerSubscription: any;
+  resendOtp() {
+    this.otp = ['', '', '', ''];
+    this.otp[0] = '';
+    this.otp[1] = '';
+    this.otp[2] = '';
+    this.otp[3] = '';
+    if (this.remainingTime > 0) {
+      this.toastr.info(
+        `Please wait ${this.remainingTime} seconds before resending OTP.`,
+        ''
+      );
+      return; // stop execution if timer is running
+    }
+
+    this.otpSent = false;
+    this.remainingTime = 60; // reset timer
+    this.startTimer();
+  //   if (this.whichOTP == 'login') {
+  //     // this.loginotpverification();
+  //   // } else if (this.whichOTP == 'register') {
+  //   //   this.save();
+  //   // }
+  }
+  startTimer(): void {
+      if (this.timerSubscription) {
+        return;
+      }
+
+      const maxDuration = 60; // 30 seconds max
+      this.remainingTime = Math.min(this.remainingTime, maxDuration);
+
+      this.timerSubscription = interval(1000)
+        .pipe(takeWhile(() => this.remainingTime > 0))
+        .subscribe({
+          next: () => this.remainingTime--,
+          complete: () => (this.timerSubscription = null),
+        });
+    }
+  openVerifyModal(){
+    if (
+      !this.userDetailsForm.name.trim() &&
+      !this.userDetailsForm.mobile.trim()
+    ) {
+      this.toastr.error('Please fill in all fields.', 'Error');
+      return;
+    }
+
+    if (
+      this.userDetailsForm.name == '' ||
+      this.userDetailsForm.name == undefined ||
+      this.userDetailsForm.name == null
+    ) {
+      this.toastr.error('Please enter name.', 'Error');
+      return;
+    }
+    if (
+      this.userDetailsForm.mobile == '' ||
+      this.userDetailsForm.mobile == undefined ||
+      this.userDetailsForm.mobile == null
+    ) {
+      this.toastr.error('Please enter mobile no.', 'Error');
+      return;
+    }
+    this.openVerify=true;
+    this.startTimer();
+  }
+
+
 }
+

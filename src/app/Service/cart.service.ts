@@ -72,6 +72,7 @@ export class CartService {
     private api: ApiServiceService,
     private toastr: ToastrService
   ) {
+
     this.quantityChange$
       .pipe(debounceTime(800)) // Wait 500ms after last change
       .subscribe((item) => {
@@ -82,6 +83,8 @@ export class CartService {
           : item.quantity;
         this.currentProduct.CART_ID = item.CART_ID;
         this.currentProduct.CART_ITEM_ID = item.ID;
+        this.currentProduct.VERIENT_ID = item.VERIENT_ID;
+        // this.currentProduct.SIZE = item.SIZE;
         this.updateCartToServer();
       });
   }
@@ -135,12 +138,12 @@ export class CartService {
           // console.log(cartData.cartItemDetails)
           if (!cartData?.data || cartData.data.length === 0) {
             // this.toastr.info('Cart is empty or not found');
-            // console.log(cartData.data);
           } else {
             var PACKAGING_CHARGES = cartData.data[0]['PACKAGING_CHARGES'];
             var DELIVERY_CHARGES = cartData.data[0]['ADDON_AMOUNT'];
             var TOTAL_PRICE = cartData.data[0]['TOTAL_PRICE'];
             var NET_AMOUNT = cartData.data[0]['NET_AMOUNT'];
+            // console.log(cartData);
             var DATA=cartData.data[0]
             this.cartItems = cartData.cartItemDetails.map((item: any) => {
               const category = cartData.categoryDetails?.find(

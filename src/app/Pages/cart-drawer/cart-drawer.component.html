@@ -67,10 +67,43 @@
             <p class="text-gray-500 text-xs">
               {{ item.VERIENT_SIZE }} {{ item.VERIENT_UNIT_NAME }}
             </p>
-            <p class="text-gray-700 font-medium text-sm">
+            <!-- <p class="text-gray-700 font-medium text-sm">
               ${{ item.ITEM_DISCOUNT_AMOUNT || item.RATE || item.VERIENT_RATE }}
-            </p>
-
+            </p> -->
+            <div class="mt-1">
+              <div class="flex items-center gap-2 md:gap-3 flex-wrap">
+                <p
+                  class="font-bold text-green-700"
+                  *ngIf="item.IS_VERIENT_AVAILABLE == 1"
+                >
+                  ${{
+                    item.DISCOUNT_TYPE == "Amount"
+                      ? (item.VERIENT_RATE - item.DISCOUNT).toFixed(2)
+                      : (
+                          item.VERIENT_RATE -
+                          (item.VERIENT_RATE * item.DISCOUNT) / 100
+                        ).toFixed(2)
+                  }}
+                </p>
+                <p
+                  class="text-xs md:text-base text-gray-400 line-through font-medium"
+                  *ngIf="item.DISCOUNT && item.DISCOUNT > 0"
+                >
+                  ${{ item.VERIENT_RATE?.toFixed(2) || "0.00" }}
+                </p>
+                <p
+                  class="inline-flex items-center px-2 py-0.5 md:px-3 md:py-1 bg-red-100 text-red-700 md:text-sm font-bold rounded-full"
+                  *ngIf="item.DISCOUNT && item.DISCOUNT > 0"
+                >
+                  Save
+                  {{
+                    item.DISCOUNT_TYPE == "Amount"
+                      ? "$" + item.DISCOUNT
+                      : item.DISCOUNT + "%"
+                  }}
+                </p>
+              </div>
+            </div>
             <!-- Quantity Controls -->
             <div class="flex items-center space-x-2">
               <ng-container *ngIf="item.quantity > 1; else deleteBtn">
@@ -132,14 +165,44 @@
       class="w-full lg:w-72 border border-gray-200 rounded-lg p-3 flex flex-col space-y-3 flex-shrink-0 lg:self-start bg-white sticky top-4"
     >
       <h3 class="text-base font-semibold text-gray-900">Order Summary</h3>
-      <div class="flex justify-between text-gray-700 text-sm">
-        <span>Subtotal</span> <span>${{ selectedSubtotal }}</span>
+
+      <!-- PRICE -->
+      <div
+        class="flex justify-between text-gray-700 text-sm"
+        *ngIf="hasSelectedItems()"
+      >
+        <span>Price</span>
+        <span *ngIf="selectedTotal > 0">
+          ${{ selectedPrice | number : "1.2-2" }}
+        </span>
       </div>
+
+      <!-- DISCOUNT (shown once) -->
+      <div
+        class="flex justify-between text-gray-700 text-sm"
+        *ngIf="
+          selectedDiscount > 0 &&
+          selectedTotal &&
+          cartItems.length > 0 &&
+          hasSelectedItems()
+        "
+      >
+        <span>Discount</span>
+        <span>-${{ selectedDiscount | number : "1.2-2" }}</span>
+      </div>
+
+      <!-- TOTAL -->
       <div
         class="flex justify-between font-semibold text-gray-900 text-base border-t border-gray-200 pt-2"
       >
-        <span>Total</span> <span>${{ selectedTotal }}</span>
+        <span>Total</span>
+        <span
+          *ngIf="selectedTotal && cartItems.length > 0 && hasSelectedItems()"
+          >${{ selectedPrice - selectedDiscount | number : "1.2-2" }}</span
+        >
       </div>
+
+      <!-- BUTTON -->
       <button
         [disabled]="!hasSelectedItems()"
         (click)="proceedToCheckout()"
@@ -155,6 +218,8 @@
   <app-checkout
     [cartDetails]="senddatatoCheckout"
     [subtotal]="subtotal"
+     [selectedDiscount]="selectedDiscount"
+  [selectedPrice]="selectedPrice"
     [addressDrawerOpen]="isCheckoutVisible"
     [userId]="userID"
     (orderPlaced)="onOrderPlaced($event)"

@@ -144,7 +144,7 @@
           <ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
 
           <ng-template #filtersTemplate>
-            <div class="bg-white rounded-lg shadow-sm p-4">
+         <div class="bg-white rounded-lg shadow-sm p-2">
               <!-- Filters Header -->
               <div class="flex items-center justify-between mb-2 border-b pb-2">
                 <h3 class="text-lg font-semibold text-gray-900">Filters</h3>
@@ -156,12 +156,12 @@
                       ? 'bg-[rgb(90,143,105)] text-white hover:bg-[rgb(80,130,95)]'
                       : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
                   "
-                  class="text-sm px-3 py-1.5 rounded-md font-medium transition-colors whitespace-nowrap"
+                  class="text-sm px-3 py-1 rounded-md font-medium transition-colors whitespace-nowrap"
                 >
                   Clear All
                 </button>
               </div>
-
+ 
               <!-- Categories -->
               <div class="mb-4">
                 <h4 class="text-gray-900 mb-2 font-medium">Categories</h4>
@@ -187,7 +187,7 @@
                   </label>
                 </div>
               </div>
-
+ 
               <!-- Discount -->
               <div class="mb-4">
                 <h4 class="text-gray-900 mb-2 font-medium">Discount</h4>
@@ -207,11 +207,11 @@
                   </label>
                 </div>
               </div>
-
+ 
               <!-- Price Range -->
               <div class="mb-7">
                 <h4 class="text-gray-900 mb-3 font-medium">Price Range</h4>
-
+ 
                 <div class="relative w-full px-3">
                   <div
                     class="range-container relative w-full h-1 rounded-full bg-gray-300"
@@ -240,7 +240,7 @@
                       class="range-input"
                     />
                   </div>
-
+ 
                   <div class="flex justify-between text-sm text-gray-600 mt-3">
                     <span>${{ minRange }}</span>
                     <span>${{ maxRange }}</span>
@@ -248,6 +248,7 @@
                 </div>
               </div>
             </div>
+ 
           </ng-template>
         </div>
       </div>
@@ -298,26 +299,23 @@
               Showing {{ currentPageCount }} of {{ totalProducts }} products
             </span>
           </div>
-          <div class="flex items-center flexjustify">
-            <span
-              class="font-medium visiblenone"
-              style="
-                font-weight: 400;
-                font-size: 14px !important;
-                margin-right: 5px !important;
-              "
-              >Sort By</span
+         <div class="flex items-center flexjustify">
+            <h3 class="text-md font-semibold text-gray-900">Sort by</h3>
+            &nbsp;
+            <div
+              class="relative w-40"
+              (mouseenter)="dropdownOpen = true"
+              (mouseleave)="dropdownOpen = false"
             >
-            <div class="relative w-40">
               <!-- Dropdown button -->
               <button
                 (click)="dropdownOpen = !dropdownOpen"
-                class="w-full bg-[#5a8f69] text-white px-2 py-1 rounded flex justify-between items-center"
+                class="w-full bg-[#f5f8f6] text-green-700 px-2 py-1 rounded flex justify-between items-center hover:bg-[#e9f2ec]"
               >
                 {{ selectedOptionLabel || "Popularity" }}
                 <span>▼</span>
               </button>
-
+ 
               <!-- Dropdown list -->
               <ul
                 *ngIf="dropdownOpen"
@@ -352,14 +350,6 @@
               </ul>
             </div>
  
-
-            <!-- <div>
-              <svg id="openFiltersMobile"
-                (click)="openMobileFilters()" xmlns="http://www.w3.org/2000/svg" fill="#000000" width="25px" height="25px" viewBox="0 0 256 256" id="Flat">
-                <path d="M112.00244,237.05762A20.01473,20.01473,0,0,1,92,217.05176V140.63965L27.28564,69.4541A20.00033,20.00033,0,0,1,42.08447,36H213.91553a20.00008,20.00008,0,0,1,14.79931,33.45312L164,140.63965v55.0791a19.95861,19.95861,0,0,1-8.90723,16.6416l-31.999,21.332A19.97037,19.97037,0,0,1,112.00244,237.05762ZM51.12646,60l59.67237,65.63965A19.95228,19.95228,0,0,1,116,139.09277v70.48438l24-15.999V139.09277a19.95374,19.95374,0,0,1,5.2041-13.45605L204.87354,60ZM93.043,141.78711h0ZM213.91553,60h0Z"/>
-              </svg>
-            </div> -->
-
             <button
               id="openFiltersMobile"
               style="font-size: 13px !important"
@@ -370,6 +360,7 @@
               <span class="ml-2">Filters</span>
             </button>
           </div>
+ 
         </div>
 
         <div

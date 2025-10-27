@@ -80,12 +80,12 @@ export class CartDrawerComponent {
   showNewPassword: boolean = false;
   ngOnInit() {
     // this.cartItems = [];
-    this.router.events.subscribe(event => {
+    this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     });
-     document.body.classList.add('no-scroll');
+    document.body.classList.add('no-scroll');
     if (this.euserID) {
       this.userID = this.commonFunction.decryptdata(this.euserID);
       // this.token = this.commonFunction.decryptdata(this.etoken);
@@ -165,7 +165,7 @@ export class CartDrawerComponent {
   close() {
     this.visible = false;
     this.visibleChange.emit(this.visible);
-    this.router.navigate(['./product-list'])
+    this.router.navigate(['./product-list']);
     // window.location.reload();
   }
 
@@ -731,7 +731,7 @@ export class CartDrawerComponent {
   deleteItems(itemToRemove: any) {
     // Change parameter name for clarity in delete function
     // 1. Store the current selections
-    sessionStorage.setItem('DeletedDetails',JSON.stringify(itemToRemove))
+    sessionStorage.setItem('DeletedDetails', JSON.stringify(itemToRemove));
     const currentSelections = this.mapCurrentSelections();
     itemToRemove.forEach(
       (data: any) => {
@@ -792,7 +792,13 @@ export class CartDrawerComponent {
   get subtotal() {
     return this.cartItems?.reduce(
       (sum: any, item: any) =>
-        sum + (item.ITEM_DISCOUNT_AMOUNT ? item.ITEM_DISCOUNT_AMOUNT : item.RATE ? item.RATE : item.VERIENT_RATE) * item.quantity,
+        sum +
+        (item.ITEM_DISCOUNT_AMOUNT
+          ? item.ITEM_DISCOUNT_AMOUNT
+          : item.RATE
+          ? item.RATE
+          : item.VERIENT_RATE) *
+          item.quantity,
       0
     );
   }
@@ -2405,6 +2411,8 @@ export class CartDrawerComponent {
   // selectedTax = 0;
   selectedTotal = 0;
   deletedItems: any = [];
+  selectedPrice = 0;
+  selectedDiscount = 0;
   updateTotals() {
     this.deletedItems = [];
     for (let i = this.cartItems.length - 1; i >= 0; i--) {
@@ -2428,9 +2436,42 @@ export class CartDrawerComponent {
     const selectedItems = this.cartItems.filter(
       (item: { selected: any }) => item.selected
     );
+    this.selectedPrice = selectedItems.reduce(
+      (sum: number, item: any) =>
+        sum + (item.VERIENT_RATE || 0) * item.QUANTITY,
+      0
+    );
+    this.selectedDiscount = selectedItems.reduce((sum: number, item: any) => {
+      if (item.DISCOUNT_TYPE === 'Amount') {
+        // Fixed discount per item
+        return (
+          sum + (item.DISCOUNT || 0) * (item.QUANTITY || item.quantity || 1)
+        );
+      } else if (item.DISCOUNT_TYPE === 'Percentage') {
+        // Percentage discount
+        const rate = parseFloat(item.VERIENT_RATE) || 0;
+        const discount =
+          ((rate * (item.DISCOUNT || 0)) / 100) *
+          (item.QUANTITY || item.quantity || 1);
+        return sum + discount;
+      } else {
+        return sum;
+      }
+    }, 0);
+
     this.selectedSubtotal = selectedItems.reduce(
-      (sum: number, item: {ITEM_DISCOUNT_AMOUNT:any, RATE: any; VERIENT_RATE: any; quantity: number }) =>
-        sum + (item.ITEM_DISCOUNT_AMOUNT ||  ((item.RATE  || item.VERIENT_RATE) * item.quantity)),
+      (
+        sum: number,
+        item: {
+          ITEM_DISCOUNT_AMOUNT: any;
+          RATE: any;
+          VERIENT_RATE: any;
+          quantity: number;
+        }
+      ) =>
+        sum +
+        (item.ITEM_DISCOUNT_AMOUNT ||
+          (item.RATE || item.VERIENT_RATE) * item.quantity),
       0
     );
     // this.selectedTax = +(this.selectedSubtotal * 0.05).toFixed(2);

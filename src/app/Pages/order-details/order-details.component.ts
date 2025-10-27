@@ -40,6 +40,7 @@ export class OrderDetailsComponent {
       if(res.code==200){
       this.cartDetails.cartDetails=res.data
       this.orderStatus=res.data[0].CURRENT_STAGE
+      this.calculateSubtotal()
       // console.log(this.cartDetails.cartDetails,'this.cartDetails.cartDetails')
       }
       else{
@@ -87,4 +88,21 @@ downloadInvoice() {
   goBack() {
     this.router.navigate(['/orders']);
   }
+ subtotal = 0;
+
+calculateSubtotal() {
+  // Convert stringified CART_ITEMS to array
+  const getArray = this.convertStringtoArray(this.cartDetails?.cartDetails?.[0]?.['CART_ITEMS']);
+  
+  if (Array.isArray(getArray)) {
+    this.subtotal = getArray.reduce((sum, item) => {
+      const discountAmount = parseFloat(item.ITEM_DISCOUNT_AMOUNT) || 0;
+      return sum + discountAmount;
+    }, 0);
+  } else {
+    this.subtotal = 0;
+  }
+
+  // console.log('Subtotal:', this.subtotal);
+}
 }
