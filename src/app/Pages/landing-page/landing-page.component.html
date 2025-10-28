@@ -263,10 +263,10 @@
         <!-- Carousel Items -->
         <div class="carousel-container overflow-hidden">
           <div
-            class="flex transition-transform duration-300 ease-in-out"
+            class="grid product-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative"
             [ngClass]="{ 'justify-center': getVisibleProducts(tab).length < 4 }"
           >
-            <div
+            <!-- <div
               *ngFor="let product of getVisibleProducts(tab)"
               class="flex-shrink-0 w-1/2 sm:w-1/3 md:w-1/4 px-2"
             >
@@ -347,6 +347,230 @@
                     </a>
                   </div>
                 </div>
+              </div>
+            </div> -->
+            <div
+              class="product-card bg-white rounded-lg shadow-md overflow-hidden p-0"
+              style="cursor: pointer"
+              *ngFor="
+                let product of getVisibleProducts(tab);
+                trackBy: trackByProductId;
+                let i = index
+              "
+            >
+              <span
+                (click)="addtodetail(product)"
+                [routerLink]="
+                  selectedVariantMap[product.ID]
+                    ? [
+                        '/product_details',
+                        product.ID,
+                        selectedVariantMap[product.ID]
+                      ]
+                    : ['/product_details', product.ID]
+                "
+              >
+                <div class="relative">
+                  <div
+                    class="w-full h-48 md:h-60 bg-white flex items-center justify-center overflow-hidden"
+                  >
+                    <ng-container
+                      *ngIf="initImageIndex(product.ID) === undefined"
+                    ></ng-container>
+
+                    <img
+                      *ngIf="getImageArray(product).length > 0"
+                      [src]="
+                        productImageUrl +
+                        getImageArray(product)[imageIndices[product.ID]]
+                      "
+                      [alt]="product.NAME"
+                      class="rounded-lg object-cover w-full h-full"
+                    />
+                  </div>
+
+                  <div class="absolute top-3 right-3 flex space-x-2">
+                    <button
+                      class="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm"
+                      [ngClass]="{
+                        'text-green-500': product.isLiked,
+                        'text-gray-600 hover:text-[#5a8f69]': !product.isLiked
+                      }"
+                      (click)="toggleLike(product, $event)"
+                    >
+                      <i
+                        [class]="
+                          product.isLiked ? 'ri-heart-fill' : 'ri-heart-line'
+                        "
+                      >
+                      </i>
+                    </button>
+                  </div>
+
+                  <div class="absolute top-3 left-3">
+                    <span
+                      class="text-white text-xs px-2 py-1 rounded-full"
+                      [ngClass]="{
+                        'bg-[#5a8f69]/100': product.IS_NEW_ARRIVAL === 1,
+                        'bg-secondary/100': product.IS_BEST_SELLER === 1,
+                        'bg-green-500/100': product.IS_POPULAR === 1
+                      }"
+                      >{{
+                        product.IS_NEW_ARRIVAL == "1"
+                          ? "New"
+                          : product.IS_BEST_SELLER == "1"
+                          ? "Best Seller"
+                          : product.IS_POPULAR == "1"
+                          ? "Popular"
+                          : ""
+                      }}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="text-danger text-sm text-center pt-1 h-2">
+                  <small
+                    *ngIf="
+                      product.IS_UPCOMING == 1 ||
+                      product.VARIENTS == null ||
+                      product.VARIENTS == undefined ||
+                      product.VARIENTS.length == 0 ||
+                      !hasActiveVariants(product.ID) ||
+                      currentStockMap[product.ID] <= 0
+                    "
+                  >
+                    Out of stock
+                  </small>
+                </div>
+
+                <div class="pt-1 px-3">
+                  <span
+                    class="text-xs text-gray-500 rounded-full bg-[rgb(233,180,76)] text-white text-xs font-small px-2 py-1"
+                  >
+                    {{ product.CATEGORY_NAME }}
+                  </span>
+
+                  <div
+                    *ngIf="product.CUSTOMER_RATINGS"
+                    class="inline-flex justify-center items-center bg-[#72BB81E5] text-white text-xs font-small px-2 py-1 rounded-full float-right"
+                    style="width: 58.67px"
+                  >
+                    <span>{{
+                      product.CUSTOMER_RATINGS | number : "1.1-1"
+                    }}</span>
+
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-3 w-3 ml-1"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.782 1.4 8.17L12 18.896l-7.334 3.866 1.4-8.17L.132 9.21l8.2-1.192z"
+                      />
+                    </svg>
+                  </div>
+
+                  <h3
+                    class="font-medium text-gray-900 mt-2 hover:text-[#5a8f69] truncate"
+                    (click)="addtodetail(product)"
+                    [routerLink]="
+                      selectedVariantMap[product.ID]
+                        ? [
+                            '/product_details',
+                            product.ID,
+                            selectedVariantMap[product.ID]
+                          ]
+                        : ['/product_details', product.ID]
+                    "
+                    [title]="product.NAME"
+                  >
+                    {{ product.NAME }}
+                  </h3>
+
+                  <small
+                    class="text-gray-600 mt-2 line-clamp-2"
+                    [title]="product.DESCRIPTION"
+                  >
+                    {{ product.DESCRIPTION }}
+                  </small>
+
+                  <span
+                    class="text-black font-medium me-1"
+                    *ngIf="product.IS_VERIENT_AVAILABLE == 0"
+                  >
+                    ${{ product.RATE || 0 }}
+                  </span>
+
+                  <span
+                    class="text-black font-medium me-1"
+                    *ngIf="product.IS_VERIENT_AVAILABLE == 1"
+                  >
+                    <!-- ${{
+                      product.DISCOUNT_TYPE == "Amount"
+                        ? variantRateMap[product.ID] - product.DISCOUNT
+                        : variantRateMap[product.ID] -
+                          (variantRateMap[product.ID] * product.DISCOUNT) / 100
+                    }} -->
+                      ${{convertStringtoArray(product.VARIENTS)[0].RATE || 0}}
+                  </span>
+
+                  <!-- <span
+                    class="text-sm line-through text-[#D1D5DB] me-1"
+                    *ngIf="product.DISCOUNT && product.DISCOUNT > 0"
+                  >
+                    ${{ variantRateMap[product.ID] || 0 }}
+                  </span> -->
+
+                  <!-- <span
+                    class="text-sm text-[#5a8f69] whitespace-nowrap"
+                    *ngIf="product.DISCOUNT && product.DISCOUNT > 0"
+                  >
+                    {{
+                      product.DISCOUNT_TYPE == "Amount"
+                        ? "$" + product.DISCOUNT
+                        : product.DISCOUNT + "%"
+                    }}
+                    off
+                  </span> -->
+                </div>
+              </span>
+
+              <div class="row px-3 mb-3">
+                <div class="col-12 col-lg-12 mt-2">
+                  <div class="flex flex-wrap gap-2 mt-2">
+                    <ng-container
+                      *ngFor="let item of variantMap[product.ID] || []"
+                    >
+                      <small
+                        [ngClass]="{
+                          'border border-black bg-gray-100':
+                            selectedVariantMap[product.ID] == item.VARIENT_ID,
+                          'bg-white border border-gray-300 hover:border-black':
+                            selectedVariantMap[product.ID] != item.VARIENT_ID
+                        }"
+                        class="cursor-pointer text-gray-800 text-xs font-medium px-3 py-1 rounded-full transition-all duration-150"
+                        (click)="change(item.VARIENT_ID, product.ID)"
+                      >
+                        {{ item.SIZE }} {{ item.UNIT_NAME }}
+                      </small>
+                    </ng-container>
+                  </div>
+                </div>
+
+                <div
+                  class="col-12 col-lg-12 mt-2"
+                  (click)="addtodetail(product)"
+                  [routerLink]="
+                    selectedVariantMap[product.ID]
+                      ? [
+                          '/product_details',
+                          product.ID,
+                          selectedVariantMap[product.ID]
+                        ]
+                      : ['/product_details', product.ID]
+                  "
+                ></div>
               </div>
             </div>
           </div>

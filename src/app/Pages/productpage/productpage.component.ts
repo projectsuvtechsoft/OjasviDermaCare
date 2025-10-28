@@ -645,7 +645,7 @@ export class ProductpageComponent {
       this.varientId = Number(this.route.snapshot.paramMap.get('variantId'));
       const variants = this.variantMap[productId] || [];
       const selected = variants.find(
-        (v: any) => v.VARIENT_ID === Number(this.varientId)
+        (v: any) => v.VARIENT_ID === Number(selectedId)
       );
       if (selected) {
         this.selectedVariantMap[productId] = selected.VARIENT_ID;

@@ -152,6 +152,29 @@ export class LandingPageComponent {
             this.loadingRecords = false;
             this.dataList = data.Products;
             this.products[this.activeTab] = this.dataList;
+            // loadProductVariantsFromData
+            this.dataList.forEach((product) => {
+              this.loadProductVariantsFromData(product);
+              let variants = product.VARIENTS;
+
+              if (typeof variants === 'string') {
+                try {
+                  variants = JSON.parse(variants);
+                } catch (e) {
+                  variants = [];
+                }
+              }
+
+              if (Array.isArray(variants) && variants.length > 0) {
+                this.variantRateMap[product.ID] = variants[0].RATE;
+                this.currentStockMap[product.ID] = variants[0].CURRENT_STOCK;
+              } else {
+                this.variantRateMap[product.ID] = 0;
+                this.currentStockMap[product.ID] = 0;
+              }
+            });
+            // console.log();
+            
           } else {
             this.loadingRecords = false;
           }
@@ -533,7 +556,54 @@ export class LandingPageComponent {
     this.productService.setProduct(product);
     sessionStorage.setItem('selectedProduct', JSON.stringify(product));
   }
+   loadProductVariantsFromData(product: any) {
+    let variants = product.VARIENTS;
+    // console.log(variants);
 
+    if (typeof variants === 'string') {
+      try {
+        variants = JSON.parse(variants);
+      } catch {
+        variants = [];
+      }
+    }
+
+    if (Array.isArray(variants) && variants.length > 0) {
+      let Variants =
+        variants?.filter((v: any) => v.STATUS === true || v.STATUS === 1) || [];
+      this.variantMap[product.ID] = Variants;
+
+      if (!this.selectedVariantMap[product.ID]) {
+        const firstVariant = variants[0];
+        this.selectedVariantMap[product.ID] = firstVariant.VARIENT_ID;
+        this.variantRateMap[product.ID] = firstVariant.RATE || 0;
+        this.variantStockMap[product.ID] = firstVariant.OPENING_STOCK || 0;
+        this.unitIdMap[product.ID] = firstVariant.UNIT_ID;
+        // console.log('this.unitIdMap[product.ID]', this.unitIdMap[product.ID]);
+        let selectedvarientproductId = this.dataList.findIndex(
+          (id) => id.ID === product.ID
+        );
+
+        this.dataList[selectedvarientproductId].CURRENT_STOCK_VARIENT =
+          firstVariant.CURRENT_STOCK ? firstVariant.CURRENT_STOCK : 0;
+        //  console.log('selectedvarientproductId',this.products[selectedvarientproductId])
+      } else {
+        const selectedVariant = Variants.find(
+          (v) => v.VARIENT_ID === this.selectedVariantMap[product.ID]
+        );
+
+        if (selectedVariant) {
+          this.unitIdMap[product.ID] = selectedVariant.UNIT_ID;
+          let selectedvarientproductId = this.dataList.findIndex(
+            (id) => id.ID === product.ID
+          );
+          this.dataList[selectedvarientproductId].CURRENT_STOCK_VARIENT =
+            selectedVariant.CURRENT_STOCK ? selectedVariant.CURRENT_STOCK : 0;
+          //  this.products[selectedvarientproductId].CURRENT_STOCK_VARIENT=firstVariant.CURRENT_STOCK
+        }
+      }
+    }
+  }
   trackByProductId(index: number, product: any): number {
     return product.ID;
   }
@@ -571,7 +641,7 @@ export class LandingPageComponent {
   // decyptedsessionKey: any;
   variantRateMap: { [productId: number]: number } = {};
   currentStockMap: { [productId: number]: number } = {};
- hasActiveVariants(productId: number): boolean {
+  hasActiveVariants(productId: number): boolean {
     const variants = this.variantMap[productId] || [];
     return variants.some((v) => v.STATUS === 1);
   }
@@ -682,5 +752,9 @@ export class LandingPageComponent {
         : 0;
       // this.updateTotalPrice();
     }
+  }
+
+   convertStringtoArray(str: string) {
+    return JSON.parse(str);
   }
 }
