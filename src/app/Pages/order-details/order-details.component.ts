@@ -5,11 +5,11 @@ import { ApiServiceService } from 'src/app/Service/api-service.service';
 @Component({
   selector: 'app-order-details',
   templateUrl: './order-details.component.html',
-  styleUrls: ['./order-details.component.css']
+  styleUrls: ['./order-details.component.css'],
 })
 export class OrderDetailsComponent {
   orderId!: string;
-  cartDetails: any={};
+  cartDetails: any = {};
   orderStatus = 'A'; // Replace with real API data
   selectedAddress: any;
   photoURL = this.api.retriveimgUrl + 'productImages/';
@@ -17,36 +17,39 @@ export class OrderDetailsComponent {
   imageIndices: { [productId: string]: number } = {};
   showPaymentModal = false;
 
-  constructor(private route: ActivatedRoute, private router: Router,private api:ApiServiceService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private api: ApiServiceService
+  ) {}
 
   ngOnInit() {
     this.orderId = this.route.snapshot.paramMap.get('key')!;
-    this.photoURL=this.api.retriveimgUrl + 'productImages/'
+    this.photoURL = this.api.retriveimgUrl + 'productImages/';
     this.fetchOrderDetails();
   }
- initImageIndex(productId: number) {
+  initImageIndex(productId: number) {
     if (!(productId in this.imageIndices)) {
       this.imageIndices[productId] = 0;
     }
   }
 
-  convertStringtoArray(str:string){
-    return JSON.parse(str)
+  convertStringtoArray(str: string) {
+    return JSON.parse(str);
   }
   fetchOrderDetails() {
     // TODO: Fetch details using this.orderId
-    this.api.getOpenOrders(this.orderId).subscribe(res=>{
+    this.api.getOpenOrders(this.orderId).subscribe((res) => {
       // console.log(res,'subscribeData')
-      if(res.code==200){
-      this.cartDetails.cartDetails=res.data
-      this.orderStatus=res.data[0].CURRENT_STAGE
-      this.calculateSubtotal()
-      // console.log(this.cartDetails.cartDetails,'this.cartDetails.cartDetails')
-      }
-      else{
+      if (res.code == 200) {
+        this.cartDetails.cartDetails = res.data;
+        this.orderStatus = res.data[0].CURRENT_STAGE;
+        this.calculateSubtotal();
+        // console.log(this.cartDetails.cartDetails,'this.cartDetails.cartDetails')
+      } else {
         // this.toastr.error('Failed to get details','')
       }
-    })
+    });
   }
 
   getImageArray(item: any) {
@@ -63,46 +66,48 @@ export class OrderDetailsComponent {
     return orderFlow.indexOf(current) < orderFlow.indexOf(check);
   }
 
- isDownloading = false;
+  isDownloading = false;
 
-downloadInvoice() {
-  this.isDownloading = true;
+  downloadInvoice() {
+    this.isDownloading = true;
 
-  const fileUrl =
-    this.api.retriveimgUrl +
-    'Invoice/' +
-    this.cartDetails.cartDetails[0]['INVOICE_NUMBER'] +
-    '.pdf';
+    const fileUrl =
+      this.api.retriveimgUrl +
+      'Invoice/' +
+      this.cartDetails.cartDetails[0]['INVOICE_NUMBER'] +
+      '.pdf';
 
-  // Simulating delay (e.g. 5 seconds for invoice generation)
-  setTimeout(() => {
-    const link = document.createElement('a');
-    link.href = fileUrl;
-    link.target = '_blank';
-    link.download = 'invoice.pdf';
-    link.click();
-    this.isDownloading = false; // stop loader
-  }, 5000);
-}
+    // Simulating delay (e.g. 5 seconds for invoice generation)
+    setTimeout(() => {
+      const link = document.createElement('a');
+      link.href = fileUrl;
+      link.target = '_blank';
+      link.download = 'invoice.pdf';
+      link.click();
+      this.isDownloading = false; // stop loader
+    }, 5000);
+  }
 
   goBack() {
     this.router.navigate(['/orders']);
   }
- subtotal = 0;
+  subtotal = 0;
 
-calculateSubtotal() {
-  // Convert stringified CART_ITEMS to array
-  const getArray = this.convertStringtoArray(this.cartDetails?.cartDetails?.[0]?.['CART_ITEMS']);
-  
-  if (Array.isArray(getArray)) {
-    this.subtotal = getArray.reduce((sum, item) => {
-      const discountAmount = parseFloat(item.ITEM_DISCOUNT_AMOUNT) || 0;
-      return sum + discountAmount;
-    }, 0);
-  } else {
-    this.subtotal = 0;
+  calculateSubtotal() {
+    // Convert stringified CART_ITEMS to array
+    const getArray = this.convertStringtoArray(
+      this.cartDetails?.cartDetails?.[0]?.['CART_ITEMS']
+    );
+
+    if (Array.isArray(getArray)) {
+      this.subtotal = getArray.reduce((sum, item) => {
+        const discountAmount = parseFloat(item.ITEM_DISCOUNT_AMOUNT) || 0;
+        return sum + discountAmount;
+      }, 0);
+    } else {
+      this.subtotal = 0;
+    }
+
+    // console.log('Subtotal:', this.subtotal);
   }
-
-  // console.log('Subtotal:', this.subtotal);
-}
 }

@@ -613,7 +613,7 @@
                 (click)="showOrderSummaryInDrawer = true; steped()"
                 [disabled]="!selectedAddress"
               >
-                <span class="text-white">Use this address</span>
+                <span class="text-white">Use This Address</span>
               </button>
             </div>
           </div>
@@ -1091,33 +1091,54 @@
                         id="fullName"
                         [(ngModel)]="addressForm.NAME"
                         name="customerName"
-                        placeholder="e.g. John Doe"
+                        placeholder="Enter Name"
                         required
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
                       />
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
+                    <div>
                         <label
                           for="mobileNumber"
                           class="block text-sm font-medium text-gray-700 mb-1"
                         >
                           Mobile number
                         </label>
-                        <input
-                          type="tel"
-                          id="mobileNumber"
-                          [(ngModel)]="addressForm.MOBILE_NO"
-                          name="mobileNumber"
-                          placeholder="e.g (555) 123-4567"
-                          maxlength="12"
-                          required
-                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                        />
-                        <!-- <p class="mt-1 text-xs text-gray-500">
-                          May be used to assist delivery
-                        </p> -->
+                        <div class="flex gap-2 items-center">
+                          <select
+                            name="countryCode"
+                            [(ngModel)]="addressForm.COUNTRY_CODE"
+                            class="appearance-none w-28 px-3 py-2 pr-8 border border-gray-300 rounded-md shadow-sm bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                            aria-label="Country code"
+                          >
+                            <option
+                              value=""
+                              class="px-2 py-1 text-sm font-medium text-gray-700 mb-1"
+                            >
+                              Select code
+                            </option>
+                            <option
+                              *ngFor="let c of countryCodes"
+                              [ngValue]="c.value"
+                              class="px-2 py-1 text-sm overflow-y-scroll"
+                            >
+                              {{ c.label }}
+                            </option>
+                          </select>
+                          <input
+                            type="tel"
+                            id="mobileNumber"
+                            [(ngModel)]="addressForm.MOBILE_NO"
+                            name="Mobile_number"
+                            placeholder="Enter Mobile no"
+                            (keypress)="commonFunction.omit($event)"
+                            [pattern]="commonFunction.internationalmobpattern"
+                            maxlength="10"
+                            required
+                            class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                          />
+                        </div>
                       </div>
 
                       <div>
@@ -1135,11 +1156,11 @@
                             id="emailId"
                             [(ngModel)]="addressForm.EMAIL_ID"
                             name="Email"
-                            placeholder="e.g xyz@gmail.com"
+                            placeholder="Enter Email"
                             maxlength="50"
                             [pattern]="commonFunction.emailpattern"
                             required
-                            class="flex-1 px-3 py-2 border border-gray-300 border-r-0 rounded-l-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                            class="flex-1 px-3 py-2 border border-gray-300 border-r-0 rounded-l-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
                           />
 
                           <button
@@ -1198,7 +1219,7 @@
                             name="addressType"
                             value="R"
                             [(ngModel)]="addressForm.ADDRESS_TYPE"
-                            class="w-4 h-4 text-orange-500 border-gray-300 focus:ring-orange-500"
+                            class="w-4 h-4 text-[#5a8f69] border-gray-300 focus:ring-[#5a8f69]"
                           />
                           <span class="ml-2 text-sm text-gray-700"
                             >Residential</span
@@ -1210,7 +1231,7 @@
                             name="addressType"
                             value="O"
                             [(ngModel)]="addressForm.ADDRESS_TYPE"
-                            class="w-4 h-4 text-orange-500 border-gray-300 focus:ring-orange-500"
+                            class="w-4 h-4 text-[#5a8f69] border-gray-300 focus:ring-[#5a8f69]"
                           />
                           <span class="ml-2 text-sm text-gray-700">Office</span>
                         </label>
@@ -1224,18 +1245,52 @@
                       >
                         Flat, House no., Building, Company, Apartment
                       </label>
-                      <input
+                      <textarea
                         type="text"
                         id="streetAddress"
                         [(ngModel)]="addressForm.ADDRESS"
                         name="streetAddress"
-                        placeholder="e.g 1234 Elm Street, Los Angeles, CA 90017"
+                        placeholder="Enter Address"
                         required
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                      />
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                      ></textarea>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label
+                          for="landmark"
+                          class="block text-sm font-medium text-gray-700 mb-1"
+                        >
+                          Landmark
+                        </label>
+                        <input
+                          type="text"
+                          id="landmark"
+                          [(ngModel)]="addressForm.LANDMARK"
+                          name="landmark"
+                          placeholder="Enter Landmark"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                        />
+                      </div>
+                      <div>
+                        <label
+                          for="area"
+                          class="block text-sm font-medium text-gray-700 mb-1"
+                        >
+                          Area
+                        </label>
+                        <input
+                          type="text"
+                          id="area"
+                          [(ngModel)]="addressForm.LOCALITY"
+                          name="area"
+                          placeholder="Enter Area"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                        />
+                      </div>
                     </div>
 
-                    <div>
+                    <!-- <div>
                       <label
                         for="landmark"
                         class="block text-sm font-medium text-gray-700 mb-1"
@@ -1248,9 +1303,9 @@
                         [(ngModel)]="addressForm.LANDMARK"
                         name="landmark"
                         placeholder="e.g. Near station, Hospital"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
                       />
-                    </div>
+                    </div> -->
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div class="relative">
@@ -1270,7 +1325,7 @@
                           #COUNTRY_NAME="ngModel"
                           placeholder="Select country"
                           required
-                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
                         />
                         <div
                           *ngIf="
@@ -1312,7 +1367,7 @@
                           #STATE_NAME="ngModel"
                           placeholder="Select state"
                           required
-                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
                         />
                         <div
                           *ngIf="
@@ -1356,7 +1411,7 @@
                           name="CITY"
                           placeholder="Enter city"
                           required
-                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
                         />
                         <div
                           *ngIf="
@@ -1395,7 +1450,7 @@
                           name="pincode"
                           placeholder="6 digits [0-9] PIN code"
                           required
-                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
                         />
                       </div>
                     </div>
@@ -1407,7 +1462,7 @@
                           type="checkbox"
                           name="isDefault"
                           [(ngModel)]="addressForm.IS_DEFAULT"
-                          class="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500"
+                          class="w-4 h-4 text-[#5a8f69] border-gray-300 rounded focus:ring-[#5a8f69]"
                         />
                       </div>
                       <div class="ml-3">
@@ -1622,7 +1677,7 @@
                 class="w-full bg-[#5a8f69] hover:bg-green-800 text-white font-medium px-5 py-2 mt-4 rounded-lg shadow-sm transition-colors"
                 (click)="proceedToPayment()"
               >
-                Proceed to payment
+                Proceed To Payment
               </button>
             </div>
           </div>

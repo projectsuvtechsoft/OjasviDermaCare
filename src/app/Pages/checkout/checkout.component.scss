@@ -1877,3 +1877,29 @@ button:disabled {
   @apply bg-[#5a8f69] border-[#5a8f69] text-white;
 }
 
+.rounded-lg{
+   border-radius: 8px !important;
+}
+select {
+  position: relative;
+  z-index: 10;
+}
+
+select option {
+  position: relative;
+  z-index: 1000;
+}
+
+select:focus {
+  overflow: visible !important;
+}
+
+select::-ms-expand {
+  display: none;
+}
+
+/* Force dropdown to render downward */
+select {
+  transform-origin: top center !important;
+}
+

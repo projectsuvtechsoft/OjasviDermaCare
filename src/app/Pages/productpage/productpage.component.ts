@@ -35,20 +35,32 @@ export class ProductpageComponent {
     private toastr: ToastrService,
     private productService: ProductDataService,
     private vps: ViewportScroller
-  ) {}
+  ) {
+     this.cartService.cartUpdated$.subscribe((cartItems) => {
+      this.items = cartItems;
+      
+      // this.toastr.success('Item Added to cart', 'Success')
+      // this.loadingProducts = false;
+      // this.cd.detectChanges(); // Optional but ensures view update
+    });
+  }
   selectedPrice: any;
   totalPrice: any;
   propertyId: any;
   Imgurl: any;
   varientId: any;
   similarProducts: any[] = [];
-
+  items:any=[]
   //  vaishnavi
   ngOnInit() {
     this.Imgurl = this.IMAGEuRL + 'CustomerProfile/';
     this.productId = Number(this.route.snapshot.paramMap.get('id'));
     this.varientId = Number(this.route.snapshot.paramMap.get('variantId'));
     // this.scrollToSection('top')
+    this.items=this.cartService.getCartItems();
+    // if(this.productId && this.varientId){
+    //   // console.log(this.hasItemsInCart(this.productId,this.varientId))
+    // }
     this.getcustomerProductReviews();
     this.forceTop();
     this.updateResponsiveSettings();
@@ -84,6 +96,7 @@ export class ProductpageComponent {
       this.userID = this.commonFunction.decryptdata(this.userId);
     });
     this.calculateStarCounts();
+    // this.hasItemsInCart()
   }
   private forceTop() {
     // 1) window/html/body
@@ -114,7 +127,9 @@ export class ProductpageComponent {
   };
   euserID: string = sessionStorage.getItem('userId') || '';
   decyptedsessionKey: any;
-
+  redirecttoCart(){
+    this.router.navigate(['/cart'])
+  }
   setRating(value: number) {
     this.reviewForm.rating = value;
   }
@@ -845,7 +860,7 @@ export class ProductpageComponent {
     }
   }
   updateTotalPrice(): void {
-    console.log(this.selectedPrice,this.quantity);
+    // console.log(this.selectedPrice,this.quantity);
 
     this.totalPrice = this.selectedPrice * this.quantity;
   }
@@ -861,24 +876,24 @@ export class ProductpageComponent {
     // console.log(data,'data');
     if (data.IS_VERIENT_AVAILABLE === 1 && data.VARIENTS) {
       const varients = JSON.parse(data.VARIENTS);
-      console.log(varients,'varients');
+      // console.log(varients,'varients');
       const selectedVarientdata = varients.find(
         (data: any) => data.VARIENT_ID === Number(varientId)
       );
       // console.log(selectedVarientdata,'selectedVarientdata');
       if (selectedVarientdata) {
-        // const nextQuantity = this.quantity + 1; // simulate the next step
-        // const nextTotalSize = selectedVarientdata.SIZE * nextQuantity;
+        const nextQuantity = this.quantity + 1; // simulate the next step
+        const nextTotalSize = selectedVarientdata.CURRENT_STOCK/(selectedVarientdata.SIZE * nextQuantity);
         // const varientStock = selectedVarientdata.CURRENT_STOCK;
-        // console.log(nextQuantity, nextTotalSize, varientStock);
+        // console.log(nextQuantity, nextTotalSize);
 
-        // if (nextQuantity <= varientStock && nextTotalSize <= varientStock) {
+        if (nextTotalSize>=1) {
         this.quantity++;
         // item.QUANTITY++;
         this.updateTotalPrice();
-        //   } else {
-        //   this.toastr.info('Maximum quantity reached', 'Info');
-        // }
+          } else {
+          this.toastr.info('Maximum quantity reached', 'Info');
+        }
       }
     }
 
@@ -927,8 +942,12 @@ export class ProductpageComponent {
     // if (!this.userID) {
     //   this.showLoginModal();
     // } else {
+    
     product.quantity = this.quantity;
     product.QUANTITY = this.quantity;
+    // console.log(product)
+    // this.hasItemsInCart(product.ID,product.VARIENT_ID)
+    
     const existingProductIndex = this.productsArray.findIndex(
       (p: any) => p.ID === product.ID
     );
@@ -986,6 +1005,7 @@ export class ProductpageComponent {
       this.quantity = 1; // set initial quantity
       this.updateTotalPrice();
     }
+    // this.hasItemsInCart()
     //  this.getpropertyDetails(this.propertyId)
     // }
   }
@@ -1105,6 +1125,8 @@ export class ProductpageComponent {
   }
 
   getProductData() {
+    // console.log(this.items,'items')
+
     let productData = this.productService.getProduct();
     // console.log(productData);
     if (!productData) {
@@ -1113,7 +1135,7 @@ export class ProductpageComponent {
         productData = JSON.parse(productDataStr);
       }
     }
-    console.log('productData', productData);
+    // console.log('productData', productData);
 
     if (productData) {
       const parsedArray = Array.isArray(productData)
@@ -1158,6 +1180,7 @@ export class ProductpageComponent {
           this.loadSimilarProductsByCategory(categoryId);
         }
       }
+      
     } else {
       this.getpropertyDetails(this.propertyId);
     }
@@ -1386,7 +1409,26 @@ showShareToast(message: string): void {
         }
       });
   }
+hasItemsInCart(productId: number, productData: any): boolean {
+  const itemsFromService = this.cartService.getCartItems();
+  const items = this.items?.length > 0 ? this.items : itemsFromService;
 
+  if (!items || items.length === 0) return false;
+
+  // Parse product variants (may come as string)
+  const variants =
+    typeof productData?.VARIENTS === 'string'
+      ? JSON.parse(productData?.VARIENTS)
+      : productData?.VARIENTS || [];
+
+  // Check if any variant of the product is already in cart
+  return variants.some((variant: any) =>
+    items.some(
+      (item: any) =>
+        item.PRODUCT_ID === productId && item.VERIENT_ID === variant.VARIENT_ID && this.selectedVariantMap[productId] == variant.VARIENT_ID
+    )
+  );
+}
 
 
 }

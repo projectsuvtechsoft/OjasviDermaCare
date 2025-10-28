@@ -98,7 +98,7 @@ export class HomeComponent {
 
   getFilters() {
     this.api
-      .getAllCategoryMaster(0, 0, 'SEQUENCE_NO', 'asc', ' AND STATUS = 1')
+      .getAllCategoryMaster(0, 0, 'SEQUENCE_NO', 'asc', ' AND STATUS = 1 AND IS_VERIENT_AVAILABLE = 1')
       .subscribe(
         (res: any) => {
           this.loadingCategories = true;

@@ -674,4 +674,6 @@ body {
 .action-btn:active {
   transform: scale(0.98);
 }
-
+.rounded-lg{
+   border-radius: 8px !important;
+}

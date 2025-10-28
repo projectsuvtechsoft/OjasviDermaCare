@@ -324,10 +324,10 @@
             CONTACT US
           </a>
  
-          <a (click)="isSearchModalOpen = true"
+          <!-- <a (click)="isSearchModalOpen = true"
             class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors">
             <i class="ri-search-line text-xl text-gray-600"></i>
-          </a>
+          </a> -->
         </div>
  
         <!-- Right Side Actions -->
@@ -766,15 +766,20 @@
                     <span *ngIf="isloginSendOTP" class="spinner-border spinner-border-sm me-2"></span>
                     {{ isloginSendOTP ? "Logging In..." : "Login" }}
                   </button>
-                  <button *ngIf="!isGuest" type="button" class="btn btn-outline-secondary flex-grow-1"
-                    (click)="isGuest = true; goBack();" style="
-                      height: 36px;
-                      font-size: 14px;
-                      border-color: #ced4da;
-                      color: #495057;
-                    ">
-                    Guest
-                  </button>
+                  <a
+  *ngIf="!isGuest"
+  (click)="isGuest = true; goBack()"
+  class="mt-2 inline-block font-medium text-sm cursor-pointer transition-all"
+  style="
+    color: #5D8A6D;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  "
+  onmouseover="this.style.color='#4E775D'"
+  onmouseout="this.style.color='#5D8A6D'"
+>
+  Continue as Guest
+</a>
                 </div>
 
                 <p class="text-center mt-3" style="font-size: 13px">

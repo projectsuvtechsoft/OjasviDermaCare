@@ -32,8 +32,8 @@ export class ApiServiceService {
     headers: this.httpHeaders1,
   };
 
-  commoncode = 'https://ojasviadmin.uvtechsoft.com:9090';
-  commonimgUrl = 'https://ojasviadmin.uvtechsoft.com:9090/api/upload/';
+  // commoncode = 'https://ojasviadmin.uvtechsoft.com:9090';
+  // commonimgUrl = 'https://ojasviadmin.uvtechsoft.com:9090/api/upload/';
 
   // ojasvi live
   // commoncode = 'https://admin.ojasvidermacare.com:9092';
@@ -46,8 +46,8 @@ export class ApiServiceService {
   // commoncode = 'https://h10rqczh-9090.inc1.devtunnels.ms';
   // commonimgUrl = 'https://h10rqczh-9090.inc1.devtunnels.ms/api/upload/';
 
-  // commoncode = 'https://p8rhkmb7-9878.inc1.devtunnels.ms';
-  // commonimgUrl = 'https://p8rhkmb7-9878.inc1.devtunnels.ms/api/upload/';
+  commoncode = 'https://p8rhkmb7-9878.inc1.devtunnels.ms';
+  commonimgUrl = 'https://p8rhkmb7-9878.inc1.devtunnels.ms/api/upload/';
 
   //  commoncode = 'http://192.168.29.212:9878';
   // commonimgUrl = 'http://192.168.29.212:9878/api/upload/';

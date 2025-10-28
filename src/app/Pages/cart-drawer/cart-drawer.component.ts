@@ -79,78 +79,52 @@ export class CartDrawerComponent {
   showConfirmPassword: boolean = false;
   showNewPassword: boolean = false;
   ngOnInit() {
-    // this.cartItems = [];
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     });
     document.body.classList.add('no-scroll');
+
     if (this.euserID) {
       this.userID = this.commonFunction.decryptdata(this.euserID);
-      // this.token = this.commonFunction.decryptdata(this.etoken);
-      // setTimeout(() => {
-      // this.cartService.fetchCartFromServer(this.userID, '');
-      // this.loadingProducts = false;
-      // }, 5000);
       this.cartItems = this.cartService.getCartItems();
-
-      // this.loadingProducts = false;
-      // setTimeout(() => {
-      // this.cartService.fetchCartFromServer(this.userID, this.etoken);
       this.loader = true;
+
       this.cartService.cartUpdated$.subscribe((cartItems) => {
         this.cartItems = cartItems;
-        // const currentSelections = this.mapCurrentSelections();
-        // this.cartItems = this.applySelections(cartItems, currentSelections);
-        // this.toastr.success('Item Added to cart', 'Success')
         this.loadingProducts = false;
         this.loader = false;
-        // console.log('cart items', this.cartItems);
-        this.cd.detectChanges(); // Optional but ensures view update
+        this.cd.detectChanges();
+        this.updateTotals(); // No need to apply selections
       });
+
       setTimeout(() => {
         this.loader = false;
       }, 200);
-      // this.loadingProducts = false; // Hide loader after fetching cart items
-      // }, 5000);
-      // this.cd.detectChanges(); // Optional but ensures view update
-
-      // this.cartItems = this.cartService.getCartItems();
-      // this.cartItems = this.cartService.getCartItems();
-
-      // console.log()
     } else {
       this.cartService.fetchCartFromServer(0, this.SESSION_KEYS);
       this.loader = true;
+
       this.cartService.cartUpdated$.subscribe((cartItems) => {
         this.cartItems = cartItems;
-        // console.log(this.cartItems);
         this.loader = false;
-        // this.toastr.success('Item Added to cart', 'Success')
         this.loadingProducts = false;
-        // console.log(this.cartItems);
-        this.cd.detectChanges(); // Optional but ensures view update
+        this.cd.detectChanges();
+        this.updateTotals(); // No need to apply selections
+        // this.updateTotals(); // No need to apply selections
       });
+
       setTimeout(() => {
         this.loader = false;
+        this.updateTotals(); // No need to apply selections
       }, 200);
-      // this.loadingProducts = false;
     }
-    const currentSelections = this.mapCurrentSelections();
-    this.cartItems = this.applySelections(this.cartItems, currentSelections);
-    this.updateTotals();
-    // console.log(sessionStorage.getItem('step'),sessionStorage.getItem('DeletedDetails'))
-    // if(sessionStorage.getItem('step') == '1'){
-    //   const temp:any=sessionStorage.getItem('DeletedDetails')
-    //   const tempDelete :any= JSON.parse(temp)
-    //   console.log(tempDelete,'Deleted Data');
-    //   this.cartItems=[...this.cartItems,...tempDelete]
-    // }
+
     setTimeout(() => {
       this.loadingProducts = false;
+      this.updateTotals(); // No need to apply selections
     }, 500);
-    // this.cartItems = this.cartService.getCartItems();
   }
   //   @HostListener('document:click', ['$event'])
   // onClickOutside(event: MouseEvent) {
@@ -662,24 +636,34 @@ export class CartDrawerComponent {
   //   //   this.toastr.info('Maximum quantity reached', 'Info');
   //   // }
   // }
+  nextTotalSize=1
   increaseQty(item: any) {
+    // console.log(item);
+    const nextQuantity = this.quantity ? this.quantity + 1 : item.QUANTITY + 1; // simulate the next step
+    const nextTotalSize =
+      item.VERIENT_CURRENT_STOCK / (item.VERIENT_SIZE * nextQuantity);
+    this.nextTotalSize=nextTotalSize
+    // console.log(nextTotalSize,nextQuantity)
     // 1. Store the current selections before the server updates the array
-    const currentSelections = this.mapCurrentSelections();
+    // const currentSelections = this.mapCurrentSelections();
+    if (nextTotalSize >= 1) {
+      item.quantity++;
+      item.QUANTITY++;
+      this.cartService.quantityChange$.next(item);
+      this.loader = true;
 
-    item.quantity++;
-    item.QUANTITY++;
-    this.cartService.quantityChange$.next(item);
-    this.loader = true;
+      this.cartService.cartUpdated$.subscribe((cartItems) => {
+        this.loader = false;
 
-    this.cartService.cartUpdated$.subscribe((cartItems) => {
-      this.loader = false;
+        // 2. Apply the old selections to the new cart items
+        this.cartItems = cartItems;
 
-      // 2. Apply the old selections to the new cart items
-      this.cartItems = this.applySelections(cartItems, currentSelections);
-
-      this.cd.detectChanges();
-      this.updateTotals();
-    });
+        this.cd.detectChanges();
+        this.updateTotals();
+      });
+    } else {
+      this.toastr.info('Maximum quantity reached', 'Info');
+    }
     // ... rest of the function (setTimeout block)
   }
 
@@ -709,7 +693,7 @@ export class CartDrawerComponent {
   deleteItem(itemToRemove: any) {
     // Change parameter name for clarity in delete function
     // 1. Store the current selections
-    const currentSelections = this.mapCurrentSelections();
+    // const currentSelections = this.mapCurrentSelections();
 
     this.cartService.removeFromCart(itemToRemove);
     this.loadingProducts = false;
@@ -719,7 +703,7 @@ export class CartDrawerComponent {
       this.loader = false;
 
       // 2. Apply the old selections to the new cart items (even if one was deleted)
-      this.cartItems = this.applySelections(cartItems, currentSelections);
+      this.cartItems = cartItems
 
       this.cd.detectChanges();
       this.updateTotals();
@@ -1011,43 +995,25 @@ export class CartDrawerComponent {
     this.activeTab = 'forgot';
   }
   proceedToCheckout() {
-    // this.userId = this.euserID
     const isGuest = sessionStorage.getItem('IS_GUEST') === 'true';
     const userId = sessionStorage.getItem('userId') || '';
     this.userID = this.commonFunction.decryptdata(userId);
-    this.mapCurrentSelections();
-    if (this.deletedItems.length > 0) {
-      this.deleteItems(this.deletedItems);
-    }
-    // console.log(this.cartItems.filter((item:any)=>item?.selected==true))
-    // console.log(this.userID,isGuest)
+
     if (!this.userID && !isGuest) {
       this.goToLogin();
       this.isCheckoutVisible = false;
     } else {
-      // this.close()
       if (this.quantity > this.varientStock) {
         this.toastr.error('Maximum quantity reached', 'Error');
         return;
       } else {
         this.isCheckoutVisible = true;
-        // this.visible = false
         this.senddatatoCheckout = {
-          cartDetails: this.cartItems,
+          cartDetails: this.cartItems, // Send all items
           subtotal: this.subtotal,
         };
       }
-      // this.isCheckoutVisible = false;
-      // this.visible = false;
-      // this.router.navigate(['/checkout']);
-      // this._checkoutDataSharing.setCartDetails(this.senddatatoCheckout);
-      // this._checkoutDataSharing.setSubtotal(this.subtotal);
-      // this._checkoutDataSharing.addressDrawerOpen.next(this.isCheckoutVisible);
-      // this._checkoutDataSharing.setUserId(this.userID);
     }
-
-    // console.log('Proceeding to checkout with data:', this.senddatatoCheckout);
-    // Emit the data to the parent component or handle it as needed
   }
   isMobileMenuOpen = false;
   IMAGEuRL: any;
@@ -2413,42 +2379,23 @@ export class CartDrawerComponent {
   deletedItems: any = [];
   selectedPrice = 0;
   selectedDiscount = 0;
+  // UPDATE updateTotals function:
   updateTotals() {
-    this.deletedItems = [];
-    for (let i = this.cartItems.length - 1; i >= 0; i--) {
-      const item = this.cartItems[i];
+    // this.deletedItems = [];
 
-      // Check if the item is present AND is explicitly marked as NOT selected
-      if (item.selected === false) {
-        // this.deleteItem(item);
-        this.deletedItems.push(item);
-        // this.cartItems.splice(i, 1);
-        // OPTION A: Call your existing delete method (recommended for consistency)
-        // Note: This item is about to be deleted. We DO NOT need to worry about
-        // preserving its 'selected' state in the next fetch, as it won't be there.
-        // this.deleteItem(item);
-
-        // OPTION B (More immediate client-side removal if deleteItem is complex):
-        // this.cartService.removeFromCart(item); // Call service to delete
-        // this.cartItems.splice(i, 1); // Immediately remove from the local list
-      }
-    }
-    const selectedItems = this.cartItems.filter(
-      (item: { selected: any }) => item.selected
-    );
-    this.selectedPrice = selectedItems.reduce(
+    // Calculate totals for ALL items (no filtering by selected)
+    this.selectedPrice = this.cartItems.reduce(
       (sum: number, item: any) =>
         sum + (item.VERIENT_RATE || 0) * item.QUANTITY,
       0
     );
-    this.selectedDiscount = selectedItems.reduce((sum: number, item: any) => {
+
+    this.selectedDiscount = this.cartItems.reduce((sum: number, item: any) => {
       if (item.DISCOUNT_TYPE === 'Amount') {
-        // Fixed discount per item
         return (
           sum + (item.DISCOUNT || 0) * (item.QUANTITY || item.quantity || 1)
         );
       } else if (item.DISCOUNT_TYPE === 'Percentage') {
-        // Percentage discount
         const rate = parseFloat(item.VERIENT_RATE) || 0;
         const discount =
           ((rate * (item.DISCOUNT || 0)) / 100) *
@@ -2459,26 +2406,19 @@ export class CartDrawerComponent {
       }
     }, 0);
 
-    this.selectedSubtotal = selectedItems.reduce(
-      (
-        sum: number,
-        item: {
-          ITEM_DISCOUNT_AMOUNT: any;
-          RATE: any;
-          VERIENT_RATE: any;
-          quantity: number;
-        }
-      ) =>
+    this.selectedSubtotal = this.cartItems.reduce(
+      (sum: number, item: any) =>
         sum +
         (item.ITEM_DISCOUNT_AMOUNT ||
           (item.RATE || item.VERIENT_RATE) * item.quantity),
       0
     );
-    // this.selectedTax = +(this.selectedSubtotal * 0.05).toFixed(2);
+
     this.selectedTotal = +this.selectedSubtotal.toFixed(2);
   }
 
+  // UPDATE hasSelectedItems function:
   hasSelectedItems() {
-    return this.cartItems.some((item: { selected: any }) => item.selected);
+    return this.cartItems.length > 0; // Simply check if there are items
   }
 }
