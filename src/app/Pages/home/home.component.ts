@@ -50,7 +50,7 @@ export class HomeComponent {
   is_guest: any = sessionStorage.getItem('IS_GUEST');
 
   ngOnInit() {
-    this.router.events.subscribe(event => {
+    this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -67,6 +67,7 @@ export class HomeComponent {
     // if (this.categories?.length > 0) {
     //   this.selectedCategories = [this.categories[0]];
     // }
+    // if(sessionStorage.getItem('userId')){}
   }
 
   categories: any[] = [];
@@ -98,7 +99,13 @@ export class HomeComponent {
 
   getFilters() {
     this.api
-      .getAllCategoryMaster(0, 0, 'SEQUENCE_NO', 'asc', ' AND STATUS = 1 AND IS_VERIENT_AVAILABLE = 1')
+      .getAllCategoryMaster(
+        0,
+        0,
+        'SEQUENCE_NO',
+        'asc',
+        ' AND STATUS = 1 AND IS_VERIENT_AVAILABLE = 1'
+      )
       .subscribe(
         (res: any) => {
           this.loadingCategories = true;
@@ -246,6 +253,7 @@ export class HomeComponent {
         (res: any) => {
           if (res && res.data && Array.isArray(res.data)) {
             this.products = res.data;
+            this.getFavoriteProducts();
             this.loadingProducts = false;
             this.totalProducts = res.count;
             this.showTotalProducts = res.count;
@@ -285,8 +293,6 @@ export class HomeComponent {
           this.showTotalProducts = 0;
         }
       );
-
-    this.getFavoriteProducts();
   }
 
   varient: any;
@@ -459,7 +465,7 @@ export class HomeComponent {
     // Implement your quick view modal logic here
   }
   showLoginModal() {
-      const modalEl = document.getElementById('loginmodal');
+    const modalEl = document.getElementById('loginmodal');
     const modalInstance =
       bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
 
@@ -624,26 +630,23 @@ export class HomeComponent {
   mobileContent!: ViewContainerRef;
   @ViewChild('desktopFilters', { static: false }) desktopFilters!: ElementRef;
   @ViewChild('filtersTemplate') filtersTemplate!: TemplateRef<any>;
-  openMobileFilters(): void {
-    if (this.filtersTemplate && this.mobileContent) {
-      this.mobileContent.clear(); // Clear previous
-      this.mobileContent.createEmbeddedView(this.filtersTemplate); // Render template
-      this.isDrawerOpen = true;
-      this.renderer.setStyle(document.body, 'overflow', 'hidden');
-    }
-  }
+//  isDrawerOpen: boolean = false;
 
-  closeMobileFilters(): void {
-    this.isDrawerOpen = false;
-    this.renderer.removeStyle(document.body, 'overflow'); // re-enable scroll
-  }
+openMobileFilters() {
+  this.isDrawerOpen = true;
+  document.body.style.overflow = 'hidden';
+}
 
-  onDrawerClick(event: MouseEvent): void {
-    const drawer = event.currentTarget as HTMLElement;
-    if (event.target === drawer) {
-      this.closeMobileFilters();
-    }
+closeMobileFilters() {
+  this.isDrawerOpen = false;
+  document.body.style.overflow = 'auto';
+}
+
+onDrawerClick(event: any) {
+  if (event.target.id === 'mobileFiltersOverlay') {
+    this.closeMobileFilters();
   }
+}
   onSortChange(event: Event) {
     const select = event.target as HTMLSelectElement; // cast here
     const value = select.value; // now TypeScript knows 'value' exists
@@ -847,11 +850,13 @@ export class HomeComponent {
           const favouriteProductIds = this.FavouritesData.map(
             (fav: any) => fav.PRODUCT_ID
           );
-
+          // console.log(favouriteProductIds)
           this.products = this.products.map((product: any) => ({
             ...product,
             isLiked: favouriteProductIds.includes(product.ID),
           }));
+
+          console.log(this.products, 'isLiked');
         }
       },
       (err) => {
@@ -967,5 +972,4 @@ export class HomeComponent {
 
     this.onSortChange(event);
   }
- 
 }

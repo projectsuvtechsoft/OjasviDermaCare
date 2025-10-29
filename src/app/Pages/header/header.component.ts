@@ -26,7 +26,7 @@ import { registerdata } from '../login/login/login.component';
 import { NgForm } from '@angular/forms';
 import { LoaderService } from 'src/app/Service/loader.service';
 import { DatePipe, Location } from '@angular/common';
-import { interval, takeWhile } from 'rxjs';
+import { forkJoin, interval, map, Observable, switchMap, takeWhile } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 // import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
@@ -81,6 +81,9 @@ export class HeaderComponent {
     private http: HttpClient
   ) {
     this.userName = sessionStorage.getItem('USER_NAME')?.split(' ')[0] || '';
+      this.cartService.cartCount$.subscribe((count) => {
+      this.cartCount = count; // updates automatically when server data arrives
+    });
   }
 
   user = {
@@ -215,6 +218,9 @@ export class HeaderComponent {
           this.cookie.delete('token');
 
           this.toastr.success('You have logged out successfully!', 'Success');
+           this.cartService.cartItems = [];
+                  this.cartService.cartUpdated.next(this.cartService.cartItems);
+                  this.cartService.updateCartCount();
           this.router.navigate(['/home']);
         } else {
           this.toastr.error('Logout failed!', '');
@@ -321,6 +327,18 @@ export class HeaderComponent {
       sessionStorage.setItem('IS_GUEST', 'true');
       this.isGuest = sessionStorage.getItem('IS_GUEST');
     }
+    if (sessionStorage.getItem('CART_REDIRECT') === 'true') {
+      this.cartItems = this.cartService.getCartItems();
+      this.senddatatoCheckout = {
+        cartDetails: this.cartItems, // Send all items
+        subtotal: this.subtotal,
+      };
+      this.updateTotals();
+      // console.log(this.subtotal)
+      // this.subtotal()
+      this.isCheckoutVisible = true;
+      // this.closeLoginModal();
+    }
     this.closeLoginModal();
     // this.router.navigate(['/home']); // fallback
   }
@@ -332,6 +350,8 @@ export class HeaderComponent {
     // let euserID = sessionStorage.getItem('userId') || '';
     // let etoken = sessionStorage.getItem('token') || '';
     const euserID = sessionStorage.getItem('userId') || '';
+    this.userID = this.commonFunction.decryptdata(euserID);
+    this.cartItems = this.cartService.getCartItems();
     const etoken = sessionStorage.getItem('token') || '';
     this.checkScreenWidth();
     let userID = '';
@@ -343,7 +363,6 @@ export class HeaderComponent {
     }
 
     this.cartService.fetchCartFromServer(userID, token);
-
     if (userID && token) {
       this.getUserData();
     }
@@ -425,7 +444,7 @@ export class HeaderComponent {
             this.loadingRecords = false;
             this.totalRecords = data['count'];
             this.productList = data['data'][1];
-            console.log(data['data']);
+            // console.log(data['data']);
             this.categoryList = data['data'][0];
           } else if (data['code'] == 400) {
             this.loadingRecords = false;
@@ -984,7 +1003,37 @@ export class HeaderComponent {
     this.dataLoaded = true;
     this.loaderService.hideLoader();
   }
+  migrateCartItems(
+    cartItems: any[],
+    customerID:any
+  ): Observable<any> {
+    if (!cartItems || cartItems.length === 0) {
+      return new Observable(observer => {
+        observer.next({ success: true, message: 'No items to migrate' });
+        observer.complete();
+      });
+    }
 
+    // Step 1: Delete items from session cart
+    const deleteOperations = cartItems.map(item =>
+      this.cartService.removeFromCartnotoast(item.PRODUCT_ID)
+    );
+
+    // Step 2: After deleting, add items to user's customer cart
+    return forkJoin(deleteOperations).pipe(
+      switchMap(() => {
+        const addOperations = cartItems.map(item =>
+          this.cartService.addToCart(item)
+        );
+        return forkJoin(addOperations);
+      }),
+      map(results => ({
+        success: true,
+        message: `Migrated ${results.length} items to your cart`,
+        migratedCount: results.length
+      }))
+    );
+  }
   loginotpverification(form?: NgForm): void {
     this.loginSubmitted = true;
     // sessionStorage.clear()
@@ -1122,6 +1171,22 @@ export class HeaderComponent {
 
               // console.log(this.isLoggedIn, 'this.isLoggedIn');
               this.toastr.success('You have login Successfully!', 'success');
+              if (sessionStorage.getItem('CART_REDIRECT') === 'true') {
+                this.cartItems = this.cartService.getCartItems();
+                this.senddatatoCheckout = {
+                  cartDetails: this.cartItems, // Send all items
+                  subtotal: this.subtotal,
+                };
+                if(this.cartItems && this.cartItems.length>0){
+                  // this.cartItems.forEach((data:any)=>{
+                  //    this.cartService.addToCart(data)
+                  // })
+                  this.handleCartMigration(successCode.data[0]['UserData'][0].ID)
+                  //  console.log(this.migrateCartItems(this.cartItems,successCode.data[0]['UserData'][0].ID))
+                }
+                // this.updateTotals();
+                this.isCheckoutVisible = true;
+              }
             } else if (successCode.code == '404') {
               // form?.resetForm();
               this.toastr.error(
@@ -1153,7 +1218,51 @@ export class HeaderComponent {
         });
     }
   }
+private handleCartMigration(customerId: string): void {
+  const cartItems = this.cartService.getCartItems();
 
+  if (!cartItems || cartItems.length === 0) {
+    // No items to migrate
+    this.toastr.success('You have login Successfully!', 'success');
+    this.updateTotals();
+    return;
+  }
+
+  // Show loading indicator
+  // this.toastr.info('Migrating cart items...', '');
+
+  // Call migration service
+  this.cartService.migrateSessionCartToCustomer(cartItems, customerId)
+    .subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.toastr.success(response.message, '');
+          
+          // Clear session cart indicators
+          sessionStorage.removeItem('CART_REDIRECT');
+          sessionStorage.removeItem('SESSION_KEYS');
+
+          // Update UI with migrated cart
+          this.cartItems = this.cartService.getCartItems();
+          this.senddatatoCheckout = {
+            cartDetails: this.cartItems,
+            subtotal: this.subtotal,
+          };
+
+          this.updateTotals();
+          this.isCheckoutVisible = true;
+          
+          this.toastr.success('You have login Successfully!', 'success');
+        }
+      },
+      error: (error) => {
+        console.error('Migration error:', error);
+        this.toastr.error('Failed to migrate cart items. Items may be in your account.', '');
+        this.updateTotals();
+        this.toastr.success('You have login Successfully!', 'success');
+      }
+    });
+}
   //by sanjana
   goToProductDetails(id: number) {
     this.router.navigateByUrl(`/product_details/${id}`);
@@ -1280,6 +1389,9 @@ export class HeaderComponent {
           this.cookie.delete('token');
 
           this.toastr.success('You have logged out successfully!', 'Success');
+          this.cartService.cartItems = [];
+          this.cartService.cartUpdated.next(this.cartService.cartItems);
+          this.cartService.updateCartCount();
           this.router.navigate(['/home']);
           this.showLogoutModal = false;
           this.isMobileMenuOpen = false;
@@ -1314,7 +1426,7 @@ export class HeaderComponent {
   }
 
   openCamera() {
-    console.log('Opening camera...');
+    // console.log('Opening camera...');
 
     // Close the photo selection modal first
     this.closeModal();
@@ -3082,15 +3194,97 @@ export class HeaderComponent {
     }
   }
   dropdownOpen = false;
- 
-options = ['All', 'Categories', 'Products'];
- 
-toggleDropdown() {
-  this.dropdownOpen = !this.dropdownOpen;
-}
- 
-selectOption(option: string) {
-  this.selectedOption = option;
-  this.dropdownOpen = false;
-}
+
+  options = ['All', 'Categories', 'Products'];
+
+  toggleDropdown() {
+    this.dropdownOpen = !this.dropdownOpen;
+  }
+
+  selectOption(option: string) {
+    this.selectedOption = option;
+    this.dropdownOpen = false;
+  }
+  userID: string = '';
+  isCheckoutVisible = false;
+  senddatatoCheckout: any = {};
+  selectedPrice = 0;
+  selectedDiscount = 0;
+  cartItems: any = [];
+  get subtotal() {
+    return this.cartItems?.reduce(
+      (sum: any, item: any) =>
+        sum +
+        (item.ITEM_DISCOUNT_AMOUNT
+          ? item.ITEM_DISCOUNT_AMOUNT
+          : item.RATE
+          ? item.RATE
+          : item.VERIENT_RATE) *
+          item.quantity,
+      0
+    );
+  }
+  onOrderPlaced(success: boolean) {
+    // console.log(success);
+
+    if (success) {
+      // console.log('Order has been successfully placed!');
+      // Here you would typically:
+      // 1. Navigate to an order confirmation page.
+      // 2. Clear the cart (if not already done by backend).
+      // 3. Potentially show a global success message.
+      this.isCheckoutVisible = success; // Hide the address manager section
+      this.close(); // Close the cart drawer
+      // Example: this.router.navigate(['/order-success']);
+      this.toastr.success('Order has been successfully placed!', 'Success');
+    } else {
+      this.isCheckoutVisible = success; // Hide the address manager section
+      this.close(); // Close the cart drawer
+      this.toastr.error('Order placement failed or was cancelled.');
+      // Handle failure if needed, though the address manager already shows toasts for errors.
+    }
+    // this.isCheckoutVisible = success;
+  }
+  close() {
+    // this.visible = false;
+    // this.visibleChange.emit(this.visible);
+    this.router.navigate(['./product-list']);
+    // window.location.reload();
+  }
+  updateTotals() {
+    // this.deletedItems = [];
+
+    // Calculate totals for ALL items (no filtering by selected)
+    this.selectedPrice = this.cartItems.reduce(
+      (sum: number, item: any) =>
+        sum + (item.VERIENT_RATE || 0) * item.QUANTITY,
+      0
+    );
+
+    this.selectedDiscount = this.cartItems.reduce((sum: number, item: any) => {
+      if (item.DISCOUNT_TYPE === 'Amount') {
+        return (
+          sum + (item.DISCOUNT || 0) * (item.QUANTITY || item.quantity || 1)
+        );
+      } else if (item.DISCOUNT_TYPE === 'Percentage') {
+        const rate = parseFloat(item.VERIENT_RATE) || 0;
+        const discount =
+          ((rate * (item.DISCOUNT || 0)) / 100) *
+          (item.QUANTITY || item.quantity || 1);
+        return sum + discount;
+      } else {
+        return sum;
+      }
+    }, 0);
+
+    // this.selectedSubtotal = this.cartItems.reduce(
+    //   (sum: number, item: any) =>
+    //     sum +
+    //     (item.ITEM_DISCOUNT_AMOUNT ||
+    //       (item.RATE || item.VERIENT_RATE) * item.quantity),
+    //   0
+    // );
+
+    // this.selectedTotal = +this.selectedSubtotal.toFixed(2);
+  }
 }

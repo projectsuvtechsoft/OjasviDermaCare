@@ -1,22 +1,40 @@
-<div class="sticky top-0 z-50 bg-white shadow-md bg-gray-50 overflow-x-hidden">
+<div class="sticky top-0 z-50 bg-white shadow-sm bg-gray-50 overflow-x-hidden">
   <!-- Mobile Nav Overlay & Drawer -->
-  <div id="mobileNavOverlay" class="fixed inset-0 bg-opacity-40 z-40 hidden lg:hidden transition-opacity duration-300"
-    [class.hidden]="!isMobileMenuOpen" (click)="isMobileMenuOpen = false"></div>
+  <div
+    id="mobileNavOverlay"
+    class="fixed inset-0 bg-opacity-40 z-40 hidden lg:hidden transition-opacity duration-300"
+    [class.hidden]="!isMobileMenuOpen"
+    (click)="isMobileMenuOpen = false"
+  ></div>
 
   <!-- Mobile Navigation Drawer -->
-  <nav id="mobileNavDrawer"
-    class="fixed top-0 left-0 h-full w-4/5 max-w-xs bg-white shadow-lg z-45 transform transition-transform duration-300 lg:hidden flex flex-col"
-    [class.-translate-x-full]="!isMobileMenuOpen" [class.translate-x-0]="isMobileMenuOpen">
+  <nav
+    id="mobileNavDrawer"
+    class="fixed top-0 left-0 h-full w-4/5 max-w-xs bg-white shadow-md z-45 transform transition-transform duration-300 lg:hidden flex flex-col"
+    [class.-translate-x-full]="!isMobileMenuOpen"
+    [class.translate-x-0]="isMobileMenuOpen"
+  >
     <!-- Mobile Header -->
-    <div class="flex items-center justify-between px-4 py-4 border-b border-gray-200">
+    <div
+      class="flex items-center justify-between px-4 py-4 border-b border-gray-200"
+    >
       <div class="flex items-center space-x-2">
-        <img src="assets/img/logo1.png" alt="Ojasvi Logo" class="h-8 w-auto object-contain" />
+        <img
+          src="assets/img/logo1.png"
+          alt="Ojasvi Logo"
+          class="h-8 w-auto object-contain"
+        />
         <div class="flex flex-col leading-tight">
           <span class="text-lg text-[#5a8f69] font-semibold">Ojasvi</span>
-          <span class="text-xs font-[Pacifico,sans-serif] text-[#ffc200]">From Garden To Glow</span>
+          <span class="text-xs font-[Pacifico,sans-serif] text-[#ffc200]"
+            >From Garden To Glow</span
+          >
         </div>
       </div>
-      <button (click)="isMobileMenuOpen = false" class="text-gray-500 hover:text-[#5a8f69] p-2">
+      <button
+        (click)="isMobileMenuOpen = false"
+        class="text-gray-500 hover:text-[#5a8f69] p-2"
+      >
         <i class="ri-close-line text-xl"></i>
       </button>
     </div>
@@ -24,20 +42,34 @@
     <!-- Mobile Menu Items -->
 
     <!-- User Profile -->
-    <div *ngIf="isLogged" class="flex flex-col items-center p-6 border-b border-gray-200">
-      <div class="d-flex justify-content-center align-items-center" style="height: 100%; width: 100%">
+    <div
+      *ngIf="isLogged"
+      class="flex flex-col items-center p-6 border-b border-gray-200"
+    >
+      <div
+        class="d-flex justify-content-center align-items-center"
+        style="height: 100%; width: 100%"
+      >
         <div
-          class="profile-photo-container position-relative d-flex justify-content-center align-items-center profile-image">
-          <img [src]="imagePreview || 'assets/img/user.jpg'" alt="Profile Photo" class="profile-photo"
-            (error)="setDefaultImage($event)" style="
+          class="profile-photo-container position-relative d-flex justify-content-center align-items-center profile-image"
+        >
+          <img
+            [src]="imagePreview || 'assets/img/user.jpg'"
+            alt="Profile Photo"
+            class="profile-photo"
+            (error)="setDefaultImage($event)"
+            style="
               width: 100px;
               height: 100px;
               border-radius: 50%;
               object-fit: cover;
               border: 3px solid #5a8f69;
-            " />
+            "
+          />
 
-          <button class="edit-photo-btn" style="
+          <button
+            class="edit-photo-btn"
+            style="
               width: 30px;
               height: 30px;
               display: flex;
@@ -52,11 +84,22 @@
               border-radius: 50%;
               box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
               overflow: hidden;
-            " (click)="openprofileModal()">
-            <svg width="13" height="13" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            "
+            (click)="openprofileModal()"
+          >
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 18 18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
                 d="M13.2543 2.52944L13.2541 2.52967L12.5371 3.25402L14.6921 5.40906L15.4183 4.6828L13.2543 2.52944ZM13.2543 2.52944C13.3951 2.38636 13.5629 2.27275 13.748 2.19523C13.9331 2.11772 14.1318 2.07785 14.3324 2.07797V2.07814M13.2543 2.52944L14.3324 2.07814M14.3324 2.07814L14.3383 2.0778M14.3324 2.07814L14.3383 2.0778M14.3383 2.0778C14.5397 2.06613 14.7411 2.10019 14.9275 2.17745C15.1138 2.2547 15.2803 2.37314 15.4144 2.52388L15.4143 2.52398M14.3383 2.0778L15.4143 2.52398M15.4143 2.52398L15.4183 2.52802M15.4143 2.52398L15.4183 2.52802M15.4183 2.52802C15.7035 2.81405 15.8636 3.20149 15.8636 3.60541M15.4183 2.52802L15.8636 3.60541M15.8636 3.60541C15.8636 4.00929 15.7036 4.39669 15.4184 4.6827L15.8636 3.60541ZM15.3711 1.10425L15.3328 1.19664L1.30183 16.9629C1.36117 16.9874 1.42478 17 1.489 17V17.1H1.48906H4.42302C4.50036 17.1 4.57697 17.0848 4.64843 17.0552L4.61015 16.9628L4.64843 17.0552C4.71988 17.0256 4.7848 16.9822 4.83948 16.9275C4.83949 16.9274 4.83949 16.9274 4.8395 16.9274L16.2513 5.51563L16.2514 5.51551C16.7577 5.00758 17.0416 4.31944 17.0408 3.60229C17.0399 2.8852 16.7544 2.19778 16.2471 1.69104C15.9967 1.43947 15.699 1.24003 15.3711 1.10425ZM13.8592 6.24194L4.17915 15.922H2.07801V13.8192L11.7083 4.09109L13.8592 6.24194Z"
-                fill="#5a8f69" stroke="#5a8f69" stroke-width="0.2" />
+                fill="#5a8f69"
+                stroke="#5a8f69"
+                stroke-width="0.2"
+              />
             </svg>
           </button>
         </div>
@@ -64,9 +107,12 @@
       <h2 class="text-base sm:text-lg font-semibold">
         {{ user.NAME || "User" }}
       </h2>
-      <p class="text-xs sm:text-sm text-gray-500" *ngIf="
+      <p
+        class="text-xs sm:text-sm text-gray-500"
+        *ngIf="
           user.email != '' && user.email != undefined && user.email != undefined
-        ">
+        "
+      >
         {{ user.email || "No email provided" }}
       </p>
     </div>
@@ -144,36 +190,48 @@
         <!-- <div
           class="border-t border-dashed border-green-300 shadow-sm mx-4 my-3"
         ></div> -->
- 
-        <a routerLink="/home" (click)="closeMobileMenu()"
-          class="sidebar-link flex items-center px-3 py-1 text-xs sm:text-sm font-medium rounded-md text-gray-600">
+
+        <a
+          routerLink="/home"
+          (click)="closeMobileMenu()"
+          class="sidebar-link flex items-center px-3 py-1 text-xs sm:text-sm font-medium rounded-md text-gray-600"
+        >
           <div class="w-5 h-5 mr-3 flex items-center justify-center">
             <i class="ri-home-4-line"></i>
           </div>
           Home
         </a>
-        <a routerLink="/about-us" (click)="closeMobileMenu()"
-          class="sidebar-link flex items-center px-3 py-1 text-xs sm:text-sm font-medium rounded-md text-gray-600">
+        <a
+          routerLink="/about-us"
+          (click)="closeMobileMenu()"
+          class="sidebar-link flex items-center px-3 py-1 text-xs sm:text-sm font-medium rounded-md text-gray-600"
+        >
           <div class="w-5 h-5 mr-3 flex items-center justify-center">
             <i class="ri-user-3-line"></i>
           </div>
           About us
         </a>
-        <a routerLink="/product-list" (click)="closeMobileMenu()"
-          class="sidebar-link flex items-center px-3 py-1 text-xs sm:text-sm font-medium rounded-md text-gray-600">
+        <a
+          routerLink="/product-list"
+          (click)="closeMobileMenu()"
+          class="sidebar-link flex items-center px-3 py-1 text-xs sm:text-sm font-medium rounded-md text-gray-600"
+        >
           <div class="w-5 h-5 mr-3 flex items-center justify-center">
             <i class="ri-shopping-bag-3-line"></i>
           </div>
           Products
         </a>
-        <a routerLink="/contact-us" (click)="closeMobileMenu()"
-          class="sidebar-link flex items-center px-3 py-1 text-xs sm:text-sm font-medium rounded-md text-gray-600">
+        <a
+          routerLink="/contact-us"
+          (click)="closeMobileMenu()"
+          class="sidebar-link flex items-center px-3 py-1 text-xs sm:text-sm font-medium rounded-md text-gray-600"
+        >
           <div class="w-5 h-5 mr-3 flex items-center justify-center">
             <i class="ri-phone-line"></i>
           </div>
           Contact us
         </a>
- 
+
         <!-- <a
           routerLink="/home"
           routerLinkActive="!text-[#3e6b4b] !bg-gray-50"
@@ -191,8 +249,10 @@
     <!-- Logout Button -->
     <div class="p-4 border-t border-gray-200">
       <div *ngIf="isLogged" class="space-y-2">
-        <button (click)="openModal()"
-          class="w-full bg-[#5a8f69] text-white py-2.5 px-4 rounded-button flex items-center justify-center font-medium hover:bg-opacity-90 transition-all whitespace-nowrap text-xs sm:text-base">
+        <button
+          (click)="openModal()"
+          class="w-full bg-[#5a8f69] text-white py-2.5 px-4 rounded-button flex items-center justify-center font-medium hover:bg-opacity-90 transition-all whitespace-nowrap text-xs sm:text-base"
+        >
           <div class="w-5 h-5 mr-2 flex items-center justify-center">
             <i class="ri-logout-box-line"></i>
           </div>
@@ -200,8 +260,10 @@
         </button>
       </div>
       <div *ngIf="!isLogged" class="space-y-2">
-        <button (click)="goToLogin(); isMobileMenuOpen = false"
-          class="w-full bg-[#5a8f69] text-white py-2 px-2 rounded-md font-medium hover:bg-[#4a7a5a] transition-colors">
+        <button
+          (click)="goToLogin(); isMobileMenuOpen = false"
+          class="w-full bg-[#5a8f69] text-white py-2 px-2 rounded-md font-medium hover:bg-[#4a7a5a] transition-colors"
+        >
           Log in
         </button>
       </div>
@@ -289,47 +351,71 @@
       <div class="flex items-center justify-between gap-4">
         <!-- Logo Section -->
         <a href="/" class="flex items-center space-x-2 flex-shrink-0">
-          <img src="assets/img/logo1.png" alt="Ojasvi Logo"
-            class="h-[2.5rem] sm:h-[3.5rem] md:h-[4.5rem] w-auto object-contain" />
-          <div class="flex flex-col leading-tight hidden sm:block logo-text-container">
-            <span class="text-lg sm:text-xl md:text-2xl text-[#5a8f69] font-semibold">
+          <img
+            src="assets/img/logo1.png"
+            alt="Ojasvi Logo"
+            class="h-[2.5rem] sm:h-[3.5rem] md:h-[4.5rem] w-auto object-contain"
+          />
+          <div
+            class="flex flex-col leading-tight hidden sm:block logo-text-container"
+          >
+            <span
+              class="text-lg sm:text-xl md:text-2xl text-[#5a8f69] font-semibold"
+            >
               Ojasvi Derma Care
             </span>
-            <span class="text-xs sm:text-sm font-[Pacifico,sans-serif] text-[#ffc200]">
+            <span
+              class="text-xs sm:text-sm font-[Pacifico,sans-serif] text-[#ffc200]"
+            >
               From Garden To Glow
             </span>
           </div>
         </a>
- 
+
         <!-- Desktop Menu (visible >= 990px) -->
-        <div class="nav-links hidden space-x-6 items-center ml-6 text-sm font-medium"
-          style="font-weight: 700 !important">
-          <a routerLink="/home" routerLinkActive="!text-[#3e6b4b] " [routerLinkActiveOptions]="{ exact: true }"
-            class="text-gray-800 hover:text-[#3e6b4b] transition-colors duration-200 font-weight: 700;">
+        <div
+          class="nav-links hidden space-x-6 items-center ml-6 text-sm font-medium"
+          style="font-weight: 700 !important"
+        >
+          <a
+            routerLink="/home"
+            routerLinkActive="!text-[#3e6b4b] "
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="text-gray-800 hover:text-[#3e6b4b] transition-colors duration-200 font-weight: 700;"
+          >
             HOME
           </a>
- 
-          <a routerLink="/about-us" routerLinkActive="!text-[#3e6b4b] "
-            class="text-gray-800 hover:text-[#3e6b4b] transition-colors duration-200 font-weight: 700;">
+
+          <a
+            routerLink="/about-us"
+            routerLinkActive="!text-[#3e6b4b] "
+            class="text-gray-800 hover:text-[#3e6b4b] transition-colors duration-200 font-weight: 700;"
+          >
             ABOUT US
           </a>
- 
-          <a routerLink="/product-list" routerLinkActive="!text-[#3e6b4b] "
-            class="text-gray-800 hover:text-[#3e6b4b] transition-colors duration-200 font-weight: 700;">
+
+          <a
+            routerLink="/product-list"
+            routerLinkActive="!text-[#3e6b4b] "
+            class="text-gray-800 hover:text-[#3e6b4b] transition-colors duration-200 font-weight: 700;"
+          >
             PRODUCTS
           </a>
- 
-          <a routerLink="/contact-us" routerLinkActive="!text-[#3e6b4b] "
-            class="text-gray-800 hover:text-[#3e6b4b] transition-colors duration-200 font-weight: 700;">
+
+          <a
+            routerLink="/contact-us"
+            routerLinkActive="!text-[#3e6b4b] "
+            class="text-gray-800 hover:text-[#3e6b4b] transition-colors duration-200 font-weight: 700;"
+          >
             CONTACT US
           </a>
- 
+
           <!-- <a (click)="isSearchModalOpen = true"
             class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors">
             <i class="ri-search-line text-xl text-gray-600"></i>
           </a> -->
         </div>
- 
+
         <!-- Right Side Actions -->
         <div class="flex items-center space-x-2 sm:space-x-4">
           <!-- Search Button -->
@@ -339,124 +425,173 @@
           >
             <i class="ri-search-line text-lg sm:text-xl text-gray-600"></i>
           </button> -->
- 
+
           <!-- User Actions -->
           <div class="flex items-center space-x-2 sm:space-x-3">
             <!-- Login Button (Desktop) -->
-            <button *ngIf="!isLogged" (click)="goToLogin()"
-              class="hidden desktop-login-btn items-center text-gray-700 font-semibold hover:text-[#5a8f69] transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                class="mr-1">
+            <button
+              *ngIf="!isLogged"
+              (click)="goToLogin()"
+              class="hidden desktop-login-btn items-center text-gray-700 font-semibold hover:text-[#5a8f69] transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                class="mr-1"
+              >
                 <path
                   d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M12 14C8.13401 14 5 17.134 5 21H19C19 17.134 15.866 14 12 14Z" stroke="currentColor"
-                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M12 14C8.13401 14 5 17.134 5 21H19C19 17.134 15.866 14 12 14Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
               </svg>
- 
+
               <span *ngIf="!isGuest">Login</span>
               <span *ngIf="isGuest">Guest</span>
             </button>
- 
-       
-<a
-  *ngIf="isLogged && !isMobileView"
-  routerLink="/profile"
-  class=" sm:flex items-center justify-center text-gray-700 hover:text-[#5a8f69] transition-colors"
->
-  <i class="ri-user-line text-lg sm:text-xl mr-1"></i>
-  {{ userName }}
-</a>
- 
- 
-<div *ngIf="isLogged && isMobileView" class=" relative flex items-center">
-<div *ngIf="isLogged && isMobileView" class=" relative">
-  <button
-    (click)="toggleUserDropdown()"
-    class="flex items-center justify-center text-gray-700 hover:text-[#5a8f69] transition-colors p-2 rounded"
-  >
-    <i class="ri-user-line text-xl"></i>
-  </button>
- 
-  <!-- Dropdown menu -->
-  <div
-    *ngIf="isUserDropdownOpen"
-    class=" fixed right-15 z-50 bg-white shadow-lg border border-gray-200 rounded-md w-[240px] overflow-hidden"
-    [ngStyle]="{'top.px': headerHeight}"  
-  >
-    <a href="#" (click)="
-              goToProfileSection('dashboard-section'); $event.preventDefault()
-            " [class]="
-              'sidebar-link flex items-center px-4 py-2 text-xs sm:text-sm font-medium rounded-md ' +
-              (isSectionActive('dashboard-section')
-                ? 'active text-gray-800'
-                : 'text-gray-600')
-            "
-       class="flex items-center px-2 py-1 text-sm text-gray-700 hover:bg-gray-100">
-      <i class="ri-dashboard-line mr-2"></i> Dashboard
-    </a>
-    <a href="#" (click)="
-              goToProfileSection('addresses-section'); $event.preventDefault()
-            " [class]="
-              'sidebar-link flex items-center px-4 py-2 text-xs sm:text-sm font-medium rounded-md ' +
-              (isSectionActive('addresses-section')
-                ? 'active text-gray-800'
-                : 'text-gray-600')
-            "
-       class="flex items-center px-2 py-1 text-sm text-gray-700 hover:bg-gray-100">
-      <i class="ri-map-pin-line mr-2"></i> Saved Addresses
-    </a>
-    <a href="#" (click)="
-              goToProfileSection('orders-section'); $event.preventDefault()
-            " [class]="
-              'sidebar-link flex items-center px-4 py-2 text-xs sm:text-sm font-medium rounded-md ' +
-              (isSectionActive('orders-section')
-                ? 'active text-gray-800'
-                : 'text-gray-600')
-            " class="flex items-center px-2 py-1 text-sm text-gray-700 hover:bg-gray-100">
-      <i class="ri-shopping-bag-line mr-2"></i> My Orders
-    </a>
-    <a href="#" (click)="
-              goToProfileSection('wishlist-section'); $event.preventDefault()
-            " [class]="
-              'sidebar-link flex items-center px-4 py-2 text-xs sm:text-sm font-medium rounded-md ' +
-              (isSectionActive('wishlist-section')
-                ? 'active text-gray-800'
-                : 'text-gray-600')
-            " class="flex items-center px-2 py-1 text-sm text-gray-700 hover:bg-gray-100">
-      <i class="ri-heart-line mr-2"></i> Wishlist
-    </a>
-  </div>
-</div>
- 
-</div>
- 
- 
- 
- 
- 
-            <!-- Favorites (Logged in) -->
-            <a *ngIf="isLogged"(click)="isMobileMenuOpen = false; goToProfileSection('wishlist-section')"
-              class="relative text-gray-700 hover:text-[#5a8f69]">
-              <i class="ri-heart-line text-xl"></i>
-              <span class="absolute -top-1 -right-2 bg-[#5a8f69] text-white text-xs rounded-full px-1.5">{{
-                favouriteCount }}</span>
+
+            <a
+              *ngIf="isLogged && !isMobileView"
+              routerLink="/profile"
+              class="sm:flex items-center justify-center text-gray-700 hover:text-[#5a8f69] transition-colors"
+            >
+              <i class="ri-user-line text-lg sm:text-xl mr-1"></i>
+              {{ userName }}
             </a>
- 
+
+            <div
+              *ngIf="isLogged && isMobileView"
+              class="relative flex items-center"
+            >
+              <div *ngIf="isLogged && isMobileView" class="relative">
+                <button
+                  (click)="toggleUserDropdown()"
+                  class="flex items-center justify-center text-gray-700 hover:text-[#5a8f69] transition-colors p-2 rounded"
+                >
+                  <i class="ri-user-line text-xl"></i>
+                </button>
+
+                <!-- Dropdown menu -->
+                <div
+                  *ngIf="isUserDropdownOpen"
+                  class="fixed right-15 z-50 bg-white shadow-md border border-gray-200 rounded-md w-[240px] overflow-hidden"
+                  [ngStyle]="{ 'top.px': headerHeight }"
+                >
+                  <a
+                    href="#"
+                    (click)="
+                      goToProfileSection('dashboard-section');
+                      $event.preventDefault()
+                    "
+                    [class]="
+                      'sidebar-link flex items-center px-4 py-2 text-xs sm:text-sm font-medium rounded-md ' +
+                      (isSectionActive('dashboard-section')
+                        ? 'active text-gray-800'
+                        : 'text-gray-600')
+                    "
+                    class="flex items-center px-2 py-1 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    <i class="ri-dashboard-line mr-2"></i> Dashboard
+                  </a>
+                  <a
+                    href="#"
+                    (click)="
+                      goToProfileSection('addresses-section');
+                      $event.preventDefault()
+                    "
+                    [class]="
+                      'sidebar-link flex items-center px-4 py-2 text-xs sm:text-sm font-medium rounded-md ' +
+                      (isSectionActive('addresses-section')
+                        ? 'active text-gray-800'
+                        : 'text-gray-600')
+                    "
+                    class="flex items-center px-2 py-1 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    <i class="ri-map-pin-line mr-2"></i> Saved Addresses
+                  </a>
+                  <a
+                    href="#"
+                    (click)="
+                      goToProfileSection('orders-section');
+                      $event.preventDefault()
+                    "
+                    [class]="
+                      'sidebar-link flex items-center px-4 py-2 text-xs sm:text-sm font-medium rounded-md ' +
+                      (isSectionActive('orders-section')
+                        ? 'active text-gray-800'
+                        : 'text-gray-600')
+                    "
+                    class="flex items-center px-2 py-1 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    <i class="ri-shopping-bag-line mr-2"></i> My Orders
+                  </a>
+                  <a
+                    href="#"
+                    (click)="
+                      goToProfileSection('wishlist-section');
+                      $event.preventDefault()
+                    "
+                    [class]="
+                      'sidebar-link flex items-center px-4 py-2 text-xs sm:text-sm font-medium rounded-md ' +
+                      (isSectionActive('wishlist-section')
+                        ? 'active text-gray-800'
+                        : 'text-gray-600')
+                    "
+                    class="flex items-center px-2 py-1 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    <i class="ri-heart-line mr-2"></i> Wishlist
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Favorites (Logged in) -->
+            <a
+              *ngIf="isLogged"
+              (click)="
+                isMobileMenuOpen = false; goToProfileSection('wishlist-section')
+              "
+              class="relative text-gray-700 hover:text-[#5a8f69]"
+            >
+              <i class="ri-heart-line text-xl"></i>
+              <span
+                class="absolute -top-1 -right-2 bg-[#5a8f69] text-white text-xs rounded-full px-1.5"
+                >{{ favouriteCount }}</span
+              >
+            </a>
+
             <!-- Cart (Logged in) -->
-            <button (click)="goToCart();isMobileMenuOpen = false"
-              class="relative w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-gray-700 hover:text-[#5a8f69] transition-colors">
+            <button
+              (click)="goToCart(); isMobileMenuOpen = false"
+              class="relative w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-gray-700 hover:text-[#5a8f69] transition-colors"
+            >
               <i class="ri-shopping-cart-line text-lg sm:text-xl"></i>
-              <span *ngIf="cartCount && cartCount > 0"
-                class="absolute -top-1 -right-1 bg-[#5a8f69] text-white text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
+              <span
+                *ngIf="cartCount && cartCount > 0"
+                class="absolute -top-1 -right-1 bg-[#5a8f69] text-white text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center"
+              >
                 {{ cartCount }}
               </span>
             </button>
           </div>
- 
+
           <!-- Mobile Menu Button -->
-          <button (click)="isMobileMenuOpen = !isMobileMenuOpen"
-            class="lg:hidden w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-gray-700 hover:text-[#5a8f69] transition-colors">
+          <button
+            (click)="isMobileMenuOpen = !isMobileMenuOpen"
+            class="lg:hidden w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-gray-700 hover:text-[#5a8f69] transition-colors"
+          >
             <i class="ri-menu-line text-xl sm:text-2xl"></i>
           </button>
         </div>
@@ -465,29 +600,43 @@
   </div>
 
   <!-- Search Modal -->
- <div *ngIf="isSearchModalOpen" class="fixed inset-0 z-50 flex items-start justify-center bg-opacity-40 pt-20">
+  <div
+    *ngIf="isSearchModalOpen"
+    class="fixed inset-0 z-50 flex items-start justify-center bg-opacity-40 pt-20"
+  >
     <!-- Modal Box -->
-    <div class="bg-white w-full max-w-2xl mx-auto rounded-lg shadow-lg p-6 relative">
+    <div
+      class="bg-white w-full max-w-2xl mx-auto rounded-lg shadow-md p-6 relative"
+    >
       <!-- Close Button -->
-       <div style="margin: 5px;">
-      <button (click)="searchModalOpen()" class="absolute top-1 right-1 text-gray-600 hover:text-red-500">
-        <i class="ri-close-line text-2xl"></i>
-      </button>
-</div>
+      <div style="margin: 5px">
+        <button
+          (click)="searchModalOpen()"
+          class="absolute top-1 right-1 text-gray-600 hover:text-red-500"
+        >
+          <i class="ri-close-line text-2xl"></i>
+        </button>
+      </div>
       <!-- Search Input + Select -->
-      <div class="flex items-center border rounded-md  w-full">
+      <div class="flex items-center border rounded-md w-full">
         <!-- Search Icon -->
         <span class="px-3 text-gray-500">
           <i class="ri-search-line"></i>
         </span>
- 
+
         <!-- Search Input -->
-        <input type="text" [(ngModel)]="searchText" (keyup)="keyup($event)" (keydown.enter)="onEnterKey($event)"
-          (ngModelChange)="onSearchChange($event)" placeholder="Search for products..."
-          class="flex-1 px-2 py-2 focus:outline-none text-sm" />
- 
+        <input
+          type="text"
+          [(ngModel)]="searchText"
+          (keyup)="keyup($event)"
+          (keydown.enter)="onEnterKey($event)"
+          (ngModelChange)="onSearchChange($event)"
+          placeholder="Search for products..."
+          class="flex-1 px-2 py-2 focus:outline-none text-sm"
+        />
+
         <!-- Select Wrapper -->
-      <!-- <div class="relative w-28 sm:w-36 md:w-40 flex-shrink-0">
+        <!-- <div class="relative w-28 sm:w-36 md:w-40 flex-shrink-0">
   <select
     (change)="onCategoryChange($event)"
     [(ngModel)]="selectedOption"
@@ -503,77 +652,111 @@
     ▼
   </div>
 </div> -->
-<div class="relative w-40">
-  <button (click)="toggleDropdown()" class="w-full bg-[#5a8f69] text-white px-4 py-2 rounded flex justify-between items-center">
-    {{ selectedOption || 'Select Option' }}
-    <span>▼</span>
-  </button>
- 
-  <ul
-    *ngIf="dropdownOpen"
-    class="absolute w-full bg-white border border-gray-300 rounded shadow mt-1 max-h-60 overflow-auto z-50"
-  >
-    <li
-      *ngFor="let option of options"
-      (click)="selectOption(option)"
-      class="px-4 py-2 hover:bg-[#5a8f69] hover:text-white cursor-pointer"
-    >
-      {{ option }}
-    </li>
-  </ul>
-</div>
- 
- 
+        <div class="relative w-40">
+          <button
+            (click)="toggleDropdown()"
+            class="w-full bg-[#5a8f69] text-white px-4 py-2 rounded flex justify-between items-center"
+          >
+            {{ selectedOption || "Select Option" }}
+            <span>▼</span>
+          </button>
+
+          <ul
+            *ngIf="dropdownOpen"
+            class="absolute w-full bg-white border border-gray-300 rounded shadow mt-1 max-h-60 overflow-auto z-50"
+          >
+            <li
+              *ngFor="let option of options"
+              (click)="selectOption(option)"
+              class="px-4 py-2 hover:bg-[#5a8f69] hover:text-white cursor-pointer"
+            >
+              {{ option }}
+            </li>
+          </ul>
+        </div>
       </div>
- 
+
       <div class="flex flex-col gap-2 mt-4 max-h-64 overflow-y-auto pr-2">
-        <h3 div class="mb-3 text-lg font-semibold text-sm text-gray-700"
-          *ngIf="selectedOption === 'All' && categoryList.length > 0">
+        <h3
+          div
+          class="mb-3 text-lg font-semibold text-sm text-gray-700"
+          *ngIf="selectedOption === 'All' && categoryList.length > 0"
+        >
           <b>Categories</b>
         </h3>
-        <div *ngFor="let category of categoryList"
-          class="flex items-center gap-3 bg-white-50 px-3 py-2 rounded-md shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-          <img [src]="IMAGEuRL + 'categoryImage/' + category.IMAGE" [alt]="category.CATEGORY_NAME"
-            class="w-10 h-10 object-cover rounded-md" />
-          <span class="text-sm text-gray-700 font-medium" (click)="goToProductList(category.ID)">
+        <div
+          *ngFor="let category of categoryList"
+          class="flex items-center gap-3 bg-white-50 px-3 py-2 rounded-md shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+        >
+          <img
+            [src]="IMAGEuRL + 'categoryImage/' + category.IMAGE"
+            [alt]="category.CATEGORY_NAME"
+            class="w-10 h-10 object-cover rounded-md"
+          />
+          <span
+            class="text-sm text-gray-700 font-medium"
+            (click)="goToProductList(category.ID)"
+          >
             {{ category.CATEGORY_NAME }}
           </span>
         </div>
       </div>
- 
+
       <div class="flex flex-col gap-2 mt-4 max-h-64 overflow-y-auto pr-2">
-        <h3 div class="mb-3 text-lg font-semibold text-sm text-gray-700"
-          *ngIf="selectedOption === 'All' && productList.length > 0">
+        <h3
+          div
+          class="mb-3 text-lg font-semibold text-sm text-gray-700"
+          *ngIf="selectedOption === 'All' && productList.length > 0"
+        >
           <b>Products</b>
         </h3>
-        <div *ngFor="let product of productList"
-          class="flex flex-col gap-1 bg-white-50 px-3 py-2 rounded-md shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+        <div
+          *ngFor="let product of productList"
+          class="flex flex-col gap-1 bg-white-50 px-3 py-2 rounded-md shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+        >
           <!-- Category Name -->
           <div class="text-xs text-gray-500 font-semibold">
             {{ product.CATEGORY_NAME }}
           </div>
- 
+
           <!-- Product Info -->
           <div class="flex items-center gap-3">
-            <img [src]="IMAGEuRL + 'productImages/' + product.IMAGE" [alt]="product.NAME"
-              class="w-10 h-10 object-cover rounded-md" />
-            <span class="text-sm text-gray-700 font-medium" (click)="goToProductDetails(product.ID)">
+            <img
+              [src]="IMAGEuRL + 'productImages/' + product.IMAGE"
+              [alt]="product.NAME"
+              class="w-10 h-10 object-cover rounded-md"
+            />
+            <span
+              class="text-sm text-gray-700 font-medium"
+              (click)="goToProductDetails(product.ID)"
+            >
               {{ product.NAME }}
             </span>
           </div>
         </div>
       </div>
- 
-      <div *ngIf="categoryList.length === 0 && productList.length === 0"
-        class="flex flex-col items-center justify-center p-6 text-center">
-        <img src="assets/img/nodata.png" alt="No Data" class="w-auto h-24 mb-3 opacity-80" />
+
+      <div
+        *ngIf="categoryList.length === 0 && productList.length === 0"
+        class="flex flex-col items-center justify-center p-6 text-center"
+      >
+        <img
+          src="assets/img/nodata.png"
+          alt="No Data"
+          class="w-auto h-24 mb-3 opacity-80"
+        />
         <p class="text-gray-600 text-sm">No categories or products found</p>
       </div>
     </div>
   </div>
 
   <!-- Login Modal -->
-  <button style="display: none" id="loginmodaltrack" data-bs-toggle="modal" data-bs-target="#loginmodal">
+  <button
+    style="display: none"
+    id="loginmodaltrack"
+    data-bs-toggle="modal"
+    data-bs-target="#loginmodal"
+  >
     data
   </button>
 
@@ -583,20 +766,27 @@
   </div> -->
 </div>
 <!-- Confirmation Modal -->
-<div *ngIf="showLogoutModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-  <div class="bg-white rounded-lg p-6 w-[90%] max-w-sm text-center shadow-xl">
+<div
+  *ngIf="showLogoutModal"
+  class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
+>
+  <div class="bg-white rounded-lg p-6 w-[90%] max-w-sm text-center shadow-md">
     <div class="text-green-500 text-4xl mb-2">
       <i class="ri-question-line"></i>
     </div>
     <h2 class="text-xl font-semibold mb-2">Confirmation</h2>
     <p class="text-sm text-gray-600 mb-6">Are you sure you want to proceed?</p>
     <div class="flex justify-center gap-4">
-      <button (click)="closeLogoutModal()"
-        class="bg-gray-200 px-4 py-2 rounded font-medium hover:bg-gray-300 transition">
+      <button
+        (click)="closeLogoutModal()"
+        class="bg-gray-200 px-4 py-2 rounded font-medium hover:bg-gray-300 transition"
+      >
         No
       </button>
-      <button (click)="proceedLogout()"
-        class="bg-[#5a8f69] text-white px-4 py-2 rounded font-medium hover:bg-opacity-90 transition">
+      <button
+        (click)="proceedLogout()"
+        class="bg-[#5a8f69] text-white px-4 py-2 rounded font-medium hover:bg-opacity-90 transition"
+      >
         Yes
       </button>
     </div>
@@ -612,29 +802,53 @@
   data
 </button> -->
 
-<div class="modal fade" id="loginmodal" tabindex="-1" aria-labelledby="loginmodalLabel" aria-hidden="true"
-  (hidden.bs.modal)="showCountryDropdown = false" style="overflow: hidden">
-  <div class="modal-dialog modal-dialog-centered" style="max-width: 750px ;">
-    <div class="modal-content p-0 rounded-3 custom-modal" style="
+<div
+  class="modal fade"
+  id="loginmodal"
+  tabindex="-1"
+  aria-labelledby="loginmodalLabel"
+  aria-hidden="true"
+  (hidden.bs.modal)="showCountryDropdown = false"
+  style="overflow: hidden"
+>
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 750px">
+    <div
+      class="modal-content p-0 rounded-3 custom-modal"
+      style="
         border: none;
-        
+
         width: 100%;
-        font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI,
+          Roboto, Helvetica, Arial, sans-serif;
         font-size: 14px;
         /* Ensure no extra padding inside the content */
-      ">
+      "
+    >
       <!-- <div class="popup position-relative d-flex"> -->
       <div class="popup position-relative d-flex flex-column flex-md-row">
-        <div class="d-flex align-items-center justify-content-center p-4  rounded-md-start-3 rounded-md-end-0" style="
-    background-color: #5a8f69;
-    width: 100%; /* Take full width on mobile */
-    min-width: unset; /* Remove minimum width constraint */
-    color: white;
-    text-align: center;
-">
+        <div
+          class="d-flex align-items-center justify-content-center p-4 rounded-md-start-3 rounded-md-end-0"
+          style="
+            background-color: #5a8f69;
+            width: 100%; /* Take full width on mobile */
+            min-width: unset; /* Remove minimum width constraint */
+            color: white;
+            text-align: center;
+          "
+        >
           <div class="branding-content">
-            <img src="assets/img/logo1.png" alt="Ojasvi derma Care Logo" class="img-fluid mb-2 login-logo"
-              style="height: 120px; width: auto; max-width: 100%; display: block; margin: 0 auto;" />
+            <img
+              src="assets/img/logo1.png"
+              alt="Ojasvi derma Care Logo"
+              class="img-fluid mb-2 login-logo"
+              style="
+                height: 120px;
+                width: auto;
+                max-width: 100%;
+                display: block;
+                margin: 0 auto;
+              "
+            />
             <div class="fw-bold" style="font-size: 24px; color: white">
               Ojasvi derma Care
             </div>
@@ -645,9 +859,15 @@
         </div>
         <div
           class="auth-card frosted-glass shadow-sm p-4 rounded-3 rounded-top-0 rounded-md-start-0 bg-white/90 backdrop-blur-sm"
-          style="overflow: hidden; flex-grow: 1; width: 100%; min-width: 320px;">
-          <button type="button" class="btn-close position-absolute end-0 top-0 m-3" data-bs-dismiss="modal"
-            aria-label="Close" style="font-size: 12px; z-index: 1050;"></button>
+          style="overflow: hidden; flex-grow: 1; width: 100%; min-width: 320px"
+        >
+          <button
+            type="button"
+            class="btn-close position-absolute end-0 top-0 m-3"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+            style="font-size: 12px; z-index: 1050"
+          ></button>
 
           <div class="form-content pt-3">
             <!-- <div class="d-flex align-items-center justify-content-center mb-3 d-md-none" style="gap: 12px">
@@ -664,15 +884,22 @@
             </div> -->
 
             <div *ngIf="activeTab === 'login'">
-              <h3 class="mb-4" style="font-weight: 600; font-size: 20px; color: #333">
+              <h3
+                class="mb-4"
+                style="font-weight: 600; font-size: 20px; color: #333"
+              >
                 Login
               </h3>
               <p class="mb-4" style="font-size: 14px; color: #777">
                 Get access to your Orders and Wishlist
               </p>
 
-              <form id="loginForm" class="auth-form" #loginSubmit="ngForm"
-                (ngSubmit)="loginotpverification(loginSubmit)">
+              <form
+                id="loginForm"
+                class="auth-form"
+                #loginSubmit="ngForm"
+                (ngSubmit)="loginotpverification(loginSubmit)"
+              >
                 <div style="color: red; margin-bottom: 10px">
                   {{ statusCode }}
                 </div>
@@ -680,38 +907,80 @@
                 <div class="form-group mb-3">
                   <label style="font-size: 13px">Email/Mobile number</label>
                   <div class="input-group">
-                    <div class="unique-country-selector-wrapper d-flex align-items-center"
-                      *ngIf="inputType === 'mobile'">
+                    <div
+                      class="unique-country-selector-wrapper d-flex align-items-center"
+                      *ngIf="inputType === 'mobile'"
+                    >
                       <div class="country-selector-wrapper" #dropdownWrapper>
-                        <div *ngIf="inputType === 'mobile'"
+                        <div
+                          *ngIf="inputType === 'mobile'"
                           class="unique-country-code-selector d-flex align-items-center cursor-pointer px-2 py-1 border rounded"
-                          (click)="toggleCountryDropdown($event)" style="
-            height: 38px;
-            border-right: none;
-            margin-right: -1px;
-            background-color: #f8f9fa; /* Use a light background for a button feel */
-            font-size: 13px; /* Match label/input font size */
-          ">
-                          <span style="font-size: 13px">{{ selectedCountryCode }}</span>
-                          <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style="margin-left: 4px">
-                            <path d="M1 1L5 5L9 1" stroke="#666" stroke-width="1.5" />
+                          (click)="toggleCountryDropdown($event)"
+                          style="
+                            height: 38px;
+                            border-right: none;
+                            margin-right: -1px;
+                            background-color: #f8f9fa; /* Use a light background for a button feel */
+                            font-size: 13px; /* Match label/input font size */
+                          "
+                        >
+                          <span style="font-size: 13px">{{
+                            selectedCountryCode
+                          }}</span>
+                          <svg
+                            width="10"
+                            height="6"
+                            viewBox="0 0 10 6"
+                            fill="none"
+                            style="margin-left: 4px"
+                          >
+                            <path
+                              d="M1 1L5 5L9 1"
+                              stroke="#666"
+                              stroke-width="1.5"
+                            />
                           </svg>
 
-                          <div class="unique-country-dropdown-container position-absolute"
-                            style="z-index: 1050; top: 100%; left: 0;"
-                            *ngIf="showCountryDropdown && (inputType === 'mobile' || inputType === 'initial')">
-                            <div class="unique-country-dropdown bg-white shadow rounded p-2"
-                              style="max-height: 200px; overflow-y: auto; min-width: 250px;">
+                          <div
+                            class="unique-country-dropdown-container position-absolute"
+                            style="z-index: 1050; top: 100%; left: 0"
+                            *ngIf="
+                              showCountryDropdown &&
+                              (inputType === 'mobile' ||
+                                inputType === 'initial')
+                            "
+                          >
+                            <div
+                              class="unique-country-dropdown bg-white shadow rounded p-2"
+                              style="
+                                max-height: 200px;
+                                overflow-y: auto;
+                                min-width: 250px;
+                              "
+                            >
                               <div class="unique-search-box mb-2">
-                                <input type="text" class="form-control" placeholder="Search country..."
-                                  [(ngModel)]="searchQuery" (input)="filterCountries($event)"
-                                  (click)="$event.stopPropagation()" autocomplete="off" name="searchCountry"
-                                  style="height: 32px; font-size: 13px;" />
+                                <input
+                                  type="text"
+                                  class="form-control"
+                                  placeholder="Search country..."
+                                  [(ngModel)]="searchQuery"
+                                  (input)="filterCountries($event)"
+                                  (click)="$event.stopPropagation()"
+                                  autocomplete="off"
+                                  name="searchCountry"
+                                  style="height: 32px; font-size: 13px"
+                                />
                               </div>
                               <div class="unique-country-list">
-                                <div class="unique-country-item px-2 py-1 cursor-pointer"
+                                <div
+                                  class="unique-country-item px-2 py-1 cursor-pointer"
                                   *ngFor="let country of filteredCountryCodes"
-                                  (click)="selectCountry(country); $event.stopPropagation()" style="font-size: 13px;">
+                                  (click)="
+                                    selectCountry(country);
+                                    $event.stopPropagation()
+                                  "
+                                  style="font-size: 13px"
+                                >
                                   {{ country.label }}
                                 </div>
                               </div>
@@ -720,127 +989,222 @@
                         </div>
                       </div>
                     </div>
-                    <input [type]="inputType === 'email' ? 'email' : 'text'" class="form-control"
-                      [placeholder]="getPlaceholder()" [(ngModel)]="mobileNumberorEmail" name="identifier"
-                      #identifier="ngModel" (input)="onIdentifierInput($event)" [pattern]="
-                          inputType === 'mobile'
-                            ? commonFunction.mobpattern
-                            : inputType === 'email'
-                            ? emailPattern
-                            : ''
-                        " [maxlength]="inputType === 'mobile' ? 10 : 128"
-                      [minlength]="inputType === 'mobile' ? 10 : null" (keypress)="handleSpacePress($event)"
-                      autocomplete="off" required style="height: 38px; font-size: 13px" />
+                    <input
+                      [type]="inputType === 'email' ? 'email' : 'text'"
+                      class="form-control"
+                      [placeholder]="getPlaceholder()"
+                      [(ngModel)]="mobileNumberorEmail"
+                      name="identifier"
+                      #identifier="ngModel"
+                      (input)="onIdentifierInput($event)"
+                      [pattern]="
+                        inputType === 'mobile'
+                          ? commonFunction.mobpattern
+                          : inputType === 'email'
+                          ? emailPattern
+                          : ''
+                      "
+                      [maxlength]="inputType === 'mobile' ? 10 : 128"
+                      [minlength]="inputType === 'mobile' ? 10 : null"
+                      (keypress)="handleSpacePress($event)"
+                      autocomplete="off"
+                      required
+                      style="height: 38px; font-size: 13px"
+                    />
 
-                    <span *ngIf="inputType === 'email' || inputType === 'mobile'" class="input-group-text" style="background-color: white">
-                      <i class="bi bi-envelope" *ngIf="inputType === 'email'"></i>
+                    <span
+                      *ngIf="inputType === 'email' || inputType === 'mobile'"
+                      class="input-group-text"
+                      style="background-color: white"
+                    >
+                      <i
+                        class="bi bi-envelope"
+                        *ngIf="inputType === 'email'"
+                      ></i>
                       <i class="bi bi-phone" *ngIf="inputType === 'mobile'"></i>
                     </span>
                   </div>
-
                 </div>
 
                 <div class="form-group mb-3">
                   <label style="font-size: 13px">Password</label>
                   <div class="position-relative">
-                    <input [type]="showPassword ? 'text' : 'password'" placeholder="Enter Password" name="password"
-                      [(ngModel)]="data.PASSWORD" #password="ngModel" maxlength="128" autocomplete="off" required
-                      class="form-control" style="height: 38px; font-size: 13px" />
-                    <i class="fas position-absolute top-50 end-0 translate-middle-y me-3"
-                      [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'" (click)="PasswordVisibility()"
-                      style="cursor: pointer; color: #777"></i>
+                    <input
+                      [type]="showPassword ? 'text' : 'password'"
+                      placeholder="Enter Password"
+                      name="password"
+                      [(ngModel)]="data.PASSWORD"
+                      #password="ngModel"
+                      maxlength="128"
+                      autocomplete="off"
+                      required
+                      class="form-control"
+                      style="height: 38px; font-size: 13px"
+                    />
+                    <i
+                      class="fas position-absolute top-50 end-0 translate-middle-y me-3"
+                      [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+                      (click)="PasswordVisibility()"
+                      style="cursor: pointer; color: #777"
+                    ></i>
                   </div>
                   <div class="text-end mt-1">
-                    <a href="#" (click)="activeTab = 'forgot'; $event.preventDefault()"
-                      style="color: #777; text-decoration: none; font-size: 12px">Forgot Password?</a>
+                    <a
+                      href="#"
+                      (click)="activeTab = 'forgot'; $event.preventDefault()"
+                      style="
+                        color: #777;
+                        text-decoration: none;
+                        font-size: 12px;
+                      "
+                      >Forgot Password?</a
+                    >
                   </div>
                 </div>
 
                 <div class="d-flex gap-3 mt-4 mb-3">
-                  <button type="submit" class="btn flex-grow-1" [disabled]="isloginSendOTP" style="
+                  <button
+                    type="submit"
+                    class="btn flex-grow-1"
+                    [disabled]="isloginSendOTP"
+                    style="
                       background-color: #5a8f69;
                       color: white;
                       height: 36px;
                       font-size: 14px;
-                    ">
-                    <span *ngIf="isloginSendOTP" class="spinner-border spinner-border-sm me-2"></span>
+                    "
+                  >
+                    <span
+                      *ngIf="isloginSendOTP"
+                      class="spinner-border spinner-border-sm me-2"
+                    ></span>
                     {{ isloginSendOTP ? "Logging In..." : "Login" }}
                   </button>
                   <a
-  *ngIf="!isGuest"
-  (click)="isGuest = true; goBack()"
-  class="mt-2 inline-block font-medium text-sm cursor-pointer transition-all"
-  style="
-    color: #5D8A6D;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  "
-  onmouseover="this.style.color='#4E775D'"
-  onmouseout="this.style.color='#5D8A6D'"
->
-  Continue as Guest
-</a>
+                    *ngIf="!isGuest"
+                    (click)="isGuest = true; goBack()"
+                    class="mt-2 inline-block font-medium text-sm cursor-pointer transition-all"
+                    style="
+                      color: #5d8a6d;
+                      text-decoration: underline;
+                      text-underline-offset: 3px;
+                    "
+                    onmouseover="this.style.color='#4E775D'"
+                    onmouseout="this.style.color='#5D8A6D'"
+                  >
+                    Continue as Guest
+                  </a>
                 </div>
 
                 <p class="text-center mt-3" style="font-size: 13px">
                   Don't have an account?
-                  <a href="#" (click)="activeTab = 'register'; $event.preventDefault()"
-                    style="color: #5a8f69; font-weight: 500">Register</a>
+                  <a
+                    href="#"
+                    (click)="activeTab = 'register'; $event.preventDefault()"
+                    style="color: #5a8f69; font-weight: 500"
+                    >Register</a
+                  >
                 </p>
               </form>
             </div>
 
             <div *ngIf="activeTab === 'register' && !showRegisterOtp">
-              <h3 class="text-center mb-3 text-[22px] font-semibold text-[#5a8f69]">
+              <h3
+                class="text-center mb-3 text-[22px] font-semibold text-[#5a8f69]"
+              >
                 Register
               </h3>
-              <form #registrationForm="ngForm" (ngSubmit)="save(registrationForm)" class="register-form">
+              <form
+                #registrationForm="ngForm"
+                (ngSubmit)="save(registrationForm)"
+                class="register-form"
+              >
                 <div class="form-field mb-3">
                   <label style="font-size: 13px">Name</label>
                   <div>
-                    <input type="text" placeholder="Enter full name" name="name" [(ngModel)]="data.CUSTOMER_NAME"
-                      required class="form-control" style="
+                    <input
+                      type="text"
+                      placeholder="Enter full name"
+                      name="name"
+                      [(ngModel)]="data.CUSTOMER_NAME"
+                      required
+                      class="form-control"
+                      style="
                         border: 1px solid #dee2e6;
                         font-size: 13px !important;
                         height: 38px;
-                      " />
+                      "
+                    />
                   </div>
                 </div>
 
                 <div class="form-field mb-3">
                   <label style="font-size: 13px">Email or Mobile</label>
                   <div class="input-field">
-                    <div class="unique-country-selector-wrapper d-flex align-items-center">
+                    <div
+                      class="unique-country-selector-wrapper d-flex align-items-center"
+                    >
                       <div class="country-selector-wrapper" #dropdownWrapper>
-                        <div *ngIf="inputType === 'mobile'"
+                        <div
+                          *ngIf="inputType === 'mobile'"
                           class="unique-country-code-selector d-flex align-items-center cursor-pointer px-2 py-1 border rounded"
-                          (click)="toggleCountryDropdown($event)" style="
+                          (click)="toggleCountryDropdown($event)"
+                          style="
                             height: 38px;
                             border-right: none;
                             margin-right: -1px;
                             background-color: #f8f9fa;
-                          ">
+                          "
+                        >
                           <span style="font-size: 13px">{{
                             selectedCountryCode
-                            }}</span>
-                          <svg width="10" height="6" viewBox="0 0 10 6" fill="none" class="ml-1"
-                            style="margin-left: 4px">
-                            <path d="M1 1L5 5L9 1" stroke="#666" stroke-width="1.5" />
+                          }}</span>
+                          <svg
+                            width="10"
+                            height="6"
+                            viewBox="0 0 10 6"
+                            fill="none"
+                            class="ml-1"
+                            style="margin-left: 4px"
+                          >
+                            <path
+                              d="M1 1L5 5L9 1"
+                              stroke="#666"
+                              stroke-width="1.5"
+                            />
                           </svg>
 
-                          <div class="unique-country-dropdown-container position-absolute" style="z-index: 1050"
-                            *ngIf="showCountryDropdown && inputType === 'mobile'">
-                            <div class="unique-country-dropdown bg-white shadow rounded p-2 max-h-48 overflow-y-auto">
+                          <div
+                            class="unique-country-dropdown-container position-absolute"
+                            style="z-index: 1050"
+                            *ngIf="
+                              showCountryDropdown && inputType === 'mobile'
+                            "
+                          >
+                            <div
+                              class="unique-country-dropdown bg-white shadow rounded p-2 max-h-48 overflow-y-auto"
+                            >
                               <div class="unique-search-box mb-2">
-                                <input type="text" placeholder="Search country..." [(ngModel)]="searchQuery"
-                                  (input)="filterCountries($event)" (click)="$event.stopPropagation()"
-                                  autocomplete="off" #searchCountry="ngModel" name="searchCountry" />
+                                <input
+                                  type="text"
+                                  placeholder="Search country..."
+                                  [(ngModel)]="searchQuery"
+                                  (input)="filterCountries($event)"
+                                  (click)="$event.stopPropagation()"
+                                  autocomplete="off"
+                                  #searchCountry="ngModel"
+                                  name="searchCountry"
+                                />
                               </div>
                               <div class="unique-country-list">
-                                <div class="unique-country-item px-2 py-1 hover:bg-gray-100 cursor-pointer"
-                                  *ngFor="let country of filteredCountryCodes" (click)="
-                              selectCountry(country); $event.stopPropagation()
-                            ">
+                                <div
+                                  class="unique-country-item px-2 py-1 hover:bg-gray-100 cursor-pointer"
+                                  *ngFor="let country of filteredCountryCodes"
+                                  (click)="
+                                    selectCountry(country);
+                                    $event.stopPropagation()
+                                  "
+                                >
                                   {{ country.label }}
                                 </div>
                               </div>
@@ -849,42 +1213,63 @@
                         </div>
                       </div>
 
-                      <input [type]="inputType === 'email' ? 'email' : 'text'" class="form-control"
-                        placeholder="{{ getPlaceholder() }}" [(ngModel)]="mobileNumberorEmail" name="identifier"
-                        #identifier="ngModel" (input)="onIdentifierInput($event)" [pattern]="
+                      <input
+                        [type]="inputType === 'email' ? 'email' : 'text'"
+                        class="form-control"
+                        placeholder="{{ getPlaceholder() }}"
+                        [(ngModel)]="mobileNumberorEmail"
+                        name="identifier"
+                        #identifier="ngModel"
+                        (input)="onIdentifierInput($event)"
+                        [pattern]="
                           inputType === 'mobile'
                             ? commonFunction.mobpattern
                             : inputType === 'email'
                             ? emailPattern
                             : ''
-                        " [maxlength]="inputType === 'mobile' ? 10 : 128"
-                        [minlength]="inputType === 'mobile' ? 10 : null" (keypress)="handleSpacePress($event)"
-                        autocomplete="off" required style="
+                        "
+                        [maxlength]="inputType === 'mobile' ? 10 : 128"
+                        [minlength]="inputType === 'mobile' ? 10 : null"
+                        (keypress)="handleSpacePress($event)"
+                        autocomplete="off"
+                        required
+                        style="
                           border: 1px solid #dee2e6;
                           font-size: 13px !important;
                           height: 38px;
-                        " />
+                        "
+                      />
                     </div>
-                    <div *ngIf="
+                    <div
+                      *ngIf="
                         identifier.errors?.['required'] &&
                         (identifier.touched || loginSubmitted)
-                      " class="text-danger mt-1" style="font-size: 12px">
+                      "
+                      class="text-danger mt-1"
+                      style="font-size: 12px"
+                    >
                       Please enter
                       {{
-                      inputType === "email"
-                      ? "your email address"
-                      : inputType === "mobile"
-                      ? "your mobile number"
-                      : "email or mobile number"
+                        inputType === "email"
+                          ? "your email address"
+                          : inputType === "mobile"
+                          ? "your mobile number"
+                          : "email or mobile number"
                       }}.
                     </div>
-                    <div *ngIf="
+                    <div
+                      *ngIf="
                         identifier.errors?.['pattern'] &&
                         (identifier.touched || loginSubmitted)
-                      " class="text-danger mt-1" style="font-size: 12px">
+                      "
+                      class="text-danger mt-1"
+                      style="font-size: 12px"
+                    >
                       Please enter a valid
                       {{
-                      inputType === "email" ? "email address" : "mobile number"
+                        inputType === "email"
+                          ? "email address"
+                          : "mobile number"
                       }}.
                     </div>
                   </div>
@@ -893,144 +1278,247 @@
                 <div class="form-field mb-3">
                   <label style="font-size: 13px">Password</label>
                   <div class="position-relative">
-                    <input [type]="showPassword ? 'text' : 'password'" placeholder="Enter password" name="password"
-                      [(ngModel)]="pass" required class="form-control" style="
+                    <input
+                      [type]="showPassword ? 'text' : 'password'"
+                      placeholder="Enter password"
+                      name="password"
+                      [(ngModel)]="pass"
+                      required
+                      class="form-control"
+                      style="
                         border: 1px solid #dee2e6;
                         font-size: 13px !important;
                         height: 38px;
-                      " />
-                    <i class="fas position-absolute top-50 end-0 translate-middle-y me-3"
-                      [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'" (click)="PasswordVisibility()"
-                      style="cursor: pointer; color: #777"></i>
+                      "
+                    />
+                    <i
+                      class="fas position-absolute top-50 end-0 translate-middle-y me-3"
+                      [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+                      (click)="PasswordVisibility()"
+                      style="cursor: pointer; color: #777"
+                    ></i>
                   </div>
                 </div>
 
                 <div class="form-field mb-4">
                   <label style="font-size: 13px">Confirm Password</label>
                   <div class="position-relative">
-                    <input [type]="showConfirmPassword ? 'text' : 'password'" placeholder="Confirm password"
-                      name="confirmPassword" [(ngModel)]="confirmPass" required class="form-control" style="
+                    <input
+                      [type]="showConfirmPassword ? 'text' : 'password'"
+                      placeholder="Confirm password"
+                      name="confirmPassword"
+                      [(ngModel)]="confirmPass"
+                      required
+                      class="form-control"
+                      style="
                         border: 1px solid #dee2e6;
                         font-size: 13px !important;
                         height: 38px;
-                      " />
-                    <i class="fas position-absolute top-50 end-0 translate-middle-y me-3" [ngClass]="
+                      "
+                    />
+                    <i
+                      class="fas position-absolute top-50 end-0 translate-middle-y me-3"
+                      [ngClass]="
                         showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'
-                      " (click)="toggleConfirmPasswordVisibility()" style="cursor: pointer; color: #777"></i>
+                      "
+                      (click)="toggleConfirmPasswordVisibility()"
+                      style="cursor: pointer; color: #777"
+                    ></i>
                   </div>
                 </div>
 
-                <button type="submit" class="btn w-100 text-white" style="
+                <button
+                  type="submit"
+                  class="btn w-100 text-white"
+                  style="
                     background-color: #5a8f69;
                     border: none;
                     transition: all 0.3s ease;
                     height: 36px;
                     font-size: 14px;
-                  " onmouseover="this.style.backgroundColor='#4b7558'"
-                  onmouseout="this.style.backgroundColor='#5a8f69'">
+                  "
+                  onmouseover="this.style.backgroundColor='#4b7558'"
+                  onmouseout="this.style.backgroundColor='#5a8f69'"
+                >
                   {{ issignUpLoading ? "Registering..." : "Register" }}
                 </button>
 
                 <p class="text-center mt-3" style="font-size: 13px">
                   Already have an account?
-                  <a href="#" (click)="activeTab = 'login'; $event.preventDefault()"
-                    style="color: #5a8f69; font-weight: 500">Log in</a>
+                  <a
+                    href="#"
+                    (click)="activeTab = 'login'; $event.preventDefault()"
+                    style="color: #5a8f69; font-weight: 500"
+                    >Log in</a
+                  >
                 </p>
               </form>
             </div>
 
-            <div *ngIf="activeTab === 'register' && showRegisterOtp" class="otp-content text-center">
-              <h2 class="mb-3" style="font-weight: 600; font-size: 20px; color: #5a8f69">
+            <div
+              *ngIf="activeTab === 'register' && showRegisterOtp"
+              class="otp-content text-center"
+            >
+              <h2
+                class="mb-3"
+                style="font-weight: 600; font-size: 20px; color: #5a8f69"
+              >
                 Enter Verification Code
               </h2>
-              <p class="verification-text mb-4" style="font-size: 14px; color: #777">
+              <p
+                class="verification-text mb-4"
+                style="font-size: 14px; color: #777"
+              >
                 We've sent a 4-digit verification code to<br />
                 <span class="phone-number fw-bold">{{
                   mobileNumberorEmail
-                  }}</span>
-                &nbsp;<span (click)="showRegisterOtp = false; activeTab = 'register'"
-                  style="cursor: pointer; color: #5a8f69">
+                }}</span>
+                &nbsp;<span
+                  (click)="showRegisterOtp = false; activeTab = 'register'"
+                  style="cursor: pointer; color: #5a8f69"
+                >
                   <i class="bi bi-pencil-square"></i>
                 </span>
               </p>
 
-              <div style="color: red; margin-bottom: 15px; font-size: 13px" *ngIf="statusCode != ''">
+              <div
+                style="color: red; margin-bottom: 15px; font-size: 13px"
+                *ngIf="statusCode != ''"
+              >
                 {{ statusCode }}
               </div>
 
               <form (ngSubmit)="VerifyOTP()" class="otp-form">
-                <div class="otp-input-group d-flex justify-content-center gap-2 mb-4">
-                  <input *ngFor="let i of [0, 1, 2, 3]" class="otp-input form-control text-center" type="text"
-                    [(ngModel)]="otp[i]" [name]="'otp-' + i" maxlength="1" (keydown)="moveToNext($event, i)"
-                    (keypress)="allowOnlyNumbers($event)" (ngModelChange)="onChange($event, i)"
-                    (paste)="handlePaste($event)" required autocomplete="off"
-                    style="width: 45px; height: 45px; font-size: 16px" />
+                <div
+                  class="otp-input-group d-flex justify-content-center gap-2 mb-4"
+                >
+                  <input
+                    *ngFor="let i of [0, 1, 2, 3]"
+                    class="otp-input form-control text-center"
+                    type="text"
+                    [(ngModel)]="otp[i]"
+                    [name]="'otp-' + i"
+                    maxlength="1"
+                    (keydown)="moveToNext($event, i)"
+                    (keypress)="allowOnlyNumbers($event)"
+                    (ngModelChange)="onChange($event, i)"
+                    (paste)="handlePaste($event)"
+                    required
+                    autocomplete="off"
+                    style="width: 45px; height: 45px; font-size: 16px"
+                  />
                 </div>
 
                 <div class="timer-section mb-4" style="font-size: 13px">
-                  <span *ngIf="remainingTime > 0" class="me-2 text-primary">Resend in {{ remainingTime }}s</span>
-                  <p class="resend-text" style="color: #636363; display: inline">
+                  <span *ngIf="remainingTime > 0" class="me-2 text-primary"
+                    >Resend in {{ remainingTime }}s</span
+                  >
+                  <p
+                    class="resend-text"
+                    style="color: #636363; display: inline"
+                  >
                     Didn’t receive the code?
-                    <a (click)="remainingTime == 0 ? resendOtp() : ''" [ngStyle]="{
+                    <a
+                      (click)="remainingTime == 0 ? resendOtp() : ''"
+                      [ngStyle]="{
                         cursor: remainingTime > 0 ? 'wait' : 'pointer',
                         color: remainingTime > 0 ? '#636363' : '#5a8f69',
                         'text-decoration': 'none'
-                      }" [class.disabled]="remainingTime > 0">Resend</a>
+                      }"
+                      [class.disabled]="remainingTime > 0"
+                      >Resend</a
+                    >
                   </p>
                 </div>
 
-                <button type="submit" class="verify-button btn w-100 text-white" [disabled]="isverifyOTP" style="
+                <button
+                  type="submit"
+                  class="verify-button btn w-100 text-white"
+                  [disabled]="isverifyOTP"
+                  style="
                     background-color: #5a8f69;
                     height: 36px;
                     font-size: 14px;
-                  ">
-                  <span *ngIf="isverifyOTP" class="spinner-border spinner-border-sm me-2"></span>
+                  "
+                >
+                  <span
+                    *ngIf="isverifyOTP"
+                    class="spinner-border spinner-border-sm me-2"
+                  ></span>
                   Verify
                 </button>
               </form>
             </div>
 
             <div *ngIf="activeTab === 'forgot'">
-              <h3 class="text-center mb-4" style="font-weight: 600; font-size: 20px; color: #5a8f69">
+              <h3
+                class="text-center mb-4"
+                style="font-weight: 600; font-size: 20px; color: #5a8f69"
+              >
                 Forgot Password
               </h3>
 
               <div *ngIf="!showOtp && !otpVerified">
                 <form>
                   <div class="form-group mb-4">
-                    <label style="font-size: 13px">Email or Mobile Number</label>
-                    <input [type]="inputType === 'email' ? 'email' : 'text'" class="form-control"
-                      placeholder="{{ getPlaceholder() }}" [(ngModel)]="mobileNumberorEmail" name="identifier"
-                      #identifier="ngModel" (input)="onIdentifierInput($event)" autocomplete="off" required
-                      style="height: 38px; font-size: 13px" />
+                    <label style="font-size: 13px"
+                      >Email or Mobile Number</label
+                    >
+                    <input
+                      [type]="inputType === 'email' ? 'email' : 'text'"
+                      class="form-control"
+                      placeholder="{{ getPlaceholder() }}"
+                      [(ngModel)]="mobileNumberorEmail"
+                      name="identifier"
+                      #identifier="ngModel"
+                      (input)="onIdentifierInput($event)"
+                      autocomplete="off"
+                      required
+                      style="height: 38px; font-size: 13px"
+                    />
                   </div>
 
-                  <button (click)="sendLink()" class="btn w-100 mb-3" [disabled]="getLinkLoading || linkSent" style="
+                  <button
+                    (click)="sendLink()"
+                    class="btn w-100 mb-3"
+                    [disabled]="getLinkLoading || linkSent"
+                    style="
                       background-color: #5a8f69;
                       color: white;
                       height: 36px;
                       font-size: 14px;
-                    ">
-                    <span *ngIf="getLinkLoading" class="spinner-border spinner-border-sm me-2"></span>
+                    "
+                  >
+                    <span
+                      *ngIf="getLinkLoading"
+                      class="spinner-border spinner-border-sm me-2"
+                    ></span>
                     {{
-                    getLinkLoading
-                    ? "Sending Link..."
-                    : linkSent
-                    ? "Link Sent"
-                    : "Send Link"
+                      getLinkLoading
+                        ? "Sending Link..."
+                        : linkSent
+                        ? "Link Sent"
+                        : "Send Link"
                     }}
                   </button>
-                  <div class="text-center mt-3" style="font-size: 13px; color: green;">
-                    <span *ngIf="linkSent" class="text-success">Password reset link sent to your {{ inputType }}!</span>
+                  <div
+                    class="text-center mt-3"
+                    style="font-size: 13px; color: green"
+                  >
+                    <span *ngIf="linkSent" class="text-success"
+                      >Password reset link sent to your {{ inputType }}!</span
+                    >
                   </div>
 
-                  <div (click)="onGotoLogin()" class="text-center mt-3"
-                    style="color: #5a8f69; cursor: pointer; font-size: 13px">
+                  <div
+                    (click)="onGotoLogin()"
+                    class="text-center mt-3"
+                    style="color: #5a8f69; cursor: pointer; font-size: 13px"
+                  >
                     <i class="bi bi-arrow-left"></i> Back to Log in
                   </div>
                 </form>
               </div>
-
             </div>
           </div>
         </div>
@@ -1040,20 +1528,35 @@
 </div>
 
 <!-- Logout Confirmation Modal -->
-<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+<div
+  class="modal fade"
+  id="logoutModal"
+  tabindex="-1"
+  aria-labelledby="logoutModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="logoutModalLabel">Logout</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body text-sm">Are you sure you want to log out?</div>
       <div class="modal-footer">
         <button type="button" class="btn btn-light" data-bs-dismiss="modal">
           Cancel
         </button>
-        <button type="button" class="btn bg-[#5a8f69] hover:bg-[#5a7a5a] text-white" (click)="confirmLogout()"
-          data-bs-dismiss="modal">
+        <button
+          type="button"
+          class="btn bg-[#5a8f69] hover:bg-[#5a7a5a] text-white"
+          (click)="confirmLogout()"
+          data-bs-dismiss="modal"
+        >
           Logout
         </button>
       </div>
@@ -1061,7 +1564,12 @@
   </div>
 </div>
 <!-- Photo Selection Modal -->
-<div class="modal-overlay photo-modal" *ngIf="showModal" (click)="closeModal()" style="z-index: 9999">
+<div
+  class="modal-overlay photo-modal"
+  *ngIf="showModal"
+  (click)="closeModal()"
+  style="z-index: 9999"
+>
   <div class="modal-dialog" (click)="$event.stopPropagation()">
     <div class="modal-content">
       <div class="modal-header">
@@ -1078,7 +1586,13 @@
         <div class="photo-option" (click)="fileInput.click()">
           <i class="ri-image-line"></i>
           <span>Upload File</span>
-          <input type="file" #fileInput accept=".png, .jpg, .jpeg" (change)="fileChangeEvent($event)" hidden />
+          <input
+            type="file"
+            #fileInput
+            accept=".png, .jpg, .jpeg"
+            (change)="fileChangeEvent($event)"
+            hidden
+          />
         </div>
       </div>
     </div>
@@ -1091,11 +1605,21 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Take a Picture</h5>
-        <button type="button" class="btn-close" (click)="closeCapturePhotoModal()"></button>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="closeCapturePhotoModal()"
+        ></button>
       </div>
       <div class="modal-body-photo text-center">
         <div class="video-container">
-          <video #videoElement autoplay playsinline muted style="width: 100%; border-radius: 8px"></video>
+          <video
+            #videoElement
+            autoplay
+            playsinline
+            muted
+            style="width: 100%; border-radius: 8px"
+          ></video>
         </div>
         <canvas #canvasElement style="display: none"></canvas>
 
@@ -1103,7 +1627,12 @@
           <i class="ri-camera-line"></i> Capture Photo
         </button>
 
-        <img [src]="capturedImage" *ngIf="capturedImage" class="captured-photo" alt="Captured photo" />
+        <img
+          [src]="capturedImage"
+          *ngIf="capturedImage"
+          class="captured-photo"
+          alt="Captured photo"
+        />
 
         <!-- <button class="capture-btn" *ngIf="capturedImage">
           <i class="ri-camera-line"></i> Submit Photo
@@ -1111,4 +1640,16 @@
       </div>
     </div>
   </div>
+</div>
+<div *ngIf="isCheckoutVisible">
+  <app-checkout
+    [cartDetails]="senddatatoCheckout"
+    [subtotal]="subtotal"
+    [selectedDiscount]="selectedDiscount"
+    [selectedPrice]="selectedPrice"
+    [addressDrawerOpen]="isCheckoutVisible"
+    [userId]="userID"
+    (orderPlaced)="onOrderPlaced($event)"
+    (visibleChange)="isCheckoutVisible = false"
+  ></app-checkout>
 </div>

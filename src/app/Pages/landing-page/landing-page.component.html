@@ -153,21 +153,21 @@
 
   <ul class="testimonials-track flex bg-green-50">
     <li
-      class="testimonial-card flex-shrink-0 w-[400px] bg-white rounded-lg shadow-lg p-6 mx-3 hover:shadow-xl transition-shadow"
+      class="testimonial-card flex-shrink-0 w-[400px] bg-white rounded-lg shadow-md p-6 mx-3 hover:shadow-md transition-shadow"
     >
       <strong>East Meets West</strong><br />
       Our formulations blend Ayurvedic principles with Western herbal wisdom.
     </li>
 
     <li
-      class="testimonial-card flex-shrink-0 w-[400px] bg-white rounded-lg shadow-lg p-6 mx-3 hover:shadow-xl transition-shadow"
+      class="testimonial-card flex-shrink-0 w-[400px] bg-white rounded-lg shadow-md p-6 mx-3 hover:shadow-md transition-shadow"
     >
       <strong>Handcrafted Quality:</strong><br />Made in small batches to ensure
       exceptional quality, potency and integrity.
     </li>
 
     <li
-      class="testimonial-card flex-shrink-0 w-[400px] bg-white rounded-lg shadow-lg p-6 mx-3 hover:shadow-xl transition-shadow"
+      class="testimonial-card flex-shrink-0 w-[400px] bg-white rounded-lg shadow-md p-6 mx-3 hover:shadow-md transition-shadow"
     >
       <strong>Rooted in Tradition, Designed for Modern Life:</strong
       ><br />Drawing on collective ancestral knowledge to address today's
@@ -175,7 +175,7 @@
     </li>
 
     <li
-      class="testimonial-card flex-shrink-0 w-[400px] bg-white rounded-lg shadow-lg p-6 mx-3 hover:shadow-xl transition-shadow"
+      class="testimonial-card flex-shrink-0 w-[400px] bg-white rounded-lg shadow-md p-6 mx-3 hover:shadow-md transition-shadow"
     >
       <strong>Naturally Clean:</strong><br />
       No additives. No preservatives. Just what pure botanical nourishment your
@@ -209,10 +209,6 @@
       >
         Featured Categories
       </h3>
-
-      <!-- <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-        Discover our top Ayurvedic picks curated just for you
-      </p> -->
     </div>
 
     <!-- Tab Navigation -->
@@ -248,107 +244,236 @@
         <!-- Navigation Buttons -->
         <button
           (click)="prev(tab)"
-          class="carousel-prev absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
+          class="carousel-prev absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors hidden sm:flex"
         >
           <i class="ri-arrow-left-s-line text-gray-600"></i>
         </button>
 
         <button
           (click)="next(tab)"
-          class="carousel-next absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
+          class="carousel-next absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors hidden sm:flex"
         >
           <i class="ri-arrow-right-s-line text-gray-600"></i>
         </button>
 
         <!-- Carousel Items -->
-        <div class="carousel-container overflow-hidden">
-          <div
-            class="grid product-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative"
-            [ngClass]="{ 'justify-center': getVisibleProducts(tab).length < 4 }"
-          >
-            <!-- <div
-              *ngFor="let product of getVisibleProducts(tab)"
-              class="flex-shrink-0 w-1/2 sm:w-1/3 md:w-1/4 px-2"
+        <div class="carousel-container overflow-hidden" id="product-grids">
+          <!-- Mobile View - Single Card Carousel -->
+          <div class="sm:hidden relative px-2">
+            <div
+              class="flex transition-transform duration-300 ease-in-out"
+              [style.transform]="'translateX(-' + (carouselIndex[tab] || 0) * 100 + '%'"
             >
               <div
-                class="product-card bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden transition-all hover:translate-y-[-4px] hover:shadow-lg"
+                class="product-card bg-white rounded-lg shadow-md overflow-hidden p-0 w-full flex-shrink-0"
+                style="cursor: pointer"
+                *ngFor="
+                  let product of getVisibleProducts(tab);
+                  trackBy: trackByProductId;
+                  let i = index
+                "
               >
-                <div class="aspect-square relative overflow-hidden">
-                  <img
-                    *ngIf="initImageIndex(product.ID) === undefined || true"
-                    [src]="
-                      producctImageurl +
-                      getImageArray(product)[imageIndices[product.ID]]
-                    "
-                    [alt]="product.NAME"
-                    class="w-full h-full object-cover object-top"
-                  />
+                <span
+                  (click)="addtodetail(product)"
+                  [routerLink]="
+                    selectedVariantMap[product.ID]
+                      ? [
+                          '/product_details',
+                          product.ID,
+                          selectedVariantMap[product.ID]
+                        ]
+                      : ['/product_details', product.ID]
+                  "
+                >
+                  <div class="relative">
+                    <div
+                      class="w-full h-48 bg-white flex items-center justify-center overflow-hidden"
+                    >
+                      <ng-container
+                    *ngIf="initImageIndex(product.ID) === undefined"
+                  ></ng-container>
+                      <img
+                        *ngIf="getImageArray(product).length > 0"
+                        [src]="
+                          productImageUrl +
+                          getImageArray(product)[imageIndices[product.ID]]
+                        "
+                        [alt]="product.NAME"
+                        class="rounded-lg object-cover w-full h-full"
+                      />
+                    </div>
 
-                  <div
-                    *ngIf="getImageArray(product).length > 1"
-                    class="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex gap-2"
-                  >
-                    <ng-container
-                      *ngFor="
-                        let image of getImageArray(product);
-                        let i = index
+                    <div class="absolute top-3 right-3 flex space-x-2">
+                      <button
+                        class="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm"
+                        [ngClass]="{
+                          'text-green-500': product.isLiked,
+                          'text-gray-600 hover:text-[#5a8f69]': !product.isLiked
+                        }"
+                        (click)="toggleLike(product, $event)"
+                      >
+                        <i
+                          [class]="
+                            product.isLiked ? 'ri-heart-fill' : 'ri-heart-line'
+                          "
+                        >
+                        </i>
+                      </button>
+                    </div>
+
+                    <div class="absolute top-3 left-3">
+                      <span
+                        class="text-white text-xs px-2 py-1 rounded-full"
+                        [ngClass]="{
+                          'bg-[#5a8f69]/100': product.IS_NEW_ARRIVAL === 1,
+                          'bg-secondary/100': product.IS_BEST_SELLER === 1,
+                          'bg-green-500/100': product.IS_POPULAR === 1
+                        }"
+                        >{{
+                          product.IS_NEW_ARRIVAL == "1"
+                            ? "New"
+                            : product.IS_BEST_SELLER == "1"
+                            ? "Best Seller"
+                            : product.IS_POPULAR == "1"
+                            ? "Popular"
+                            : ""
+                        }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="text-danger text-sm text-center pt-1 h-2">
+                    <small
+                      *ngIf="
+                        product.IS_UPCOMING == 1 ||
+                        product.VARIENTS == null ||
+                        product.VARIENTS == undefined ||
+                        product.VARIENTS.length == 0 ||
+                        !hasActiveVariants(product.ID) ||
+                        currentStockMap[product.ID] <= 0
                       "
                     >
-                      <button
-                        class="w-2.5 h-2.5 rounded-full transition-colors duration-300"
-                        [ngClass]="{
-                          'bg-[#5a8f69]': imageIndices[product.ID] === i,
-                          'bg-gray-300': imageIndices[product.ID] !== i
-                        }"
-                        (click)="setImage(product.ID, i)"
-                      ></button>
-                    </ng-container>
+                      Out of stock
+                    </small>
                   </div>
-                </div>
 
-                <div class="p-3">
-                  <span
-                    class="text-xs text-gray-500 rounded-full bg-[rgb(233,180,76)] text-white text-xs font-small px-2 py-1"
-                    [attr.title]="product?.CATEGORY_NAME"
-                  >
-                    {{ product?.CATEGORY_NAME }}
-                  </span>
-
-                  <span
-                    *ngIf="product?.DISCOUNT"
-                    class="text-green-800 pt-2 rounded text-sm float-right"
-                  >
-                    <span>{{ product?.DISCOUNT }}% off</span>
-                  </span>
-
-                  <h3
-                    style="
-                      font-family: Assistant, -apple-system, BlinkMacSystemFont,
-                        Segoe UI, Roboto, Helvetica, Arial, sans-serif !important;
-                    "
-                    class="font-medium text-gray-900 mt-2 hover:text-[#5a8f69] truncate"
-                    [attr.title]="product?.NAME"
-                  >
-                    {{ product?.NAME }}
-                  </h3>
-
-                  <div class="flex items-center justify-between mt-2">
-                    <a
-                      (click)="addtodetail(product)"
-                      [routerLink]="[
-                        '/product_details',
-                        product.ID,
-                        getFirstVariantId(product)
-                      ]"
-                      class="bg-[#5a8f69] text-white px-4 py-2 rounded text-sm hover:bg-opacity-90 transition-colors proBTN"
-                      style="width: 100% !important; text-align: center"
+                  <div class="pt-1 px-3">
+                    <span
+                      class="text-xs text-gray-500 rounded-full bg-[rgb(233,180,76)] text-white text-xs font-small px-2 py-1"
                     >
-                      View Details
-                    </a>
+                      {{ product.CATEGORY_NAME }}
+                    </span>
+
+                    <div
+                      *ngIf="product.CUSTOMER_RATINGS"
+                      class="inline-flex justify-center items-center bg-[#72BB81E5] text-white text-xs font-small px-2 py-1 rounded-full float-right"
+                      style="width: 58.67px"
+                    >
+                      <span>{{
+                        product.CUSTOMER_RATINGS | number : "1.1-1"
+                      }}</span>
+
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-3 w-3 ml-1"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.782 1.4 8.17L12 18.896l-7.334 3.866 1.4-8.17L.132 9.21l8.2-1.192z"
+                        />
+                      </svg>
+                    </div>
+
+                    <h3
+                      class="font-medium text-gray-900 mt-2 hover:text-[#5a8f69] truncate"
+                      [title]="product.NAME"
+                    >
+                      {{ product.NAME }}
+                    </h3>
+
+                    <small
+                      class="text-gray-600 mt-2 line-clamp-2"
+                      [title]="product.DESCRIPTION"
+                    >
+                      {{ product.DESCRIPTION }}
+                    </small>
+
+                    <span
+                      class="text-black font-medium me-1"
+                      *ngIf="product.IS_VERIENT_AVAILABLE == 0"
+                    >
+                      ${{ product.RATE || 0 }}
+                    </span>
+
+                    <span
+                      class="text-black font-medium me-1"
+                      *ngIf="product.IS_VERIENT_AVAILABLE == 1"
+                    >
+                      ${{convertStringtoArray(product.VARIENTS)[0].RATE || 0}}
+                    </span>
+                  </div>
+                </span>
+
+                <div class="px-3 mb-3">
+                  <div class="mt-2">
+                    <div class="flex flex-wrap gap-2 mt-2">
+                      <ng-container
+                        *ngFor="let item of variantMap[product.ID] || []"
+                      >
+                        <small
+                          [ngClass]="{
+                            'border border-black bg-gray-100':
+                              selectedVariantMap[product.ID] == item.VARIENT_ID,
+                            'bg-white border border-gray-300 hover:border-black':
+                              selectedVariantMap[product.ID] != item.VARIENT_ID
+                          }"
+                          class="cursor-pointer text-gray-800 text-xs font-medium px-3 py-1 rounded-full transition-all duration-150"
+                          (click)="change(item.VARIENT_ID, product.ID)"
+                        >
+                          {{ item.SIZE }} {{ item.UNIT_NAME }}
+                        </small>
+                      </ng-container>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div> -->
+            </div>
+
+            <!-- Mobile Carousel Controls -->
+            <button
+              (click)="prevMobile(tab)"
+              class="absolute left-0 top-1/3 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors"
+            >
+              <i class="ri-arrow-left-s-line text-gray-600"></i>
+            </button>
+
+            <button
+              (click)="nextMobile(tab)"
+              class="absolute right-0 top-1/3 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors"
+            >
+              <i class="ri-arrow-right-s-line text-gray-600"></i>
+            </button>
+
+            <!-- Mobile Dots Indicator -->
+            <div class="flex justify-center gap-2 mt-4">
+              <button
+                *ngFor="let item of getVisibleProducts(tab); let i = index"
+                class="w-2 h-2 rounded-full transition-colors"
+                [ngClass]="{
+                  'bg-[#5a8f69]': (carouselIndex[tab] || 0) === i,
+                  'bg-gray-300': (carouselIndex[tab] || 0) !== i
+                }"
+                (click)="carouselIndex[tab] = i"
+              ></button>
+            </div>
+          </div>
+
+          <!-- Desktop View - Grid -->
+          <div
+            class="hidden sm:grid gap-6 relative m-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+            [ngClass]="{ 'justify-center': getVisibleProducts(tab).length < 4 }"
+          >
             <div
               class="product-card bg-white rounded-lg shadow-md overflow-hidden p-0"
               style="cursor: pointer"
@@ -374,10 +499,6 @@
                   <div
                     class="w-full h-48 md:h-60 bg-white flex items-center justify-center overflow-hidden"
                   >
-                    <ng-container
-                      *ngIf="initImageIndex(product.ID) === undefined"
-                    ></ng-container>
-
                     <img
                       *ngIf="getImageArray(product).length > 0"
                       [src]="
@@ -473,16 +594,6 @@
 
                   <h3
                     class="font-medium text-gray-900 mt-2 hover:text-[#5a8f69] truncate"
-                    (click)="addtodetail(product)"
-                    [routerLink]="
-                      selectedVariantMap[product.ID]
-                        ? [
-                            '/product_details',
-                            product.ID,
-                            selectedVariantMap[product.ID]
-                          ]
-                        : ['/product_details', product.ID]
-                    "
                     [title]="product.NAME"
                   >
                     {{ product.NAME }}
@@ -506,38 +617,13 @@
                     class="text-black font-medium me-1"
                     *ngIf="product.IS_VERIENT_AVAILABLE == 1"
                   >
-                    <!-- ${{
-                      product.DISCOUNT_TYPE == "Amount"
-                        ? variantRateMap[product.ID] - product.DISCOUNT
-                        : variantRateMap[product.ID] -
-                          (variantRateMap[product.ID] * product.DISCOUNT) / 100
-                    }} -->
-                      ${{convertStringtoArray(product.VARIENTS)[0].RATE || 0}}
+                    ${{convertStringtoArray(product.VARIENTS)[0].RATE || 0}}
                   </span>
-
-                  <!-- <span
-                    class="text-sm line-through text-[#D1D5DB] me-1"
-                    *ngIf="product.DISCOUNT && product.DISCOUNT > 0"
-                  >
-                    ${{ variantRateMap[product.ID] || 0 }}
-                  </span> -->
-
-                  <!-- <span
-                    class="text-sm text-[#5a8f69] whitespace-nowrap"
-                    *ngIf="product.DISCOUNT && product.DISCOUNT > 0"
-                  >
-                    {{
-                      product.DISCOUNT_TYPE == "Amount"
-                        ? "$" + product.DISCOUNT
-                        : product.DISCOUNT + "%"
-                    }}
-                    off
-                  </span> -->
                 </div>
               </span>
 
-              <div class="row px-3 mb-3">
-                <div class="col-12 col-lg-12 mt-2">
+              <div class="px-3 mb-3">
+                <div class="mt-2">
                   <div class="flex flex-wrap gap-2 mt-2">
                     <ng-container
                       *ngFor="let item of variantMap[product.ID] || []"
@@ -557,20 +643,6 @@
                     </ng-container>
                   </div>
                 </div>
-
-                <div
-                  class="col-12 col-lg-12 mt-2"
-                  (click)="addtodetail(product)"
-                  [routerLink]="
-                    selectedVariantMap[product.ID]
-                      ? [
-                          '/product_details',
-                          product.ID,
-                          selectedVariantMap[product.ID]
-                        ]
-                      : ['/product_details', product.ID]
-                  "
-                ></div>
               </div>
             </div>
           </div>
@@ -632,7 +704,7 @@
           *ngFor="let data of ReviewData; let index = index"
           class="testimonial-card flex-shrink-0 w-full sm:w-1/2 md:w-1/2 lg:w-1/3 px-3"
         >
-          <div class="bg-white rounded-lg shadow-none p-6">
+          <div class="bg-white rounded-lg shadow-none p-6 h-full">
             <div class="flex items-center mb-1">
               <div
                 class="w-12 h-12 bg-gray-300 rounded-full mr-4 overflow-hidden"

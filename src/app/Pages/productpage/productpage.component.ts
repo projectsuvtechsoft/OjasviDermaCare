@@ -453,8 +453,8 @@ export class ProductpageComponent {
     content.classList.toggle('active', !isOpen);
 
     // Toggle icon
-    icon?.classList.toggle('ri-arrow-up-s-line', isOpen);
-    icon?.classList.toggle('ri-arrow-down-s-line', !isOpen);
+    icon?.classList.toggle('ri-arrow-down-s-line', isOpen);
+    icon?.classList.toggle('ri-arrow-up-s-line', !isOpen);
   }
  
 

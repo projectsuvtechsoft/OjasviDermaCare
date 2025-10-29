@@ -45,6 +45,7 @@ export class AppComponent {
   popupImageSrc: string = 'assets/img/New.jpg';
   ngOnInit() {
     sessionStorage.setItem('IS_GUEST', 'false');
+    sessionStorage.setItem('CART_REDIRECT','false')
     // this.getsession();
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationStart) {

@@ -36,7 +36,7 @@ interface Address {
   AREA: '';
   CUST_ID?: string; // Assuming CUST_ID is for customer association
   SESSION_KEY: any;
-  COUNTRY_CODE:any
+  COUNTRY_CODE: any;
 }
 
 @Component({
@@ -89,7 +89,7 @@ export class CheckoutComponent {
     IS_DEFAULT: false,
     IS_DEFUALT_ADDRESS: false,
     SESSION_KEY: '',
-    COUNTRY_CODE:''
+    COUNTRY_CODE: '',
   };
 
   countryList: any[] = [];
@@ -113,7 +113,7 @@ export class CheckoutComponent {
   ) {
     this.cartService.cartUpdated$.subscribe((cartItems) => {
       this.cartDetails.cartDetails = cartItems;
-      
+
       // this.toastr.success('Item Added to cart', 'Success')
       // this.loadingProducts = false;
       // this.cd.detectChanges(); // Optional but ensures view update
@@ -126,7 +126,7 @@ export class CheckoutComponent {
     // console.log(this.cartDetails);
     this.fetchCountries();
     // this.addressDrawerOpen=false
-    this.cartId = this.cartDetails.cartDetails[0]?.CART_ID || '';
+    this.cartId = this.cartDetails?.cartDetails[0]?.CART_ID || '';
     // console.log('this is cartdetails: ', this.cartDetails);
     this.fetchPincodes('1');
     this.fetchShipingcharges();
@@ -275,8 +275,10 @@ export class CheckoutComponent {
   // --- Address Management Core Functions ---
   loadingScreen = true;
   fetchSavedAddresses() {
-    if (this.userId) {
-      var filter = ` AND CUST_ID = ${this.userId}`;
+    let euid=sessionStorage.getItem('userId')
+    let duid=euid?this.commonFunction.decryptdata(euid):null
+    if (this.userId || duid) {
+      var filter = ` AND CUST_ID = ${this.userId || duid}`;
     } else {
       var filter = ` AND SESSION_KEY = '${this.SESSION_KEYS}'`;
     }
@@ -308,7 +310,7 @@ export class CheckoutComponent {
             CUST_ID: addr.CUST_ID,
             SESSION_KEY: addr.SESSION_KEY,
             MOBILE_NO: addr.MOBILE_NO,
-            COUNTRY_CODE:addr.COUNTRY_CODE
+            COUNTRY_CODE: addr.COUNTRY_CODE,
           }));
           this.selectedAddress =
             this.savedAddresses.find((a) => a.IS_DEFAULT) ||
@@ -427,7 +429,7 @@ export class CheckoutComponent {
       IS_DEFAULT: false,
       AREA: '',
       SESSION_KEY: '',
-      COUNTRY_CODE:''
+      COUNTRY_CODE: '',
     };
     // this.stateList = []; // Clear states when resetting country
     // this.pincodeList = [];
@@ -945,7 +947,7 @@ export class CheckoutComponent {
               this.toastr.success('Payment successful!', 'Success');
               this.cartDetails.cartDetails[0]['INVOICE_NUMBER'] =
                 response.invoiceNumber;
-              var redirectionOrderId=response.order_id
+              var redirectionOrderId = response.order_id;
               this.currentStep = 4;
               // this.closePaymentModal();
               // this.orderPlaced.emit(true);
@@ -954,9 +956,17 @@ export class CheckoutComponent {
 
               this.showPaymentModal = false;
               // this.showReceiptModal = true;
-              this.router.navigate(['/order/'+redirectionOrderId]).then(
-                // window.location.reload()
-              )
+
+              this.router
+                .navigate(['/order/' + redirectionOrderId])
+                .then(() => {
+                  // window.location.reload()
+                  this.addressDrawerOpen = false;
+                  this.cartService.cartItems = [];
+                  this.cartService.cartUpdated.next(this.cartService.cartItems);
+                  this.cartService.updateCartCount();
+                });
+
               setTimeout(() => {
                 this.enableDownload = true;
               }, 5000);
@@ -1847,9 +1857,7 @@ export class CheckoutComponent {
     return `${percentage.toFixed(2)}%`;
   }
 
-
-
-      countryCodes = [
+  countryCodes = [
     { label: '+91 (India)', value: '+91' },
     { label: '+92 (Pakistan)', value: '+92' },
     { label: '+93 (Afghanistan)', value: '+93' },

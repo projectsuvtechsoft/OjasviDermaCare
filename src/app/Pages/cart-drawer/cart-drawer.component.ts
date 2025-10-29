@@ -1031,7 +1031,9 @@ export class CartDrawerComponent {
   closeMobileMenu() {
     this.isMobileMenuOpen = false;
   }
+  isCartRedirected:any=true
   openLoginModal() {
+    sessionStorage.setItem('CART_REDIRECT',this.isCartRedirected)
     this.activeTab = 'login';
     // const modalEl = document.getElementById('loginmodal');
     // const modalInstance =
@@ -2421,4 +2423,27 @@ export class CartDrawerComponent {
   hasSelectedItems() {
     return this.cartItems.length > 0; // Simply check if there are items
   }
+  // Add these properties to your component class
+showDeleteConfirmation: boolean = false;
+itemToDelete: any = null;
+
+// Replace your deleteItem method with these three methods:
+
+confirmDelete(item: any): void {
+  this.itemToDelete = item;
+  this.showDeleteConfirmation = true;
+}
+
+executeDelete(): void {
+  if (this.itemToDelete) {
+    this.deleteItem(this.itemToDelete);
+    this.updateTotals();
+  }
+  this.cancelDelete();
+}
+
+cancelDelete(): void {
+  this.showDeleteConfirmation = false;
+  this.itemToDelete = null;
+}
 }

@@ -1,5 +1,5 @@
 <div
-  class="bg-gray-50 w-full max-w-5xl mx-auto flex flex-col rounded-lg shadow-lg overflow-hidden my-6"
+  class="bg-gray-50 w-full max-w-5xl mx-auto flex flex-col rounded-lg shadow-sm overflow-hidden my-6"
   style="max-height: calc(100vh - 8rem)"
   (click)="$event.stopPropagation()"
 >
@@ -35,7 +35,7 @@
           >
             <!-- Delete Button -->
             <button
-              (click)="deleteItem(item); updateTotals()"
+              (click)="confirmDelete(item)"
               class="absolute top-2 right-2 text-red-500 hover:text-red-600 transition"
               title="Remove Item"
             >
@@ -105,7 +105,7 @@
                 </ng-container>
                 <ng-template #deleteBtn>
                   <button
-                    (click)="deleteItem(item); updateTotals()"
+                    (click)="confirmDelete(item)"
                     class="text-gray-500 hover:text-red-500 text-sm"
                   >
                     <i class="ri-delete-bin-line"></i>
@@ -198,6 +198,44 @@
       >
         Proceed To Checkout
       </button>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div
+    *ngIf="showDeleteConfirmation"
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    (click)="cancelDelete()"
+  >
+    <div
+      class="bg-white rounded-lg shadow-sm p-6 max-w-sm w-full mx-4"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="flex items-center mb-4">
+        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+          <i class="ri-alert-line text-red-600 text-2xl"></i>
+        </div>
+        <h3 class="ml-3 text-lg font-semibold text-gray-900">Remove Item?</h3>
+      </div>
+      
+      <p class="text-gray-600 text-sm mb-6">
+        Are you sure you want to remove "{{ itemToDelete?.NAME || itemToDelete?.PRODUCT_NAME }}" from your cart?
+      </p>
+      
+      <div class="flex gap-3 justify-end">
+        <button
+          (click)="cancelDelete()"
+          class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="executeDelete()"
+          class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition"
+        >
+          Yes
+        </button>
+      </div>
     </div>
   </div>
 </div>

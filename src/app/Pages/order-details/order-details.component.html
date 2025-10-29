@@ -1,19 +1,21 @@
-<div
-  class="min-h-screen flex items-center justify-center bg-gray-50 py-4 px-3 md:px-6"
->
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-4 px-3 md:px-6">
+  <!-- Loader -->
+  <div *ngIf="isLoading" class="flex flex-col items-center justify-center space-y-4">
+    <div class="relative w-16 h-16">
+      <div class="absolute inset-0 rounded-full border-4 border-gray-200"></div>
+      <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-green-500 border-r-green-500 animate-spin"></div>
+    </div>
+    <p class="text-gray-600 font-semibold">Loading your order details...</p>
+  </div>
+
+  <!-- Main Content -->
   <div
+    *ngIf="!isLoading"
     class="bg-white rounded-xl shadow-2xl w-full max-w-5xl p-4 md:p-6 border border-gray-100 grid grid-cols-1 lg:grid-cols-3 gap-4"
   >
     <!-- Header -->
     <div class="lg:col-span-3 flex justify-between items-center mb-2">
       <h2 class="text-xl font-bold text-gray-800">Order Confirmation</h2>
-      <!-- <button
-        (click)="goBack()"
-        class="text-gray-400 hover:text-gray-600 transition"
-        aria-label="Go back"
-      >
-        <i class="ri-arrow-left-line text-xl"></i>
-      </button> -->
     </div>
 
     <!-- Left Section -->
@@ -82,118 +84,245 @@
         >
 
         <div class="flex items-center justify-between text-center pt-3">
-          <!-- Step 1 -->
+          <!-- Step 1: Placed -->
           <div class="flex flex-col items-center">
             <div
               class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold transition-colors duration-300"
               [ngClass]="{
-                'bg-green-500': orderStatus !== 'A' && orderStatus !== 'DC',
-                'bg-yellow-500': orderStatus === 'A',
-                'bg-gray-400': orderStatus === 'DC'
+                'bg-green-500':
+                  cartDetails.cartDetails[0].ORDER_DATETIME &&
+                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+                'bg-yellow-500':
+                  cartDetails.cartDetails[0].ORDER_DATETIME &&
+                  !cartDetails.cartDetails[0]
+                    .ACTUAL_PREPARE_PACKAGING_DATETIME &&
+                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+                'bg-gray-400':
+                  cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
               }"
             >
               <i
-                *ngIf="orderStatus !== 'A' && orderStatus !== 'DC'"
+                *ngIf="
+                  cartDetails.cartDetails[0].ORDER_DATETIME &&
+                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+                "
                 class="ri-check-line text-sm"
               ></i>
-              <span *ngIf="orderStatus === 'A' || orderStatus === 'DC'">1</span>
+              <span
+                *ngIf="
+                  !cartDetails.cartDetails[0].ORDER_DATETIME ||
+                  cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+                "
+                >1</span
+              >
             </div>
             <span class="text-[11px] mt-1 text-gray-800 font-medium"
               >Placed</span
             >
+            <span
+              class="text-[10px] text-gray-500"
+              *ngIf="cartDetails.cartDetails[0].ORDER_DATETIME"
+            >
+              {{
+                cartDetails.cartDetails[0].ORDER_DATETIME | date : "dd-MM-yyyy"
+              }}
+            </span>
           </div>
 
           <div
             class="h-1 mx-1 flex-1"
             [ngClass]="{
-              'bg-green-500': orderStatus !== 'A' && orderStatus !== 'DC',
-              'bg-gray-200': orderStatus === 'A' || orderStatus === 'DC'
+              'bg-green-500':
+                cartDetails.cartDetails[0].ACTUAL_PREPARE_PACKAGING_DATETIME &&
+                !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+              'bg-gray-200':
+                !cartDetails.cartDetails[0].ACTUAL_PREPARE_PACKAGING_DATETIME ||
+                cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
             }"
             style="margin-top: -20px"
           ></div>
 
-          <!-- Step 2 -->
+          <!-- Step 2: Preparing/Packaging -->
           <div class="flex flex-col items-center">
             <div
               class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold transition-colors duration-300"
               [ngClass]="{
-                'bg-green-500': isStatusComplete(orderStatus, 'D'),
-                'bg-yellow-500': orderStatus === 'BP' || orderStatus === 'SP',
+                'bg-green-500':
+                  cartDetails.cartDetails[0]
+                    .ACTUAL_PREPARE_PACKAGING_DATETIME &&
+                  cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME &&
+                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+                'bg-yellow-500':
+                  cartDetails.cartDetails[0]
+                    .ACTUAL_PREPARE_PACKAGING_DATETIME &&
+                  !cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME &&
+                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
                 'bg-gray-400':
-                  isStatusPending(orderStatus, 'BP') || orderStatus === 'DC'
+                  !cartDetails.cartDetails[0]
+                    .ACTUAL_PREPARE_PACKAGING_DATETIME ||
+                  cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
               }"
             >
               <i
-                *ngIf="isStatusComplete(orderStatus, 'D')"
+                *ngIf="
+                  cartDetails.cartDetails[0]
+                    .ACTUAL_PREPARE_PACKAGING_DATETIME &&
+                  cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME &&
+                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+                "
                 class="ri-check-line text-sm"
               ></i>
-              <span *ngIf="!isStatusComplete(orderStatus, 'D')">2</span>
+              <span
+                *ngIf="
+                  !cartDetails.cartDetails[0]
+                    .ACTUAL_PREPARE_PACKAGING_DATETIME ||
+                  !cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME ||
+                  cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+                "
+                >2</span
+              >
             </div>
             <span class="text-[11px] mt-1 text-gray-800 font-medium"
               >Preparing</span
             >
+            <span
+              class="text-[10px] text-gray-500"
+              *ngIf="
+                cartDetails.cartDetails[0].ACTUAL_PREPARE_PACKAGING_DATETIME
+              "
+            >
+              {{
+                cartDetails.cartDetails[0].ACTUAL_PREPARE_PACKAGING_DATETIME
+                  | date : "dd-MM-yyyy"
+              }}
+            </span>
           </div>
 
           <div
             class="h-1 mx-1 flex-1"
             [ngClass]="{
-              'bg-green-500': isStatusComplete(orderStatus, 'D'),
-              'bg-gray-200': isStatusPending(orderStatus, 'D')
+              'bg-green-500':
+                cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME &&
+                !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+              'bg-gray-200':
+                !cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME ||
+                cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
             }"
             style="margin-top: -20px"
           ></div>
 
-          <!-- Step 3 -->
+          <!-- Step 3: Shipped/Dispatched -->
           <div class="flex flex-col items-center">
             <div
               class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold transition-colors duration-300"
               [ngClass]="{
-                'bg-green-500': isStatusComplete(orderStatus, 'DD'),
-                'bg-yellow-500': orderStatus === 'D',
+                'bg-green-500':
+                  cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME &&
+                  cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
+                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+                'bg-yellow-500':
+                  cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME &&
+                  !cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
+                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
                 'bg-gray-400':
-                  isStatusPending(orderStatus, 'D') || orderStatus === 'DC'
+                  !cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME ||
+                  cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
               }"
             >
               <i
-                *ngIf="isStatusComplete(orderStatus, 'DD')"
+                *ngIf="
+                  cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME &&
+                  cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
+                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+                "
                 class="ri-check-line text-sm"
               ></i>
-              <span *ngIf="!isStatusComplete(orderStatus, 'DD')">3</span>
+              <span
+                *ngIf="
+                  !cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME ||
+                  !cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME ||
+                  cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+                "
+                >3</span
+              >
             </div>
             <span class="text-[11px] mt-1 text-gray-800 font-medium"
               >Shipped</span
             >
+            <span
+              class="text-[10px] text-gray-500"
+              *ngIf="cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME"
+            >
+              {{
+                cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME
+                  | date : "dd-MM-yyyy"
+              }}
+            </span>
           </div>
 
           <div
             class="h-1 mx-1 flex-1"
             [ngClass]="{
-              'bg-green-500': orderStatus === 'DD',
-              'bg-gray-200': orderStatus !== 'DD'
+              'bg-green-500':
+                cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
+                !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+              'bg-gray-200':
+                !cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME ||
+                cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
             }"
             style="margin-top: -20px"
           ></div>
 
-          <!-- Step 4 -->
+          <!-- Step 4: Delivered -->
           <div class="flex flex-col items-center">
             <div
               class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold transition-colors duration-300"
               [ngClass]="{
-                'bg-green-500': orderStatus === 'DD',
-                'bg-gray-400': orderStatus !== 'DD' && orderStatus !== 'DC'
+                'bg-green-500':
+                  cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
+                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+                'bg-gray-400':
+                  !cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME
               }"
             >
-              <i *ngIf="orderStatus === 'DD'" class="ri-check-line text-sm"></i>
-              <span *ngIf="orderStatus !== 'DD'">4</span>
+              <i
+                *ngIf="
+                  cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
+                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+                "
+                class="ri-check-line text-sm"
+              ></i>
+              <span *ngIf="!cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME"
+                >4</span
+              >
             </div>
             <span class="text-[11px] mt-1 text-gray-800 font-medium"
               >Delivered</span
             >
+            <span
+              class="text-[10px] text-gray-500"
+              *ngIf="cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME"
+            >
+              {{
+                cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME
+                  | date : "dd-MM-yyyy"
+              }}
+            </span>
           </div>
         </div>
 
-        <div *ngIf="orderStatus === 'DC'" class="text-center pt-2">
+        <!-- Cancelled Status -->
+        <div
+          *ngIf="cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME"
+          class="text-center pt-2"
+        >
           <span class="text-sm font-bold text-red-600">Order Canceled</span>
+          <small class="block text-xs text-gray-500">
+            {{
+              cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+                | date : "dd-MM-yyyy"
+            }}
+          </small>
         </div>
       </div>
     </div>
@@ -210,9 +339,11 @@
         <div class="flex items-start text-xs text-gray-600 space-x-2">
           <i class="ri-map-pin-2-line text-base text-yellow-600 mt-0.5"></i>
           <p>
-            {{ cartDetails?.cartDetails?.[0].ADDRESS }}, {{ cartDetails?.cartDetails?.[0].CITY }},
+            {{ cartDetails?.cartDetails?.[0].ADDRESS }},
+            {{ cartDetails?.cartDetails?.[0].CITY }},
             {{ cartDetails?.cartDetails?.[0].STATE_NAME }},
-            {{ cartDetails?.cartDetails?.[0].COUNTRY_NAME }} - {{ cartDetails?.cartDetails?.[0].PINCODE }}
+            {{ cartDetails?.cartDetails?.[0].COUNTRY_NAME }} -
+            {{ cartDetails?.cartDetails?.[0].PINCODE }}
           </p>
         </div>
       </div>
@@ -248,20 +379,23 @@
       </div>
 
       <!-- Buttons -->
-        <div class="text-center">
+      <div class="text-center">
         <button
           class="w-full py-2 bg-[#5a8f69] text-white text-sm font-semibold rounded-lg shadow-md hover:bg-emerald-700 transition"
           (click)="downloadInvoice()"
           [disabled]="isDownloading"
         >
-        <ng-container *ngIf="isDownloading; else normalText">
-    <span class="loader border-t-2 border-white rounded-full w-4 h-4 animate-spin"></span>
-    Downloading...
-  </ng-container>
-  <ng-template #normalText>
-    <span><i class="ri-file-download-line mr-2"></i> Download Invoice</span>
-  </ng-template>
-          
+          <ng-container *ngIf="isDownloading; else normalText">
+            <span
+              class="loader border-t-2 border-white rounded-full w-4 h-4 animate-spin"
+            ></span>
+            Downloading...
+          </ng-container>
+          <ng-template #normalText>
+            <span
+              ><i class="ri-file-download-line mr-2"></i> Download Invoice</span
+            >
+          </ng-template>
         </button>
       </div>
 

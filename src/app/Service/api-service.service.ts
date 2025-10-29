@@ -46,8 +46,8 @@ export class ApiServiceService {
   // commoncode = 'https://h10rqczh-9090.inc1.devtunnels.ms';
   // commonimgUrl = 'https://h10rqczh-9090.inc1.devtunnels.ms/api/upload/';
 
-  // commoncode = 'https://l53m6prz-9878.inc1.devtunnels.ms';
-  // commonimgUrl = 'https://l53m6prz-9878.inc1.devtunnels.ms/api/upload/';
+  // commoncode = 'https://p8rhkmb7-9878.inc1.devtunnels.ms';
+  // commonimgUrl = 'https://p8rhkmb7-9878.inc1.devtunnels.ms/api/upload/';
 
   //  commoncode = 'http://192.168.29.212:9878';
   // commonimgUrl = 'http://192.168.29.212:9878/api/upload/';
@@ -4223,6 +4223,73 @@ export class ApiServiceService {
       {
         headers,
       } // ✅ attach headers and params
+    );
+  }
+
+
+
+
+    sendotpp(CEMAIL_ID: string): Observable<any> {
+    const data = {
+      username: CEMAIL_ID,
+    };
+
+    return this.httpClient.post<any>(
+      this.baseUrl + 'customer/sendotpforchangepassword',
+      JSON.stringify(data),
+      { headers: this.httpHeaders, observe: 'response' }
+    );
+  }
+
+  sendotp(
+    MOBILE_NO: string,
+    EMAIL_ID: string,
+    CUSTOMER_ID: any
+  ): Observable<any> {
+    var data = {
+      MOBILE_NO: MOBILE_NO,
+      EMAIL_ID: EMAIL_ID,
+      CUSTOMER_ID: CUSTOMER_ID,
+    };
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      applicationkey: this.commonapplicationkey,
+      apikey: this.commonapikey,
+      token: this.cookie.get('token'),
+    });
+    return this.httpClient.post<any>(
+      this.baseUrl + 'api/customer/sendOtpForRegisterUser',
+      JSON.stringify(data),
+      {
+        headers,
+      }
+    );
+  }
+
+  verifyotpp(
+    MOBILE_NO: string,
+    EMAIL_ID: string,
+    OTP: string,
+    CUSTOMER_ID: any
+  ): Observable<any> {
+    var data = {
+      MOBILE_NO: MOBILE_NO,
+      EMAIL_ID: EMAIL_ID,
+      OTP: OTP,
+      CUSTOMER_ID: CUSTOMER_ID,
+    };
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      applicationkey: this.commonapplicationkey,
+      apikey: this.commonapikey,
+      token: this.cookie.get('token'),
+    });
+    return this.httpClient.post<any>(
+      this.baseUrl + 'api/customer/verifyOtpForRegisterUser',
+      JSON.stringify(data),
+      {
+        headers,
+      }
     );
   }
 }

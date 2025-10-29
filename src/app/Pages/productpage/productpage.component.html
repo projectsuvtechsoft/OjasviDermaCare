@@ -133,7 +133,7 @@
 
         <!-- Main Image -->
         <div
-          class="relative overflow-hidden rounded-xl md:rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 shadow-sm md:shadow-xl group"
+          class="relative overflow-hidden rounded-xl md:rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 shadow-sm md:shadow-md group"
         >
           <img
             [src]="
@@ -151,7 +151,7 @@
             class="absolute top-2 right-2 md:top-3 md:right-3 z-10 flex gap-1 md:gap-2"
           >
             <button
-              class="w-8 h-8 md:w-9 md:h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md hover:bg-white transition-all duration-300 transform hover:scale-110"
+              class="w-8 h-8 md:w-9 md:h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm hover:bg-white transition-all duration-300 transform hover:scale-110"
               [ngClass]="{
                 'text-green-500': data.isLiked,
                 'text-gray-600': !data.isLiked
@@ -167,7 +167,7 @@
               ></i>
             </button>
             <button
-              class="w-8 h-8 md:w-9 md:h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md hover:bg-white transition-all duration-300 transform hover:scale-110 text-gray-600 hover:text-green-600"
+              class="w-8 h-8 md:w-9 md:h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm hover:bg-white transition-all duration-300 transform hover:scale-110 text-gray-600 hover:text-green-600"
               (click)="shareProduct(data)"
             >
               <i class="ri-share-line text-sm md:text-base"></i>
@@ -177,7 +177,7 @@
           <!-- Discount Badge -->
           <div
             *ngIf="data.DISCOUNT && data.DISCOUNT > 0"
-            class="absolute top-2 left-2 md:top-4 md:left-4 bg-gradient-to-r from-red-500 to-pink-500 text-white px-2 py-1 md:px-3 md:py-1.5 rounded-full font-bold text-xs shadow-lg"
+            class="absolute top-2 left-2 md:top-4 md:left-4 bg-gradient-to-r from-red-500 to-pink-500 text-white px-2 py-1 md:px-3 md:py-1.5 rounded-full font-bold text-xs shadow-md"
           >
             {{
               data.DISCOUNT_TYPE == "Amount"
@@ -338,7 +338,7 @@
                   change(item.VARIENT_ID, data.ID, true)
                 "
                 [ngClass]="{
-                  'border-2 border-green-600 bg-green-50 text-green-700 shadow-md':
+                  'border-2 border-green-600 bg-green-50 text-green-700 shadow-sm':
                     selectedVariantMap[data.ID] === item.VARIENT_ID,
                   'border-2 border-gray-200 hover:border-green-400 text-gray-700':
                     selectedVariantMap[data.ID] !== item.VARIENT_ID
@@ -487,7 +487,7 @@
 
     <!-- Tabs Section - Completely Redesigned -->
     <div
-      class="bg-white rounded-xl md:rounded-3xl shadow-xl overflow-hidden mb-6 md:mb-8"
+      class="bg-white rounded-xl md:rounded-3xl shadow-sm overflow-hidden mb-6 md:mb-8"
     >
       <div
         class="border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white"
@@ -664,10 +664,10 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
               <div class="text-center group">
-                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 text-white rounded-full flex items-center justify-center mx-auto mb-6 relative z-10 shadow-xl group-hover:scale-110 transition-transform duration-300">
+                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 text-white rounded-full flex items-center justify-center mx-auto mb-6 relative z-10 shadow-md group-hover:scale-110 transition-transform duration-300">
                   <span class="text-2xl font-bold">1</span>
                 </div>
-                <div class="bg-white p-6 rounded-2xl border-2 border-gray-100 group-hover:border-green-300 group-hover:shadow-xl transition-all duration-300">
+                <div class="bg-white p-6 rounded-2xl border-2 border-gray-100 group-hover:border-green-300 group-hover:shadow-md transition-all duration-300">
                   <div class="w-16 h-16 bg-green-50 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <i class="ri-drop-line text-2xl text-green-600"></i>
                   </div>
@@ -679,10 +679,10 @@
               </div>
 
               <div class="text-center group">
-                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 text-white rounded-full flex items-center justify-center mx-auto mb-6 relative z-10 shadow-xl group-hover:scale-110 transition-transform duration-300">
+                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 text-white rounded-full flex items-center justify-center mx-auto mb-6 relative z-10 shadow-md group-hover:scale-110 transition-transform duration-300">
                   <span class="text-2xl font-bold">2</span>
                 </div>
-                <div class="bg-white p-6 rounded-2xl border-2 border-gray-100 group-hover:border-green-300 group-hover:shadow-xl transition-all duration-300">
+                <div class="bg-white p-6 rounded-2xl border-2 border-gray-100 group-hover:border-green-300 group-hover:shadow-md transition-all duration-300">
                   <div class="w-14 h-14 bg-green-50 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <i class="ri-hand-coin-line text-3xl text-green-600"></i>
                   </div>
@@ -694,10 +694,10 @@
               </div>
 
               <div class="text-center group">
-                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 text-white rounded-full flex items-center justify-center mx-auto mb-6 relative z-10 shadow-xl group-hover:scale-110 transition-transform duration-300">
+                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 text-white rounded-full flex items-center justify-center mx-auto mb-6 relative z-10 shadow-md group-hover:scale-110 transition-transform duration-300">
                   <span class="text-2xl font-bold">3</span>
                 </div>
-                <div class="bg-white p-6 rounded-2xl border-2 border-gray-100 group-hover:border-green-300 group-hover:shadow-xl transition-all duration-300">
+                <div class="bg-white p-6 rounded-2xl border-2 border-gray-100 group-hover:border-green-300 group-hover:shadow-md transition-all duration-300">
                   <div class="w-14 h-14 bg-green-50 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <i class="ri-loader-line text-3xl text-green-600"></i>
                   </div>
@@ -709,10 +709,10 @@
               </div>
 
               <div class="text-center group">
-                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 text-white rounded-full flex items-center justify-center mx-auto mb-6 relative z-10 shadow-xl group-hover:scale-110 transition-transform duration-300">
+                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 text-white rounded-full flex items-center justify-center mx-auto mb-6 relative z-10 shadow-md group-hover:scale-110 transition-transform duration-300">
                   <span class="text-2xl font-bold">4</span>
                 </div>
-                <div class="bg-white p-6 rounded-2xl border-2 border-gray-100 group-hover:border-green-300 group-hover:shadow-xl transition-all duration-300">
+                <div class="bg-white p-6 rounded-2xl border-2 border-gray-100 group-hover:border-green-300 group-hover:shadow-md transition-all duration-300">
                   <div class="w-14 h-14 bg-green-50 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <i class="ri-emotion-happy-line text-3xl text-green-600"></i>
                   </div>
@@ -744,7 +744,7 @@
             </div>
             <button
               *ngIf="userID != null && userID != '' && userID != undefined"
-              class="bg-gradient-to-r from-green-600 to-green-700 text-white px-2 py-1 rounded-lg font-semibold hover:from-green-700 hover:to-green-800 transition-all duration-300 transform hover:scale-105 shadow-md flex items-center gap-1 text-xs"
+              class="bg-gradient-to-r from-green-600 to-green-700 text-white px-2 py-1 rounded-lg font-semibold hover:from-green-700 hover:to-green-800 transition-all duration-300 transform hover:scale-105 shadow-sm flex items-center gap-1 text-xs"
               data-bs-toggle="modal"
               data-bs-target="#reviewModal"
             >
@@ -777,7 +777,7 @@
               </p>
               <button
                 *ngIf="userID != null && userID != '' && userID != undefined"
-                class="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md inline-flex items-center gap-1 text-xs"
+                class="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-sm inline-flex items-center gap-1 text-xs"
                 data-bs-toggle="modal"
                 data-bs-target="#reviewModal"
               >
@@ -941,7 +941,7 @@
                   class="w-8 h-8 flex items-center justify-center bg-green-100 rounded-full group-hover:bg-green-200 transition-colors flex-shrink-0"
                 >
                   <i
-                    class="ri-arrow-up-s-line accordion-icon text-2xl text-green-700 transition-transform duration-300"
+                    class="ri-arrow-down-s-line accordion-icon text-2xl text-green-700 transition-transform duration-300"
                   ></i>
                 </div>
               </button>
@@ -963,7 +963,7 @@
       class="mt-4 md:mt-6"
     >
       <div
-        class="bg-white rounded-xl shadow-md p-3 md:p-4 border border-gray-100"
+        class="bg-white rounded-xl shadow-sm p-3 md:p-4 border border-gray-100"
       >
         <div class="flex justify-between items-center mb-3 md:mb-4">
           <div>
@@ -980,7 +980,7 @@
           class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4"
         >
           <div
-            class="product-card bg-white rounded-lg shadow-md overflow-hidden p-0"
+            class="product-card bg-white rounded-lg shadow-sm overflow-hidden p-0"
             style="cursor: pointer"
             *ngFor="let product of similarProducts; trackBy: trackByProductId"
           >
@@ -1234,7 +1234,7 @@
                 *ngFor="let star of [1, 2, 3, 4, 5]"
                 class="w-8 h-8 flex items-center justify-center rounded-md transition-all duration-300 hover:scale-105"
                 [ngClass]="{
-                  'bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg':
+                  'bg-gradient-to-br from-green-500 to-green-600 text-white shadow-md':
                     reviewForm.rating >= star,
                   'bg-gray-100 text-gray-400 hover:bg-gray-200':
                     reviewForm.rating < star
@@ -1265,7 +1265,7 @@
           <div class="flex gap-2">
             <button
               type="submit"
-              class="w-36 h-18 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-1 py-1 rounded-lg text-sm font-bold transition-all duration-300 hover:scale-[1.01] shadow-md"
+              class="w-36 h-18 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-1 py-1 rounded-lg text-sm font-bold transition-all duration-300 hover:scale-[1.01] shadow-sm"
             >
               <i class="ri-send-plane-fill mr-2"></i>
               Submit Review
@@ -1322,7 +1322,7 @@
             Sign in to continue shopping and access your account
           </p>
           <button
-            class="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-8 py-4 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-3"
+            class="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-8 py-4 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 shadow-md flex items-center justify-center gap-3"
             (click)="openlogin()"
           >
             <i class="ri-login-box-line text-2xl"></i>

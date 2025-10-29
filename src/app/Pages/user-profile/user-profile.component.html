@@ -364,32 +364,43 @@
 
             <!-- Login Details -->
             <div class="bg-white rounded-lg shadow-sm p-4">
-              <h2
-                class="text-lg font-semibold text-gray-800 mb-2 flex items-center"
-              >
-                <div
-                  class="w-5 h-5 mr-2 flex items-center justify-center text-[#5a8f69]"
+              <div class="flex justify-between items-center mb-2">
+                <h2
+                  class="text-lg font-semibold text-gray-800 mb-2 flex items-center"
                 >
-                  <i class="ri-lock-line"></i>
-                </div>
-                Log in Details
-              </h2>
-              <div class="space-y-2">
+                  <div
+                    class="w-5 h-5 mr-2 flex items-center justify-center text-[#5a8f69]"
+                  >
+                    <i class="ri-lock-line"></i>
+                  </div>
+                  Log in Details
+                </h2>
+                <button
+                  *ngIf="!user.email"
+                  (click)="openUserEmailDetailsModal()"
+                  class="text-[#5a8f69] text-sm hover:underline flex items-center"
+                >
+                  <i class="fa-solid fa-plus mr-1"></i>
+                  Add Email
+                </button>
+
+                <button
+                  *ngIf="user.email"
+                  (click)="openUserEmailDetailsModal()"
+                  class="text-[#5a8f69] text-sm hover:underline flex items-center"
+                >
+                  <i class="ri-edit-line mr-1"></i>
+                  Edit Email
+                </button>
+              </div>
+
+              <div class="space-y-2" *ngIf="user.email">
                 <div class="grid grid-cols-3 gap-2 items-center">
                   <div class="text-sm font-medium text-gray-500">Email</div>
-                  <div class="col-span-2 flex items-center" *ngIf="user.email">
+                  <div class="col-span-2 flex items-center">
                     <span class="text-gray-800 mr-2">{{
                       user.email || "Not provided"
                     }}</span>
-                    <a
-                      href="#"
-                      class="text-[#5a8f69] text-sm hover:underline"
-                      (click)="
-                        openEditModal('email', user.email);
-                        $event.preventDefault()
-                      "
-                      >Edit</a
-                    >
                   </div>
                 </div>
               </div>
@@ -547,7 +558,6 @@
                         </div>
                       </div>
                     </div>
-
                   </div>
                 </div>
               </div>
@@ -1310,7 +1320,7 @@
   *ngIf="showLogoutModal"
   class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
 >
-  <div class="bg-white rounded-lg p-6 w-[90%] max-w-sm text-center shadow-xl">
+  <div class="bg-white rounded-lg p-6 w-[90%] max-w-sm text-center shadow-md">
     <div class="text-green-500 text-4xl mb-2">
       <i class="ri-question-line"></i>
     </div>
@@ -1366,7 +1376,7 @@
   *ngIf="editModalOpen"
   class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
 >
-  <div class="bg-white rounded-lg p-4 w-[85%] max-w-xs text-center shadow-xl">
+  <div class="bg-white rounded-lg p-4 w-[85%] max-w-xs text-center shadow-md">
     <h2 class="text-lg font-semibold mb-3">
       Update {{ editField | titlecase }}
     </h2>
@@ -1416,7 +1426,7 @@
   *ngIf="userDetailsModalOpen"
   class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
 >
-  <div class="bg-white rounded-lg p-4 w-[85%] max-w-xs text-center shadow-xl">
+  <div class="bg-white rounded-lg p-4 w-[85%] max-w-xs text-center shadow-md">
     <h2 class="text-lg font-semibold mb-3">Update User Details</h2>
     <form (ngSubmit)="updateUserDetails()">
       <div class="mb-3">
@@ -1453,12 +1463,14 @@
         </button>
         <button
           type="button"
-          (click)="openVerifyModal()"
+          (click)="IsMobileorEmail()"
           [disabled]="isUpdatingUserDetails"
           class="bg-[#5a8f69] text-white px-3 py-1.5 rounded text-sm font-medium hover:bg-opacity-90 transition"
         >
-          {{ isUpdatingUserDetails ? "Updating..." : "Update" }}
+          <span>{{ isUpdatingUserDetails ? "Updating" : "Update" }}</span>
+          <span *ngIf="isUpdatingUserDetails" class="small-loader"></span>
         </button>
+        <!-- (click)="openVerifyModal()" -->
       </div>
     </form>
   </div>
@@ -1471,9 +1483,19 @@
   >
     <div class="auth-wrapper">
       <div
-        class="auth-card frosted-glass shadow-sm p-4 rounded-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-8 relative overflow-hidden"
-        style="width: 380px !important"
+        class="auth-card frosted-glass shadow-sm p-4 rounded-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-8 relative overflow-hidden"
+        style="width: 380px !important; position: relative"
       >
+        <!-- Close Button (Left Corner) -->
+        <button
+          type="button"
+          class="close-btn"
+          (click)="openVerify = false"
+          aria-label="Close"
+        >
+          &times;
+        </button>
+
         <div
           class="d-flex align-items-center justify-content-center mb-3"
           style="gap: 12px"
@@ -1502,7 +1524,8 @@
             <div
               class="subtext"
               style="
-                font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+                font-family: Assistant, -apple-system, BlinkMacSystemFont,
+                  Segoe UI, Roboto, Helvetica, Arial, sans-serif;
                 color: #ffc200;
                 line-height: 1;
                 text-align: left;
@@ -1517,21 +1540,22 @@
           <h2>Enter Verification Code</h2>
           <p class="verification-text">
             We've sent a 4-digit verification code to<br />
-            <span class="phone-number">{{ user.email }} </span>
+            <span class="phone-number">{{ userDetailsForm.mobile }} </span>
+            <span class="email">{{ email }} </span>
           </p>
 
           <div style="color: red; margin-bottom: 15px" *ngIf="statusCode != ''">
             {{ statusCode }}
           </div>
 
-          <form (ngSubmit)="VerifyOTP()" class="otp-form">
+          <form (ngSubmit)="verifyOTPP()" class="otp-form">
             <div class="otp-input-group">
               <input
                 *ngFor="let i of [0, 1, 2, 3]"
                 class="otp-input"
                 type="text"
-                [(ngModel)]="otp[i]"
-                [name]="'otp-' + i"
+                [(ngModel)]="OTP[i]"
+                [name]="'otpn' + i"
                 maxlength="1"
                 (keydown)="moveToNext($event, i)"
                 (keypress)="allowOnlyNumbers($event)"
@@ -1543,7 +1567,7 @@
             </div>
 
             <div class="timer-section">
-              <span *ngIf="remainingTime > 0" >{{ remainingTime }}</span>
+              <span *ngIf="remainingTime > 0">{{ remainingTime }}</span>
               <p class="resend-text" style="color: #636363">
                 Didn’t receive the code?
                 <a
@@ -1568,10 +1592,9 @@
               class="verify-button"
               [disabled]="isverifyOTP"
             >
-              <span
-                *ngIf="isverifyOTP"
-                class="spinner-border spinner-border-sm me-2"
-              ></span>
+              <span *ngIf="isVerifyOtpSpinning" class="small-loader"></span>
+
+              <span *ngIf="isverifyOTP"></span>
               Verify
             </button>
           </form>
@@ -1587,7 +1610,7 @@
   class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
 >
   <div
-    class="bg-white rounded-lg w-[95%] max-w-2xl text-left shadow-xl overflow-hidden"
+    class="bg-white rounded-lg w-[95%] max-w-2xl text-left shadow-md overflow-hidden"
   >
     <!-- Modal Header with custom close buttons -->
     <div
@@ -1663,7 +1686,6 @@
                     *ngFor="let c of countryCodes"
                     [ngValue]="c.value"
                     class="px-2 py-1 text-sm overflow-y-scroll"
-                    
                   >
                     {{ c.label }}
                   </option>
@@ -1888,6 +1910,64 @@
     </div>
   </div>
 </div>
+
+<!-- by sanju -->
+<!-- user Email Details -->
+<div
+  *ngIf="userEmailDetailsModalOpen"
+  class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
+>
+  <div class="bg-white rounded-lg p-4 w-[85%] max-w-xs text-center shadow-md">
+    <!-- <h2 class="text-lg font-semibold mb-3">Add Email</h2> -->
+    <h2 class="text-lg font-semibold mb-3">
+      {{ user.email ? "Update Email" : "Add Email" }}
+    </h2>
+    <form>
+      <div class="mb-3">
+        <input
+          type="text"
+          [(ngModel)]="email"
+          name="emaill"
+          placeholder="Enter Email"
+          class="w-full px-3 py-1.5 border rounded text-sm"
+          [pattern]="emailPattern"
+          required
+          maxlength="128"
+        />
+      </div>
+
+      <div class="flex justify-center gap-3">
+        <button
+          type="button"
+          (click)="closeUserEmailDetailsModal()"
+          class="bg-gray-200 px-3 py-1.5 rounded text-sm font-medium hover:bg-gray-300 transition"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          (click)="sendOTPEmail()"
+          class="bg-[#5a8f69] text-white px-3 py-1.5 rounded text-sm font-medium hover:bg-opacity-90 transition"
+        >
+          <span *ngIf="isSendOtpEmailSpinning" class="small-loader"></span>
+
+          <span>
+            {{
+              isSendOtpEmailSpinning
+                ? user.email
+                  ? "Verifying"
+                  : "Adding"
+                : user.email
+                ? "Verify Email"
+                : "Add Email"
+            }}
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div
   class="modal fade"
   id="cartModal"
@@ -1940,7 +2020,12 @@
                   </div>
                 </div>
                 <div class="text-lg font-semibold text-gray-900">
-                  ${{ order.ITEM_DISCOUNT_AMOUNT && order.ITEM_DISCOUNT_AMOUNT!==0 ? order.ITEM_DISCOUNT_AMOUNT : order.PRICE * order.QUANTITY  }}
+                  ${{
+                    order.ITEM_DISCOUNT_AMOUNT &&
+                    order.ITEM_DISCOUNT_AMOUNT !== 0
+                      ? order.ITEM_DISCOUNT_AMOUNT
+                      : order.PRICE * order.QUANTITY
+                  }}
                 </div>
               </div>
             </div>

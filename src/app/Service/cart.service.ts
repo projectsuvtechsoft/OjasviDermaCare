@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, debounceTime, Subject } from 'rxjs';
+import { BehaviorSubject, catchError, debounceTime, forkJoin, map, Observable, of, Subject, switchMap, tap } from 'rxjs';
 import { ApiServiceService } from './api-service.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CommonFunctionService } from './CommonFunctionService';
@@ -179,8 +179,13 @@ export class CartService {
   currentProduct: any = {};
   addToCart(product: any): void {
     // console.log(product);
+    // if()
     this.euserID = sessionStorage.getItem('userId') || 0;
     this.userID = this.commonFunction.decryptdata(this.euserID) || 0;
+    if(this.userID){
+      this.currentProduct.CUSTOMER_ID=this.userID
+      this.currentProduct.SESSION_KEY=""
+    }
     const index = this.cartItems.findIndex((p) => p.ID === product.ID);
     if (index !== -1) {
       this.cartItems[index].CUSTOMER_ID=this.userID
@@ -516,4 +521,148 @@ export class CartService {
   //   this.updateCartCount();
   //   this.saveCartToServer(); // 🔄 Sync
   // }
+  // Alternative approach using Promise or simple tap
+migrateSessionCartToCustomer(
+  sessionCartItems: any[],
+  customerId: string
+): Observable<any> {
+  if (!sessionCartItems || sessionCartItems.length === 0) {
+    return new Observable(observer => {
+      observer.next({ 
+        success: true, 
+        message: 'No items to migrate',
+        migratedCount: 0 
+      });
+      observer.complete();
+    });
+  }
+
+  const headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+    applicationkey: this.commonapplicationkey,
+    apikey: this.commonapikey,
+    token: this.etoken,
+  });
+
+  // Migrate items sequentially to ensure same CART_ID
+  return this.migrateItemsSequentially(sessionCartItems, customerId, headers);
+}
+
+/**
+ * Migrate items sequentially to ensure they all get the same CART_ID
+ */
+private migrateItemsSequentially(
+  sessionCartItems: any[],
+  customerId: string,
+  headers: HttpHeaders
+): Observable<any> {
+  if (sessionCartItems.length === 0) {
+    return of({
+      success: true,
+      message: 'No items to migrate',
+      migratedCount: 0
+    });
+  }
+
+  // Prepare first item payload
+  const firstItemPayload = {
+    CUSTOMER_ID: customerId,
+    SESSION_KEY: '',
+    CLIENT_ID: 1,
+    PRODUCT_ID: sessionCartItems[0].PRODUCT_ID,
+    VERIENT_ID: sessionCartItems[0].VERIENT_ID ?? 0,
+    QUANTITY: sessionCartItems[0].QUANTITY || sessionCartItems[0].quantity || 1,
+    SIZE: sessionCartItems[0].SIZE || sessionCartItems[0].VERIENT_SIZE,
+    COUNTRY_NAME: sessionStorage.getItem('address'),
+    PINCODE: sessionStorage.getItem('pincode'),
+    UNIT_ID: sessionCartItems[0].UNIT_ID || sessionCartItems[0].PRODUCT_UNIT_ID,
+  };
+
+  console.log('Adding first item to create cart:', firstItemPayload);
+
+  // Add first item - this will create a new CART_ID
+  return this.http.post(
+    this.api.baseUrl + 'web/cart/addToCart',
+    firstItemPayload,
+    { headers }
+  ).pipe(
+    switchMap((firstResponse: any) => {
+      const cartId = firstResponse.CART_ID;
+      // console.log('Created cart with ID:', cartId);
+
+      // If only one item, we're done
+      if (sessionCartItems.length === 1) {
+        return of({
+          success: true,
+          message: 'Successfully migrated 1 item to your cart',
+          migratedCount: 1,
+          cartId: cartId
+        }).pipe(
+          tap(() => {
+            console.log('Refreshing cart from server...');
+            this.fetchCartFromServer(customerId, this.etoken);
+          })
+        );
+      }
+
+      // Add remaining items with the same CART_ID
+      const remainingOperations = sessionCartItems.slice(1).map((item, index) => {
+        const payload = {
+          CUSTOMER_ID: customerId,
+          SESSION_KEY: '',
+          CLIENT_ID: 1,
+          PRODUCT_ID: item.PRODUCT_ID,
+          VERIENT_ID: item.VERIENT_ID ?? 0,
+          QUANTITY: item.QUANTITY || item.quantity || 1,
+          SIZE: item.SIZE || item.VERIENT_SIZE,
+          COUNTRY_NAME: sessionStorage.getItem('address'),
+          PINCODE: sessionStorage.getItem('pincode'),
+          UNIT_ID: item.UNIT_ID || item.PRODUCT_UNIT_ID,
+          CART_ID: cartId, // ✅ Use the same CART_ID from first item
+        };
+        
+        console.log(`Adding item ${index + 2} with CART_ID:`, cartId);
+        
+        return this.http.post(
+          this.api.baseUrl + 'web/cart/addToCart',
+          payload,
+          { headers }
+        );
+      });
+
+      // Execute all remaining additions in parallel
+      return forkJoin(remainingOperations).pipe(
+        map((results) => ({
+          success: true,
+          message: `Successfully migrated ${sessionCartItems.length} items to your cart`,
+          migratedCount: sessionCartItems.length,
+          cartId: cartId
+        })),
+        tap(() => {
+          console.log('All items migrated. Refreshing cart from server...');
+          this.fetchCartFromServer(customerId, this.etoken);
+        }),
+        catchError(error => {
+          console.error('Error adding remaining items:', error);
+          return of({
+            success: true, // First item was added successfully
+            message: `Partially migrated ${sessionCartItems.length} items. Please refresh.`,
+            migratedCount: 1,
+            cartId: cartId,
+            partialError: true
+          });
+        })
+      );
+    }),
+    catchError(error => {
+      console.error('Migration error on first item:', error);
+      return of({
+        success: false,
+        message: 'Failed to migrate cart items',
+        migratedCount: 0,
+        error: error
+      });
+    })
+  );
+}
 }

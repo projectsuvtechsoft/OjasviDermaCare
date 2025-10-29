@@ -45,7 +45,7 @@ export class AddressMaster {
   IS_LAST_SHIPPING_ADDRESS = false;
   ADDRESS_TYPE = 'R';
   IS_DEFUALT_ADDRESS = false;
-  COUNTRY_CODE=''
+  COUNTRY_CODE = '';
 }
 @Component({
   selector: 'app-user-profile',
@@ -123,7 +123,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   pincodeList: any[] = [];
   activeSection: string = 'dashboard-section';
   ngOnInit(): void {
-    this.router.events.subscribe(event => {
+    this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -365,13 +365,13 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
         if (response?.code === 200) {
           this.toastr.success('User details updated successfully!', 'Success');
-          this.openVerify=false;
+          this.openVerify = false;
           this.user.NAME = this.userDetailsForm.name.trim();
           this.user.mobile = this.userDetailsForm.mobile.trim();
           this.closeUserDetailsModal();
         } else {
           this.toastr.error('Update failed.', 'Error');
-          this.openVerify=false;
+          this.openVerify = false;
         }
       },
       error: (err) => {
@@ -381,7 +381,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       },
     });
   }
-isTransitioning: boolean = false;
+  isTransitioning: boolean = false;
   updateField() {
     if (!this.editValue || !this.editField) {
       this.toastr.error('Please enter a data.', 'Error');
@@ -458,7 +458,6 @@ isTransitioning: boolean = false;
 
               password: userData.PASSWORD || '', // Set password for display
             };
-            // console.log(userData.Name);
             this.imagePreview =
               this.IMAGEuRL + 'CustomerProfile/' + this.user.PROFILE_URL;
           }
@@ -868,66 +867,67 @@ isTransitioning: boolean = false;
       );
   }
 
+  orders: any;
+  cartItemsMap: { [orderId: string]: any[] } = {}; // key: ORDER_ID, value: cart items array
 
+  getOrders() {
+    const customerId = this.commonFunction.decryptdata(
+      sessionStorage.getItem('userId') || ''
+    );
 
-    orders: any;
-cartItemsMap: { [orderId: string]: any[] } = {}; // key: ORDER_ID, value: cart items array
+    this.isloadstate = true;
 
-getOrders() {
-  const customerId = this.commonFunction.decryptdata(
-    sessionStorage.getItem('userId') || ''
-  );
+    this.api
+      .Ordermaster(0, 0, 'id', '', ' AND CUSTOMER_ID = ' + customerId)
+      .subscribe(
+        (data: any) => {
+          if (data['code'] == 200) {
+            this.orders = data['data'].map((order: any) => {
+              // console.log(this.orders)
+              // Set invoice URL
+              // this.invoicePdfUrl = order.INVOICE_NUMBER
+              //   ? `${this.api.retriveimgUrl}Invoice/${order.INVOICE_NUMBER}.pdf`
+              //   : null;
+              order.invoicePdfUrl = order.INVOICE_NUMBER
+                ? `${this.api.retriveimgUrl}Invoice/${order.INVOICE_NUMBER}.pdf`
+                : null;
+              //  this.invoicePdfUrl  = `${this.api.retriveimgUrl}Invoice/${  order.invoicePdfUrl }.pdf`;
 
-  this.isloadstate = true;
+              // Parse CART_ITEMS into a separate map
+              try {
+                this.cartItemsMap[order.ID] = JSON.parse(
+                  order.CART_ITEMS || '[]'
+                );
+                console.log(this.cartItemsMap);
+              } catch (e) {
+                console.error(
+                  'Error parsing CART_ITEMS for order',
+                  order.ID,
+                  e
+                );
+                this.cartItemsMap[order.ID] = [];
+              }
 
-  this.api
-    .Ordermaster(0, 0, 'id', '', ' AND CUSTOMER_ID = ' + customerId)
-    .subscribe(
-      (data: any) => {
-        if (data['code'] == 200) {
+              return order;
+            });
 
-          this.orders = data['data'].map((order: any) => {
-            // console.log(this.orders)
-            // Set invoice URL
-            // this.invoicePdfUrl = order.INVOICE_NUMBER
-            //   ? `${this.api.retriveimgUrl}Invoice/${order.INVOICE_NUMBER}.pdf`
-            //   : null;
-             order.invoicePdfUrl = order.INVOICE_NUMBER
-    ? `${this.api.retriveimgUrl}Invoice/${order.INVOICE_NUMBER}.pdf`
-    : null;
-  //  this.invoicePdfUrl  = `${this.api.retriveimgUrl}Invoice/${  order.invoicePdfUrl }.pdf`;
-
-            // Parse CART_ITEMS into a separate map
-            try {
-              this.cartItemsMap[order.ID] = JSON.parse(order.CART_ITEMS || '[]');
-              console.log(this.cartItemsMap);
-
-            } catch (e) {
-              console.error('Error parsing CART_ITEMS for order', order.ID, e);
-              this.cartItemsMap[order.ID] = [];
-            }
-
-            return order;
-          });
-
-          // Show first few orders
-this.visibleOrders = this.orders.slice(0, this.itemsToShow);
-          // Load more check
-          this.showLoadMore = this.orders.length > this.itemsToShow;
-          this.isloadstate = false;
-        } else {
-          this.toastr.error("Data Can't Load", '');
+            // Show first few orders
+            this.visibleOrders = this.orders.slice(0, this.itemsToShow);
+            // Load more check
+            this.showLoadMore = this.orders.length > this.itemsToShow;
+            this.isloadstate = false;
+          } else {
+            this.toastr.error("Data Can't Load", '');
+            this.isloadstate = false;
+          }
+        },
+        (err: any) => {
+          console.log(err);
           this.isloadstate = false;
         }
-      },
-      (err: any) => {
-        console.log(err);
-        this.isloadstate = false;
-      }
-    );
-}
-invoicePdfUrl:any
-
+      );
+  }
+  invoicePdfUrl: any;
 
   cartitemDataList: any[] = [];
   viewdetail: any[] = [];
@@ -937,9 +937,9 @@ invoicePdfUrl:any
   totalPrice: any;
   photoUrls: any;
   producctImageurl: string = this.api.retriveimgUrl + 'productImages/';
-   TOTAL_AMOUNT: any;
-  NET_AMOUNT:any
-    TOTAL_PRICE:any
+  TOTAL_AMOUNT: any;
+  NET_AMOUNT: any;
+  TOTAL_PRICE: any;
   openProjectDetails(data: any) {
     this.viewdetail = [data];
     // console.log(data);
@@ -950,8 +950,8 @@ invoicePdfUrl:any
     this.PACKAGING_CHARGES = data.PACKAGING_CHARGES;
     // console.log(this.PACKAGING_CHARGES);
     this.TOTAL_AMOUNT = data.TOTAL_AMOUNT;
-this.NET_AMOUNT=data.NET_AMOUNT
-this. TOTAL_PRICE=data.TOTAL_AMOUNT
+    this.NET_AMOUNT = data.NET_AMOUNT;
+    this.TOTAL_PRICE = data.TOTAL_AMOUNT;
     try {
       const items = JSON.parse(data.CART_ITEMS);
       this.cartitemDataList = Array.isArray(items) ? items : [];
@@ -959,8 +959,11 @@ this. TOTAL_PRICE=data.TOTAL_AMOUNT
       this.cartitemDataList = [];
     }
     this.totalPrice = this.cartitemDataList.reduce(
-      (sum, item) => sum + (
-       (item.ITEM_DISCOUNT_AMOUNT && item.ITEM_DISCOUNT_AMOUNT!==0 ?  item.ITEM_DISCOUNT_AMOUNT : item.PRICE * item.QUANTITY)|| 0),
+      (sum, item) =>
+        sum +
+        ((item.ITEM_DISCOUNT_AMOUNT && item.ITEM_DISCOUNT_AMOUNT !== 0
+          ? item.ITEM_DISCOUNT_AMOUNT
+          : item.PRICE * item.QUANTITY) || 0),
       0
     );
     this.photoUrls = this.cartitemDataList.map(
@@ -1829,7 +1832,7 @@ this. TOTAL_PRICE=data.TOTAL_AMOUNT
     }
   }
   deleteAddress(addressID: number, customer_id: number) {
-    console.log('Deleting Address ID:', addressID, 'Customer ID:',customer_id);
+    console.log('Deleting Address ID:', addressID, 'Customer ID:', customer_id);
     this.api.DeleteAddress(addressID, customer_id).subscribe(
       (data: any) => {
         if (data['code'] == 200) {
@@ -1845,33 +1848,36 @@ this. TOTAL_PRICE=data.TOTAL_AMOUNT
     );
   }
   visibleOrders: any[] = [];
-itemsToShow: number = 6;
-showLoadMore: boolean = false;
+  itemsToShow: number = 6;
+  showLoadMore: boolean = false;
 
-loadMore() {
-  const currentLength = this.visibleOrders.length;
-  const nextItems = this.orders.slice(currentLength, currentLength + this.itemsToShow);
-  this.visibleOrders = [...this.visibleOrders, ...nextItems];
+  loadMore() {
+    const currentLength = this.visibleOrders.length;
+    const nextItems = this.orders.slice(
+      currentLength,
+      currentLength + this.itemsToShow
+    );
+    this.visibleOrders = [...this.visibleOrders, ...nextItems];
 
-  // Hide Load More if all items are loaded
-  this.showLoadMore = this.visibleOrders.length < this.orders.length;
-}
-// invoicePdfUrl:any
-viewInvoicePdf(invoiceUrl: string) {
-  if (invoiceUrl) {
-    window.open(invoiceUrl, '_blank');
-  } else {
-    this.toastr.error('Invoice not available', 'Error');
+    // Hide Load More if all items are loaded
+    this.showLoadMore = this.visibleOrders.length < this.orders.length;
   }
-}
+  // invoicePdfUrl:any
+  viewInvoicePdf(invoiceUrl: string) {
+    if (invoiceUrl) {
+      window.open(invoiceUrl, '_blank');
+    } else {
+      this.toastr.error('Invoice not available', 'Error');
+    }
+  }
 
-navigateToProduct(productId: number) {
+  navigateToProduct(productId: number) {
     // Navigate to product detail page
     this.router.navigate(['product_details', productId]);
   }
 
   today = new Date();
- removeFromWishlist(product: any): void {
+  removeFromWishlist(product: any): void {
     this.userID = this.commonFunction.decryptdata(this.euserID);
     let sessionKey = sessionStorage.getItem('SESSION_KEYS') || '';
     this.decyptedsessionKey = this.commonFunction.decryptdata(sessionKey);
@@ -1909,90 +1915,124 @@ navigateToProduct(productId: number) {
       },
     });
   }
-showFilter = false;
-filterStatus = '';
-filterDateRange = '';
+  showFilter = false;
+  filterStatus = '';
+  filterDateRange = '';
 
-
-toggleFilter() {
-  this.showFilter = !this.showFilter;
-}
-
-// Apply filter
-applyFilter() {
-  const customerId = this.commonFunction.decryptdata(
-    sessionStorage.getItem('userId') || ''
-  );
-
-  let filterss = '';
-
-  // ✅ Filter by status
-  if (this.filterStatus) {
-    filterss += ` AND ORDER_STATUS = '${this.filterStatus}'`;
+  toggleFilter() {
+    this.showFilter = !this.showFilter;
   }
 
-  // ✅ Filter by date range
-  if (this.filterDateRange) {
-    const days = Number(this.filterDateRange);
-    const today = new Date();
-    const startDate = new Date();
-    startDate.setDate(today.getDate() - days);
-
-    // Format as YYYY-MM-DD
-    const formatDate = (date: Date) =>
-      date.toISOString().split('T')[0]; // e.g. 2025-10-14
-
-    const formattedToday = formatDate(today);
-    const formattedStart = formatDate(startDate);
-
-    filterss += ` AND DATE(ORDER_DATETIME) BETWEEN '${formattedStart}' AND '${formattedToday}'`;
-  }
-
-  console.log('Final filter:', filterss);
-
-  this.api
-    .Ordermaster(0, 0, 'id', '', ` AND CUSTOMER_ID = ${customerId}${filterss}`)
-    .subscribe(
-      (data: any) => {
-        if (data['code'] == 200) {
-          this.orders = data['data'];
-
-          this.orders.forEach((order: any) => {
-            const invoiceNumber = order.INVOICE_NUMBER;
-            this.invoicePdfUrl = `${this.api.retriveimgUrl}Invoice/${invoiceNumber}.pdf`;
-          });
-
-          this.visibleOrders = this.orders.slice(0, this.itemsToShow);
-          this.showLoadMore = this.orders.length > this.itemsToShow;
-          this.isloadstate = false;
-          this.showFilter = false;
-        } else {
-          this.toastr.error("Data Can't Load", '');
-        }
-      },
-      (err: any) => {
-        console.log(err);
-        this.isloadstate = false;
-      }
+  // Apply filter
+  applyFilter() {
+    const customerId = this.commonFunction.decryptdata(
+      sessionStorage.getItem('userId') || ''
     );
-}
-Clearfilter(){
-  this.filterDateRange=""
-  this.filterStatus=""
-  this.getOrders()
-   this.showFilter = false;
-}
-moveToNext(event: KeyboardEvent, index: number) {
-    if (event.key === 'Backspace' && !this.otp[index] && index > 0) {
-      // If backspace is pressed on empty input, move to previous input
-      const prevInput = document.getElementsByClassName('otp-input')[
-        index - 1
-      ] as HTMLInputElement;
-      if (prevInput) {
-        prevInput.focus();
-      }
+
+    let filterss = '';
+
+    // ✅ Filter by status
+    if (this.filterStatus) {
+      filterss += ` AND ORDER_STATUS = '${this.filterStatus}'`;
+    }
+
+    // ✅ Filter by date range
+    if (this.filterDateRange) {
+      const days = Number(this.filterDateRange);
+      const today = new Date();
+      const startDate = new Date();
+      startDate.setDate(today.getDate() - days);
+
+      // Format as YYYY-MM-DD
+      const formatDate = (date: Date) => date.toISOString().split('T')[0]; // e.g. 2025-10-14
+
+      const formattedToday = formatDate(today);
+      const formattedStart = formatDate(startDate);
+
+      filterss += ` AND DATE(ORDER_DATETIME) BETWEEN '${formattedStart}' AND '${formattedToday}'`;
+    }
+
+    console.log('Final filter:', filterss);
+
+    this.api
+      .Ordermaster(
+        0,
+        0,
+        'id',
+        '',
+        ` AND CUSTOMER_ID = ${customerId}${filterss}`
+      )
+      .subscribe(
+        (data: any) => {
+          if (data['code'] == 200) {
+            this.orders = data['data'];
+
+            this.orders.forEach((order: any) => {
+              const invoiceNumber = order.INVOICE_NUMBER;
+              this.invoicePdfUrl = `${this.api.retriveimgUrl}Invoice/${invoiceNumber}.pdf`;
+            });
+
+            this.visibleOrders = this.orders.slice(0, this.itemsToShow);
+            this.showLoadMore = this.orders.length > this.itemsToShow;
+            this.isloadstate = false;
+            this.showFilter = false;
+          } else {
+            this.toastr.error("Data Can't Load", '');
+          }
+        },
+        (err: any) => {
+          console.log(err);
+          this.isloadstate = false;
+        }
+      );
+  }
+  Clearfilter() {
+    this.filterDateRange = '';
+    this.filterStatus = '';
+    this.getOrders();
+    this.showFilter = false;
+  }
+  // moveToNext(event: KeyboardEvent, index: number) {
+  //   if (event.key === 'Backspace' && !this.otp[index] && index > 0) {
+  //     // If backspace is pressed on empty input, move to previous input
+  //     const prevInput = document.getElementsByClassName('otp-input')[
+  //       index - 1
+  //     ] as HTMLInputElement;
+  //     if (prevInput) {
+  //       prevInput.focus();
+  //     }
+  //   }
+  // }
+
+  moveToNext(event: KeyboardEvent, index: number) {
+  const key = event.key;
+  const inputs = document.getElementsByClassName('otp-input') as HTMLCollectionOf<HTMLInputElement>;
+
+  if (key === 'Backspace') {
+   
+    event.preventDefault();
+
+    if (inputs[index].value) {
+      inputs[index].value = '';
+      this.otp[index] = '';
+      return;
+    }
+
+    if (index > 0) {
+      const prev = inputs[index - 1];
+      prev.focus();
+      prev.value = '';
+      this.otp[index - 1] = '';
+    }
+  } else if (/^[0-9]$/.test(key)) {
+    this.otp[index] = key;
+    if (index < inputs.length - 1) {
+      setTimeout(() => inputs[index + 1].focus(), 0);
     }
   }
+}
+
+
   allowOnlyNumbers(event: KeyboardEvent) {
     const charCode = event.which ? event.which : event.keyCode;
     if (charCode < 48 || charCode > 57) {
@@ -2001,9 +2041,7 @@ moveToNext(event: KeyboardEvent, index: number) {
   }
 
   onChange(value: string, index: number) {
-    // Ensure the input is a number
     if (/^\d*$/.test(value)) {
-      // If a value is entered and there's a next input, move to it
       if (value && index < 3) {
         const nextInput = document.getElementsByClassName('otp-input')[
           index + 1
@@ -2013,36 +2051,29 @@ moveToNext(event: KeyboardEvent, index: number) {
         }
       }
     } else {
-      // If not a number, clear the input
       this.otp[index] = '';
     }
   }
+
   handlePaste(event: ClipboardEvent) {
     event.preventDefault();
     const pastedData = event.clipboardData?.getData('text');
     if (pastedData && /^\d{4}$/.test(pastedData)) {
-      // If pasted data is 4 digits, distribute across inputs
       for (let i = 0; i < 4; i++) {
         this.otp[i] = pastedData[i];
       }
     }
   }
+
   VerifyOTP() {
     if (this.otp.join('').length < 4) {
       this.toastr.error('Please Enter OTP...', '');
       return;
     }
-    // this.isverifyOTP = true; // Set true before API call
-    // console.log(this.isverifyOTP,'this.isverifyOTP')
     const otp1 = this.otp.join('');
-    this.isverifyOTP = true; // Set true before API call
-    // this.loadData();
-    // console.log(this.whichOTP)
-    // if (this.whichOTP == 'login') {
-    // let CLOUD_ID = this.cookie.get('CLOUD_ID');
-    //  this.USER_NAME = this.data.CUSTOMER_NAME
+    this.isverifyOTP = true; 
     this.USER_NAME = sessionStorage.getItem('USER_NAME');
-    // console.log(this.USER_NAME, ' this.USER_NAME');
+ 
     this.api
       .verifyOTP(
         this.type,
@@ -2054,15 +2085,8 @@ moveToNext(event: KeyboardEvent, index: number) {
       )
       .subscribe({
         next: (successCode: any) => {
-          // console.log('successCode', successCode.body.code);
-          // console.log(this.isverifyOTP, 'this.isverifyOTP');
           if (successCode.body.code === 200) {
-            // console.log('wertyuiko');
-            //  this.USER_NAME = this.data.CUSTOMER_NAME
-            // this.isverifyOTP = false; // Set true before API call
-            // console.log(this.isverifyOTP, 'this.isverifyOTP');
-            // this.toastr.success('OTP verified successfully...', '');
-            this.remainingTime=60;
+            this.remainingTime = 60;
             this.updateUserDetails();
             this.modalService.dismissAll();
             this.isOk = false;
@@ -2077,9 +2101,7 @@ moveToNext(event: KeyboardEvent, index: number) {
           } else {
             this.toastr.error('Invalid OTP');
           }
-          // console.log('successCode.body.code', successCode.body.code);
           this.isverifyOTP = false;
-          // this.stopLoader();
         },
         error: (errorResponse) => {
           console.error('verifyOTP API failed:', errorResponse);
@@ -2122,28 +2144,28 @@ moveToNext(event: KeyboardEvent, index: number) {
     this.otpSent = false;
     this.remainingTime = 60; // reset timer
     this.startTimer();
-  //   if (this.whichOTP == 'login') {
-  //     // this.loginotpverification();
-  //   // } else if (this.whichOTP == 'register') {
-  //   //   this.save();
-  //   // }
+    //   if (this.whichOTP == 'login') {
+    //     // this.loginotpverification();
+    //   // } else if (this.whichOTP == 'register') {
+    //   //   this.save();
+    //   // }
   }
   startTimer(): void {
-      if (this.timerSubscription) {
-        return;
-      }
-
-      const maxDuration = 60; // 30 seconds max
-      this.remainingTime = Math.min(this.remainingTime, maxDuration);
-
-      this.timerSubscription = interval(1000)
-        .pipe(takeWhile(() => this.remainingTime > 0))
-        .subscribe({
-          next: () => this.remainingTime--,
-          complete: () => (this.timerSubscription = null),
-        });
+    if (this.timerSubscription) {
+      return;
     }
-  openVerifyModal(){
+
+    const maxDuration = 60; // 30 seconds max
+    this.remainingTime = Math.min(this.remainingTime, maxDuration);
+
+    this.timerSubscription = interval(1000)
+      .pipe(takeWhile(() => this.remainingTime > 0))
+      .subscribe({
+        next: () => this.remainingTime--,
+        complete: () => (this.timerSubscription = null),
+      });
+  }
+  openVerifyModal() {
     if (
       !this.userDetailsForm.name.trim() &&
       !this.userDetailsForm.mobile.trim()
@@ -2168,14 +2190,13 @@ moveToNext(event: KeyboardEvent, index: number) {
       this.toastr.error('Please enter mobile no.', 'Error');
       return;
     }
-    this.openVerify=true;
-    this.startTimer();
+    this.openVerify = true;
+    // this.startTimer();
+
+    this.sendOTP();
   }
 
-
-
-
-      countryCodes = [
+  countryCodes = [
     { label: '+91 (India)', value: '+91' },
     { label: '+92 (Pakistan)', value: '+92' },
     { label: '+93 (Afghanistan)', value: '+93' },
@@ -2414,6 +2435,274 @@ moveToNext(event: KeyboardEvent, index: number) {
     { label: 'Uzbekistan (+998)', value: '+998' },
   ];
 
+  //by sanjana
+  isSendOtpSpinning: boolean = false;
 
+  sendOTP() {
+    if (this.userDetailsForm.mobile == '') {
+      this.toastr.error('Please enter mobile no.', 'Error');
+    } else {
+      this.isSendOtpSpinning = true;
+      this.api.sendotp(this.userDetailsForm.mobile, '', this.USER_ID).subscribe(
+        (successCode: any) => {
+          if (successCode.code == 200) {
+            this.toastr.success('OTP send Successfully.', 'Success');
+            this.startTimer();
+
+            this.isSendOtpSpinning = false;
+          } else {
+            this.toastr.error('failed to send OTP', 'Error');
+
+            this.isSendOtpSpinning = false;
+          }
+        },
+        (err) => {
+          this.toastr.error('Something went wrong, please try again later', '');
+
+          this.toastr.error('something went wrong', 'please try again later');
+
+          this.isSendOtpSpinning = false;
+        }
+      );
+    }
+  }
+  isNameChanged = false;
+  isMobileChanged = false;
+
+    internationalmobpattern = /^\+?\d{1,4}?[\s-]?(\(?\d{1,4}\)?[\s-]?)*\d{4,14}$/;
+
+
+  IsMobileorEmail() {
+
+
+
+    this.isNameChanged = false;
+    this.isMobileChanged = false;
+
+    if (this.userDetailsForm.name !== this.user.NAME) {
+      this.isNameChanged = true;
+    }
+
+    if (this.userDetailsForm.mobile !== this.user.mobile) {
+      this.isMobileChanged = true;
+    }
+
+    if (this.isNameChanged && !this.isMobileChanged) {
+      this.updateUserNameOnly();
+    }
+    else if (this.isMobileChanged) {
+      this.openVerifyModal();
+    }
+    else {
+      this.toastr.info('No changes detected', 'Info');
+    }
+  }
+
+  updateUserNameOnly() {
+    const payload: any = {
+      ID: this.USER_ID,
+      NAME: this.userDetailsForm.name ? this.userDetailsForm.name : '',
+    };
+
+    if (this.editField === 'email') payload.EMAIL_ID = this.editValue;
+    if (this.editField === 'password') payload.PASSWORD = this.editValue;
+    this.api.updateUserData(payload).subscribe({
+      next: (res: HttpResponse<any>) => {
+        this.isUpdating = false;
+
+        const response = res.body;
+
+        if (response?.code === 200) {
+          this.toastr.success('User Info Updated successfully!', 'Success');
+          this.userDetailsModalOpen = false;
+          if (this.editField === 'email') this.user.email = this.editValue;
+          if (this.editField === 'password')
+            this.user.password = this.editValue;
+          this.closeEditModal();
+        } else {
+          this.toastr.error('Update failed.', 'Error');
+        }
+      },
+      error: (err) => {
+        this.isUpdating = false;
+        this.toastr.error('Update failed. Please try again.', 'Error');
+        console.error('Update error:', err);
+      },
+    });
+  }
+
+  OTP: string[] = ['', '', '', ''];
+
+  isVerifyOtpSpinning:boolean = false
+
+  verifyOTPP() {
+    this.isVerifyOtpSpinning = true
+    this.userDetailsModalOpen = false;
+    const otpValue = this.OTP.join('');
+    if (!otpValue || otpValue.length < 4) {
+      this.toastr.error('Please Enter Valid OTP', '');
+      return;
+    }
+    if(!this.email)
+    {
+          this.api
+      .verifyotpp(this.userDetailsForm.mobile, '', otpValue, this.USER_ID)
+      .subscribe(
+        (successCode: any) => {
+          if (successCode.code == 200) {
+            this.toastr.success('OTP Verified Successfully', '');
+                this.isVerifyOtpSpinning = false
+
+            // this.update();
+            this.otp = ['', '', '', '']; // clear input values
+            this.openVerify =false
+          } else {
+                this.isVerifyOtpSpinning = false
+
+            this.toastr.error('OTP verification failed', '');
+          }
+        },
+        () => this.toastr.error('something went wrong, try again later', '')
+      );
+
+    }
+    else
+    {
+          this.isVerifyOtpSpinning = true
+      
+       this.api
+      .verifyotpp('', this.email, otpValue, this.USER_ID)
+      .subscribe(
+        (successCode: any) => {
+          if (successCode.code == 200) {
+            this.toastr.success('OTP Verified Successfully', '');
+                this.isVerifyOtpSpinning = false
+
+            // this.update();
+            this.otp = ['', '', '', '']; 
+                        this.userEmailDetailsModalOpen=false
+                        this.openVerify =false
+
+          } 
+                   else if (successCode.code == 300) {
+                        this.isVerifyOtpSpinning = false
+
+            this.toastr.error('OTP Invalid, Please Enter Valid OTP', '');
+          } 
+
+         else if (successCode.code == 304) {
+                                  this.isVerifyOtpSpinning = false
+
+            this.toastr.error('OTP is Expired', '');
+          } 
+          
+          else {
+                                    this.isVerifyOtpSpinning = false
+
+            this.toastr.error('OTP verification failed', '');
+          }
+        },
+        () => this.toastr.error('something went wrong, try again later', '')
+      );
+
+    }
+
+
+  }
+
+  update() {
+    const payload: any = {
+      ID: this.USER_ID,
+      MOBILE_NO: this.userDetailsForm.mobile ? this.userDetailsForm.mobile : '',
+      NAME: this.user.NAME,
+      EMAIL_ID: this.email,
+      ADDRESS: this.user.address,
+      CITY: this.user.city,
+      LOCALITY: this.user.locality,
+      LANDMARK: this.user.landmark,
+      addressId: this.user.addressId,
+      PINCODE: this.user.pincode,
+      PROFILE_URL: this.user.PROFILE_URL,
+    };
+    this.api.updateUserData(payload).subscribe(
+      (successCode: any) => {
+        if (successCode.body.code === 200) {
+          this.toastr.success('User Info Updated successfully!', 'Success');
+          this.user.mobile = this.userDetailsForm.mobile;
+          this.openVerify = false;
+          this.userDetailsModalOpen = false;
+          this.userEmailDetailsModalOpen=false //by sanjana
+        } else {
+          this.toastr.error('User Info Updation failed', 'Error');
+        }
+      },
+      () =>
+        this.toastr.error('something went wrong. Please try again.', 'Error')
+    );
+  }
+
+  //by sanju
+  emailPattern: RegExp =
+    /^(?!.*\.\..*)(?!.*--.*)(?!.*-\.|-\@|\.-|\@-)[a-zA-Z0-9]([a-zA-Z0-9._%+-]*[a-zA-Z0-9])?@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z]{2,})+$/;
+
+  userEmailDetailsModalOpen: boolean = false;
+  email: any;
+  openVerifyEmail: boolean = false;
+
+  openUserEmailDetailsModal() {
+    this.userEmailDetailsModalOpen = true;
+     this.email = this.user.email || '';
+  }
+
+  closeUserEmailDetailsModal() {
+    this.userEmailDetailsModalOpen = false;
+  }
+
+  isSendOtpEmailSpinning: boolean = false;
+  isLoaderSpinning:boolean =false
+
+
+  sendOTPEmail() {
+                this.isSendOtpEmailSpinning=true
+
+    if (
+      this.email == '' ||
+      this.email == undefined ||
+      this.email == null ||
+      this.email.trim() == ''
+    ) {
+      this.toastr.error('Please Enter Email', 'Error');
+    } else if (!this.commonFunction.emailpattern.test(this.email)) {
+      this.toastr.error(`Please Enter Valid Email.`, '');
+    } else {
+      this.isSendOtpEmailSpinning = true;
+      this.api.sendotp('', this.email, this.USER_ID).subscribe(
+        (successCode: any) => {
+          if (successCode.code == 200) {
+            this.toastr.success('OTP send Successfully.', 'Success');
+            this.openVerify = true;
+            this.isSendOtpEmailSpinning=false
+            this.startTimer();
+
+            this.isSendOtpEmailSpinning = false;
+          } else {
+            this.toastr.error('failed to send OTP', 'Error');
+
+            this.isSendOtpEmailSpinning = false;
+                            this.isSendOtpEmailSpinning=false
+
+          }
+        },
+        (err) => {
+          this.toastr.error('Something went wrong, please try again later', '');
+
+          this.toastr.error('something went wrong', 'please try again later');
+
+          this.isSendOtpEmailSpinning = false;
+                          this.isSendOtpEmailSpinning=false
+
+        }
+      );
+    }
+  }
 }
-

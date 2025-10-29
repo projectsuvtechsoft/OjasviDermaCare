@@ -757,4 +757,21 @@ export class LandingPageComponent {
    convertStringtoArray(str: string) {
     return JSON.parse(str);
   }
+  carouselIndex: { [key: string]: number } = {};
+
+nextMobile(tab: string) {
+  const products = this.getVisibleProducts(tab);
+  if (!this.carouselIndex[tab]) {
+    this.carouselIndex[tab] = 0;
+  }
+  this.carouselIndex[tab] = (this.carouselIndex[tab] + 1) % products.length;
+}
+
+prevMobile(tab: string) {
+  const products = this.getVisibleProducts(tab);
+  if (!this.carouselIndex[tab]) {
+    this.carouselIndex[tab] = 0;
+  }
+  this.carouselIndex[tab] = (this.carouselIndex[tab] - 1 + products.length) % products.length;
+}
 }
