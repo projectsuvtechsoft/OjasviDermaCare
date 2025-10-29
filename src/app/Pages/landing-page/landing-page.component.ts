@@ -106,102 +106,160 @@ export class LandingPageComponent {
     this.router.navigate(['/cart']);
   }
 
-  activeTab: string = 'popular';
-  filter: any = ' AND IS_POPULAR=1';
+ activeTab: string = 'popular';
+filter: any = ' AND IS_POPULAR=1';
 
-  carousels: any = {
-    popular: 0,
-    bestseller: 0,
-    newarrival: 0,
-  };
+// Desktop carousel indices (shows 4 at a time)
+carousels: any = {
+  popular: 0,
+  bestseller: 0,
+  newarrival: 0,
+  upcoming: 0,  // ADD THIS
+};
 
-  products: any = {
-    popular: [],
-    bestseller: [],
-    newarrival: [],
-  };
+// Mobile carousel indices (shows 1 at a time)
+carouselIndex: any = {
+  popular: 0,
+  bestseller: 0,
+  newarrival: 0,
+  upcoming: 0,
+};
 
-  switchTab(tab: string): void {
-    this.activeTab = tab;
+products: any = {
+  popular: [],
+  bestseller: [],
+  newarrival: [],
+  upcoming: [],  // ADD THIS
+};
 
-    // Reset filter based on tab
-    this.filter = '';
-    if (tab === 'popular') this.filter = 'AND IS_POPULAR = 1';
-    if (tab === 'bestseller') this.filter = 'AND IS_BEST_SELLER = 1';
-    if (tab === 'newarrival') this.filter = 'AND IS_NEW_ARRIVAL = 1';
-    if (tab === 'upcoming') this.filter = 'AND IS_UPCOMING = 1';
+switchTab(tab: string): void {
+  this.activeTab = tab;
 
-    this.carousels[tab] = 0;
-    this.getProducts();
-  }
+  // Reset filter based on tab
+  this.filter = '';
+  if (tab === 'popular') this.filter = 'AND IS_POPULAR = 1';
+  if (tab === 'bestseller') this.filter = 'AND IS_BEST_SELLER = 1';
+  if (tab === 'newarrival') this.filter = 'AND IS_NEW_ARRIVAL = 1';
+  if (tab === 'upcoming') this.filter = 'AND IS_UPCOMING = 1';
 
-  getProducts(): void {
-    this.loadingRecords = true;
-    this.api
-      .getAllProductsData(
-        0,
-        0,
-        'ID',
-        'asc',
-        this.filter +
-          ' AND STATUS=1 AND IS_VERIENT_AVAILABLE=1 AND VARIENTS IS NOT NULL '
-      )
-      .subscribe({
-        next: (data) => {
-          if (data['code'] === 200) {
-            this.loadingRecords = false;
-            this.dataList = data.Products;
-            this.products[this.activeTab] = this.dataList;
-            // loadProductVariantsFromData
-            this.dataList.forEach((product) => {
-              this.loadProductVariantsFromData(product);
-              let variants = product.VARIENTS;
+  this.carousels[tab] = 0;
+  this.carouselIndex[tab] = 0;  // ADD THIS
+  this.getProducts();
+}
 
-              if (typeof variants === 'string') {
-                try {
-                  variants = JSON.parse(variants);
-                } catch (e) {
-                  variants = [];
-                }
-              }
-
-              if (Array.isArray(variants) && variants.length > 0) {
-                this.variantRateMap[product.ID] = variants[0].RATE;
-                this.currentStockMap[product.ID] = variants[0].CURRENT_STOCK;
-              } else {
-                this.variantRateMap[product.ID] = 0;
-                this.currentStockMap[product.ID] = 0;
-              }
-            });
-            // console.log();
-            
-          } else {
-            this.loadingRecords = false;
-          }
-        },
-        error: (err) => {
+getProducts(): void {
+  this.loadingRecords = true;
+  this.api
+    .getAllProductsData(
+      0,
+      0,
+      'ID',
+      'asc',
+      this.filter +
+        ' AND STATUS=1 AND IS_VERIENT_AVAILABLE=1 AND VARIENTS IS NOT NULL '
+    )
+    .subscribe({
+      next: (data) => {
+        if (data['code'] === 200) {
           this.loadingRecords = false;
-        },
-      });
-  }
+          this.dataList = data.Products;
+          this.products[this.activeTab] = this.dataList;
+          
+          this.dataList.forEach((product) => {
+            this.loadProductVariantsFromData(product);
+            let variants = product.VARIENTS;
 
-  getVisibleProducts(tab: string): any[] {
-    const start = this.carousels[tab];
-    return this.products[tab]?.slice(start, start + 4);
-  }
+            if (typeof variants === 'string') {
+              try {
+                variants = JSON.parse(variants);
+              } catch (e) {
+                variants = [];
+              }
+            }
 
-  next(tab: string): void {
-    const max = this.products[tab].length - 4;
-    if (this.carousels[tab] < max) {
-      this.carousels[tab]++;
-    }
-  }
+            if (Array.isArray(variants) && variants.length > 0) {
+              this.variantRateMap[product.ID] = variants[0].RATE;
+              this.currentStockMap[product.ID] = variants[0].CURRENT_STOCK;
+            } else {
+              this.variantRateMap[product.ID] = 0;
+              this.currentStockMap[product.ID] = 0;
+            }
+          });
+        } else {
+          this.loadingRecords = false;
+        }
+      },
+      error: (err) => {
+        this.loadingRecords = false;
+      },
+    });
+}
 
-  prev(tab: string): void {
-    if (this.carousels[tab] > 0) {
-      this.carousels[tab]--;
-    }
+// Desktop carousel - show 4 products at a time
+getVisibleProducts(tab: string): any[] {
+  const start = this.carousels[tab] || 0;
+  return this.products[tab]?.slice(start, start + 4) || [];
+}
+
+// Mobile carousel - show 1 product at a time
+getVisibleProductsMobile(tab: string): any[] {
+  const index = this.carouselIndex[tab] || 0;
+  return this.products[tab]?.slice(index, index + 1) || [];
+}
+
+// Desktop carousel navigation
+next(tab: string): void {
+  const maxStart = Math.max(0, (this.products[tab]?.length || 0) - 4);
+  if (this.carousels[tab] < maxStart) {
+    this.carousels[tab] += 4;
   }
+}
+
+prev(tab: string): void {
+  if (this.carousels[tab] > 0) {
+    this.carousels[tab] -= 4;
+  }
+}
+
+// Mobile carousel navigation
+nextMobile(tab: string): void {
+  const maxIndex = (this.products[tab]?.length || 1) - 1;
+  if (this.carouselIndex[tab] < maxIndex) {
+    this.carouselIndex[tab]++;
+  }
+}
+
+prevMobile(tab: string): void {
+  if (this.carouselIndex[tab] > 0) {
+    this.carouselIndex[tab]--;
+  }
+}
+// testDesktopView(): boolean {
+//   console.log('Desktop view check:', {
+//     activeTab: this.activeTab,
+//     products: this.products,
+//     visibleProducts: this.getVisibleProducts(this.activeTab)
+//   });
+//   return true;
+// }
+  // getVisibleProducts(tab: string): any[] {
+  //   const start = this.carousels[tab];
+  //   return this.products[tab]?.slice(start, start + 4);
+  // }
+  
+
+  // next(tab: string): void {
+  //   const max = this.products[tab].length - 4;
+  //   if (this.carousels[tab] < max) {
+  //     this.carousels[tab]++;
+  //   }
+  // }
+
+  // prev(tab: string): void {
+  //   if (this.carousels[tab] > 0) {
+  //     this.carousels[tab]--;
+  //   }
+  // }
 
   imageIndices: { [productId: string]: number } = {};
 
@@ -757,21 +815,21 @@ export class LandingPageComponent {
    convertStringtoArray(str: string) {
     return JSON.parse(str);
   }
-  carouselIndex: { [key: string]: number } = {};
+//   carouselIndex: { [key: string]: number } = {};
 
-nextMobile(tab: string) {
-  const products = this.getVisibleProducts(tab);
-  if (!this.carouselIndex[tab]) {
-    this.carouselIndex[tab] = 0;
-  }
-  this.carouselIndex[tab] = (this.carouselIndex[tab] + 1) % products.length;
-}
+// nextMobile(tab: string) {
+//   const products = this.getVisibleProducts(tab);
+//   if (!this.carouselIndex[tab]) {
+//     this.carouselIndex[tab] = 0;
+//   }
+//   this.carouselIndex[tab] = (this.carouselIndex[tab] + 1) % products.length;
+// }
 
-prevMobile(tab: string) {
-  const products = this.getVisibleProducts(tab);
-  if (!this.carouselIndex[tab]) {
-    this.carouselIndex[tab] = 0;
-  }
-  this.carouselIndex[tab] = (this.carouselIndex[tab] - 1 + products.length) % products.length;
-}
+// prevMobile(tab: string) {
+//   const products = this.getVisibleProducts(tab);
+//   if (!this.carouselIndex[tab]) {
+//     this.carouselIndex[tab] = 0;
+//   }
+//   this.carouselIndex[tab] = (this.carouselIndex[tab] - 1 + products.length) % products.length;
+// }
 }

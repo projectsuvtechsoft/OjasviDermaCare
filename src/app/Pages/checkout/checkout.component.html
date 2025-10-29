@@ -572,8 +572,8 @@
                     <span class="text-gray-700">Delivery</span>
                     <span class="text-gray-900">
                       {{
-                        cartDetails?.cartDetails[0]["DATA"].NET_AMOUNT -
-                          cartDetails?.cartDetails[0]["DATA"]
+                        cartDetails?.cartDetails?.[0]?.["DATA"].NET_AMOUNT -
+                          cartDetails?.cartDetails?.[0]?.["DATA"]
                             .TOTAL_DISCOUNT_AMOUNT
                           | currency : "USD" : "symbol" : "1.2-2"
                       }}
@@ -591,8 +591,8 @@
                     {{
                       selectedPrice -
                         selectedDiscount +
-                        (cartDetails?.cartDetails[0]["DATA"].NET_AMOUNT -
-                          cartDetails?.cartDetails[0]["DATA"]
+                        (cartDetails?.cartDetails?.[0]?.["DATA"].NET_AMOUNT -
+                          cartDetails?.cartDetails?.[0]?.["DATA"]
                             .TOTAL_DISCOUNT_AMOUNT)
                         | number : "1.2-2"
                         | currency : "USD"
@@ -1635,8 +1635,8 @@
                   <span class="text-gray-700">Shipping & handling:</span>
                   <span class="text-gray-900">
                     {{
-                      cartDetails?.cartDetails?.[0]["DATA"].NET_AMOUNT -
-                        cartDetails?.cartDetails?.[0]["DATA"].TOTAL_DISCOUNT_AMOUNT
+                      cartDetails?.cartDetails?.[0]?.["DATA"].NET_AMOUNT -
+                        cartDetails?.cartDetails?.[0]?.["DATA"].TOTAL_DISCOUNT_AMOUNT
                         | currency : "USD" : "symbol" : "1.2-2"
                     }}
                   </span>
@@ -1654,8 +1654,8 @@
                   {{
                     selectedPrice -
                       selectedDiscount +
-                      (cartDetails.cartDetails?.[0]["DATA"].NET_AMOUNT -
-                        cartDetails.cartDetails?.[0]["DATA"]
+                      (cartDetails?.cartDetails?.[0]?.["DATA"].NET_AMOUNT -
+                        cartDetails?.cartDetails?.[0]?.["DATA"]
                           .TOTAL_DISCOUNT_AMOUNT)
                       | number : "1.2-2"
                       | currency : "USD"
@@ -2395,8 +2395,8 @@
           {{
             selectedPrice -
               selectedDiscount +
-              (cartDetails.cartDetails[0]["DATA"].NET_AMOUNT -
-                cartDetails.cartDetails[0]["DATA"].TOTAL_DISCOUNT_AMOUNT)
+              (cartDetails?.cartDetails?.[0]?.["DATA"].NET_AMOUNT -
+                cartDetails?.cartDetails?.[0]?.["DATA"].TOTAL_DISCOUNT_AMOUNT)
               | number : "1.2-2"
               | currency : "USD"
           }}
@@ -3060,8 +3060,8 @@
             <span class="text-gray-600">Shipping</span>
             <span class="text-yellow-600 font-medium">
               {{
-                cartDetails.cartDetails[0]["DATA"].NET_AMOUNT -
-                  cartDetails.cartDetails[0]["DATA"].TOTAL_DISCOUNT_AMOUNT
+                cartDetails?.cartDetails?.[0]?.["DATA"].NET_AMOUNT -
+                  cartDetails?.cartDetails?.[0]?.["DATA"].TOTAL_DISCOUNT_AMOUNT
                   | currency : "USD" : "symbol" : "1.2-2"
               }}
             </span>
@@ -3076,8 +3076,8 @@
             {{
               selectedPrice -
                 selectedDiscount +
-                (cartDetails.cartDetails[0]["DATA"].NET_AMOUNT -
-                  cartDetails.cartDetails[0]["DATA"].TOTAL_DISCOUNT_AMOUNT)
+                (cartDetails?.cartDetails?.[0]?.["DATA"].NET_AMOUNT -
+                  cartDetails?.cartDetails?.[0]?.["DATA"].TOTAL_DISCOUNT_AMOUNT)
                 | number : "1.2-2"
                 | currency : "USD"
             }}</span
