@@ -247,18 +247,19 @@
           <!-- Mobile View - Single Card Carousel -->
           <div class="block-mobile">
             <div class="relative px-2">
-              <div
-                class="flex transition-transform duration-300 ease-in-out"
-                [style.transform]="'translateX(-' + (carouselIndex[tab] || 0) * 100 + '%)'"
-              >
+              <div class="overflow-hidden">
                 <div
-                  class="product-card bg-white rounded-lg shadow-md overflow-hidden p-0 w-full flex-shrink-0"
-                  style="cursor: pointer"
-                  *ngFor="
-                    let product of getVisibleProductsMobile(tab);
-                    trackBy: trackByProductId;
-                    let i = index
-                  "
+                  class="flex transition-transform duration-300 ease-in-out"
+                  [style.transform]="'translateX(-' + (carouselIndex[tab] || 0) * 100 + '%)'"
+                >
+                  <div
+                    class="product-card bg-white rounded-lg shadow-md overflow-hidden p-0 w-full flex-shrink-0"
+                    style="cursor: pointer; min-width: 100%;"
+                    *ngFor="
+                      let product of products[tab];
+                      trackBy: trackByProductId;
+                      let i = index
+                    "
                 >
                   <span
                     (click)="addtodetail(product)"
@@ -426,6 +427,7 @@
                   </div>
                 </div>
               </div>
+              </div>
 
               <!-- Mobile Carousel Controls -->
               <button
@@ -501,9 +503,6 @@
                       class="w-full bg-white flex items-center justify-center overflow-hidden"
                       style="height: 15rem;"
                     >
-                       <ng-container
-                    *ngIf="initImageIndex(product.ID) === undefined"
-                  ></ng-container>
                       <img
                         *ngIf="getImageArray(product).length > 0"
                         [src]="
