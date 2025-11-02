@@ -373,7 +373,10 @@ export class HeaderComponent {
     }
 
     if (userID && token) {
+      setTimeout(() => {
       this.getUserData();
+        
+      }, 300);
     }
 
     this.favouriteCount = localStorage.getItem('totalFavourites') || 0;
@@ -1902,6 +1905,7 @@ export class HeaderComponent {
     this.USER_ID = this.userId
       ? this.commonFunction.decryptdata(this.userId)
       : '0';
+     
     this.api.getUserDetails(Number(this.USER_ID)).subscribe(
       (data) => {
         if (data['code'] == 200) {

@@ -43,6 +43,9 @@ export class ProductpageComponent {
       // this.loadingProducts = false;
       // this.cd.detectChanges(); // Optional but ensures view update
     });
+    this.cartService.loaderUpdate$.subscribe((isLoading) => { 
+      this.isLoading = isLoading;
+    });
   }
   selectedPrice: any;
   totalPrice: any;
@@ -128,6 +131,7 @@ export class ProductpageComponent {
   };
   euserID: string = sessionStorage.getItem('userId') || '';
   decyptedsessionKey: any;
+  isLoading: boolean = false;
   redirecttoCart(){
     this.router.navigate(['/cart'])
   }
@@ -937,6 +941,7 @@ export class ProductpageComponent {
   userID = this.commonFunction.decryptdata(this.userId);
   currentStockMap: { [productId: number]: number } = {};
   addToCart(product: any, isdetailschange: boolean): void {
+    this.isLoading=true
     // console.log(product);
     // console.log(product.COUNTRY_ID);
     // console.log(product.ADDRESS_ID);
@@ -989,12 +994,19 @@ export class ProductpageComponent {
     };
     if (existingProductIndex !== -1) {
       this.cartService.addToCart(productWithTotal);
+      // this.isLoading=false
       // this.toastr.success(`${product.NAME} updated in cart`, '');
+      setTimeout(() => {
+        this.isLoading = false;
+      },300)
       this.viewCart = true;
     } else {
       // this.productsArray = [...this.productsArray, productWithTotal];
       this.cartService.addToCart(productWithTotal);
       // this.toastr.success(`${product.NAME} added to cart`);
+          setTimeout(() => {
+        this.isLoading = false;
+      },300)
       this.viewCart = true;
     }
     this.quantity = 1; // or 0 depending on your default

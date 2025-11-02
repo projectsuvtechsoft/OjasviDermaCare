@@ -100,6 +100,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     LANDMARK: string;
     LOCALITY: string;
     IS_DEFUALT_ADDRESS: number;
+    COUNTRY_CODE:any
     [key: string]: any; // to allow other dynamic properties
   }[] = [];
 
@@ -758,13 +759,13 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       this.addressForm.COUNTRY_NAME == ''
     ) {
       this.isOk = false;
-      this.toastr.error('Please Select Country', '');
+      this.toastr.error('Please Select Country/Region', '');
     } else if (
       this.addressForm.STATE_NAME == undefined ||
       this.addressForm.STATE_NAME == ''
     ) {
       this.isOk = false;
-      this.toastr.error('Please Select State', '');
+      this.toastr.error('Please Select State/Province', '');
     }
     // else if (this.addressForm.LANDMARK == null || this.addressForm.LANDMARK.trim() == '') {
     //   this.isOk = false;
@@ -778,7 +779,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       this.addressForm.CITY_NAME.trim() == ''
     ) {
       this.isOk = false;
-      this.toastr.error('Please Enter City', '');
+      this.toastr.error('Please Enter Town/City', '');
     } else if (
       this.addressForm.PINCODE == undefined ||
       this.addressForm.PINCODE == ''
@@ -930,8 +931,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         (data: any) => {
           if (data['code'] == 200) {
             // this.totalRecords = data['count'];
-            this.dataList1 = data['data'];
-            // console.log(this.dataList1);
+            this.dataList1 = data['data'];            
             // console.log(data['data']);
             // this.loadingRecords = false;
             // if(this.totalRecords==0){

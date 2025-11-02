@@ -20,12 +20,12 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class CartService {
   //Testing
-  commonapikey = 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY';
-  commonapplicationkey = 'awlcQRwoZxAJQm7b';
+  // commonapikey = 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY';
+  // commonapplicationkey = 'awlcQRwoZxAJQm7b';
 
   //Live
-  // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
-  // commonapplicationkey = '26lLNSmaKlcFziHH';
+  commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
+  commonapplicationkey = '26lLNSmaKlcFziHH';
   // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
   // commonapplicationkey = '26lLNSmaKlcFziHH';
   // private cartCountSource = new BehaviorSubject<number>(0);
@@ -72,7 +72,8 @@ export class CartService {
   cartUpdated$ = this.cartUpdated.asObservable();
   private sectionChangeSubject = new Subject<string>();
   sectionChange$ = this.sectionChangeSubject.asObservable();
-
+  loaderUpdate = new Subject<boolean>();
+  loaderUpdate$ = this.loaderUpdate.asObservable();
   showSection(id: string) {
     this.sectionChangeSubject.next(id);
   }
@@ -189,7 +190,9 @@ export class CartService {
     return this.cartItems;
   }
   currentProduct: any = {};
+
   addToCart(product: any): void {
+    this.loaderUpdate.next(true)
     // console.log(product);
     // if()
     this.euserID = sessionStorage.getItem('userId') || 0;
@@ -336,11 +339,17 @@ export class CartService {
         (response: any) => {
           if (response.code === 200) {
             this.toastr.success(`${this.currentProduct.NAME} added to cart`);
+            this.loaderUpdate.next(false)
             this.updateCartCount();
             // this.toastr.success('Cart updated successfully');
             this.fetchCartFromServer(this.userID, this.etoken);
+          } else if(response.code === 400){
+            this.toastr.error('Not Enough Stock');
+            this.fetchCartFromServer(this.userID, this.etoken);
+            this.loaderUpdate.next(false)
           } else {
             this.fetchCartFromServer(this.userID, this.etoken);
+            this.loaderUpdate.next(false)
             this.toastr.error(`Failed to add ${this.currentProduct.NAME}`, '');
           }
         },
@@ -349,6 +358,7 @@ export class CartService {
             'Something went wrong please try again later',
             error
           );
+            this.loaderUpdate.next(false)
         }
       );
   }

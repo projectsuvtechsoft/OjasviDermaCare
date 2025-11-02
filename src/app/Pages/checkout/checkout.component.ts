@@ -540,21 +540,21 @@ export class CheckoutComponent {
       this.addressForm.COUNTRY_NAME == ''
     ) {
       // this.isOk = false;
-      this.toastr.error('Please Select Country', '');
+      this.toastr.error('Please Select Country/Region', '');
       return;
     } else if (
       this.addressForm.STATE_NAME == undefined ||
       this.addressForm.STATE_NAME == ''
     ) {
       // this.isOk = false;
-      this.toastr.error('Please Select State', '');
+      this.toastr.error('Please Select State/Province', '');
       return;
     } else if (
       this.addressForm.CITY_NAME == null ||
       this.addressForm.CITY_NAME == undefined
     ) {
       // this.isOk = false;
-      this.toastr.error('Please Select City', '');
+      this.toastr.error('Please Select Twon/City', '');
       return;
     } else if (
       this.addressForm.PINCODE == undefined ||
@@ -922,7 +922,7 @@ export class CheckoutComponent {
 
     try {
       const payments = await (window as any).Square.payments(
-        'sandbox-sq0idb-rV2VaHliz7OXmsejGzJq4Q',
+        'sq0idp-MZsV8XmKikjtR3cQ_FqOXw',
         ''
       );
       this.card = await payments.card();

@@ -408,6 +408,7 @@
               (click)="addToCart(data, true)"
               [disabled]="
                 data.status === 'disabled' ||
+                  isLoading ||
                 data.IS_UPCOMING == 1 ||
                 data.IS_VERIENT_AVAILABLE == 0 ||
                 selectedVariantStock <= 0
@@ -423,6 +424,7 @@
                   ),
                 'bg-gray-300 cursor-not-allowed text-gray-500':
                   data.status === 'disabled' ||
+                  isLoading ||
                   data.IS_UPCOMING == 1 ||
                   data.IS_VERIENT_AVAILABLE == 0 ||
                   selectedVariantStock <= 0
