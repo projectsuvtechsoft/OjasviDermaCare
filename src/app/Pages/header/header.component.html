@@ -579,10 +579,10 @@
             >
               <i class="ri-shopping-cart-line text-lg sm:text-xl"></i>
               <span
-                *ngIf="cartCount && cartCount > 0"
+                
                 class="absolute -top-1 -right-1 bg-[#5a8f69] text-white text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center"
               >
-                {{ cartCount }}
+                {{ cartCount || 0 }}
               </span>
             </button>
           </div>
@@ -839,7 +839,7 @@
           <div class="branding-content">
             <img
               src="assets/img/logo1.png"
-              alt="Ojasvi derma Care Logo"
+              alt="Ojasvi Derma Care Logo"
               class="img-fluid mb-2 login-logo"
               style="
                 height: 120px;
@@ -850,7 +850,7 @@
               "
             />
             <div class="fw-bold" style="font-size: 24px; color: white">
-              Ojasvi derma Care
+              Ojasvi Derma Care
             </div>
             <div style="font-size: 14px; color: #d0e8d5">
               From Garden To Glow
@@ -1305,7 +1305,7 @@
                   <div class="position-relative">
                     <input
                       [type]="showConfirmPassword ? 'text' : 'password'"
-                      placeholder="Confirm password"
+                      placeholder="Enter Confirm password"
                       name="confirmPassword"
                       [(ngModel)]="confirmPass"
                       required

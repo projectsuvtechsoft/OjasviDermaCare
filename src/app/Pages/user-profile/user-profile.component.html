@@ -30,7 +30,7 @@
           class="d-flex justify-content-center align-items-center"
           style="height: 100%; width: 100%"
         >
-          <div
+          <!-- <div
             class="profile-photo-container position-relative d-flex justify-content-center align-items-center profile-image"
           >
             <img
@@ -66,21 +66,6 @@
               "
               (click)="openprofileModal()"
             >
-              <!-- <input
-                    #icon
-                    type="file"
-                    accept=".png, .jpg, .jpeg"
-                    (change)="fileChangeEvent($event)"
-                    class="file-input"
-                    style="
-                      position: absolute;
-                      inset: 0;
-                      opacity: 0;
-                      cursor: pointer;
-                      width: 100%;
-                      height: 100%;
-                    "
-                  /> -->
               <svg
                 width="13"
                 height="13"
@@ -96,7 +81,7 @@
                 />
               </svg>
             </button>
-          </div>
+          </div> -->
         </div>
         <h2 class="text-base sm:text-lg font-semibold">
           {{ user.NAME || "User" }}
@@ -165,7 +150,7 @@
             <div class="w-5 h-5 mr-3 flex items-center justify-center">
               <i class="ri-map-pin-line"></i>
             </div>
-            Saved Addresses
+            Saved Shipping Addresses
           </a>
           <a
             href="#"
@@ -344,10 +329,11 @@
                 <div class="grid grid-cols-3 gap-2 items-center">
                   <div class="text-sm font-medium text-gray-500">Phone</div>
                   <div class="col-span-2 text-gray-800">
+                    {{ user.code }}
                     {{ user.mobile || "Not provided" }}
                   </div>
                 </div>
-                <div class="grid grid-cols-3 gap-2 items-center">
+                <!-- <div class="grid grid-cols-3 gap-2 items-center">
                   <div class="text-sm font-medium text-gray-500">Address</div>
                   <div class="col-span-2 text-gray-800">
                     {{
@@ -358,7 +344,7 @@
                         (user.pincode ? user.pincode : "") || "Not provided"
                     }}
                   </div>
-                </div>
+                </div> -->
               </div>
             </div>
 
@@ -482,14 +468,14 @@
                         >
                           View Order Details
                         </span>
-                        <span style="color: #b0b0b0">|</span>
-                        <span
+                        <!-- <span style="color: #b0b0b0">|</span> -->
+                        <!-- <span
                           *ngIf="order.invoicePdfUrl"
                           class="px-1 py-1 text-blue-700 rounded cursor-pointer"
                           (click)="viewInvoicePdf(order.invoicePdfUrl)"
                         >
                           Invoice
-                        </span>
+                        </span> -->
                       </div>
                     </div>
                   </div>
@@ -590,13 +576,13 @@
             <div class="flex justify-between items-center mb-4">
               <h2 class="text-lg font-semibold text-gray-800 flex items-center">
                 <i class="ri-map-pin-line text-[#5a8f69] text-xl mr-2"></i>
-                Saved Addresses
+                Saved Shipping Addresses
               </h2>
               <button
                 class="bg-[#5a8f69] text-white px-4 py-2 text-sm rounded hover:bg-[#5a8f69]/90 transition"
                 (click)="openAddressModal(null)"
               >
-                + Add New Address
+                + Add New Shipping Address
               </button>
             </div>
 
@@ -617,7 +603,7 @@
                     <p class="text-sm text-gray-600 mt-1">
                       {{ address.NAME }}<br />
                       {{ address.ADDRESS }},
-                      {{ address.CITY || "City not provided" }},
+                      {{ address["CITY_NAME"] || "City not provided" }},
                       {{ address.PINCODE || "Pincode not provided" }},
                       {{ address.STATE_NAME }},
                       {{ address.COUNTRY_NAME }}
@@ -656,10 +642,7 @@
           </div>
         </div>
         <!-- </div> -->
-        <div
-          *ngIf="dataList1.length < 1"
-          style="text-align: center; margin-top: 160px"
-        >
+        <div *ngIf="dataList1.length < 1" style="text-align: center">
           <div class="bg-white rounded-lg shadow-sm p-12 text-center">
             <div class="flex justify-center mb-6">
               <img
@@ -669,19 +652,19 @@
               />
             </div>
 
-            <h1 class="text-2xl font-semibold text-gray-900 mb-3">
-              ADD YOUR ADDRESS TO CONTINUE
+            <h1 class="text-xl font-semibold text-gray-900 mb-3">
+              ADD SHIPPING ADDRESS TO CONTINUE
             </h1>
             <p class="text-gray-600 mb-6">
               We're almost there — just need your address details.
             </p>
 
             <button
-              class="bg-[#5a8f69] hover:bg-green-800 text-white font-medium px-8 py-3 rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              class="bg-[#5a8f69] hover:bg-green-800 text-white font-medium px-8 py-2 rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               (click)="openAddressModal(null)"
               [disabled]="isTransitioning"
             >
-              <span *ngIf="!isTransitioning">ADD NEW ADDRESS</span>
+              <span *ngIf="!isTransitioning">ADD NEW SHIPPING ADDRESS</span>
               <span *ngIf="isTransitioning" class="button-loader"></span>
             </button>
           </div>
@@ -1079,7 +1062,7 @@
         <div class="bg-white p-2 mb-2">
           <div class="flex justify-between items-center mb-2">
             <h2 class="text-lg font-semibold text-gray-800">
-              <u> My Wishlist </u>
+              <u>Wishlist</u>
             </h2>
           </div>
 
@@ -1121,7 +1104,12 @@
                 </p>
                 <a
                   class="text-blue-600 text-sm hover:underline cursor-pointer"
-                  (click)="navigateToProduct(product.ID)"
+                  (click)="
+                    navigateToProduct(
+                      product.ID,
+                      selectedVariantMap[product.ID]
+                    )
+                  "
                 >
                   View details
                 </a>
@@ -1156,6 +1144,7 @@
               <!-- Actions -->
               <div class="flex flex-col items-stretch gap-2">
                 <button
+                  *ngIf="!hasItemsInCart(product.ID, product)"
                   (click)="addToCart(product)"
                   [disabled]="
                     product.IS_UPCOMING == 1 ||
@@ -1176,7 +1165,28 @@
                 >
                   <span class="text-white text-xs">Add to Cart</span>
                 </button>
-
+                <button
+                  *ngIf="hasItemsInCart(product.ID, product)"
+                  (click)="navigateTocart()"
+                  [disabled]="
+                    product.IS_UPCOMING == 1 ||
+                    (product.IS_VERIENT_AVAILABLE == 1 &&
+                      !selectedVariantMap[product.ID])
+                  "
+                  [ngClass]="{
+                    'bg-[#5a8f69] hover:bg-green-800 text-white':
+                      product.IS_UPCOMING != 1 &&
+                      (product.IS_VERIENT_AVAILABLE == 0 ||
+                        selectedVariantMap[product.ID]),
+                    'bg-gray-300 cursor-not-allowed text-white':
+                      product.IS_UPCOMING == 1 ||
+                      (product.IS_VERIENT_AVAILABLE == 1 &&
+                        !selectedVariantMap[product.ID])
+                  }"
+                  class="w-full px-2 py-1 font-sans text-xs md:text-base rounded-full font-medium transition flex items-center justify-center"
+                >
+                  <span class="text-white text-xs">Go to Cart</span>
+                </button>
                 <button
                   (click)="removeFromWishlist(product)"
                   title="Remove"
@@ -1199,6 +1209,7 @@
           </div>
         </div>
       </div>
+      <!-- > -->
     </div>
   </div>
 </div>
@@ -1414,7 +1425,8 @@
           [disabled]="isUpdating"
           class="bg-[#5a8f69] text-white px-3 py-1.5 rounded text-sm font-medium hover:bg-opacity-90 transition"
         >
-          {{ isUpdating ? "Updating..." : "Update" }}
+          <span *ngIf="isUpdating" class="small-loader me-2">Updating..</span>
+          <span *ngIf="!isUpdating">Update</span>
         </button>
       </div>
     </form>
@@ -1422,7 +1434,7 @@
 </div>
 
 <!-- User Details Edit Modal -->
-<div
+<!-- <div
   *ngIf="userDetailsModalOpen"
   class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
 >
@@ -1440,19 +1452,41 @@
           maxlength="128"
         />
       </div>
-      <div class="mb-3">
-        <input
-          type="tel"
-          [(ngModel)]="userDetailsForm.mobile"
-          name="userMobile"
-          (keypress)="commonFunction.omit($event)"
-          placeholder="Enter mobile number"
-          maxlength="10"
-          class="w-full px-3 py-1.5 border rounded text-sm"
-          required
-          [pattern]="commonFunction.mobpattern"
-        />
-      </div>
+
+  <div class="mb-3">
+  <div class="flex items-center">
+    <select
+      name="countryCode"
+      [(ngModel)]="userDetailsForm.code"
+      class="w-24 px-2 py-1.5 border border-gray-300 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#5a8f69] rounded-none rounded"
+      aria-label="Country code"
+    >
+      <option value="" class="px-2 py-1 text-sm">Country Code</option>
+      <option
+        *ngFor="let c of countryCodes"
+        [ngValue]="c.value"
+        class="px-2 py-1 text-sm"
+      >
+        {{ c.label }}
+      </option>
+    </select>
+
+    <input
+      type="tel"
+      [(ngModel)]="userDetailsForm.mobile"
+      name="userMobile"
+      (keypress)="commonFunction.omit($event)"
+      placeholder="Enter mobile number"
+      maxlength="10"
+      class="flex-1 px-3 py-1.5 border border-gray-300 border-l-0 text-sm focus:outline-none focus:ring-1 focus:ring-[#5a8f69] rounded-none rounded"
+      required
+      [pattern]="commonFunction.mobpattern"
+    />
+  </div>
+</div>
+
+
+
       <div class="flex justify-center gap-3">
         <button
           type="button"
@@ -1470,7 +1504,77 @@
           <span>{{ isUpdatingUserDetails ? "Updating" : "Update" }}</span>
           <span *ngIf="isUpdatingUserDetails" class="small-loader"></span>
         </button>
-        <!-- (click)="openVerifyModal()" -->
+      </div>
+    </form>
+  </div>
+</div> -->
+
+<!-- User Details Edit Modal -->
+<div
+  *ngIf="userDetailsModalOpen"
+  class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
+>
+  <div class="bg-white rounded-lg p-4 w-[85%] max-w-xs text-center shadow-md">
+    <h2 class="text-base font-semibold mb-3">Update User Details</h2>
+    <form (ngSubmit)="updateUserDetails()" class="space-y-2.5">
+      <!-- Name -->
+      <input
+        type="text"
+        [(ngModel)]="userDetailsForm.name"
+        name="userName"
+        placeholder="Enter name"
+        class="w-full px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-[#5a8f69]"
+        required
+        maxlength="128"
+      />
+
+      <!-- Mobile -->
+      <div class="flex w-full">
+        <select
+          name="countryCode"
+          [(ngModel)]="userDetailsForm.code"
+          class="w-24 px-2 py-1.5 border border-gray-300 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#5a8f69] rounded-l"
+          aria-label="Country code"
+        >
+          <option value="">Code</option>
+          <option *ngFor="let c of countryCodes" [ngValue]="c.value">
+            {{ c.value }}
+          </option>
+        </select>
+        <input
+          style="width: 80%"
+          type="tel"
+          [(ngModel)]="userDetailsForm.mobile"
+          name="userMobile"
+          (keypress)="commonFunction.omit($event)"
+          placeholder="Enter mobile number"
+          maxlength="10"
+          class="flex-1 px-3 py-1.5 border border-gray-300 border-l-0 text-sm focus:outline-none focus:ring-1 focus:ring-[#5a8f69] rounded-r"
+          required
+          [pattern]="commonFunction.mobpattern"
+        />
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex justify-center gap-2 pt-2">
+        <button
+          type="button"
+          (click)="closeUserDetailsModal()"
+          class="bg-gray-200 px-3 py-1 rounded text-sm font-medium hover:bg-gray-300 transition"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          (click)="IsMobileorEmail()"
+          [disabled]="isUpdatingUserDetails"
+          class="bg-[#5a8f69] text-white px-3 py-1 rounded text-sm font-medium hover:bg-opacity-90 transition flex items-center justify-center gap-1"
+        >
+          <span *ngIf="isUpdatingUserDetails" class="small-loader me-2"
+            >Updating..</span
+          >
+          <span *ngIf="!isUpdatingUserDetails">Update</span>
+        </button>
       </div>
     </form>
   </div>
@@ -1592,10 +1696,13 @@
               class="verify-button"
               [disabled]="isverifyOTP"
             >
-              <span *ngIf="isVerifyOtpSpinning" class="small-loader"></span>
-
-              <span *ngIf="isverifyOTP"></span>
-              Verify
+              <span
+                *ngIf="isVerifyOtpSpinning"
+                class="small-loader me-2"
+              ></span>
+              <!-- Text -->
+              <span *ngIf="!isVerifyOtpSpinning">Verify</span>
+              <span *ngIf="isVerifyOtpSpinning">Verifying...</span>
             </button>
           </form>
         </div>
@@ -1607,10 +1714,10 @@
 <!-- Add/Edit Address Modal -->
 <div
   *ngIf="addressModalOpen"
-  class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
+  class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
 >
   <div
-    class="bg-white rounded-lg w-[95%] max-w-2xl text-left shadow-md overflow-hidden"
+    class="bg-white rounded-lg shadow-sm w-full max-w-3xl max-h-[900px] overflow-hidden"
   >
     <!-- Modal Header with custom close buttons -->
     <div
@@ -1635,81 +1742,199 @@
       </button>
     </div>
 
-    <div class="overflow-y-scroll max-h-[calc(100vh-100px)]">
+    <div class="overflow-y-scroll max-h-[calc(90vh-100px)] rounded-b-lg">
       <div class="px-4 pb-4">
         <form
-          #websitebannerPage="ngForm"
-          (ngSubmit)="saveAddress(false, websitebannerPage)"
+          #addressFormTemp="ngForm"
+          (ngSubmit)="saveAddress(false, addressFormTemp)"
           class="space-y-0"
         >
           <!-- Contact Details Section -->
-          <h3 class="text-lg font-semibold text-[#5a8f69] mb-2">
-            Contact Details
-          </h3>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label
-                for="fullName"
-                class="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Full Name
-              </label>
-              <input
-                type="text"
-                id="fullName"
-                [(ngModel)]="addressForm.NAME"
-                name="name"
-                placeholder="Enter Name"
-                required
-                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
-              />
-            </div>
-            <div>
-              <label
-                for="mobileNumber"
-                class="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Mobile number
-              </label>
-              <div class="flex gap-2 items-center">
-                <select
-                  name="countryCode"
-                  [(ngModel)]="addressForm.COUNTRY_CODE"
-                  class="w-20 px-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none text-sm bg-white overflow-y-auto"
-                  aria-label="Country code"
+          <div>
+            <h3 class="text-lg font-semibold text-[#5a8f69] mb-2">
+              Contact Details
+            </h3>
+            <div class="space-y-4">
+              <div>
+                <label
+                  for="fullName"
+                  class="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  <option value="" class="px-2 py-1 text-sm">
-                    Select code
-                  </option>
-                  <option
-                    *ngFor="let c of countryCodes"
-                    [ngValue]="c.value"
-                    class="px-2 py-1 text-sm overflow-y-scroll"
-                  >
-                    {{ c.label }}
-                  </option>
-                </select>
+                  Full Name
+                </label>
                 <input
-                  type="tel"
-                  id="mobileNumber"
-                  [(ngModel)]="addressForm.MOBILE_NO"
-                  name="Mobile_number"
-                  placeholder="Enter Mobile no"
-                  (keypress)="commonFunction.omit($event)"
-                  [pattern]="commonFunction.internationalmobpattern"
-                  maxlength="10"
+                  type="text"
+                  id="fullName"
+                  [(ngModel)]="addressForm.NAME"
+                  name="customerName"
+                  placeholder="Enter Name"
                   required
-                  class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
                 />
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label
+                    for="mobileNumber"
+                    class="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Mobile number
+                  </label>
+                  <div class="flex items-stretch relative">
+                    <div class="relative min-w-[5.5rem]">
+                      <div
+                        class="unique-country-code-selector flex items-center cursor-pointer px-3 h-10 border border-gray-300 rounded-l-md **bg-white** text-sm focus:outline-none w-full **shadow-sm**"
+                        (click)="toggleCountryDropdown($event)"
+                        aria-label="Country code selector"
+                        [ngClass]="{
+                          '!border-r-0': !showCountryDropdown,
+
+                          'rounded-r-none': showCountryDropdown
+                        }"
+                      >
+                        <span class="text-gray-700 font-medium">{{
+                          addressForm.COUNTRY_CODE || "+1"
+                        }}</span>
+                        <svg
+                          class="ml-auto transform transition-transform"
+                          [class.rotate-180]="showCountryDropdown"
+                          width="10"
+                          height="6"
+                          viewBox="0 0 10 6"
+                          fill="none"
+                        >
+                          <path
+                            d="M1 1L5 5L9 1"
+                            stroke="#666"
+                            stroke-width="1.5"
+                          />
+                        </svg>
+                      </div>
+
+                      <div
+                        class="absolute z-10 top-full left-0 mt-1 w-80"
+                        *ngIf="showCountryDropdown"
+                      >
+                        <div
+                          class="unique-country-dropdown bg-white shadow-lg ring-1 ring-black ring-opacity-5 rounded-md p-2"
+                          style="
+                            max-height: 300px;
+                            overflow-y: auto;
+                            min-width: 100%;
+                          "
+                        >
+                          <div class="unique-search-box mb-2">
+                            <input
+                              type="text"
+                              class="w-full px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                              placeholder="Search country..."
+                              [(ngModel)]="searchQuery"
+                              (input)="filterCountriesd($event)"
+                              (click)="$event.stopPropagation()"
+                              autocomplete="off"
+                              name="searchCountry"
+                            />
+                          </div>
+                          <div class="unique-country-list">
+                            <div
+                              class="unique-country-item px-3 py-2 cursor-pointer hover:bg-gray-100 rounded-sm text-base"
+                              *ngFor="let country of filteredCountryCodes"
+                              (click)="
+                                selectCountrycode(country.value);
+                                $event.stopPropagation()
+                              "
+                            >
+                              {{ country.label }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <input
+                      type="tel"
+                      id="mobileNumber"
+                      [(ngModel)]="addressForm.MOBILE_NO"
+                      name="Mobile_number"
+                      placeholder="Enter Mobile no"
+                      (keypress)="commonFunction.omit($event)"
+                      [pattern]="commonFunction.internationalmobpattern"
+                      maxlength="10"
+                      required
+                      class="flex-1 px-3 **h-10** border border-gray-300 rounded-r-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                      [ngClass]="{
+                        '!border-l-0 rounded-l-none': !showCountryDropdown,
+                        'border-l-0 rounded-l-none': showCountryDropdown
+                      }"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    for="emailId"
+                    class="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Email
+                  </label>
+
+                  <!-- Responsive Input Group -->
+                  <div class="flex w-full">
+                    <input
+                      type="text"
+                      id="emailId"
+                      [(ngModel)]="addressForm.EMAIL_ID"
+                      name="Email"
+                      placeholder="Enter Email"
+                      maxlength="50"
+                      [pattern]="commonFunction.emailpattern"
+                      required
+                      class="flex-1 px-3 py-2 border border-gray-300 border-r-0 rounded-l-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                      (ngModelChange)="onEmailChange()"
+                    />
+
+                    <button
+                      *ngIf="addressForm.EMAIL_ID"
+                      type="button"
+                      class="px-4 py-2 bg-[#5a8f69] hover:bg-green-800 rounded-r-md text-white disabled:opacity-50 text-sm font-medium transition-colors whitespace-nowrap"
+                      (click)="verifyEmail(); $event.stopPropagation()"
+                      [disabled]="
+                        !isEmailValid() || verificationStatus == 'verified'
+                      "
+                    >
+                      {{
+                        verificationStatus === "verified"
+                          ? "✓ Verified"
+                          : "Verify"
+                      }}
+                    </button>
+                  </div>
+
+                  <!-- Status Messages -->
+                  <small
+                    *ngIf="verificationStatus === 'verified'"
+                    class="block mt-1 text-xs text-green-600"
+                  >
+                    Email verified successfully!
+                  </small>
+
+                  <small
+                    *ngIf="verificationStatus === 'failed'"
+                    class="block mt-1 text-xs text-red-600"
+                  >
+                    Verification failed. Please try again.
+                  </small>
+                </div>
               </div>
             </div>
           </div>
+
           <!-- Address Section -->
           <div class="border-gray-200 pt-2">
             <h3 class="text-lg font-semibold text-[#5a8f69] mb-2">Address</h3>
+
             <div class="space-y-4">
-              <!-- Address Type -->
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                   Address Type
@@ -1737,7 +1962,7 @@
                   </label>
                 </div>
               </div>
-              <!-- Street Address -->
+
               <div>
                 <label
                   for="streetAddress"
@@ -1746,16 +1971,15 @@
                   Flat, House no., Building, Company, Apartment
                 </label>
                 <textarea
+                  type="text"
                   id="streetAddress"
                   [(ngModel)]="addressForm.ADDRESS"
-                  name="address"
+                  name="streetAddress"
                   placeholder="Enter Address"
-                  rows="2"
                   required
                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
                 ></textarea>
               </div>
-              <!-- Landmark and Area -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label
@@ -1790,9 +2014,26 @@
                   />
                 </div>
               </div>
-              <!-- Country and State -->
+
+              <!-- <div>
+                      <label
+                        for="landmark"
+                        class="block text-sm font-medium text-gray-700 mb-1"
+                      >
+                        Area, Street, Sector, Village
+                      </label>
+                      <input
+                        type="text"
+                        id="landmark"
+                        [(ngModel)]="addressForm.LANDMARK"
+                        name="landmark"
+                        placeholder="e.g. Near station, Hospital"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                      />
+                    </div> -->
+
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
+                <div class="relative">
                   <label
                     for="country"
                     class="block text-sm font-medium text-gray-700 mb-1"
@@ -1800,16 +2041,41 @@
                     Country/Region
                   </label>
                   <input
-                    type="text"
                     id="country"
-                    [(ngModel)]="addressForm.COUNTRY_NAME"
+                    type="text"
+                    [(ngModel)]="countrySearch"
+                    (input)="filterCountries(); onCountryInputChange()"
+                    (blur)="onCountryBlur()"
                     name="COUNTRY_NAME"
+                    #COUNTRY_NAME="ngModel"
                     placeholder="Enter Country"
                     required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
                   />
+                  <div
+                    *ngIf="
+                      filteredCountries.length ||
+                      showAddCountryOption ||
+                      isLoadingCountries
+                    "
+                    class="absolute z-20 w-full bg-white mt-1 rounded-md shadow-md max-h-48 overflow-y-auto"
+                  >
+                    <div
+                      *ngIf="isLoadingCountries"
+                      class="p-3 text-center text-gray-500 text-sm"
+                    >
+                      Loading countries...
+                    </div>
+                    <div
+                      *ngFor="let c of filteredCountries"
+                      (mousedown)="selectCountry(c)"
+                      class="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                    >
+                      {{ c.NAME }}
+                    </div>
+                  </div>
                 </div>
-                <div>
+                <div class="relative">
                   <label
                     for="state"
                     class="block text-sm font-medium text-gray-700 mb-1"
@@ -1817,19 +2083,44 @@
                     State
                   </label>
                   <input
-                    type="text"
                     id="state"
-                    [(ngModel)]="addressForm.STATE_NAME"
+                    type="text"
+                    [(ngModel)]="stateSearch"
+                    (input)="filterStates(); onStateInputChange()"
+                    (blur)="onStateBlur()"
                     name="STATE_NAME"
+                    #STATE_NAME="ngModel"
                     placeholder="Enter State"
                     required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
                   />
+                  <div
+                    *ngIf="
+                      filteredStates.length ||
+                      showAddStateOption ||
+                      isLoadingStates
+                    "
+                    class="absolute z-20 w-full bg-white mt-1 rounded-md shadow-md max-h-48 overflow-y-auto"
+                  >
+                    <div
+                      *ngIf="isLoadingStates"
+                      class="p-3 text-center text-gray-500 text-sm"
+                    >
+                      Loading states...
+                    </div>
+                    <div
+                      *ngFor="let s of filteredStates"
+                      (mousedown)="selectState(s)"
+                      class="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                    >
+                      {{ s.NAME }}
+                    </div>
+                  </div>
                 </div>
               </div>
-              <!-- City and Pincode -->
+
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
+                <div class="relative">
                   <label
                     for="city"
                     class="block text-sm font-medium text-gray-700 mb-1"
@@ -1837,35 +2128,60 @@
                     Town/City
                   </label>
                   <input
-                    type="text"
                     id="city"
-                    [(ngModel)]="addressForm.CITY"
-                    name="city"
-                    placeholder="Enter City"
+                    type="text"
+                    [(ngModel)]="citySearch"
+                    (input)="filterCities()"
+                    (blur)="onCityBlur()"
+                    name="CITY"
+                    placeholder="Enter city"
                     required
-                    maxlength="64"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
                   />
+                  <div
+                    *ngIf="
+                      filteredCities.length ||
+                      showAddCityOption ||
+                      isLoadingCities
+                    "
+                    class="absolute z-20 w-full bg-white mt-1 rounded-md shadow-md max-h-48 overflow-y-auto"
+                  >
+                    <div
+                      *ngIf="isLoadingCities"
+                      class="p-3 text-center text-gray-500 text-sm"
+                    >
+                      Loading cities...
+                    </div>
+                    <div
+                      *ngFor="let c of filteredCities"
+                      (mousedown)="selectCity(c)"
+                      class="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                    >
+                      {{ c.NAME }}
+                    </div>
+                  </div>
                 </div>
                 <div>
                   <label
                     for="zipcode"
                     class="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    Pincode
+                    Pincode/Zipcode
                   </label>
                   <input
                     type="text"
                     id="zipcode"
+                    maxlength="6"
                     [(ngModel)]="addressForm.PINCODE"
                     name="pincode"
-                    placeholder="6 digits [0-9] PIN code"
+                    placeholder="6 digits [0-9] PIN/ZIP code"
+                    (keypress)="onlyNumbers($event)"
                     required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
                   />
                 </div>
               </div>
-              <!-- Default Address Checkbox -->
+
               <div class="flex items-start">
                 <div class="flex items-center h-5">
                   <input
@@ -1887,23 +2203,42 @@
               </div>
             </div>
           </div>
-          <!-- Submit Buttons -->
+
           <div
-            class="border-t border-gray-200 pt-4 mt-4 flex justify-end gap-3"
+            class="border-t border-gray-200 pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
           >
-            <button
-              type="button"
-              (click)="closeAddressModal()"
-              class="px-6 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              class="bg-[#5a8f69] hover:bg-green-800 text-white font-medium px-6 py-2 rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {{ isEditingAddress ? "Update Address" : "Use this address" }}
-            </button>
+            <div class="flex-1">
+              <p
+                *ngIf="
+                  verificationStatus !== 'verified' && addressForm.EMAIL_ID
+                "
+                class="text-sm text-orange-600 flex items-center gap-1"
+              >
+                <i class="ri-alert-line"></i>
+                Email not verified. We recommend verifying your email for order
+                updates.
+              </p>
+            </div>
+            <div class="flex gap-3">
+              <button
+                type="button"
+                class="px-6 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
+                (click)="closeAddressModal()"
+              >
+                Cancel
+              </button>
+              <button
+                *ngIf="
+                  verificationStatus === 'verified' && addressForm.EMAIL_ID
+                "
+                type="submit"
+                class="bg-[#5a8f69] hover:bg-green-800 text-white font-medium px-6 py-2 rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                [disabled]="isSavingAddress || addressFormTemp.invalid"
+              >
+                <span *ngIf="!isSavingAddress">Save Address</span>
+                <span *ngIf="isSavingAddress">SAVING...</span>
+              </button>
+            </div>
           </div>
         </form>
       </div>
@@ -1955,8 +2290,8 @@
             {{
               isSendOtpEmailSpinning
                 ? user.email
-                  ? "Verifying"
-                  : "Adding"
+                  ? "Verifying Email"
+                  : "Adding Email"
                 : user.email
                 ? "Verify Email"
                 : "Add Email"
@@ -1997,13 +2332,13 @@
           <div class="left-column" style="flex: 1.3">
             <!-- PRODUCT DETAILS -->
             <div
-              *ngFor="let order of cartitemDataList"
+              *ngFor="let order of cartitemDataList; let i = index"
               class="order-cardList mb-4"
             >
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
                   <img
-                    [src]="producctImageurl + photoUrls"
+                    [src]="producctImageurl + photoUrls[i]"
                     [alt]="order.PRODUCT_NAME"
                     class="product-img"
                   />
@@ -2041,65 +2376,100 @@
                     <div class="circle">1</div>
                     <div class="line"></div>
                   </div>
+
                   <div
                     class="timeline-step"
-                    [class.active]="order.ACTUAL_PREPARE_PACKAGING_DATETIME"
+                    [class.active]="order.ORDER_CONFIRMED_DATETIME"
                   >
                     <div class="circle">2</div>
                     <div class="line"></div>
                   </div>
+
                   <div
                     class="timeline-step"
-                    [class.active]="order.ACTUAL_DISPATCH_DATETIME"
+                    [class.active]="order.ACTUAL_PREPARE_PACKAGING_DATETIME"
                   >
                     <div class="circle">3</div>
                     <div class="line"></div>
                   </div>
+
                   <div
                     class="timeline-step"
-                    [class.active]="order.ACTUAL_DELIVERY_DATETIME"
+                    [class.active]="order.ACTUAL_DISPATCH_DATETIME"
                   >
                     <div class="circle">4</div>
                     <div class="line"></div>
                   </div>
+
                   <div
                     class="timeline-step"
-                    [class.active]="order.ACTUAL_CANCELLED_DATETIME"
+                    [class.active]="order.ACTUAL_DELIVERY_DATETIME"
                   >
                     <div class="circle">5</div>
                   </div>
                 </div>
 
                 <div class="timeline-details">
-                  <div class="detail-item detail-pending">
-                    <div class="status-header">Pending</div>
+                  <div class="detail-item">
+                    <div class="status-header">Order Placed</div>
                     <small class="status-subtitle">{{
-                      order.ORDER_DATETIME | date : "dd-MM-yyyy"
+                      order.ORDER_DATETIME
+                        ? (order.ORDER_DATETIME | date : "dd-MM-yyyy hh:mm:a")
+                        : "Pending"
                     }}</small>
                   </div>
-                  <div class="detail-item detail-packaging">
-                    <div class="status-header">Packaging</div>
+
+                  <div class="detail-item">
+                    <div class="status-header">Order Accepted</div>
+                    <small class="status-subtitle">{{
+                      order.ORDER_CONFIRMED_DATETIME
+                        ? (order.ORDER_CONFIRMED_DATETIME
+                          | date : "dd-MM-yyyy hh:mm:a")
+                        : "Pending"
+                    }}</small>
+                  </div>
+
+                  <div class="detail-item">
+                    <div class="status-header">Packaging Done</div>
                     <small class="status-subtitle">{{
                       order.ACTUAL_PREPARE_PACKAGING_DATETIME
-                        | date : "dd-MM-yyyy"
+                        ? (order.ACTUAL_PREPARE_PACKAGING_DATETIME
+                          | date : "dd-MM-yyyy hh:mm:a")
+                        : "Pending"
                     }}</small>
                   </div>
-                  <div class="detail-item detail-dispatch">
-                    <div class="status-header">Dispatching</div>
+
+                  <div class="detail-item">
+                    <div class="status-header">Dispatched</div>
                     <small class="status-subtitle">{{
-                      order.ACTUAL_DISPATCH_DATETIME | date : "dd-MM-yyyy"
+                      order.ACTUAL_DISPATCH_DATETIME
+                        ? (order.ACTUAL_DISPATCH_DATETIME
+                          | date : "dd-MM-yyyy hh:mm:a")
+                        : "Pending"
                     }}</small>
                   </div>
-                  <div class="detail-item detail-delivered">
+
+                  <div class="detail-item">
                     <div class="status-header">Delivered</div>
                     <small class="status-subtitle">{{
-                      order.ACTUAL_DELIVERY_DATETIME | date : "dd-MM-yyyy"
+                      order.ACTUAL_DELIVERY_DATETIME
+                        ? (order.ACTUAL_DELIVERY_DATETIME
+                          | date : "dd-MM-yyyy hh:mm:a")
+                        : "Pending"
                     }}</small>
                   </div>
-                  <div class="detail-item detail-cancelled">
-                    <div class="status-header">Cancelled</div>
-                    <small class="status-subtitle">{{
-                      order.ACTUAL_CANCELLED_DATETIME | date : "dd-MM-yyyy"
+
+                  <div
+                    *ngIf="order.ACTUAL_CANCELLED_DATETIME"
+                    class="detail-item detail-cancelled"
+                    style="padding-top: 10px; margin-top: 10px"
+                  >
+                    <div class="status-header" style="color: #c62828">
+                      Order Canceled
+                    </div>
+                    <small class="status-subtitle" style="color: #c62828">{{
+                      order.ACTUAL_CANCELLED_DATETIME
+                        | date : "dd-MM-yyyy hh:mm:a"
                     }}</small>
                   </div>
                 </div>
@@ -2271,4 +2641,75 @@
     [visible]="viewCart"
     (visibleChange)="onCartDrawerClose($event)"
   ></app-cart-drawer>
+</div>
+<div class="modal-backdrop" *ngIf="visible" (click)="dismiss()"></div>
+
+<div class="modal-container" *ngIf="visible">
+  <div class="modal-header">
+    <button class="close-btn" (click)="dismiss()">×</button>
+  </div>
+
+  <div class="otp-content">
+    <h2>Enter Verification Code</h2>
+    <p class="verification-text">
+      We've sent a 4-digit verification code to<br />
+      <span class="phone-number">{{ addressForm?.EMAIL_ID }}</span>
+      &nbsp;<span (click)="dismiss()">
+        <i class="bi bi-pencil-square"></i>
+      </span>
+    </p>
+
+    <div style="color: red; margin-bottom: 15px" *ngIf="statusCode != ''">
+      {{ statusCode }}
+    </div>
+
+    <form (ngSubmit)="VerifyOTP2()" class="otp-form">
+      <div class="otp-input-group">
+        <input
+          *ngFor="let i of [0, 1, 2, 3]; let last = last"
+          class="otp-input"
+          type="text"
+          [(ngModel)]="otp[i]"
+          [name]="'otp-' + i"
+          maxlength="1"
+          (keydown)="moveToNext($event, i)"
+          (keypress)="allowOnlyNumbers($event)"
+          (ngModelChange)="onChange($event, i)"
+          (paste)="handlePaste($event)"
+          required
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="timer-section">
+        <span *ngIf="remainingTime > 0" class="timer-display"
+          >{{ remainingTime }}s</span
+        >
+        <p class="resend-text">
+          Didn’t receive the code?
+          <a
+            (click)="resendOtp()"
+            [ngStyle]="{
+              cursor: remainingTime > 0 ? 'default' : 'pointer',
+              color: remainingTime > 0 ? '#636363' : '#5a8f69'
+            }"
+            [class.disabled]="remainingTime > 0"
+            >Resend</a
+          >
+        </p>
+      </div>
+
+      <button
+        type="submit"
+        class="verify-button"
+        [disabled]="isverifyOTP || otp.join('').length < 4"
+      >
+        <span
+          *ngIf="isverifyOTP"
+          class="spinner-border spinner-border-sm me-2"
+        ></span>
+        Verify
+      </button>
+    </form>
+  </div>
 </div>

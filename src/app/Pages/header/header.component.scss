@@ -1127,4 +1127,9 @@ video {
     max-height: 60px;
   }
 }
+.toast-center {
+  top:40%;
+  left: 50%;
+  transform: translateX(-50%);
+}
 

@@ -2958,7 +2958,8 @@ export class ApiServiceService {
     EMAIL_ID: any,
     PASSWORD: any,
     CLIENT_ID: 1,
-    STATUS: any
+    STATUS: any,
+    COUNTRY_CODE :any
   ): Observable<any> {
     // data.CLIENT_ID = this.clientId; // Uncomment if needed
     const requestData: any = {
@@ -2969,6 +2970,7 @@ export class ApiServiceService {
       PASSWORD,
       CLIENT_ID,
       STATUS,
+      COUNTRY_CODE
 
       // TYPE_VALUE,
     };
@@ -4268,12 +4270,14 @@ export class ApiServiceService {
 
   verifyotpp(
     MOBILE_NO: string,
+  COUNTRY_CODE:string,
     EMAIL_ID: string,
     OTP: string,
     CUSTOMER_ID: any
   ): Observable<any> {
     var data = {
       MOBILE_NO: MOBILE_NO,
+      COUNTRY_CODE:COUNTRY_CODE,
       EMAIL_ID: EMAIL_ID,
       OTP: OTP,
       CUSTOMER_ID: CUSTOMER_ID,

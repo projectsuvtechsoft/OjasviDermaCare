@@ -385,7 +385,7 @@
           </div>
 
           <h1 class="text-xl font-semibold text-gray-900 mb-3">
-            ADD YOUR ADDRESS TO CONTINUE
+            ADD SHIPPING ADDRESS TO CONTINUE
           </h1>
           <p class="text-gray-600 mb-6">
             We're almost there — just need your address details.
@@ -397,7 +397,7 @@
             [disabled]="isTransitioning"
           >
             <span *ngIf="!isTransitioning" class="text-white"
-              >ADD NEW ADDRESS</span
+              >ADD NEW SHIPPING ADDRESS</span
             >
             <span *ngIf="isTransitioning" class="button-loader"></span>
           </button>
@@ -418,20 +418,20 @@
                 class="border-b border-gray-200 px-3 py-3 flex items-center justify-between"
               >
                 <h2 class="text-2xl font-semibold text-gray-900">
-                  Select Address
+                  Select Shipping Address
                 </h2>
                 <button
                   class="text-sm text-blue-600 hover:text-blue-700 hover:underline flex items-center gap-1"
                   (click)="showAddressForm = true; openr()"
                 >
-                  <span> + Add New Address</span>
+                  <span> + Add New Shipping Address</span>
                 </button>
               </div>
 
               <!-- Address List -->
               <div class="px-3 py-3 max-w-full mx-auto">
                 <h3 class="text-base font-semibold text-gray-900 mb-4">
-                  Delivery addresses ({{ savedAddresses.length }})
+                  Shipping addresses ({{ savedAddresses.length }})
                 </h3>
 
                 <div class="space-y-4">
@@ -1036,7 +1036,6 @@
       <div
         *ngIf="showAddressForm"
         class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
-        (click)="closeModal()"
       >
         <div
           class="bg-white rounded-lg shadow-sm w-full max-w-3xl max-h-[900px] overflow-hidden"
@@ -1054,7 +1053,9 @@
                 <span class="text-xl">←</span>
               </button>
               <h2 class="text-lg font-semibold text-gray-900">
-                {{ isEditingAddress ? "Edit Address" : "Add a new address" }}
+                {{
+                  isEditingAddress ? "Edit Address" : "Add New Shipping Address"
+                }}
               </h2>
             </div>
             <button
@@ -1098,34 +1099,84 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
+                      <div>
                         <label
                           for="mobileNumber"
                           class="block text-sm font-medium text-gray-700 mb-1"
                         >
                           Mobile number
                         </label>
-                        <div class="flex gap-2 items-center">
-                          <select
-                            name="countryCode"
-                            [(ngModel)]="addressForm.COUNTRY_CODE"
-                            class="appearance-none w-28 px-3 py-2 pr-8 border border-gray-300 rounded-md shadow-sm bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
-                            aria-label="Country code"
-                          >
-                            <option
-                              value=""
-                              class="px-2 py-1 text-sm font-medium text-gray-700 mb-1"
+                        <div class="flex items-stretch relative">
+                          <div class="relative min-w-[5.5rem]">
+                            <div
+                              class="unique-country-code-selector flex items-center cursor-pointer px-3 h-10 border border-gray-300 rounded-l-md **bg-white** text-sm focus:outline-none w-full **shadow-sm**"
+                              (click)="toggleCountryDropdown($event)"
+                              aria-label="Country code selector"
+                              [ngClass]="{
+                                '!border-r-0': !showCountryDropdown,
+
+                                'rounded-r-none': showCountryDropdown
+                              }"
                             >
-                              Select code
-                            </option>
-                            <option
-                              *ngFor="let c of countryCodes"
-                              [ngValue]="c.value"
-                              class="px-2 py-1 text-sm overflow-y-scroll"
+                              <span class="text-gray-700 font-medium">{{
+                                addressForm.COUNTRY_CODE || "+1"
+                              }}</span>
+                              <svg
+                                class="ml-auto transform transition-transform"
+                                [class.rotate-180]="showCountryDropdown"
+                                width="10"
+                                height="6"
+                                viewBox="0 0 10 6"
+                                fill="none"
+                              >
+                                <path
+                                  d="M1 1L5 5L9 1"
+                                  stroke="#666"
+                                  stroke-width="1.5"
+                                />
+                              </svg>
+                            </div>
+
+                            <div
+                              class="absolute z-10 top-full left-0 mt-1 w-80"
+                              *ngIf="showCountryDropdown"
                             >
-                              {{ c.label }}
-                            </option>
-                          </select>
+                              <div
+                                class="unique-country-dropdown bg-white shadow-lg ring-1 ring-black ring-opacity-5 rounded-md p-2"
+                                style="
+                                  max-height: 300px;
+                                  overflow-y: auto;
+                                  min-width: 100%;
+                                "
+                              >
+                                <div class="unique-search-box mb-2">
+                                  <input
+                                    type="text"
+                                    class="w-full px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                                    placeholder="Search country..."
+                                    [(ngModel)]="searchQuery"
+                                    (input)="filterCountriesd($event)"
+                                    (click)="$event.stopPropagation()"
+                                    autocomplete="off"
+                                    name="searchCountry"
+                                  />
+                                </div>
+                                <div class="unique-country-list">
+                                  <div
+                                    class="unique-country-item px-3 py-2 cursor-pointer hover:bg-gray-100 rounded-sm text-base"
+                                    *ngFor="let country of filteredCountryCodes"
+                                    (click)="
+                                      selectCountrycode(country.value);
+                                      $event.stopPropagation()
+                                    "
+                                  >
+                                    {{ country.label }}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
                           <input
                             type="tel"
                             id="mobileNumber"
@@ -1136,7 +1187,12 @@
                             [pattern]="commonFunction.internationalmobpattern"
                             maxlength="10"
                             required
-                            class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                            class="flex-1 px-3 **h-10** border border-gray-300 rounded-r-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                            [ngClass]="{
+                              '!border-l-0 rounded-l-none':
+                                !showCountryDropdown,
+                              'border-l-0 rounded-l-none': showCountryDropdown
+                            }"
                           />
                         </div>
                       </div>
@@ -1161,9 +1217,11 @@
                             [pattern]="commonFunction.emailpattern"
                             required
                             class="flex-1 px-3 py-2 border border-gray-300 border-r-0 rounded-l-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                            (ngModelChange)="onEmailChange()"
                           />
 
                           <button
+                            *ngIf="addressForm.EMAIL_ID"
                             type="button"
                             class="px-4 py-2 bg-[#5a8f69] hover:bg-green-800 rounded-r-md text-white disabled:opacity-50 text-sm font-medium transition-colors whitespace-nowrap"
                             (click)="verifyEmail(); $event.stopPropagation()"
@@ -1323,9 +1381,9 @@
                           (blur)="onCountryBlur()"
                           name="COUNTRY_NAME"
                           #COUNTRY_NAME="ngModel"
-                          placeholder="Select country"
+                          placeholder="Enter Country"
                           required
-                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
                         />
                         <div
                           *ngIf="
@@ -1333,7 +1391,7 @@
                             showAddCountryOption ||
                             isLoadingCountries
                           "
-                          class="absolute z-20 w-full bg-white border border-gray-300 mt-1 rounded-md shadow-md max-h-48 overflow-y-auto"
+                          class="absolute z-20 w-full bg-white mt-1 rounded-md shadow-md max-h-48 overflow-y-auto"
                         >
                           <div
                             *ngIf="isLoadingCountries"
@@ -1361,13 +1419,13 @@
                           id="state"
                           type="text"
                           [(ngModel)]="stateSearch"
-                          (input)="filterStates()"
+                          (input)="filterStates(); onStateInputChange()"
                           (blur)="onStateBlur()"
                           name="STATE_NAME"
                           #STATE_NAME="ngModel"
-                          placeholder="Select state"
+                          placeholder="Enter State"
                           required
-                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
                         />
                         <div
                           *ngIf="
@@ -1375,7 +1433,7 @@
                             showAddStateOption ||
                             isLoadingStates
                           "
-                          class="absolute z-20 w-full bg-white border border-gray-300 mt-1 rounded-md shadow-md max-h-48 overflow-y-auto"
+                          class="absolute z-20 w-full bg-white mt-1 rounded-md shadow-md max-h-48 overflow-y-auto"
                         >
                           <div
                             *ngIf="isLoadingStates"
@@ -1411,7 +1469,7 @@
                           name="CITY"
                           placeholder="Enter city"
                           required
-                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
                         />
                         <div
                           *ngIf="
@@ -1419,7 +1477,7 @@
                             showAddCityOption ||
                             isLoadingCities
                           "
-                          class="absolute z-20 w-full bg-white border border-gray-300 mt-1 rounded-md shadow-md max-h-48 overflow-y-auto"
+                          class="absolute z-20 w-full bg-white mt-1 rounded-md shadow-md max-h-48 overflow-y-auto"
                         >
                           <div
                             *ngIf="isLoadingCities"
@@ -1441,16 +1499,18 @@
                           for="zipcode"
                           class="block text-sm font-medium text-gray-700 mb-1"
                         >
-                          Pincode/Zipcode
+                          Pincode/ZIP
                         </label>
                         <input
                           type="text"
                           id="zipcode"
+                          maxlength="6"
                           [(ngModel)]="addressForm.PINCODE"
                           name="pincode"
                           placeholder="6 digits [0-9] PIN/ZIP code"
+                          (keypress)="onlyNumbers($event)"
                           required
-                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
                         />
                       </div>
                     </div>
@@ -1502,6 +1562,10 @@
                       Cancel
                     </button>
                     <button
+                      *ngIf="
+                        verificationStatus === 'verified' &&
+                        addressForm.EMAIL_ID
+                      "
                       type="submit"
                       class="bg-[#5a8f69] hover:bg-green-800 text-white font-medium px-6 py-2 rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       [disabled]="isSavingAddress || addressFormTemp.invalid"
@@ -1588,19 +1652,34 @@
                       {{ item.PRODUCT_UNIT_NAME }}
                     </p>
                     <p class="text-sm text-gray-900 font-semibold mt-1">
-                      ${{item.DISCOUNT_TYPE=='Amount'?
-                       (item.ITEM_DISCOUNT_AMOUNT==0? item.VERIENT_RATE:(item.ITEM_DISCOUNT_AMOUNT / item.QUANTITY)
-                          | number : "1.2-2"):item.DISCOUNT_TYPE=='Percentage'?((item.VERIENT_RATE - (item.VERIENT_RATE * item.DISCOUNT / 100)
-                          | number : "1.2-2")):item.VERIENT_RATE
+                      ${{
+                        item.DISCOUNT_TYPE == "Amount"
+                          ? item.ITEM_DISCOUNT_AMOUNT == 0
+                            ? item.VERIENT_RATE
+                            : (item.ITEM_DISCOUNT_AMOUNT / item.QUANTITY
+                              | number : "1.2-2")
+                          : item.DISCOUNT_TYPE == "Percentage"
+                          ? (item.VERIENT_RATE -
+                              (item.VERIENT_RATE * item.DISCOUNT) / 100
+                            | number : "1.2-2")
+                          : item.VERIENT_RATE
                       }}
                       ×
                       {{ item.QUANTITY }}
                       <span
                         class="text-sm text-gray-900 font-semibold mt-1 float-end"
                       >
-                        Total Price $ 
-                        {{ item.DISCOUNT_TYPE=='Amount'?(item.ITEM_DISCOUNT_AMOUNT==0? (item.VERIENT_RATE * item.QUANTITY):item.ITEM_DISCOUNT_AMOUNT) :
-                        item.DISCOUNT_TYPE=='Percentage'?((item.VERIENT_RATE - (item.VERIENT_RATE * item.DISCOUNT / 100))* item.QUANTITY):item.VERIENT_RATE * item.QUANTITY
+                        Total Price $
+                        {{
+                          item.DISCOUNT_TYPE == "Amount"
+                            ? item.ITEM_DISCOUNT_AMOUNT == 0
+                              ? item.VERIENT_RATE * item.QUANTITY
+                              : item.ITEM_DISCOUNT_AMOUNT
+                            : item.DISCOUNT_TYPE == "Percentage"
+                            ? (item.VERIENT_RATE -
+                                (item.VERIENT_RATE * item.DISCOUNT) / 100) *
+                              item.QUANTITY
+                            : item.VERIENT_RATE * item.QUANTITY
                         }}
                       </span>
                     </p>
@@ -2874,13 +2953,19 @@
                   item.PRODUCT_NAME
                 }}</span>
                 <span class="text-gray-500 text-xs block"
-                  >{{item.DISCOUNT_TYPE=='Amount'?
-                       (item.ITEM_DISCOUNT_AMOUNT==0? item.VERIENT_RATE:(item.ITEM_DISCOUNT_AMOUNT / item.QUANTITY)
-                          | number : "1.2-2"):item.DISCOUNT_TYPE=='Percentage'?((item.VERIENT_RATE - (item.VERIENT_RATE * item.DISCOUNT / 100)
-                          | number : "1.2-2")):item.VERIENT_RATE
-                      }}
-                     x {{ item.QUANTITY }}
-                      Qty</span
+                  >{{
+                    item.DISCOUNT_TYPE == "Amount"
+                      ? item.ITEM_DISCOUNT_AMOUNT == 0
+                        ? item.VERIENT_RATE
+                        : (item.ITEM_DISCOUNT_AMOUNT / item.QUANTITY
+                          | number : "1.2-2")
+                      : item.DISCOUNT_TYPE == "Percentage"
+                      ? (item.VERIENT_RATE -
+                          (item.VERIENT_RATE * item.DISCOUNT) / 100
+                        | number : "1.2-2")
+                      : item.VERIENT_RATE
+                  }}
+                  x {{ item.QUANTITY }} Qty</span
                 >
                 <span class="text-gray-500 text-xs block"
                   >{{ item.VERIENT_SIZE }}
@@ -2890,9 +2975,18 @@
             </div>
 
             <span class="text-gray-900 font-semibold text-right w-1/3 text-sm">
-               $ {{ item.DISCOUNT_TYPE=='Amount'?(item.ITEM_DISCOUNT_AMOUNT==0? (item.VERIENT_RATE * item.QUANTITY):item.ITEM_DISCOUNT_AMOUNT) :
-                        item.DISCOUNT_TYPE=='Percentage'?((item.VERIENT_RATE - (item.VERIENT_RATE * item.DISCOUNT / 100))* item.QUANTITY):item.VERIENT_RATE * item.QUANTITY
-                        }}
+              $
+              {{
+                item.DISCOUNT_TYPE == "Amount"
+                  ? item.ITEM_DISCOUNT_AMOUNT == 0
+                    ? item.VERIENT_RATE * item.QUANTITY
+                    : item.ITEM_DISCOUNT_AMOUNT
+                  : item.DISCOUNT_TYPE == "Percentage"
+                  ? (item.VERIENT_RATE -
+                      (item.VERIENT_RATE * item.DISCOUNT) / 100) *
+                    item.QUANTITY
+                  : item.VERIENT_RATE * item.QUANTITY
+              }}
             </span>
           </li>
         </ul>
@@ -3086,7 +3180,7 @@
       </div>
 
       <!-- Buttons -->
-      <div class="text-center">
+      <!-- <div class="text-center">
         <button
           class="w-full py-2 bg-[#5a8f69] text-white text-sm font-semibold rounded-lg shadow-md hover:bg-emerald-700 transition"
           (click)="downloadInvoice()"
@@ -3104,7 +3198,7 @@
             >
           </ng-template>
         </button>
-      </div>
+      </div> -->
 
       <div class="text-center pt-1">
         <a

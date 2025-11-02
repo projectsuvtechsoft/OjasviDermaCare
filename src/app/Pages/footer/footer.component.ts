@@ -26,6 +26,12 @@ export class FooterComponent {
    goToContactUs() {
     this.router.navigate(['/contact-us']);
   }
+  isHomePage(): boolean {
+    return this.router.url === '/' || this.router.url === '/home';
+    // If your home page is /home, use: return this.router.url === '/home';
+    // Or if you need to handle query parameters/fragments:
+    // return this.router.url.split('?')[0].split('#')[0] === '/';
+  }
  
   loadingRecords: boolean = false;
     emailaddress: any = '';

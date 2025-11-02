@@ -16,6 +16,8 @@ import {
   Renderer2,
   ElementRef,
   ViewChild,
+  QueryList,
+  ViewChildren,
 } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -30,27 +32,28 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 export class AddressMaster {
   ADDRESS = '';
-  COUNTRY_NAME = '';
+  COUNTRY_NAME:any = '';
   // STATE_ID = '';
-  CITY = '';
+  CITY_NAME = '';
   PINCODE = '';
   LANDMARK = '';
   ID = '';
   LOCALITY = '';
-  STATE_NAME = '';
+  STATE_NAME:any = '';
   CUST_ID = '';
   MOBILE_NO = '';
   NAME = '';
-
+  EMAIL_ID=''
   IS_LAST_SHIPPING_ADDRESS = false;
   ADDRESS_TYPE = 'R';
   IS_DEFUALT_ADDRESS = false;
-  COUNTRY_CODE = '';
+  IS_DEFAULT=false;
+  COUNTRY_CODE='+1';
 }
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
-  styleUrls: ['./user-profile.component.css'],
+  styleUrls: ['./user-profile.component.scss'],
 })
 export class UserProfileComponent implements OnInit, OnDestroy {
   user = {
@@ -66,6 +69,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     ID: '',
     password: '', // Add password for display
     PROFILE_URL: '',
+    code:''
   };
 
   currentSection: string = 'dashboard-section';
@@ -105,12 +109,14 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   editField: 'email' | 'password' | null = null;
   editValue: string = '';
   isUpdating = false;
+  COUNTRY_CODE:any='+1'
 
   // User details modal state
   userDetailsModalOpen = false;
   userDetailsForm = {
     name: '',
     mobile: '',
+    code:'+1'
   };
   isUpdatingUserDetails = false;
 
@@ -122,6 +128,9 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   stateList: any[] = [];
   pincodeList: any[] = [];
   activeSection: string = 'dashboard-section';
+  showCountryDropdown!: boolean;
+  searchQuery!: string;
+  filteredCountryCodes!: { label: string; value: string; }[];
   ngOnInit(): void {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
@@ -254,10 +263,17 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           // ✅ Clear session storage
           sessionStorage.removeItem('userId');
           sessionStorage.removeItem('token');
+
+          sessionStorage.removeItem('USER_NAME');
           this.cookie.delete('token');
 
           this.toastr.success('You have logged out successfully!', 'Success');
+          this.cartService.cartItems = [];
+          this.cartService.cartUpdated.next(this.cartService.cartItems);
+          this.cartService.updateCartCount();
           this.router.navigate(['/home']);
+
+          
         } else {
           this.toastr.error('Failed to logout!', '');
         }
@@ -301,6 +317,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.userDetailsForm = {
       name: this.user.NAME || '',
       mobile: this.user.mobile || '',
+      code :this.user.code || '+1'
     };
     this.userDetailsModalOpen = true;
   }
@@ -310,6 +327,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.userDetailsForm = {
       name: '',
       mobile: '',
+      code:'+1'
     };
     // this.remainingTime=60;
     // this.timerSubscription=null
@@ -319,6 +337,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     if (
       !this.userDetailsForm.name.trim() &&
       !this.userDetailsForm.mobile.trim()
+
     ) {
       this.toastr.error('Please fill in all fields.', 'Error');
       return;
@@ -424,6 +443,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       },
     });
   }
+  
   getUserData() {
     // this.IMAGEuRL = this.api.retriveimgUrl2();
     // this.loadData();
@@ -457,6 +477,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
               ID: this.USER_ID,
 
               password: userData.PASSWORD || '', // Set password for display
+              code:userData.COUNTRY_CODE
             };
             this.imagePreview =
               this.IMAGEuRL + 'CustomerProfile/' + this.user.PROFILE_URL;
@@ -554,8 +575,15 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   openAddressModal(address?: any) {
     this.isEditingAddress = !!address;
     this.addressForm = Object.assign({}, address);
+    // this.addressForm.COUNTRY_CODE= "+1"
+      this.citySearch = address?.CITY_NAME;
+        this.stateSearch = address?.STATE_NAME;
+        this.countrySearch = address?.COUNTRY_NAME
     if (this.addressForm.ID) {
       this.onCountryChange(this.addressForm.COUNTRY_NAME);
+      if(this.addressForm.EMAIL_ID){
+      this.verificationStatus='verified'
+      }
     }
 
     // console.log(this.addressForm);
@@ -586,9 +614,57 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     // this.loadCountry(); // Load country list
   }
 
+   selectCountrycode(country: any) {
+    this.addressForm.COUNTRY_CODE = country;
+    // console.log('Selected country code:', this.addressForm.COUNTRY_CODE);
+    // this.data.COUNTRY_CODE = this.selectedCountryCode;
+    this.showCountryDropdown = false;
+    this.searchQuery = '';
+  }
+  filterCountriesd(event: any) {
+      const query = event.target.value.toLowerCase().trim();
+      this.searchQuery = query;
+      this.filteredCountryCodes = this.countryCodes.filter(
+        (country) =>
+          country.label.toLowerCase().includes(query) ||
+          country.value.toLowerCase().includes(query)
+      );
+    }
+  
+    toggleCountryDropdown(event: Event) {
+      event.stopPropagation();
+      this.showCountryDropdown = !this.showCountryDropdown;
+      // console.log('showCountryDropdown: ', this.showCountryDropdown);
+  
+      if (this.showCountryDropdown) {
+        // console.log('showCountryDropdown: ', this.showCountryDropdown);
+        this.filteredCountryCodes = [...this.countryCodes]; // Create a new array copy
+        this.searchQuery = '';
+      }
+    }
+  
+    // Close-on-outside-click support for any country dropdown instance in this component
+    @ViewChildren('dropdownWrapper') dropdownWrappers!: QueryList<ElementRef>;
+  
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: MouseEvent) {
+      if (!this.showCountryDropdown) return;
+      const target = event.target as Node;
+      const wrappers = this.dropdownWrappers
+        ? this.dropdownWrappers.toArray()
+        : [];
+      const clickedInside = wrappers.some((ref) =>
+        ref.nativeElement.contains(target)
+      );
+      if (!clickedInside) {
+        this.showCountryDropdown = false;
+        this.searchQuery = '';
+      }
+    }
   // Close modal
   closeAddressModal() {
     this.addressModalOpen = false;
+    this.verificationStatus='pending'
   }
 
   // On country change
@@ -629,9 +705,9 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       (this.addressForm.STATE_NAME == '' ||
         this.addressForm.STATE_NAME == null ||
         this.addressForm.STATE_NAME == undefined) &&
-      (this.addressForm.CITY == '' ||
-        this.addressForm.CITY == null ||
-        this.addressForm.CITY == undefined) &&
+      (this.addressForm.CITY_NAME == '' ||
+        this.addressForm.CITY_NAME == null ||
+        this.addressForm.CITY_NAME == undefined) &&
       (this.addressForm.PINCODE == '' ||
         this.addressForm.PINCODE == null ||
         this.addressForm.PINCODE == undefined)
@@ -698,8 +774,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     //   this.toastr.error('Please Enter Area', '');
     // }
     else if (
-      this.addressForm.CITY == null ||
-      this.addressForm.CITY.trim() == ''
+      this.addressForm.CITY_NAME== null ||
+      this.addressForm.CITY_NAME.trim() == ''
     ) {
       this.isOk = false;
       this.toastr.error('Please Enter City', '');
@@ -708,7 +784,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       this.addressForm.PINCODE == ''
     ) {
       this.isOk = false;
-      this.toastr.error(' Please Enter Zipcode ', '');
+      this.toastr.error(' Please Enter Pincode/ZIP ', '');
     }
     //  else if (!this.pincode.test(this.addressForm.PINCODE)) {
     //   this.isOk = false;
@@ -764,6 +840,9 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     //   this.isOk = false;
     //   this.toastr.error('Please Select Address Type', '');
     // }
+     if(!this.addressForm.COUNTRY_CODE || this.addressForm.COUNTRY_CODE=='' || this.addressForm.COUNTRY_CODE==null || this.addressForm.COUNTRY_CODE==undefined){
+      this.addressForm.COUNTRY_CODE = '+1'
+    }
     else if (!this.addressForm.ID) {
       if (this.dataList1.length > 0) {
         if (this.addressForm.IS_DEFUALT_ADDRESS == true) {
@@ -791,6 +870,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           .updateAddressMaster(this.addressForm)
           .subscribe((successCode) => {
             if (successCode.code == '200') {
+              //make api call
               this.toastr.success(' Address Updated Successfully...', '');
               if (!addNew) this.closeAddressModal();
               this.gettabledata();
@@ -806,6 +886,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           // this.type=.TYPE_ID
           .subscribe((successCode) => {
             if (successCode.code == '200') {
+              //make api call
               this.toastr.success(' Address Create Successfully...', '');
               if (!addNew) {
                 this.closeAddressModal();
@@ -967,7 +1048,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       0
     );
     this.photoUrls = this.cartitemDataList.map(
-      (item) => item.PHOTO_URL?.[0] || ''
+      (item) => item.PHOTO_URL || ''
     );
 
     const stageMap: { [key: string]: number } = {
@@ -1871,9 +1952,9 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     }
   }
 
-  navigateToProduct(productId: number) {
+  navigateToProduct(productId: number,varientId:number) {
     // Navigate to product detail page
-    this.router.navigate(['product_details', productId]);
+    this.router.navigate(['product_details', productId,varientId]);
   }
 
   today = new Date();
@@ -2125,6 +2206,80 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       });
     // }
   }
+    VerifyOTP2() {
+    if (this.otp.join('').length < 4) {
+      this.toastr.error('Please Enter OTP...', '');
+      return;
+    }
+    // this.isverifyOTP = true; // Set true before API call
+    // console.log(this.isverifyOTP,'this.isverifyOTP')
+    const otp1 = Number(this.otp.join(''));
+    this.isverifyOTP = true; // Set true before API call
+    // this.loadData();
+    // console.log(this.whichOTP)
+    // if (this.whichOTP == 'login') {
+    // let CLOUD_ID = this.cookie.get('CLOUD_ID');
+    //  this.USER_NAME = this.data.CUSTOMER_NAME
+    // this.USER_NAME = sessionStorage.getItem('USER_NAME');
+    // console.log(this.USER_NAME, ' this.USER_NAME');
+    this.api
+      .verifyEmailOTP(
+        otp1,
+        this.addressForm.EMAIL_ID // this.USER_ID,
+        // this.USER_NAME,
+        // 1,
+        // CLOUD_ID
+      )
+      .subscribe({
+        next: (successCode: any) => {
+          // console.log('successCode', successCode.body.code);
+          // console.log(this.isverifyOTP, 'this.isverifyOTP');
+          if (successCode.body.code === 200) {
+            // console.log('wertyuiko');
+            //  this.USER_NAME = this.data.CUSTOMER_NAME
+            // this.isverifyOTP = false; // Set true before API call
+            // console.log(this.isverifyOTP, 'this.isverifyOTP');
+            this.toastr.success('OTP verified successfully...', '');
+            // this.modalService.dismissAll();
+            this.isOk = false;
+            // this.createCustomer();
+            this.visible = false;
+            this.verificationStatus = 'verified';
+            // this.openRegister = false;
+            // this.openVerify = false;
+
+            this.otp = ['', '', '', '', '', ''];
+            // this.isverifyOTP = false;
+            this.statusCode = '';
+          } else {
+            this.toastr.error('Invalid OTP');
+          }
+          // console.log('successCode.body.code', successCode.body.code);
+          this.isverifyOTP = false;
+          // this.stopLoader();
+        },
+        error: (errorResponse) => {
+          // console.error('verifyOTP API failed:', errorResponse);s
+          if (errorResponse.error.code === 300) {
+            this.toastr.error(
+              'Invalid request. Please check the entered details.'
+            );
+            // console.log('xxx');
+            this.statusCode = 'invalid OTP';
+            // this.stopLoader();
+          } else {
+            // console.log('sss');
+            this.toastr.error('Something went wrong. Please try again.');
+            this.statusCode = '';
+            // this.stopLoader();
+          }
+          // console.log('kkkkk');
+          this.isverifyOTP = false;
+          // this.stopLoader();
+        },
+      });
+    // }
+  }
   private modalService: any = inject(NgbModal);
   timerSubscription: any;
   resendOtp() {
@@ -2166,6 +2321,10 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       });
   }
   openVerifyModal() {
+        this.openVerify = false;
+        console.log("asdfghjkl",this.openVerify);
+        
+
     if (
       !this.userDetailsForm.name.trim() &&
       !this.userDetailsForm.mobile.trim()
@@ -2190,7 +2349,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       this.toastr.error('Please enter mobile no.', 'Error');
       return;
     }
-    this.openVerify = true;
+    // this.openVerify = true;
     // this.startTimer();
 
     this.sendOTP();
@@ -2203,32 +2362,32 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     { label: '+94 (Sri Lanka)', value: '+94' },
     { label: '+95 (Myanmar)', value: '+95' },
     { label: '+1 (United States)', value: '+1' },
-    { label: '+1-242 (Bahamas)', value: '+1-242' },
-    { label: '+1-246 (Barbados)', value: '+1-246' },
-    { label: '+1-264 (Anguilla)', value: '+1-264' },
-    { label: '+1-268 (Antigua and Barbuda)', value: '+1-268' },
-    { label: '+1-284 (British Virgin Islands)', value: '+1-284' },
-    { label: '+1-340 (U.S. Virgin Islands)', value: '+1-340' },
-    { label: '+1-345 (Cayman Islands)', value: '+1-345' },
-    { label: '+1-441 (Bermuda)', value: '+1-441' },
-    { label: '+1-473 (Grenada)', value: '+1-473' },
-    { label: '+1-649 (Turks and Caicos Islands)', value: '+1-649' },
-    { label: '+1-664 (Montserrat)', value: '+1-664' },
-    { label: '+1-670 (Northern Mariana Islands)', value: '+1-670' },
-    { label: '+1-671 (Guam)', value: '+1-671' },
-    { label: '+1-684 (American Samoa)', value: '+1-684' },
-    { label: '+1-721 (Sint Maarten)', value: '+1-721' },
-    { label: '+1-758 (Saint Lucia)', value: '+1-758' },
-    { label: '+1-767 (Dominica)', value: '+1-767' },
-    { label: '+1-784 (Saint Vincent and the Grenadines)', value: '+1-784' },
-    { label: '+1-787 (Puerto Rico)', value: '+1-787' },
-    { label: '+1-809 (Dominican Republic)', value: '+1-809' },
-    { label: '+1-829 (Dominican Republic)', value: '+1-829' },
-    { label: '+1-849 (Dominican Republic)', value: '+1-849' },
-    { label: '+1-868 (Trinidad and Tobago)', value: '+1-868' },
-    { label: '+1-869 (Saint Kitts and Nevis)', value: '+1-869' },
-    { label: '+1-876 (Jamaica)', value: '+1-876' },
-    { label: '+1-939 (Puerto Rico)', value: '+1-939' },
+    // { label: '+1-242 (Bahamas)', value: '+1-242' },
+    // { label: '+1-246 (Barbados)', value: '+1-246' },
+    // { label: '+1-264 (Anguilla)', value: '+1-264' },
+    // { label: '+1-268 (Antigua and Barbuda)', value: '+1-268' },
+    // { label: '+1-284 (British Virgin Islands)', value: '+1-284' },
+    // { label: '+1-340 (U.S. Virgin Islands)', value: '+1-340' },
+    // { label: '+1-345 (Cayman Islands)', value: '+1-345' },
+    // { label: '+1-441 (Bermuda)', value: '+1-441' },
+    // { label: '+1-473 (Grenada)', value: '+1-473' },
+    // { label: '+1-649 (Turks and Caicos Islands)', value: '+1-649' },
+    // { label: '+1-664 (Montserrat)', value: '+1-664' },
+    // { label: '+1-670 (Northern Mariana Islands)', value: '+1-670' },
+    // { label: '+1-671 (Guam)', value: '+1-671' },
+    // { label: '+1-684 (American Samoa)', value: '+1-684' },
+    // { label: '+1-721 (Sint Maarten)', value: '+1-721' },
+    // { label: '+1-758 (Saint Lucia)', value: '+1-758' },
+    // { label: '+1-767 (Dominica)', value: '+1-767' },
+    // { label: '+1-784 (Saint Vincent and the Grenadines)', value: '+1-784' },
+    // { label: '+1-787 (Puerto Rico)', value: '+1-787' },
+    // { label: '+1-809 (Dominican Republic)', value: '+1-809' },
+    // { label: '+1-829 (Dominican Republic)', value: '+1-829' },
+    // { label: '+1-849 (Dominican Republic)', value: '+1-849' },
+    // { label: '+1-868 (Trinidad and Tobago)', value: '+1-868' },
+    // { label: '+1-869 (Saint Kitts and Nevis)', value: '+1-869' },
+    // { label: '+1-876 (Jamaica)', value: '+1-876' },
+    // { label: '+1-939 (Puerto Rico)', value: '+1-939' },
     { label: '+20 (Egypt)', value: '+20' },
     { label: '+211 (South Sudan)', value: '+211' },
     { label: '+212 (Morocco)', value: '+212' },
@@ -2446,11 +2605,19 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       this.api.sendotp(this.userDetailsForm.mobile, '', this.USER_ID).subscribe(
         (successCode: any) => {
           if (successCode.code == 200) {
+            this.openVerify= true
             this.toastr.success('OTP send Successfully.', 'Success');
             this.startTimer();
 
             this.isSendOtpSpinning = false;
-          } else {
+          } 
+           else if (successCode.code == 300) {
+        this.toastr.error(`Mobile No. already exist, please try different.`, '');
+            this.openVerify = false;
+
+ }
+          
+          else {
             this.toastr.error('failed to send OTP', 'Error');
 
             this.isSendOtpSpinning = false;
@@ -2468,36 +2635,40 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
   isNameChanged = false;
   isMobileChanged = false;
-
+  isCountryCodeChanged=false;
     internationalmobpattern = /^\+?\d{1,4}?[\s-]?(\(?\d{1,4}\)?[\s-]?)*\d{4,14}$/;
 
 
-  IsMobileorEmail() {
+  // IsMobileorEmail() {
 
+  //   this.isNameChanged = false;
+  //   this.isMobileChanged = false;
+  //   this.isCountryCodeChanged=false;
 
+  //   if (this.userDetailsForm.name !== this.user.NAME) {
+  //     this.isNameChanged = true;
+  //   }
 
-    this.isNameChanged = false;
-    this.isMobileChanged = false;
+  //   if (this.userDetailsForm.mobile !== this.user.mobile) {
+  //     this.isMobileChanged = true;
+  //   }
+  //     if (this.userDetailsForm.code !== this.user.code) {
+  //     this.isCountryCodeChanged = true;
+  //   }
 
-    if (this.userDetailsForm.name !== this.user.NAME) {
-      this.isNameChanged = true;
-    }
+  //   if (this.isNameChanged && !this.isMobileChanged) {
+  //     this.updateUserNameOnly();
+  //   }
+  //   else if (this.isMobileChanged || this.isCountryCodeChanged) {
+  //     this.openVerifyModal();
+  //   }
 
-    if (this.userDetailsForm.mobile !== this.user.mobile) {
-      this.isMobileChanged = true;
-    }
+  //   else {
+  //     this.toastr.info('No changes detected', 'Info');
+  //   }
+  // }
 
-    if (this.isNameChanged && !this.isMobileChanged) {
-      this.updateUserNameOnly();
-    }
-    else if (this.isMobileChanged) {
-      this.openVerifyModal();
-    }
-    else {
-      this.toastr.info('No changes detected', 'Info');
-    }
-  }
-
+ 
   updateUserNameOnly() {
     const payload: any = {
       ID: this.USER_ID,
@@ -2514,6 +2685,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
         if (response?.code === 200) {
           this.toastr.success('User Info Updated successfully!', 'Success');
+                    window.location.reload()
+
           this.userDetailsModalOpen = false;
           if (this.editField === 'email') this.user.email = this.editValue;
           if (this.editField === 'password')
@@ -2546,15 +2719,14 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     if(!this.email)
     {
           this.api
-      .verifyotpp(this.userDetailsForm.mobile, '', otpValue, this.USER_ID)
+      .verifyotpp(this.userDetailsForm.mobile, this.userDetailsForm.code,'', otpValue, this.USER_ID)
       .subscribe(
         (successCode: any) => {
           if (successCode.code == 200) {
             this.toastr.success('OTP Verified Successfully', '');
-                this.isVerifyOtpSpinning = false
-
-            // this.update();
-            this.otp = ['', '', '', '']; // clear input values
+            this.isVerifyOtpSpinning = false
+            window.location.reload();
+            this.otp = ['', '', '', '']; 
             this.openVerify =false
           } else {
                 this.isVerifyOtpSpinning = false
@@ -2571,11 +2743,13 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           this.isVerifyOtpSpinning = true
       
        this.api
-      .verifyotpp('', this.email, otpValue, this.USER_ID)
+      .verifyotpp('', '',this.email, otpValue, this.USER_ID)
       .subscribe(
         (successCode: any) => {
           if (successCode.code == 200) {
             this.toastr.success('OTP Verified Successfully', '');
+            window.location.reload();
+
                 this.isVerifyOtpSpinning = false
 
             // this.update();
@@ -2663,7 +2837,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
 
   sendOTPEmail() {
-                this.isSendOtpEmailSpinning=true
+                // this.isSendOtpEmailSpinning=true
 
     if (
       this.email == '' ||
@@ -2685,7 +2859,17 @@ export class UserProfileComponent implements OnInit, OnDestroy {
             this.startTimer();
 
             this.isSendOtpEmailSpinning = false;
-          } else {
+          }
+ else if (successCode.code == 300) {
+        this.toastr.error(`Email already exist, please try different.`, '');
+            this.openVerify = false;
+            this.isSendOtpEmailSpinning = false;
+
+
+ }
+
+          
+          else {
             this.toastr.error('failed to send OTP', 'Error');
 
             this.isSendOtpEmailSpinning = false;
@@ -2705,4 +2889,367 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       );
     }
   }
+
+
+  hasItemsInCart(productId: number, productData: any): boolean {
+  const itemsFromService = this.cartService.getCartItems();
+  const items = itemsFromService;
+
+  if (!items || items.length === 0) return false;
+  const variants =
+    typeof productData?.VARIENTS === 'string'
+      ? JSON.parse(productData?.VARIENTS)
+      : productData?.VARIENTS || [];
+  return variants.some((variant: any) =>
+    items.some(
+      (item: any) =>
+        item.PRODUCT_ID === productId && item.VERIENT_ID === variant.VARIENT_ID && this.selectedVariantMap[productId] == variant.VARIENT_ID
+    )
+  );
+}
+navigateTocart(){
+  this.router.navigate(['/cart'])
+}
+ isLoadingCountries = false;
+  isLoadingStates = false;
+  isLoadingCities = false;
+
+  countrySearch = '';
+  stateSearch = '';
+  citySearch: string = '';
+  filteredCountries: any[] = [];
+  filteredStates: any[] = [];
+  filteredCities: any[] = [];
+  // Filter countries based on search (case-insensitive, partial match)
+  onCountryBlur() {
+    // Delay clearing so click on suggestion registers
+    setTimeout(() => (this.filteredCountries = []), 100);
+  }
+
+  onStateBlur() {
+    this.addressForm.STATE_NAME = this.stateSearch;
+    setTimeout(() => (this.filteredStates = []), 100);
+  }
+  fetchStates(countryId: number) {
+    this.isLoadingStates = true;
+    this.api
+      .getState(0, 0, 'id', 'desc', `AND COUNTRY_ID=${countryId} AND STATUS=1`)
+      .subscribe(
+        (res: any) => {
+          this.isLoadingStates = false;
+          if (res.code === 200) {
+            this.stateList = res.data;
+            const selectedState = this.stateList.find(
+              (s) => s.ID === this.addressForm.STATE_NAME
+            );
+
+            if (selectedState) {
+              this.stateSearch = selectedState.NAME;
+              this.fetchCities(selectedState.ID);
+
+              // Wait for cities to load, then prefill city
+              // setTimeout(() => {
+
+              // }, 300);
+            } else {
+              console.log(this.addressForm);
+              this.stateSearch = this.stateSearch;
+            }
+          } else {
+            this.stateList = [];
+          }
+        },
+        (error) => {
+          this.isLoadingStates = false;
+          console.error('Error fetching states:', error);
+        }
+      );
+  }
+   cityList: any[] = [];
+   fetchCities(stateId: number) {
+    this.isLoadingCities = true;
+    this.api
+      .getCityData(
+        0,
+        0,
+        'id',
+        'desc',
+        'AND IS_ACTIVE=1 AND STATE_ID=' + stateId
+      )
+      .subscribe(
+        (response: any) => {
+          this.isLoadingCities = false;
+          if (response.code === 200) {
+            this.cityList = response.data;
+            const selectedCity = this.cityList.find(
+              (c) => c.ID === this.addressForm.CITY_NAME
+            );
+            this.citySearch = selectedCity
+              ? selectedCity.NAME
+              : this.citySearch;
+            console.log('citySearch', this.citySearch);
+          } else {
+            this.cityList = [];
+          }
+        },
+        (error: any) => {
+          this.isLoadingCities = false;
+          console.error('Error fetching cities:', error);
+          this.cityList = [];
+        }
+      );
+  }
+  selectCountry(country: any) {
+    // Set the selected value
+    this.addressForm.COUNTRY_NAME = country.NAME ?? this.countrySearch;
+    this.countrySearch = country.NAME;
+    this.filteredCountries = [];
+    this.fetchStates(country.ID);
+  }
+
+  selectState(state: any) {
+    this.addressForm.STATE_NAME = state.NAME ?? this.stateSearch;
+    this.stateSearch = state.NAME;
+    this.fetchCities(state.ID);
+    this.filteredStates = [];
+  }
+
+  filterCountries() {
+    const term = this.countrySearch?.trim().toLowerCase();
+    if (!term) {
+      this.filteredCountries = [];
+      return;
+    }
+
+    this.filteredCountries = this.countryList.filter((c) =>
+      c.NAME.toLowerCase().includes(term)
+    );
+  }
+
+  filterStates() {
+    const term = this.stateSearch?.trim().toLowerCase();
+    if (!term) {
+      this.filteredStates = [];
+      return;
+    }
+
+    this.filteredStates = this.stateList.filter((s) =>
+      s.NAME.toLowerCase().includes(term)
+    );
+  }
+
+  // Add button logic: only show if no exact match
+  get showAddCountryOption(): any {
+    const term = this.countrySearch?.trim().toLowerCase();
+    return term && !this.countryList.some((c) => c.NAME.toLowerCase() === term);
+  }
+
+  get showAddStateOption(): any {
+    const term = this.stateSearch?.trim().toLowerCase();
+    return term && !this.stateList.some((s) => s.NAME.toLowerCase() === term);
+  }
+ visible: boolean = false;
+  dismiss() {
+    this.visible = false;
+  }
+verificationStatus: 'initial' | 'pending' | 'verified' | 'failed' = 'initial';
+  onEmailChange() {
+    // Reset verification when email changes
+    this.verificationStatus = 'initial';
+  }
+  isChanged: any = 0;
+  isEmailValid(): boolean {
+    const email = this.addressForm.EMAIL_ID;
+    this.isChanged = 1;
+    if (!email) return false;
+
+    // A simple check against the regex.
+    // In a real app, you would reference the form control's validity state.
+    const regex = new RegExp(this.commonFunction.emailpattern);
+    return regex.test(email);
+  }
+ prefillCountryStateCity() {
+    // --- Prefill Country ---
+    const selectedCountry = this.countryList.find(
+      (c) => c.ID === this.addressForm.COUNTRY_NAME
+    );
+
+    if (selectedCountry) {
+      this.countrySearch = this.addressForm.COUNTRY_NAME;
+      this.fetchStates(selectedCountry.ID);
+
+      // Wait for states to load, then prefill state
+      // setTimeout(() => {
+
+      // }, 300);
+    } else {
+      this.countrySearch = this.addressForm.COUNTRY_NAME;
+    }
+  }
+
+  // Called on input change for country
+  onCountryInputChange() {
+    // console.log(this.countrySearch)
+    // If country input is empty, clear selection
+    if (!this.countrySearch || this.countrySearch?.trim() === '') {
+      this.addressForm.COUNTRY_NAME = null; // clear selected ID
+      this.filteredCountries = [];
+
+      // Clear state too
+      this.addressForm.STATE_NAME = null;
+      this.stateSearch = '';
+      this.filteredStates = [];
+      this.stateList = []; // optional: reset state list
+    }
+    this.addressForm.COUNTRY_NAME = this.countrySearch;
+  }
+  verifyEmail(): void {
+    if (!this.isEmailValid()) {
+      this.toastr.info('Please enter a valid email address before verifying.');
+      return;
+    }
+
+    this.verificationStatus = 'pending';
+    // this.visible=true
+    // --- REAL-WORLD SCENARIO: Call an API ---
+    // In a real application, you would make an API call here
+    // (e.g., using a service to send a verification code or token).
+
+    // console.log(`Attempting to verify email: ${this.addressForm.EMAIL_ID}`);
+
+    // Simulate an API delay and success/failure logic
+    // setTimeout(() => {
+    //   // Logic for verification success (e.g., if API returns status 200)
+    //   const success = true; // Replace with actual API response check
+
+    //   if (success) {
+    //     this.verificationStatus = 'verified';
+    //     // Optionally, disable the input after verification
+    //     // document.getElementById('emailId')?.setAttribute('disabled', 'true');
+    //   } else {
+    //     this.verificationStatus = 'failed';
+    //   }
+    // }, 2000); // 2-second simulation delay
+    this.api.verifyEmail(this.addressForm.EMAIL_ID).subscribe(
+      (res) => {
+        if (res['code'] == 200) {
+          this.toastr.success('Otp Sent Successfully');
+          this.startTimer();
+          this.visible = true;
+        } else {
+          this.toastr.error('Failed to send otp');
+          this.verificationStatus = 'failed';
+        }
+      },
+      (err) => {
+        this.verificationStatus = 'failed';
+      }
+    );
+  }
+   onStateInputChange() {
+    if (!this.stateSearch || this.stateSearch?.trim() === '') {
+      this.addressForm.STATE_NAME = null;
+      this.filteredStates = [];
+    }
+    this.addressForm.STATE_NAME = this.stateSearch;
+  }
+    filterCities() {
+    const term = this.citySearch?.trim().toLowerCase();
+    if (!term) {
+      this.filteredCities = [];
+      return;
+    }
+
+    this.filteredCities = this.cityList.filter((c) =>
+      c.NAME.toLowerCase().includes(term)
+    );
+  }
+    onCityBlur() {
+    this.addressForm.CITY_NAME = this.citySearch;
+    setTimeout(() => (this.filteredCities = []), 100);
+  }
+
+  selectCity(city: any) {
+    this.addressForm.CITY_NAME = city.NAME ?? this.citySearch;
+    this.citySearch = city.NAME;
+    this.filteredCities = [];
+  }
+    get showAddCityOption(): any {
+    const term = this.citySearch?.trim().toLowerCase();
+    return term && !this.cityList.some((c) => c.NAME.toLowerCase() === term);
+  }
+    onlyNumbers(event: KeyboardEvent) {
+    const charCode = event.which ? event.which : event.keyCode;
+    if (charCode < 48 || charCode > 57) {
+      event.preventDefault();
+    }
+  }
+  isSavingAddress: boolean = false;
+
+
+
+  //  isCountryCodeChanged=false;
+   IsMobileorEmail() {
+    this.isNameChanged = false;
+    this.isMobileChanged = false;
+    this.isCountryCodeChanged=false;
+
+    if (this.userDetailsForm.name !== this.user.NAME) {
+      this.isNameChanged = true;
+    }
+
+    if (this.userDetailsForm.mobile !== this.user.mobile) {
+      this.isMobileChanged = true;
+    }
+      if (this.userDetailsForm.code !== this.user.code) {
+      this.isCountryCodeChanged = true;
+    }
+
+    if (this.isNameChanged && !this.isMobileChanged) {
+      this.updateUserNameOnly();
+    }
+    else if (this.isMobileChanged) {
+      this.openVerifyModal();
+    }
+    else if(this.isCountryCodeChanged)
+    {
+            this.updateCountryCodeOnly();
+
+    }
+    else {
+      this.toastr.info('No changes detected', 'Info');
+    }
+  }
+
+   updateCountryCodeOnly() {
+    const payload: any = {
+      ID: this.USER_ID,
+            NAME: this.userDetailsForm.name ? this.userDetailsForm.name : '',
+      COUNTRY_CODE :this.userDetailsForm.code ? this.userDetailsForm.code : ''
+    };
+
+    this.api.updateUserData(payload).subscribe({
+      next: (res: HttpResponse<any>) => {
+        this.isUpdating = false;
+
+        const response = res.body;
+
+        if (response?.code === 200) {
+          this.toastr.success('User Info Updated successfully!', 'Success');
+          this.userDetailsModalOpen = false;
+                    window.location.reload()
+
+          this.closeEditModal();
+        } else {
+          this.toastr.error('Update failed.', 'Error');
+        }
+      },
+      error: (err) => {
+        this.isUpdating = false;
+        this.toastr.error('Update failed. Please try again.', 'Error');
+        console.error('Update error:', err);
+      },
+    });
+  }
+  
 }

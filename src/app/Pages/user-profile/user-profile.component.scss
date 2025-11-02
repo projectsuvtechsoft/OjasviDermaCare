@@ -687,11 +687,12 @@ select option[disabled][hidden] {
 
 /* Each timeline step */
 .timeline-step {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 70px; /* fixed height for each step */
-  position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    /* Set a consistent height matching detail-item's height */
+    height: 65px; 
 }
 
 /* Circle for each step */
@@ -706,6 +707,7 @@ select option[disabled][hidden] {
   font-size: 11px;
   color: #fff;
   z-index: 2;
+  margin-top:0
 }
 
 .timeline-step.active .circle {
@@ -714,9 +716,11 @@ select option[disabled][hidden] {
 
 /* Vertical line */
 .line {
-  width: 2px;
-  height: 100%; /* fill the step height */
-  background-color: #ccc;
+    width: 2px;
+    background-color: #d1d5db;
+    flex-grow: 1;
+    /* CRITICAL FIX: Removed min-height: 40px; and let flex-grow 1 handle the space */
+    margin-top: 4px; /* Space between circle and line start */
 }
 
 .timeline-step.active .line {
@@ -930,9 +934,9 @@ margin-bottom: 22px;
 
 .timeline-container {
   display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  padding: 14px;
+    gap: 16px; 
+    align-items: flex-start;
+    padding: 14px;
 }
 
 .timeline {
@@ -981,26 +985,32 @@ margin-bottom: 22px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  margin-left: 12px;
+  // margin-left: 12px;
 }
 
 .detail-item {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 44px;
-  padding: 4px 0;
+    display: flex;
+    flex-direction: column;
+    /* Align to the top edge of the step container */
+    justify-content: flex-start;
+    
+    /* CRITICAL FIX: Match the height of a timeline-step (circle + line) */
+    /* Circle (20px) + Line margin (4px) + Top/Bottom padding (~40px) = ~64px. Let's use 65px for clean alignment. */
+    min-height: 65px; 
+    padding: 0; /* Remove padding here, adjust inner text padding */
 }
 
 .status-header {
-  font-weight: 600;
-  font-size: 14px;
-  margin-bottom: 2px;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1.2; /* Tighter line height for clean look */
+    margin-bottom: 2px; /* Small gap between header and date */
 }
 
 .detail-item small {
-  font-size: 12px;
-  color: #6b7280;
+    font-size: 12px;
+    color: #6b7280;
+    line-height: 1.2; /* Tighter line height for clean look */
 }
 .order-card {
   border: 1px solid #d4d4d4;
@@ -1368,6 +1378,212 @@ margin-bottom: 22px;
     font-size: 11px;
     display: contents;
 }
+
 }
 
+.small-loader {
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid rgb(90, 143, 105);
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.verify-button {
+  width: 100%;
+  background-color: rgb(90, 143, 105);
+  color: white;
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.verify-button:disabled {
+  background-color: #a3a3a3;
+  cursor: not-allowed;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.modal-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+  width: 90%;
+  max-width: 400px; /* Standard modal width */
+}
+
+.modal-header {
+  display: flex;
+  justify-content: flex-end;
+  //   margin-bottom: 1px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #888;
+}
+
+/* --- OTP Content Styling --- */
+
+.otp-content {
+  text-align: center;
+}
+
+.otp-content h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+}
+
+.verification-text {
+  color: #636363;
+  margin-bottom: 20px;
+}
+
+.phone-number {
+  font-weight: bold;
+  color: #333;
+}
+
+/* --- OTP Input Group --- */
+
+.otp-input-group {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.otp-input {
+  width: 45px;
+  height: 45px;
+  text-align: center;
+  font-size: 1.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  // Custom focus ring color
+  &:focus {
+    border-color: #5a8f69;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(90, 143, 105, 0.3);
+  }
+}
+
+/* --- Timer and Resend --- */
+
+.timer-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.timer-display {
+  color: #5a8f69;
+  font-weight: bold;
+}
+
+.resend-text {
+  color: #636363;
+  margin: 0;
+}
+
+.resend-text a {
+  text-decoration: none;
+  font-weight: bold;
+
+  &.disabled {
+    cursor: default !important;
+    color: #636363 !important;
+  }
+}
+
+/* --- Verify Button --- */
+
+.verify-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #5a8f69;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover:not([disabled]) {
+    background-color: #4a7755;
+  }
+
+  &[disabled] {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+}
+
+/* Add a basic spinner style if you don't use Bootstrap/Angular Material */
+.spinner-border {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  vertical-align: text-bottom;
+  border: 0.1em solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spinner-border 0.75s linear infinite;
+}
+
+@keyframes spinner-border {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.detail-pending .status-subtitle, 
+.detail-packaging .status-subtitle,
+.detail-dispatch .status-subtitle,
+.detail-delivered .status-subtitle,
+.detail-cancelled .status-subtitle {
+    /* REMOVE or set to 0 to fix vertical spacing */
+    /* height: 16px; */
+    /* line-height: 16px; */
+    margin-bottom: 0 !important; /* This was the main culprit for congestion */
+}
+.timeline-step.active .circle, 
+.timeline-step.active .line {
+    background-color: #22c55e; /* Green color from Tailwind's default green-500/600 range */
+}
 

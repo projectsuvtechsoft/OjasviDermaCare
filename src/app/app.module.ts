@@ -63,15 +63,16 @@ import { OrderDetailsComponent } from './Pages/order-details/order-details.compo
     BrowserAnimationsModule,
     ToastrModule.forRoot({
       positionClass: 'toast-bottom-center',
-      timeOut: 3000,
+      timeOut: 5000,
+      closeButton: true,
       preventDuplicates: true,
     }),
      BrowserAnimationsModule,
-    ToastrModule.forRoot({
-      positionClass: 'toast-bottom-center',
-      timeOut: 3000,
-      preventDuplicates: true,
-    }),
+    // ToastrModule.forRoot({
+    //   positionClass: 'toast-bottom-center',
+    //   timeOut: 3000,
+    //   preventDuplicates: true,
+    // }),
   ],
   providers: [CookieService, DatePipe],
   bootstrap: [AppComponent],

@@ -147,32 +147,54 @@
           />
 
           <!-- Buttons -->
-          <div
-            class="absolute top-2 right-2 md:top-3 md:right-3 z-10 flex gap-1 md:gap-2"
-          >
-            <button
-              class="w-8 h-8 md:w-9 md:h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm hover:bg-white transition-all duration-300 transform hover:scale-110"
-              [ngClass]="{
-                'text-green-500': data.isLiked,
-                'text-gray-600': !data.isLiked
-              }"
-              (click)="toggleLike(data, $event)"
-            >
-              <i
-                [class]="
-                  data.isLiked
-                    ? 'ri-heart-fill text-sm md:text-base'
-                    : 'ri-heart-line text-sm md:text-base'
-                "
-              ></i>
-            </button>
-            <button
-              class="w-8 h-8 md:w-9 md:h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm hover:bg-white transition-all duration-300 transform hover:scale-110 text-gray-600 hover:text-green-600"
-              (click)="shareProduct(data)"
-            >
-              <i class="ri-share-line text-sm md:text-base"></i>
-            </button>
-          </div>
+        <div
+  class="absolute top-2 right-2 md:top-3 md:right-3 z-10 flex gap-1 md:gap-2"
+>
+  <!-- Like Button -->
+  <div class="relative group flex">
+    <button
+      class="w-8 h-8 md:w-9 md:h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm hover:bg-white transition-all duration-300 transform hover:scale-110"
+      [ngClass]="{
+        'text-green-500': data.isLiked,
+        'text-gray-600': !data.isLiked
+      }"
+      (click)="toggleLike(data, $event)"
+    >
+      <i
+        [class]="
+          data.isLiked
+            ? 'ri-heart-fill text-sm md:text-base'
+            : 'ri-heart-line text-sm md:text-base'
+        "
+      ></i>
+    </button>
+
+    <!-- Tooltip -->
+    <div
+      class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none"
+    >
+      {{ data.isLiked ? 'Unlike' : 'Like' }}
+    </div>
+  </div>
+
+  <!-- Share Button -->
+  <div class="relative group flex">
+    <button
+      class="w-8 h-8 md:w-9 md:h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm hover:bg-white transition-all duration-300 transform hover:scale-110 text-gray-600 hover:text-green-600"
+      (click)="shareProduct(data)"
+    >
+      <i class="ri-share-line text-sm md:text-base"></i>
+    </button>
+
+    <!-- Tooltip -->
+    <div
+      class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none"
+    >
+      Share
+    </div>
+  </div>
+</div>
+
 
           <!-- Discount Badge -->
           <div

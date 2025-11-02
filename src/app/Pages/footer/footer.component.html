@@ -6,6 +6,7 @@
   "
 >
   <section
+    *ngIf="isHomePage()"
     class="newsletter-section text-white max-h-full mb-6"
     style="
       font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI,
@@ -83,8 +84,8 @@
       </div>
     </div>
   </section>
-  <div class="container mx-auto px-4">
-    <div class="flex flex-col lg:flex-row lg:justify-between gap-12 mb-8">
+  <div class="container mx-auto px-4" [ngClass]="{'py-3':!isHomePage()}">
+    <div class="flex flex-col lg:flex-row lg:justify-between gap-12 mb-8" >
       <div class="lg:w-2/3">
         <h3
           class="text-xl font-bold text-gray-900 mb-3"

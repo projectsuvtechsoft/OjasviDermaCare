@@ -83,7 +83,8 @@ export class ProductpageComponent {
       const projectId = paramMap.get('id');
       this.varientId = Number(this.route.snapshot.paramMap.get('variantId'));
       // console.log(this.propertyyData);
-      this.getProductData();
+      // this.getProductData();
+      this.getpropertyDetails(this.propertyId)
 
       // if (this.propertyId) {
       //   this.varientId = Number(this.route.snapshot.paramMap.get('variantId'));
@@ -988,16 +989,16 @@ export class ProductpageComponent {
     };
     if (existingProductIndex !== -1) {
       this.cartService.addToCart(productWithTotal);
-      this.toastr.success(`${product.NAME} updated in cart`, '');
+      // this.toastr.success(`${product.NAME} updated in cart`, '');
       this.viewCart = true;
     } else {
       // this.productsArray = [...this.productsArray, productWithTotal];
       this.cartService.addToCart(productWithTotal);
-      this.toastr.success(`${product.NAME} added to cart`);
+      // this.toastr.success(`${product.NAME} added to cart`);
       this.viewCart = true;
     }
     this.quantity = 1; // or 0 depending on your default
-    if (this.varient.length > 0) {
+    if (this.varient?.length > 0) {
       const firstVariant = this.varient[0];
 
       this.selectedVariantId = firstVariant.ID;

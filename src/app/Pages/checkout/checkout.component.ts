@@ -5,7 +5,9 @@ import {
   HostListener,
   Input,
   Output,
+  QueryList,
   ViewChild,
+  ViewChildren,
 } from '@angular/core';
 import { ApiServiceService } from 'src/app/Service/api-service.service';
 import { CommonFunctionService } from 'src/app/Service/CommonFunctionService';
@@ -89,7 +91,7 @@ export class CheckoutComponent {
     IS_DEFAULT: false,
     IS_DEFUALT_ADDRESS: false,
     SESSION_KEY: '',
-    COUNTRY_CODE: '',
+    COUNTRY_CODE: '+1',
   };
 
   countryList: any[] = [];
@@ -101,6 +103,9 @@ export class CheckoutComponent {
   encryptedmail: string = sessionStorage.getItem('email') || '';
   encryptedmobno: string = sessionStorage.getItem('mobno') || '';
   cartId: any;
+  searchQuery: any;
+  filteredCountryCodes!: { label: string; value: string }[];
+  showCountryDropdown!: boolean;
 
   constructor(
     private api: ApiServiceService,
@@ -123,7 +128,7 @@ export class CheckoutComponent {
   showOrderSummaryModal: boolean = false;
   public isMobile: boolean = false;
   ngOnInit() {
-    // console.log(this.cartDetails);
+    // console.log(sessionStorage.getItem('IS_GUEST'));
     this.fetchCountries();
     // this.addressDrawerOpen=false
     this.cartId = this.cartDetails?.cartDetails[0]?.CART_ID || '';
@@ -174,6 +179,7 @@ export class CheckoutComponent {
    * Opens the main address management drawer, showing the list of addresses by default.
    */
   openAddressDrawer() {
+    this.verificationStatus = 'pending';
     this.addressDrawerOpen = true;
     this.showAddressForm = false; // Always show the list when opening the drawer
   }
@@ -182,6 +188,8 @@ export class CheckoutComponent {
    * Closes the entire address management drawer.
    */
   closeAddressDrawer() {
+    // this.verificationStatus='initial'
+
     this.visibleChange.emit(false);
     this.addressDrawerOpen = false;
     // Optional: Reset form state when closing the drawer completely
@@ -239,18 +247,21 @@ export class CheckoutComponent {
         (addr) => addr.ID === addressId
       );
 
-      // console.log('Address to edit:', addressToEdit);
       if (addressToEdit) {
-        this.addressForm = { ...addressToEdit }; // Create a copy for editing
-        // if (this.addressForm.COUNTRY_ID) {
-        // this.fetchStates(this.addressForm.COUNTRY_ID); // Load states for the selected country
-        // this.fetchPincodes(this.addressForm.PINCODE);
+        this.addressForm = Object.assign({}, addressToEdit);
+        this.citySearch = addressToEdit.CITY_NAME;
+        this.stateSearch = addressToEdit.STATE_NAME;
         this.prefillCountryStateCity();
-        this.verificationStatus = 'initial';
+        if (addressToEdit.EMAIL_ID) {
+          this.verificationStatus = 'verified';
+        }
+
+        // this.verificationStatus = 'initial';
         // }
       } else {
         // console.error('Address not found for editing:', addressId);
         this.toastr.error('Address not found.', 'Error');
+        this.verificationStatus = 'pending';
         this.resetAddressForm(); // Reset if address not found
         this.isEditingAddress = false;
         this.currentAddressId = null;
@@ -258,8 +269,8 @@ export class CheckoutComponent {
     } else {
       this.isEditingAddress = false;
       this.currentAddressId = null;
-      this.resetAddressForm();
-      this.verificationStatus = 'initial'; // Reset for a new address
+      // this.resetAddressForm();
+      // this.verificationStatus = 'initial'; // Reset for a new address
     }
   }
 
@@ -275,8 +286,8 @@ export class CheckoutComponent {
   // --- Address Management Core Functions ---
   loadingScreen = true;
   fetchSavedAddresses() {
-    let euid=sessionStorage.getItem('userId')
-    let duid=euid?this.commonFunction.decryptdata(euid):null
+    let euid = sessionStorage.getItem('userId');
+    let duid = euid ? this.commonFunction.decryptdata(euid) : null;
     if (this.userId || duid) {
       var filter = ` AND CUST_ID = ${this.userId || duid}`;
     } else {
@@ -289,6 +300,9 @@ export class CheckoutComponent {
 
           if (response['count'] == 0) {
             this.hasAddresses = false;
+            // if (sessionStorage.getItem('IS_GUEST')) {
+              this.showAddressForm=true
+            // }
           } else {
             this.hasAddresses = true;
           }
@@ -347,7 +361,7 @@ export class CheckoutComponent {
             this.cartDetails.cartDetails[0]['PINCODE'] =
               this.addressForm.PINCODE;
             this.cartService.currentProduct = this.cartDetails.cartDetails[0];
-            this.cartService.updateCartToServer();
+            this.cartService.updateCartToServewithouttoastrr();
             this.cartService.cartUpdated.next(this.cartService.cartItems);
             // console.log(this.cartService.cartItems)
             // this.cartDetails.cartDetails = this.cartService.getCartItems();
@@ -402,7 +416,7 @@ export class CheckoutComponent {
       this.cartDetails.cartDetails[0]['CART_ITEM_ID'] = CART_ITEM_ID;
       this.cartDetails.cartDetails[0]['PINCODE'] = address.PINCODE;
       this.cartService.currentProduct = this.cartDetails.cartDetails[0];
-      this.cartService.updateCartToServer();
+      this.cartService.updateCartToServewithouttoastrr();
       // this.cartService.cartUpdated.next(this.cartService.cartItems);
 
       // console.log(this.cartService.cartItems)
@@ -429,7 +443,7 @@ export class CheckoutComponent {
       IS_DEFAULT: false,
       AREA: '',
       SESSION_KEY: '',
-      COUNTRY_CODE: '',
+      COUNTRY_CODE: '+1',
     };
     // this.stateList = []; // Clear states when resetting country
     // this.pincodeList = [];
@@ -449,7 +463,7 @@ export class CheckoutComponent {
     //   this.toastr.error('Please fill all required fields.', '');
     //   return;
     // }
-    console.log(this.addressForm);
+    // console.log(this.addressForm);
     if (
       (this.addressForm.NAME == '' ||
         this.addressForm.NAME == null ||
@@ -548,7 +562,7 @@ export class CheckoutComponent {
       this.addressForm.PINCODE.trim() === ''
     ) {
       // this.isOk = false;
-      this.toastr.error(' Please Enter Zipcode ', '');
+      this.toastr.error(' Please Enter Pincode/ZIP ', '');
       return;
     } else if (
       !this.addressForm.ADDRESS_TYPE ||
@@ -561,6 +575,15 @@ export class CheckoutComponent {
     //   this.toastr.error('Please specify if this is default', '');
     //   return;
     // }
+
+    if (
+      !this.addressForm.COUNTRY_CODE ||
+      this.addressForm.COUNTRY_CODE == '' ||
+      this.addressForm.COUNTRY_CODE == null ||
+      this.addressForm.COUNTRY_CODE == undefined
+    ) {
+      this.addressForm.COUNTRY_CODE = '+1';
+    }
 
     if (this.userId) {
       this.addressForm.CUST_ID = this.userId;
@@ -760,7 +783,8 @@ export class CheckoutComponent {
 
               // }, 300);
             } else {
-              this.stateSearch = '';
+              console.log(this.addressForm);
+              this.stateSearch = this.stateSearch;
             }
           } else {
             this.stateList = [];
@@ -771,6 +795,46 @@ export class CheckoutComponent {
           console.error('Error fetching states:', error);
         }
       );
+  }
+  filterCountriesd(event: any) {
+    const query = event.target.value.toLowerCase().trim();
+    this.searchQuery = query;
+    this.filteredCountryCodes = this.countryCodes.filter(
+      (country) =>
+        country.label.toLowerCase().includes(query) ||
+        country.value.toLowerCase().includes(query)
+    );
+  }
+
+  toggleCountryDropdown(event: Event) {
+    event.stopPropagation();
+    this.showCountryDropdown = !this.showCountryDropdown;
+    // console.log('showCountryDropdown: ', this.showCountryDropdown);
+
+    if (this.showCountryDropdown) {
+      // console.log('showCountryDropdown: ', this.showCountryDropdown);
+      this.filteredCountryCodes = [...this.countryCodes]; // Create a new array copy
+      this.searchQuery = '';
+    }
+  }
+
+  // Close-on-outside-click support for any country dropdown instance in this component
+  @ViewChildren('dropdownWrapper') dropdownWrappers!: QueryList<ElementRef>;
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.showCountryDropdown) return;
+    const target = event.target as Node;
+    const wrappers = this.dropdownWrappers
+      ? this.dropdownWrappers.toArray()
+      : [];
+    const clickedInside = wrappers.some((ref) =>
+      ref.nativeElement.contains(target)
+    );
+    if (!clickedInside) {
+      this.showCountryDropdown = false;
+      this.searchQuery = '';
+    }
   }
 
   get selectedShippingCharge(): number {
@@ -842,6 +906,8 @@ export class CheckoutComponent {
   // On success:
 
   // }
+  // live:sq0idp-MZsV8XmKikjtR3cQ_FqOXw
+  // test:sandbox-sq0idb-rV2VaHliz7OXmsejGzJq4Q
   isLoadingCard = false;
   async initiateSquarePayment() {
     if (!this.selectedAddress) {
@@ -894,6 +960,7 @@ export class CheckoutComponent {
     const cardResult = await this.card.tokenize();
 
     if (cardResult.status === 'OK') {
+      // console.log('Card tokenization successful:', cardResult);ks
       const token = cardResult.token;
       const baseUrl = this.api.baseUrl;
       const headers = new HttpHeaders({
@@ -906,19 +973,19 @@ export class CheckoutComponent {
       if (this.userId) {
         this.SESSION_KEYS = '';
       }
+
       this.http
         .post(
           baseUrl + 'web/cart/proceedToPayment',
           {
             nonce: token,
             amount:
-              Math.round(
-                this.selectedPrice -
-                  this.selectedDiscount +
-                  (this.cartDetails.cartDetails[0]['DATA'].NET_AMOUNT -
-                    this.cartDetails.cartDetails[0]['DATA']
-                      .TOTAL_DISCOUNT_AMOUNT)
-              ) * 100,
+              (this.selectedPrice -
+                this.selectedDiscount +
+                (this.cartDetails?.cartDetails?.[0]?.['DATA'].NET_AMOUNT -
+                  this.cartDetails?.cartDetails?.[0]?.['DATA']
+                    .TOTAL_DISCOUNT_AMOUNT)) *
+              100,
             PAYMENT_MODE: 'O',
             ADDRESS_ID: this.selectedAddress!.ID,
             CART_ID: this.cartId,
@@ -926,9 +993,9 @@ export class CheckoutComponent {
             SESSION_KEY: this.SESSION_KEYS,
             COUNTRY_NAME: this.selectedAddress.COUNTRY_NAME,
             STATE_NAME: this.selectedAddress.STATE_NAME,
-            CITY_NAME: this.selectedAddress.CITY,
+            CITY_NAME: this.selectedAddress.CITY_NAME,
             PINCODE: this.selectedAddress.PINCODE,
-            COUNTRY_CODE: '+1',
+            COUNTRY_CODE: this.selectedAddress.COUNTRY_CODE,
             CLIENT_ID: 1,
           },
           {
@@ -947,6 +1014,7 @@ export class CheckoutComponent {
               this.toastr.success('Payment successful!', 'Success');
               this.cartDetails.cartDetails[0]['INVOICE_NUMBER'] =
                 response.invoiceNumber;
+
               var redirectionOrderId = response.order_id;
               this.currentStep = 4;
               // this.closePaymentModal();
@@ -958,15 +1026,15 @@ export class CheckoutComponent {
               // this.showReceiptModal = true;
 
               this.router
-                .navigate(['/order/' + redirectionOrderId])
+                .navigate(['order'], {
+                  queryParams: { orderId: redirectionOrderId },
+                })
                 .then(() => {
-                  // window.location.reload()
                   this.addressDrawerOpen = false;
                   this.cartService.cartItems = [];
                   this.cartService.cartUpdated.next(this.cartService.cartItems);
                   this.cartService.updateCartCount();
                 });
-
               setTimeout(() => {
                 this.enableDownload = true;
               }, 5000);
@@ -1094,6 +1162,7 @@ export class CheckoutComponent {
     this.filteredCities = [];
     this.resetAddressForm();
     // this.openAddressDrawer();
+    // this.verificationStatus='initial'
   }
 
   isLoadingCountries = false;
@@ -1125,6 +1194,13 @@ export class CheckoutComponent {
     this.fetchStates(country.ID);
   }
 
+  selectCountrycode(country: any) {
+    this.addressForm.COUNTRY_CODE = country;
+    // console.log('Selected country code:', this.addressForm.COUNTRY_CODE);
+    // this.data.COUNTRY_CODE = this.selectedCountryCode;
+    this.showCountryDropdown = false;
+    this.searchQuery = '';
+  }
   selectState(state: any) {
     this.addressForm.STATE_NAME = state.NAME ?? this.stateSearch;
     this.stateSearch = state.NAME;
@@ -1133,13 +1209,13 @@ export class CheckoutComponent {
   }
 
   filterCountries() {
-    const term = this.countrySearch.trim().toLowerCase();
+    const term = this.countrySearch?.trim().toLowerCase();
     if (!term) {
       this.filteredCountries = [];
       return;
     }
 
-    this.filteredCountries = this.countryList.filter((c) =>
+    this.filteredCountries = this.countryList?.filter((c) =>
       c.NAME.toLowerCase().includes(term)
     );
   }
@@ -1158,12 +1234,12 @@ export class CheckoutComponent {
 
   // Add button logic: only show if no exact match
   get showAddCountryOption(): any {
-    const term = this.countrySearch.trim().toLowerCase();
+    const term = this.countrySearch?.trim().toLowerCase();
     return term && !this.countryList.some((c) => c.NAME.toLowerCase() === term);
   }
 
   get showAddStateOption(): any {
-    const term = this.stateSearch.trim().toLowerCase();
+    const term = this.stateSearch?.trim().toLowerCase();
     return term && !this.stateList.some((s) => s.NAME.toLowerCase() === term);
   }
 
@@ -1258,7 +1334,10 @@ export class CheckoutComponent {
             const selectedCity = this.cityList.find(
               (c) => c.ID === this.addressForm.CITY_NAME
             );
-            this.citySearch = selectedCity ? selectedCity.NAME : '';
+            this.citySearch = selectedCity
+              ? selectedCity.NAME
+              : this.citySearch;
+            console.log('citySearch', this.citySearch);
           } else {
             this.cityList = [];
           }
@@ -1323,7 +1402,7 @@ export class CheckoutComponent {
     );
 
     if (selectedCountry) {
-      this.countrySearch = selectedCountry.NAME;
+      this.countrySearch = this.addressForm.COUNTRY_NAME;
       this.fetchStates(selectedCountry.ID);
 
       // Wait for states to load, then prefill state
@@ -1331,7 +1410,7 @@ export class CheckoutComponent {
 
       // }, 300);
     } else {
-      this.countrySearch = '';
+      this.countrySearch = this.addressForm.COUNTRY_NAME;
     }
   }
 
@@ -1339,7 +1418,7 @@ export class CheckoutComponent {
   onCountryInputChange() {
     // console.log(this.countrySearch)
     // If country input is empty, clear selection
-    if (!this.countrySearch || this.countrySearch.trim() === '') {
+    if (!this.countrySearch || this.countrySearch?.trim() === '') {
       this.addressForm.COUNTRY_NAME = null; // clear selected ID
       this.filteredCountries = [];
 
@@ -1447,6 +1526,7 @@ export class CheckoutComponent {
 
   isEmailValid(): boolean {
     const email = this.addressForm.EMAIL_ID;
+    this.isChanged = 1;
     if (!email) return false;
 
     // A simple check against the regex.
@@ -1741,7 +1821,7 @@ export class CheckoutComponent {
   // Add this method to handle modal closing
   closeModal(): void {
     this.showAddressForm = false;
-
+    this.verificationStatus = 'pending';
     // Optional: Reset form state when closing
 
     // Optional: Add any other cleanup logic here
@@ -1864,32 +1944,32 @@ export class CheckoutComponent {
     { label: '+94 (Sri Lanka)', value: '+94' },
     { label: '+95 (Myanmar)', value: '+95' },
     { label: '+1 (United States)', value: '+1' },
-    { label: '+1-242 (Bahamas)', value: '+1-242' },
-    { label: '+1-246 (Barbados)', value: '+1-246' },
-    { label: '+1-264 (Anguilla)', value: '+1-264' },
-    { label: '+1-268 (Antigua and Barbuda)', value: '+1-268' },
-    { label: '+1-284 (British Virgin Islands)', value: '+1-284' },
-    { label: '+1-340 (U.S. Virgin Islands)', value: '+1-340' },
-    { label: '+1-345 (Cayman Islands)', value: '+1-345' },
-    { label: '+1-441 (Bermuda)', value: '+1-441' },
-    { label: '+1-473 (Grenada)', value: '+1-473' },
-    { label: '+1-649 (Turks and Caicos Islands)', value: '+1-649' },
-    { label: '+1-664 (Montserrat)', value: '+1-664' },
-    { label: '+1-670 (Northern Mariana Islands)', value: '+1-670' },
-    { label: '+1-671 (Guam)', value: '+1-671' },
-    { label: '+1-684 (American Samoa)', value: '+1-684' },
-    { label: '+1-721 (Sint Maarten)', value: '+1-721' },
-    { label: '+1-758 (Saint Lucia)', value: '+1-758' },
-    { label: '+1-767 (Dominica)', value: '+1-767' },
-    { label: '+1-784 (Saint Vincent and the Grenadines)', value: '+1-784' },
-    { label: '+1-787 (Puerto Rico)', value: '+1-787' },
-    { label: '+1-809 (Dominican Republic)', value: '+1-809' },
-    { label: '+1-829 (Dominican Republic)', value: '+1-829' },
-    { label: '+1-849 (Dominican Republic)', value: '+1-849' },
-    { label: '+1-868 (Trinidad and Tobago)', value: '+1-868' },
-    { label: '+1-869 (Saint Kitts and Nevis)', value: '+1-869' },
-    { label: '+1-876 (Jamaica)', value: '+1-876' },
-    { label: '+1-939 (Puerto Rico)', value: '+1-939' },
+    // { label: '+1-242 (Bahamas)', value: '+1-242' },
+    // { label: '+1-246 (Barbados)', value: '+1-246' },
+    // { label: '+1-264 (Anguilla)', value: '+1-264' },
+    // { label: '+1-268 (Antigua and Barbuda)', value: '+1-268' },
+    // { label: '+1-284 (British Virgin Islands)', value: '+1-284' },
+    // { label: '+1-340 (U.S. Virgin Islands)', value: '+1-340' },
+    // { label: '+1-345 (Cayman Islands)', value: '+1-345' },
+    // { label: '+1-441 (Bermuda)', value: '+1-441' },
+    // { label: '+1-473 (Grenada)', value: '+1-473' },
+    // { label: '+1-649 (Turks and Caicos Islands)', value: '+1-649' },
+    // { label: '+1-664 (Montserrat)', value: '+1-664' },
+    // { label: '+1-670 (Northern Mariana Islands)', value: '+1-670' },
+    // { label: '+1-671 (Guam)', value: '+1-671' },
+    // { label: '+1-684 (American Samoa)', value: '+1-684' },
+    // { label: '+1-721 (Sint Maarten)', value: '+1-721' },
+    // { label: '+1-758 (Saint Lucia)', value: '+1-758' },
+    // { label: '+1-767 (Dominica)', value: '+1-767' },
+    // { label: '+1-784 (Saint Vincent and the Grenadines)', value: '+1-784' },
+    // { label: '+1-787 (Puerto Rico)', value: '+1-787' },
+    // { label: '+1-809 (Dominican Republic)', value: '+1-809' },
+    // { label: '+1-829 (Dominican Republic)', value: '+1-829' },
+    // { label: '+1-849 (Dominican Republic)', value: '+1-849' },
+    // { label: '+1-868 (Trinidad and Tobago)', value: '+1-868' },
+    // { label: '+1-869 (Saint Kitts and Nevis)', value: '+1-869' },
+    // { label: '+1-876 (Jamaica)', value: '+1-876' },
+    // { label: '+1-939 (Puerto Rico)', value: '+1-939' },
     { label: '+20 (Egypt)', value: '+20' },
     { label: '+211 (South Sudan)', value: '+211' },
     { label: '+212 (Morocco)', value: '+212' },
@@ -2095,4 +2175,28 @@ export class CheckoutComponent {
     { label: 'Kyrgyzstan (+996)', value: '+996' },
     { label: 'Uzbekistan (+998)', value: '+998' },
   ];
+
+  onStateInputChange() {
+    if (!this.stateSearch || this.stateSearch.trim() === '') {
+      this.addressForm.STATE_NAME = null;
+      this.filteredStates = [];
+    }
+    this.addressForm.STATE_NAME = this.stateSearch;
+  }
+
+  // by sanju
+
+  onEmailChange() {
+    // Reset verification when email changes
+    this.verificationStatus = 'initial';
+  }
+
+  onlyNumbers(event: KeyboardEvent) {
+    const charCode = event.which ? event.which : event.keyCode;
+    if (charCode < 48 || charCode > 57) {
+      event.preventDefault();
+    }
+  }
+
+  isChanged: any = 0;
 }

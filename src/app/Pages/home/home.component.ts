@@ -886,7 +886,7 @@ onDrawerClick(event: any) {
     // Refresh the userId from sessionStorage
     this.userId = sessionStorage.getItem('userId') || '';
     this.guest = sessionStorage.getItem('IS_GUEST') || 'false';
-    console.log('Updated userId:', this.userId);
+    // console.log('Updated userId:', this.userId);
 
     if (!this.userId && this.guest == 'false') {
       this.showLoginModal();

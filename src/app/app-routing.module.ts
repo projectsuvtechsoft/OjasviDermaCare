@@ -37,8 +37,10 @@ const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'product-list/:categoryid', component: HomeComponent },
   { path: 'checkout', component: CheckoutComponent },
-  { path: 'order/:key', component: OrderDetailsComponent },
-{ path: 'order/:key/**', component: OrderDetailsComponent }, // for extra safety
+  // { path: 'order/:key', component: OrderDetailsComponent }
+  { path: 'order', component: OrderDetailsComponent },
+
+// { path: 'order/:key/**', component: OrderDetailsComponent }, // for extra safety
   { path: 'cart', component: CartDrawerComponent },
   { path: '**', redirectTo: '/home', pathMatch: 'full' }
 ];

@@ -26,7 +26,14 @@ import { registerdata } from '../login/login/login.component';
 import { NgForm } from '@angular/forms';
 import { LoaderService } from 'src/app/Service/loader.service';
 import { DatePipe, Location } from '@angular/common';
-import { forkJoin, interval, map, Observable, switchMap, takeWhile } from 'rxjs';
+import {
+  forkJoin,
+  interval,
+  map,
+  Observable,
+  switchMap,
+  takeWhile,
+} from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 // import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
@@ -80,9 +87,9 @@ export class HeaderComponent {
     private datePipe: DatePipe,
     private http: HttpClient
   ) {
-    this.userName = sessionStorage.getItem('USER_NAME')?.split(' ')[0] || '';
-      this.cartService.cartCount$.subscribe((count) => {
-      this.cartCount = count; // updates automatically when server data arrives
+    // this.userName = sessionStorage.getItem('USER_NAME')?.split(' ')[0] || '';
+    this.cartService.cartCount$.subscribe((count) => {
+      this.cartCount = count;
     });
   }
 
@@ -214,13 +221,14 @@ export class HeaderComponent {
         if (successCode.code == '200') {
           // ✅ Clear session storage
           sessionStorage.removeItem('userId');
+          sessionStorage.removeItem('USER_NAME');
           sessionStorage.removeItem('token');
           this.cookie.delete('token');
 
           this.toastr.success('You have logged out successfully!', 'Success');
-           this.cartService.cartItems = [];
-                  this.cartService.cartUpdated.next(this.cartService.cartItems);
-                  this.cartService.updateCartCount();
+          this.cartService.cartItems = [];
+          this.cartService.cartUpdated.next(this.cartService.cartItems);
+          this.cartService.updateCartCount();
           this.router.navigate(['/home']);
         } else {
           this.toastr.error('Logout failed!', '');
@@ -359,10 +367,11 @@ export class HeaderComponent {
 
     if (euserID && etoken) {
       userID = this.commonFunction.decryptdata(euserID);
+      this.cartService.fetchCartFromServer(userID, token);
+
       token = etoken;
     }
 
-    this.cartService.fetchCartFromServer(userID, token);
     if (userID && token) {
       this.getUserData();
     }
@@ -717,32 +726,32 @@ export class HeaderComponent {
     { label: '+94 (Sri Lanka)', value: '+94' },
     { label: '+95 (Myanmar)', value: '+95' },
     { label: '+1 (United States)', value: '+1' },
-    { label: '+1-242 (Bahamas)', value: '+1-242' },
-    { label: '+1-246 (Barbados)', value: '+1-246' },
-    { label: '+1-264 (Anguilla)', value: '+1-264' },
-    { label: '+1-268 (Antigua and Barbuda)', value: '+1-268' },
-    { label: '+1-284 (British Virgin Islands)', value: '+1-284' },
-    { label: '+1-340 (U.S. Virgin Islands)', value: '+1-340' },
-    { label: '+1-345 (Cayman Islands)', value: '+1-345' },
-    { label: '+1-441 (Bermuda)', value: '+1-441' },
-    { label: '+1-473 (Grenada)', value: '+1-473' },
-    { label: '+1-649 (Turks and Caicos Islands)', value: '+1-649' },
-    { label: '+1-664 (Montserrat)', value: '+1-664' },
-    { label: '+1-670 (Northern Mariana Islands)', value: '+1-670' },
-    { label: '+1-671 (Guam)', value: '+1-671' },
-    { label: '+1-684 (American Samoa)', value: '+1-684' },
-    { label: '+1-721 (Sint Maarten)', value: '+1-721' },
-    { label: '+1-758 (Saint Lucia)', value: '+1-758' },
-    { label: '+1-767 (Dominica)', value: '+1-767' },
-    { label: '+1-784 (Saint Vincent and the Grenadines)', value: '+1-784' },
-    { label: '+1-787 (Puerto Rico)', value: '+1-787' },
-    { label: '+1-809 (Dominican Republic)', value: '+1-809' },
-    { label: '+1-829 (Dominican Republic)', value: '+1-829' },
-    { label: '+1-849 (Dominican Republic)', value: '+1-849' },
-    { label: '+1-868 (Trinidad and Tobago)', value: '+1-868' },
-    { label: '+1-869 (Saint Kitts and Nevis)', value: '+1-869' },
-    { label: '+1-876 (Jamaica)', value: '+1-876' },
-    { label: '+1-939 (Puerto Rico)', value: '+1-939' },
+    // { label: '+1-242 (Bahamas)', value: '+1-242' },
+    // { label: '+1-246 (Barbados)', value: '+1-246' },
+    // { label: '+1-264 (Anguilla)', value: '+1-264' },
+    // { label: '+1-268 (Antigua and Barbuda)', value: '+1-268' },
+    // { label: '+1-284 (British Virgin Islands)', value: '+1-284' },
+    // { label: '+1-340 (U.S. Virgin Islands)', value: '+1-340' },
+    // { label: '+1-345 (Cayman Islands)', value: '+1-345' },
+    // { label: '+1-441 (Bermuda)', value: '+1-441' },
+    // { label: '+1-473 (Grenada)', value: '+1-473' },
+    // { label: '+1-649 (Turks and Caicos Islands)', value: '+1-649' },
+    // { label: '+1-664 (Montserrat)', value: '+1-664' },
+    // { label: '+1-670 (Northern Mariana Islands)', value: '+1-670' },
+    // { label: '+1-671 (Guam)', value: '+1-671' },
+    // { label: '+1-684 (American Samoa)', value: '+1-684' },
+    // { label: '+1-721 (Sint Maarten)', value: '+1-721' },
+    // { label: '+1-758 (Saint Lucia)', value: '+1-758' },
+    // { label: '+1-767 (Dominica)', value: '+1-767' },
+    // { label: '+1-784 (Saint Vincent and the Grenadines)', value: '+1-784' },
+    // { label: '+1-787 (Puerto Rico)', value: '+1-787' },
+    // { label: '+1-809 (Dominican Republic)', value: '+1-809' },
+    // { label: '+1-829 (Dominican Republic)', value: '+1-829' },
+    // { label: '+1-849 (Dominican Republic)', value: '+1-849' },
+    // { label: '+1-868 (Trinidad and Tobago)', value: '+1-868' },
+    // { label: '+1-869 (Saint Kitts and Nevis)', value: '+1-869' },
+    // { label: '+1-876 (Jamaica)', value: '+1-876' },
+    // { label: '+1-939 (Puerto Rico)', value: '+1-939' },
     { label: '+20 (Egypt)', value: '+20' },
     { label: '+211 (South Sudan)', value: '+211' },
     { label: '+212 (Morocco)', value: '+212' },
@@ -1003,34 +1012,31 @@ export class HeaderComponent {
     this.dataLoaded = true;
     this.loaderService.hideLoader();
   }
-  migrateCartItems(
-    cartItems: any[],
-    customerID:any
-  ): Observable<any> {
+  migrateCartItems(cartItems: any[], customerID: any): Observable<any> {
     if (!cartItems || cartItems.length === 0) {
-      return new Observable(observer => {
+      return new Observable((observer) => {
         observer.next({ success: true, message: 'No items to migrate' });
         observer.complete();
       });
     }
 
     // Step 1: Delete items from session cart
-    const deleteOperations = cartItems.map(item =>
+    const deleteOperations = cartItems.map((item) =>
       this.cartService.removeFromCartnotoast(item.PRODUCT_ID)
     );
 
     // Step 2: After deleting, add items to user's customer cart
     return forkJoin(deleteOperations).pipe(
       switchMap(() => {
-        const addOperations = cartItems.map(item =>
+        const addOperations = cartItems.map((item) =>
           this.cartService.addToCart(item)
         );
         return forkJoin(addOperations);
       }),
-      map(results => ({
+      map((results) => ({
         success: true,
         message: `Migrated ${results.length} items to your cart`,
-        migratedCount: results.length
+        migratedCount: results.length,
       }))
     );
   }
@@ -1052,7 +1058,9 @@ export class HeaderComponent {
     // }
 
     if (!this.data.PASSWORD && !this.mobileNumberorEmail) {
-      this.toastr.error('Please Fill All The Required Fields ', '');
+      this.toastr.error('Please Fill All The Required Fields ', '',{
+      positionClass: 'toast-center' 
+    });
       return;
     } else if (
       !this.mobileNumberorEmail ||
@@ -1067,12 +1075,16 @@ export class HeaderComponent {
           ? 'your mobile number'
           : 'email or mobile number';
 
-      this.toastr.error(`Please enter ${fieldName}.`, '');
+      this.toastr.error(`Please enter ${fieldName}.`, '',{
+      positionClass: 'toast-center' 
+    });
     } else if (
       this.inputType === 'email' &&
       !this.commonFunction.emailpattern.test(this.mobileNumberorEmail)
     ) {
-      this.toastr.error(`Please enter valid email address.`, '');
+      this.toastr.error(`Please enter valid email address.`, '',{
+      positionClass: 'toast-center' 
+    });
     }
     // else if (
     //   this.inputType === 'mobile' &&
@@ -1086,7 +1098,9 @@ export class HeaderComponent {
       this.data.PASSWORD == null ||
       this.data.PASSWORD == undefined
     ) {
-      this.toastr.error('Please enter password.', '');
+      this.toastr.error('Please enter password.', '',{
+      positionClass: 'toast-center' 
+    });
     } else {
       // Determine type based on input value
       this.type = this.isEmail(this.mobileNumberorEmail) ? 'E' : 'M';
@@ -1166,7 +1180,8 @@ export class HeaderComponent {
                 successCode.data[0]['UserData'][0]['NAME']
               );
               // this.modalservice.closeModal();
-
+              this.userName =
+                successCode.data[0]['UserData'][0]['NAME']?.split(' ')[0] || '';
               this.inputType = 'initial';
 
               // console.log(this.isLoggedIn, 'this.isLoggedIn');
@@ -1177,32 +1192,45 @@ export class HeaderComponent {
                   cartDetails: this.cartItems, // Send all items
                   subtotal: this.subtotal,
                 };
-                if(this.cartItems && this.cartItems.length>0){
+                if (this.cartItems && this.cartItems.length > 0) {
                   // this.cartItems.forEach((data:any)=>{
                   //    this.cartService.addToCart(data)
                   // })
-                  this.handleCartMigration(successCode.data[0]['UserData'][0].ID)
+                  this.handleCartMigration(
+                    successCode.data[0]['UserData'][0].ID
+                  );
                   //  console.log(this.migrateCartItems(this.cartItems,successCode.data[0]['UserData'][0].ID))
                 }
                 // this.updateTotals();
                 this.isCheckoutVisible = true;
               }
+              else{
+                setTimeout(()=>{
+                  window.location.reload()
+                },300)
+              }
             } else if (successCode.code == '404') {
               // form?.resetForm();
               this.toastr.error(
                 'Account not found. Please register to continue.',
-                ''
+                '',{
+      positionClass: 'toast-center' 
+    }
               );
               this.isloginSendOTP = false;
               // this.stopLoader();
             } else if (successCode.code == '401') {
               // form?.resetForm();
-              this.toastr.error('Incorrect username or password', '');
+              this.toastr.error('Incorrect username or password', '',{
+      positionClass: 'toast-center' 
+    });
               this.isloginSendOTP = false;
               // this.stopLoader();
             } else {
               this.isloginSendOTP = false;
-              this.toastr.error('OTP Validation Failed...', '');
+              this.toastr.error('OTP Validation Failed...', '',{
+      positionClass: 'toast-center' 
+    });
               this.stopLoader();
             }
           },
@@ -1218,51 +1246,63 @@ export class HeaderComponent {
         });
     }
   }
-private handleCartMigration(customerId: string): void {
-  const cartItems = this.cartService.getCartItems();
+  private handleCartMigration(customerId: string): void {
+    const cartItems = this.cartService.getCartItems();
 
-  if (!cartItems || cartItems.length === 0) {
-    // No items to migrate
-    this.toastr.success('You have login Successfully!', 'success');
-    this.updateTotals();
-    return;
-  }
-
-  // Show loading indicator
-  // this.toastr.info('Migrating cart items...', '');
-
-  // Call migration service
-  this.cartService.migrateSessionCartToCustomer(cartItems, customerId)
-    .subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.toastr.success(response.message, '');
-          
-          // Clear session cart indicators
-          sessionStorage.removeItem('CART_REDIRECT');
-          sessionStorage.removeItem('SESSION_KEYS');
-
-          // Update UI with migrated cart
-          this.cartItems = this.cartService.getCartItems();
-          this.senddatatoCheckout = {
-            cartDetails: this.cartItems,
-            subtotal: this.subtotal,
-          };
-
-          this.updateTotals();
-          this.isCheckoutVisible = true;
-          
-          this.toastr.success('You have login Successfully!', 'success');
-        }
-      },
-      error: (error) => {
-        console.error('Migration error:', error);
-        this.toastr.error('Failed to migrate cart items. Items may be in your account.', '');
-        this.updateTotals();
-        this.toastr.success('You have login Successfully!', 'success');
-      }
+    if (!cartItems || cartItems.length === 0) {
+      // No items to migrate
+      this.toastr.success('You have login Successfully!', 'success',{
+      positionClass: 'toast-center' 
     });
-}
+      this.updateTotals();
+      return;
+    }
+
+    // Show loading indicator
+    // this.toastr.info('Migrating cart items...', '');
+
+    // Call migration service
+    this.cartService
+      .migrateSessionCartToCustomer(cartItems, customerId)
+      .subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.toastr.success(response.message, '');
+
+            // Clear session cart indicators
+            sessionStorage.removeItem('CART_REDIRECT');
+            sessionStorage.removeItem('SESSION_KEYS');
+
+            // Update UI with migrated cart
+            this.cartItems = this.cartService.getCartItems();
+            this.senddatatoCheckout = {
+              cartDetails: this.cartItems,
+              subtotal: this.subtotal,
+            };
+
+            this.updateTotals();
+            this.isCheckoutVisible = true;
+
+            this.toastr.success('You have login Successfully!', 'success',{
+      positionClass: 'toast-center' 
+    });
+          }
+        },
+        error: (error) => {
+          // console.error('Migration error:', error);
+    //       this.toastr.error(
+    //         'Failed to migrate cart items. Items may be in your account.',
+    //         '',{
+    //   positionClass: 'toast-center' 
+    // }
+    //       );
+          this.updateTotals();
+    //       this.toastr.success('You have login Successfully!', 'success',{
+    //   positionClass: 'toast-center' 
+    // });
+        },
+      });
+  }
   //by sanjana
   goToProductDetails(id: number) {
     this.router.navigateByUrl(`/product_details/${id}`);
@@ -1871,6 +1911,9 @@ private handleCartMigration(customerId: string): void {
           // Bind user data dynamically
           if (this.dataList && this.dataList.length > 0) {
             const userData = this.dataList[0];
+            this.userName =
+              sessionStorage.getItem('USER_NAME')?.split(' ')[0] || '';
+
             this.user = {
               NAME: userData.NAME || '',
               email: userData.EMAIL_ID || '',
@@ -2034,14 +2077,18 @@ private handleCartMigration(customerId: string): void {
         !this.mobileNumberorEmail.trim() &&
         !this.pass.trim()
       ) {
-        this.toastr.error('Please fill in all fields.', '');
+        this.toastr.error('Please fill all fields.', '',{
+      positionClass: 'toast-center' 
+    });
         return;
       } else if (
         this.data.CUSTOMER_NAME.trim() == '' ||
         this.data.CUSTOMER_NAME == undefined ||
         this.data.CUSTOMER_NAME == null
       ) {
-        this.toastr.error('Please enter name.', '');
+        this.toastr.error('Please enter name.', '',{
+      positionClass: 'toast-center' 
+    });
         return;
       } else if (
         !this.mobileNumberorEmail ||
@@ -2056,27 +2103,35 @@ private handleCartMigration(customerId: string): void {
             ? 'your mobile number'
             : 'email or mobile number';
 
-        this.toastr.error(`Please enter ${fieldName}.`, '');
+        this.toastr.error(`Please enter ${fieldName}.`, '',{
+      positionClass: 'toast-center' 
+    });
         // this.toastr.error('Please enter mobile no. or email', 'Error');
         // return;
       } else if (
         this.inputType === 'email' &&
         !this.commonFunction.emailpattern.test(this.mobileNumberorEmail)
       ) {
-        this.toastr.error(`Please enter valid email address.`, '');
+        this.toastr.error(`Please enter valid email address.`, '',{
+      positionClass: 'toast-center' 
+    });
         return;
       } else if (
         this.inputType === 'mobile' &&
         !this.commonFunction.mobpattern.test(this.mobileNumberorEmail)
       ) {
-        this.toastr.error(`Please enter valid Mobile No.`, '');
+        this.toastr.error(`Please enter valid Mobile No.`, '',{
+      positionClass: 'toast-center' 
+    });
         return;
       } else if (
         this.pass == '' ||
         this.pass == undefined ||
         this.pass == null
       ) {
-        this.toastr.error('Please enter password.', '');
+        this.toastr.error('Please enter password.', '',{
+      positionClass: 'toast-center' 
+    });
         return;
       }
 
@@ -2091,10 +2146,14 @@ private handleCartMigration(customerId: string): void {
 
         return;
       } else if (!this.confirmPass) {
-        this.toastr.error('Please enter confirm password.', '');
+        this.toastr.error('Please enter confirm password.', '',{
+      positionClass: 'toast-center' 
+    });
         return;
       } else if (this.pass !== this.confirmPass) {
-        this.toastr.error('Password and confirm password must be same.', '');
+        this.toastr.error('Password and confirm password must be same.', '',{
+      positionClass: 'toast-center' 
+    });
         return;
       }
 
@@ -2142,7 +2201,9 @@ private handleCartMigration(customerId: string): void {
 
               this.startTimer();
 
-              this.toastr.success('OTP Sent Successfully...', '');
+              this.toastr.success('OTP Sent Successfully...', '',{
+      positionClass: 'toast-center' 
+    });
 
               this.openRegister = false;
 
@@ -2162,13 +2223,17 @@ private handleCartMigration(customerId: string): void {
               this.statusCode =
                 'The user is either not registered or has been deactivated.';
               this.toastr.error(
-                'The user is either not registered or has been deactivated.'
+                'The user is either not registered or has been deactivated.','',{
+      positionClass: 'toast-center' 
+    }
               );
               this.issignUpLoading = false;
               this.stopLoader();
             } else if (successCode.code == '400') {
               // this.statusCode = 'The User already exists.';
-              this.toastr.error('The User already exists.');
+              this.toastr.error('The User already exists.','',{
+      positionClass: 'toast-center' 
+    });
               this.issignUpLoading = false;
               this.stopLoader();
             } else {
@@ -2194,10 +2259,14 @@ private handleCartMigration(customerId: string): void {
               this.toastr.info(
                 'The user is either not registered or has been deactivated.',
 
-                ''
+                '',{
+      positionClass: 'toast-center' 
+    }
               );
             } else {
-              this.toastr.error('Something went Wrong', '');
+              this.toastr.error('Something went Wrong', '',{
+      positionClass: 'toast-center' 
+    });
             }
 
             this.isloginSendOTP = false;
@@ -3004,7 +3073,8 @@ private handleCartMigration(customerId: string): void {
         this.data.EMAIL_ID,
         this.pass,
         1,
-        this.data.STATUS
+        this.data.STATUS,
+        this.data.COUNTRY_CODE
       )
       .subscribe({
         next: (successCode: any) => {

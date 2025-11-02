@@ -8,7 +8,7 @@ import { ApiServiceService } from 'src/app/Service/api-service.service';
   styleUrls: ['./order-details.component.css'],
 })
 export class OrderDetailsComponent {
- orderId!: string;
+ orderId!: any;
 cartDetails: any = {};
 orderStatus = 'A';
 selectedAddress: any;
@@ -26,7 +26,12 @@ constructor(
 ) {}
 
 ngOnInit() {
-  this.orderId = this.route.snapshot.paramMap.get('key')!;
+  // this.orderId = this.route.snapshot.paramMap.get('orderId')!;
+    this.route.queryParamMap.subscribe(params => {
+      this.orderId = params.get('orderId') || 0;
+      console.log('Order ID:', this.orderId);
+      // You can now fetch your order details using this.orderId
+    });
   this.photoURL = this.api.retriveimgUrl + 'productImages/';
   this.fetchOrderDetails();
 }
@@ -112,4 +117,14 @@ calculateSubtotal() {
     this.subtotal = 0;
   }
 }
+ goToProductListing() {
+    this.router.navigate(['/product-list']).then(() => {
+      // this.visibleChange.emit(false);
+      // this.orderPlaced.emit(true);
+      // this.cartService.cartItems = [];
+      // this.cartService.cartUpdated.next(this.cartService.cartItems);
+      // this.cartService.updateCartCount();
+      // window.location.reload();
+    }); // change as needed
+  }
 }

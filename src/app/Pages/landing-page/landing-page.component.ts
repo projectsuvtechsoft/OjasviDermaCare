@@ -156,7 +156,7 @@ getProducts(): void {
       'ID',
       'asc',
       this.filter +
-        ' AND STATUS=1 AND IS_VERIENT_AVAILABLE=1 AND VARIENTS IS NOT NULL '
+        ' AND STATUS=1 AND IS_VERIENT_AVAILABLE=1 '
     )
     .subscribe({
       next: (data) => {

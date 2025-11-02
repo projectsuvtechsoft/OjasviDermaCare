@@ -79,6 +79,7 @@ export class CartDrawerComponent {
   showConfirmPassword: boolean = false;
   showNewPassword: boolean = false;
   ngOnInit() {
+      this.loader = true;
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -89,12 +90,11 @@ export class CartDrawerComponent {
     if (this.euserID) {
       this.userID = this.commonFunction.decryptdata(this.euserID);
       this.cartItems = this.cartService.getCartItems();
-      this.loader = true;
 
       this.cartService.cartUpdated$.subscribe((cartItems) => {
         this.cartItems = cartItems;
         this.loadingProducts = false;
-        this.loader = false;
+        // this.loader = false;
         this.cd.detectChanges();
         this.updateTotals(); // No need to apply selections
       });
@@ -108,7 +108,7 @@ export class CartDrawerComponent {
 
       this.cartService.cartUpdated$.subscribe((cartItems) => {
         this.cartItems = cartItems;
-        this.loader = false;
+        // this.loader = false;
         this.loadingProducts = false;
         this.cd.detectChanges();
         this.updateTotals(); // No need to apply selections
@@ -2186,7 +2186,8 @@ export class CartDrawerComponent {
         this.data.EMAIL_ID,
         this.pass,
         1,
-        this.data.STATUS
+        this.data.STATUS,
+        this.data.COUNTRY_CODE
       )
       .subscribe({
         next: (successCode: any) => {
@@ -2416,7 +2417,7 @@ export class CartDrawerComponent {
       0
     );
 
-    this.selectedTotal = +this.selectedSubtotal.toFixed(2);
+    this.selectedTotal = +this.selectedSubtotal;
   }
 
   // UPDATE hasSelectedItems function:

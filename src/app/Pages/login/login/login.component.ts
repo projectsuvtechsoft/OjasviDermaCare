@@ -48,7 +48,7 @@ export class registerdata {
   CLOUD_ID: any;
   W_CLOUD_ID: any;
   // USER_NAME:any ='';
-  COUNTRY_CODE: any;
+  COUNTRY_CODE:any= +1;
 }
 
 interface AddressForm {
@@ -328,7 +328,7 @@ export class LoginComponent {
       return;
     }
 
-    console.log('login', form?.value);
+    // console.log('login', form?.value);
     // Determine type based on input value
     this.type = this.isEmail(this.mobileNumberorEmail) ? 'E' : 'M';
     this.isloginSendOTP = true;
@@ -344,7 +344,7 @@ export class LoginComponent {
       )
       .subscribe({
         next: (successCode: any) => {
-          console.log('in login', successCode.code, successCode);
+          console.log('in login');
 
           if (successCode.code == '200') {
             // console.log(this.data, 'iotrriuuiyoio');
@@ -380,10 +380,19 @@ export class LoginComponent {
             sessionStorage.setItem('IS_GUEST', 'false');
             this.toastr.success('You have login Successfully!', 'success');
             // document.body.style.overflow='';
+            // document.body.style.overflow = '';
+            // document.body.style.overflowX = 'hidden';
+            // form?.resetForm();
+            this.modalService.dismissAll();
             document.body.style.overflow = '';
             document.body.style.overflowX = 'hidden';
-            // form?.resetForm();
-            this.router.navigate(['/home']);
+            this.router.navigate(['/home']).then(() => {
+              setTimeout(() => {
+                window.location.reload();
+                // console.log('check')
+              }, 300);
+            });
+
             // this.openVerify = true;
             // this.stopLoader();
 
@@ -499,13 +508,13 @@ export class LoginComponent {
     sessionStorage.setItem('emailormobile', this.mobileNumberorEmail);
     sessionStorage.setItem('PASSWORD', this.data.PASSWORD);
 
-    console.log(form?.value, 'reg');
+    // console.log(form?.value, 'reg');
     // form?.resetForm();
 
     // console.log(form?.value, 'ioug')
 
     this.data.COUNTRY_CODE = this.selectedCountryCode;
-    console.log(this.data.COUNTRY_CODE);
+    // console.log(this.data.COUNTRY_CODE);
     // this.registrationSubmitted = true;
 
     // console.log('check validation', form);
@@ -1154,10 +1163,12 @@ export class LoginComponent {
       this.data.MOBILE_NO = null;
       this.data.EMAIL_ID = this.mobileNumberorEmail;
       // console.log(this.data.EMAIL_ID, 'uiyftuii');
+      this.data.COUNTRY_CODE = null
     } else if (this.inputType === 'mobile') {
       // this.type = 'M'
       this.data.EMAIL_ID = null;
       this.data.MOBILE_NO = this.mobileNumberorEmail;
+      this.data.COUNTRY_CODE =this.selectedCountryCode
     }
 
     // this.api.createCustomer()()
@@ -1169,12 +1180,15 @@ export class LoginComponent {
         this.data.EMAIL_ID,
         this.pass,
         1,
-        this.data.STATUS
+        this.data.STATUS,
+        this.data.COUNTRY_CODE
       )
       .subscribe({
         next: (successCode: any) => {
           // console.log(successCode)
           if (successCode.body.code == '200') {
+            console.log('in customer login');
+
             this.isloginSendOTP = false;
             this.modalService1.closeModal();
             console.log(successCode);
@@ -1208,20 +1222,29 @@ export class LoginComponent {
             // this.toastr.success('OTP Sent Successfully...', '');
             this.modalVisible = false;
             this.openRegister = false;
+
+            // this.renderer.removeClass(document.body, 'modal-open');
+            document.body.classList.remove('modal-open');
+            // document.body.style.overflow = '';
+            // document.body.style.overflowX = 'hidden';
+            // this.openVerify = true;
+            // this.stopLoader();
+            this.toastr.success('You have login Successfully!', 'success');
+
+            this.modalService.dismissAll();
             const backdrop = document.querySelector('.modal-backdrop');
             if (backdrop) {
               backdrop.remove();
             }
-            // this.renderer.removeClass(document.body, 'modal-open');
             document.body.classList.remove('modal-open');
             document.body.style.overflow = '';
             document.body.style.overflowX = 'hidden';
-            // this.openVerify = true;
-            // this.stopLoader();
-            this.toastr.success('You have login Successfully!', 'success');
-            this.router.navigate(['/home']).then(() => {
-              window.location.reload();
-            });
+
+            // this.router.navigate(['/home']).then(() => {
+            //   setTimeout(() => {
+                window.location.reload();
+            //   }, 100);
+            // });
           } else if (successCode.body.code == '400') {
             // this.statusCode =
             //   'The user is either not registered or has been deactivated.';
@@ -1939,15 +1962,13 @@ export class LoginComponent {
     //   bootstrap.Modal.getInstance(loginModalEl) ||
     //   new bootstrap.Modal(loginModalEl);
     // modalInstance.hide();
-      if (!sessionStorage.getItem('IS_GUEST')) {
-        
+    if (!sessionStorage.getItem('IS_GUEST')) {
       sessionStorage.setItem('IS_GUEST', this.isGuest);
-        // console.log('setvalue', sessionStorage.getItem('IS_GUEST'));
+      // console.log('setvalue', sessionStorage.getItem('IS_GUEST'));
 
       // isGuest =sessionStorage.getItem('IS_GUEST');
       // this.isGuest = isGuest;
       // this.isGuest = sessionStorage.getItem('IS_GUEST');
-
     } else {
       sessionStorage.setItem('IS_GUEST', 'true');
       this.isGuest = sessionStorage.getItem('IS_GUEST');
@@ -1956,7 +1977,7 @@ export class LoginComponent {
     if (backdrop) {
       backdrop.remove();
     }
-    
+
     // if (window.history.length > 1) {
     //   this.location.back();
     // } else {
