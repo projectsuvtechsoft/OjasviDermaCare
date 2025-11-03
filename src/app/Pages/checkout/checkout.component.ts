@@ -39,6 +39,8 @@ interface Address {
   CUST_ID?: string; // Assuming CUST_ID is for customer association
   SESSION_KEY: any;
   COUNTRY_CODE: any;
+  CITY_ID:any;
+  PICKUP_LOCATION_ID?: any; // New field for pickup location
 }
 
 @Component({
@@ -86,12 +88,14 @@ export class CheckoutComponent {
     STATE_NAME: '',
     LANDMARK: '',
     LOCALITY: '',
-    ADDRESS_TYPE: 'Residential',
+    ADDRESS_TYPE: 'Residential',  
     AREA: '',
     IS_DEFAULT: false,
     IS_DEFUALT_ADDRESS: false,
     SESSION_KEY: '',
     COUNTRY_CODE: '+1',
+    CITY_ID:'',
+    PICKUP_LOCATION_ID:''
   };
 
   countryList: any[] = [];
@@ -444,6 +448,7 @@ export class CheckoutComponent {
       IS_DEFAULT: false,
       AREA: '',
       SESSION_KEY: '',
+      CITY_ID:'',
       COUNTRY_CODE: '+1',
     };
     // this.stateList = []; // Clear states when resetting country
@@ -1436,6 +1441,17 @@ export class CheckoutComponent {
     this.addressForm.CITY_NAME = city.NAME ?? this.citySearch;
     this.citySearch = city.NAME;
     this.filteredCities = [];
+    // 1. Store the city's unique ID
+  //    (Use the correct property from your city object, e.g., city.ID, city.cityId)
+  this.addressForm.CITY_ID = city.ID; // <-- IMPORTANT
+  
+  // 2. If the user changes the city, reset the pickup location
+  this.clearPickupLocation();
+
+  // 3. (Optional) Automatically search if "Local Pickup" is already selected
+  if (this.addressForm.ADDRESS_TYPE === 'P') {
+    this.findPickupLocations();
+  }
   }
 
   filterCities() {
@@ -2338,4 +2354,99 @@ export class CheckoutComponent {
   }
 
   isChanged: any = 0;
+
+  pickupLocations: any[] = []; 
+
+// Controls the loading spinner/text
+isLoadingPickupLocations: boolean = false; 
+
+// Shows the "No locations found" message
+showPickupError: boolean = false; 
+
+// Toggles the custom dropdown's visibility
+isPickupDropdownOpen: boolean = false;
+/**
+ * Fetches pickup locations based on the selected city.
+ * This is triggered by the "Find" button.
+ */
+findPickupLocations() {
+  // Guard clause: Don't search if no city is selected
+  if (!this.addressForm.CITY_ID) {
+    console.error("No city selected. Cannot find locations.");
+    this.showPickupError = true; // Show an error message
+    return;
+  }
+
+  console.log("Finding locations for city ID:", this.addressForm.CITY_ID);
+  
+  // Reset state before searching
+  this.isLoadingPickupLocations = true;
+  this.showPickupError = false;
+  this.pickupLocations = []; // Clear old locations
+  this.addressForm.PICKUP_LOCATION_ID = null; // Reset selection
+  this.isPickupDropdownOpen = false; // Close dropdown while searching
+
+  // --- SIMULATED API CALL ---
+  // In a real app, you would replace this setTimeout
+  // with your 'this.http.get(...)' or 'this.myApiService.getLocations(...)'
+  
+  setTimeout(() => {
+    // Mock data - replace with your real API response
+    // We check the city ID to return different results
+    if (this.addressForm.CITY_ID === 'city_id_1') { // Use a real ID from your 'selectCity'
+      this.pickupLocations = [
+        { id: 'loc_001', name: 'Main Warehouse', address: '123 Main St, Near City Park' },
+        { id: 'loc_002', name: 'Downtown Hub', address: '456 Central Ave, Suite 100' },
+        { id: 'loc_003', name: 'Westside Pickup', address: '789 West End Blvd' },
+        { id: 'loc_004', name: 'Eastside Store', address: '101 East Market' },
+      ];
+    } else {
+      // Simulate no locations found for other cities
+      this.pickupLocations = [];
+    }
+    // --- END SIMULATED API CALL ---
+
+    this.isLoadingPickupLocations = false;
+    
+    if (this.pickupLocations.length > 0) {
+      this.isPickupDropdownOpen = true; // Automatically open the dropdown to show results
+    } else {
+      this.showPickupError = true; // Show "No locations found" message
+    }
+  }, 1000); // 1-second delay to simulate network
+}
+
+/**
+ * Selects a pickup location from the custom dropdown.
+ * This is triggered by (mousedown) on an option.
+ */
+selectPickupLocation(location: any) {
+  // console.log("Selected location:", location);
+  this.addressForm.PICKUP_LOCATION_ID = location.id;
+  this.isPickupDropdownOpen = false; // Close dropdown on selection
+}
+
+/**
+ * Helper function to display the selected location's name in the button.
+ * Used by the <span> in your dropdown button.
+ */
+getSelectedPickupLocation() {
+  if (!this.addressForm.PICKUP_LOCATION_ID) {
+    return null;
+  }
+  // Find the location object in our array by its ID
+  return this.pickupLocations.find(loc => loc.id === this.addressForm.PICKUP_LOCATION_ID);
+}
+
+/**
+ * Clears pickup location data when switching back to Residential/Office.
+ * This is triggered by (ngModelChange) on those radio buttons.
+ */
+clearPickupLocation() {
+  this.pickupLocations = [];
+  this.addressForm.PICKUP_LOCATION_ID = null;
+  this.isLoadingPickupLocations = false;
+  this.showPickupError = false;
+  this.isPickupDropdownOpen = false;
+}
 }

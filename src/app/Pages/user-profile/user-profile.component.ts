@@ -49,6 +49,8 @@ export class AddressMaster {
   IS_DEFUALT_ADDRESS = false;
   IS_DEFAULT = false;
   COUNTRY_CODE = '+1';
+  CITY_ID: any = 0;
+  PICKUP_LOCATION_ID!:any;
 }
 @Component({
   selector: 'app-user-profile',
@@ -101,6 +103,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     LOCALITY: string;
     IS_DEFUALT_ADDRESS: number;
     COUNTRY_CODE: any;
+    CITY_ID: number;
     [key: string]: any; // to allow other dynamic properties
   }[] = [];
 
@@ -3150,6 +3153,14 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   selectCity(city: any) {
     this.addressForm.CITY_NAME = city.NAME ?? this.citySearch;
     this.citySearch = city.NAME;
+     this.addressForm.CITY_ID = city.ID; // Or whatever the city's unique ID is
+
+  // ... more existing logic
+
+  // Optional: Automatically search if they've already selected pickup
+  if (this.addressForm.ADDRESS_TYPE === 'P') {
+    this.findPickupLocations();
+  }
     this.filteredCities = [];
   }
   get showAddCityOption(): any {
@@ -3486,4 +3497,94 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       this.showConfirmPassword = !this.showConfirmPassword;
     }
   }
+
+  // pickupLocations: any[] = [];
+isLoadingPickupLocations: boolean = false;
+showPickupError: boolean = false; // To show the "not found" message
+
+// Make sure your addressForm model can hold these new values
+// addressForm: any = {
+//   // ... all your existing properties
+//   ADDRESS_TYPE: 'R', // Default to Residential
+//   CITY_ID: null, // You need this from your city selection
+//   PICKUP_LOCATION_ID: null
+// };
+// Call this function when the "Find" button is clicked
+findPickupLocations() {
+  if (!this.addressForm.CITY_ID) {
+    // You'll need to make sure CITY_ID is set when a city is selected
+    // console.error("No city selected");
+      this.pickupLocations = [
+        { id: 'loc_001', name: 'Main Warehouse', address: '123 Main St' },
+        { id: 'loc_002', name: 'Downtown Hub', address: '456 Central Ave' }
+      ];
+    return;
+  }
+
+  this.isLoadingPickupLocations = true;
+  this.showPickupError = false;
+  this.pickupLocations = [];
+  this.addressForm.PICKUP_LOCATION_ID = null;
+
+  // This is where you call your backend API
+  // I'll simulate it with a 1-second delay
+  setTimeout(() => {
+    // --- START MOCK API CALL ---
+    // In a real app, this would be:
+    // this.myApiService.getPickupLocations(this.addressForm.CITY_ID).subscribe(locations => { ... });
+
+    // Mock data based on city
+    // if (this.addressForm.CITY_ID === 'some-city-id-1') {
+      this.pickupLocations = [
+        { id: 'loc_001', name: 'Main Warehouse', address: '123 Main St' },
+        { id: 'loc_002', name: 'Downtown Hub', address: '456 Central Ave' }
+      ];
+    // } else {
+    //   // Simulate no locations found
+    //   this.pickupLocations = [];
+    // }
+    // --- END MOCK API CALL ---
+
+    this.isLoadingPickupLocations = false;
+    if (this.pickupLocations.length === 0) {
+      this.showPickupError = true;
+    }
+
+  }, 1000);
+}
+
+// Call this when 'Residential' or 'Office' is clicked
+clearPickupLocation() {
+  this.pickupLocations = [];
+  this.addressForm.PICKUP_LOCATION_ID = null;
+  this.isLoadingPickupLocations = false;
+  this.showPickupError = false;
+}
+// Add this property to control the dropdown's visibility
+isPickupDropdownOpen: boolean = false;
+
+// Add this function to set the value and close the dropdown
+selectPickupLocation(location: any) {
+  this.addressForm.PICKUP_LOCATION_ID = location.id;
+  this.isPickupDropdownOpen = false;
+}
+
+// Add this helper function to get the selected location's details
+getSelectedPickupLocation() {
+  // console.log(this.addressForm.PICKUP_LOCATION_ID);
+  if (!this.addressForm.PICKUP_LOCATION_ID) {
+    return null;
+  }
+  return this.pickupLocations.find(loc => loc.id === this.addressForm.PICKUP_LOCATION_ID);
+}
+
+
+
+// Ensure your mock data has 'address'
+// (from findPickupLocations() function)
+pickupLocations = [
+  { id: 'loc_001', name: 'Main Warehouse', address: '123 Main St, Near City Park' },
+  { id: 'loc_002', name: 'Downtown Hub', address: '456 Central Ave, Suite 100' }
+];
+
 }
