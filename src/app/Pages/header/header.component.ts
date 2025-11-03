@@ -229,7 +229,9 @@ export class HeaderComponent {
           this.cartService.cartItems = [];
           this.cartService.cartUpdated.next(this.cartService.cartItems);
           this.cartService.updateCartCount();
-          this.router.navigate(['/home']);
+          this.router.navigate(['/home']).then(() => {
+            window.location.reload();
+          });
         } else {
           this.toastr.error('Logout failed!', '');
         }
@@ -374,8 +376,7 @@ export class HeaderComponent {
 
     if (userID && token) {
       setTimeout(() => {
-      this.getUserData();
-        
+        this.getUserData();
       }, 300);
     }
 
@@ -1061,9 +1062,9 @@ export class HeaderComponent {
     // }
 
     if (!this.data.PASSWORD && !this.mobileNumberorEmail) {
-      this.toastr.error('Please Fill All The Required Fields ', '',{
-      positionClass: 'toast-center' 
-    });
+      this.toastr.error('Please Fill All The Required Fields ', '', {
+        positionClass: 'toast-center',
+      });
       return;
     } else if (
       !this.mobileNumberorEmail ||
@@ -1078,16 +1079,16 @@ export class HeaderComponent {
           ? 'your mobile number'
           : 'email or mobile number';
 
-      this.toastr.error(`Please enter ${fieldName}.`, '',{
-      positionClass: 'toast-center' 
-    });
+      this.toastr.error(`Please enter ${fieldName}.`, '', {
+        positionClass: 'toast-center',
+      });
     } else if (
       this.inputType === 'email' &&
       !this.commonFunction.emailpattern.test(this.mobileNumberorEmail)
     ) {
-      this.toastr.error(`Please enter valid email address.`, '',{
-      positionClass: 'toast-center' 
-    });
+      this.toastr.error(`Please enter valid email address.`, '', {
+        positionClass: 'toast-center',
+      });
     }
     // else if (
     //   this.inputType === 'mobile' &&
@@ -1101,9 +1102,9 @@ export class HeaderComponent {
       this.data.PASSWORD == null ||
       this.data.PASSWORD == undefined
     ) {
-      this.toastr.error('Please enter password.', '',{
-      positionClass: 'toast-center' 
-    });
+      this.toastr.error('Please enter password.', '', {
+        positionClass: 'toast-center',
+      });
     } else {
       // Determine type based on input value
       this.type = this.isEmail(this.mobileNumberorEmail) ? 'E' : 'M';
@@ -1189,12 +1190,14 @@ export class HeaderComponent {
 
               // console.log(this.isLoggedIn, 'this.isLoggedIn');
               this.toastr.success('You have login Successfully!', 'success');
+              sessionStorage.removeItem('SESSION_KEYS');
               if (sessionStorage.getItem('CART_REDIRECT') === 'true') {
                 this.cartItems = this.cartService.getCartItems();
                 this.senddatatoCheckout = {
                   cartDetails: this.cartItems, // Send all items
                   subtotal: this.subtotal,
                 };
+
                 if (this.cartItems && this.cartItems.length > 0) {
                   // this.cartItems.forEach((data:any)=>{
                   //    this.cartService.addToCart(data)
@@ -1202,38 +1205,47 @@ export class HeaderComponent {
                   this.handleCartMigration(
                     successCode.data[0]['UserData'][0].ID
                   );
+                  this.cartItems = this.cartService.getCartItems();
+
                   //  console.log(this.migrateCartItems(this.cartItems,successCode.data[0]['UserData'][0].ID))
                 }
-                // this.updateTotals();
+                // console.log(this.cartItems)
+                // setTimeout(() => {
+
+                this.updateTotals();
+
                 this.isCheckoutVisible = true;
-              }
-              else{
-                setTimeout(()=>{
-                  window.location.reload()
-                },300)
+                // window.location.reload();
+                // }, 700);
+                // this.updateTotals();
+              } else {
+                setTimeout(() => {
+                  window.location.reload();
+                }, 300);
               }
             } else if (successCode.code == '404') {
               // form?.resetForm();
               this.toastr.error(
                 'Account not found. Please register to continue.',
-                '',{
-      positionClass: 'toast-center' 
-    }
+                '',
+                {
+                  positionClass: 'toast-center',
+                }
               );
               this.isloginSendOTP = false;
               // this.stopLoader();
             } else if (successCode.code == '401') {
               // form?.resetForm();
-              this.toastr.error('Incorrect username or password', '',{
-      positionClass: 'toast-center' 
-    });
+              this.toastr.error('Incorrect username or password', '', {
+                positionClass: 'toast-center',
+              });
               this.isloginSendOTP = false;
               // this.stopLoader();
             } else {
               this.isloginSendOTP = false;
-              this.toastr.error('OTP Validation Failed...', '',{
-      positionClass: 'toast-center' 
-    });
+              this.toastr.error('OTP Validation Failed...', '', {
+                positionClass: 'toast-center',
+              });
               this.stopLoader();
             }
           },
@@ -1251,13 +1263,15 @@ export class HeaderComponent {
   }
   private handleCartMigration(customerId: string): void {
     const cartItems = this.cartService.getCartItems();
+     sessionStorage.removeItem('CART_REDIRECT');
+            sessionStorage.removeItem('SESSION_KEYS');
 
     if (!cartItems || cartItems.length === 0) {
       // No items to migrate
-      this.toastr.success('You have login Successfully!', 'success',{
-      positionClass: 'toast-center' 
-    });
-      this.updateTotals();
+      this.toastr.success('You have login Successfully!', 'success', {
+        positionClass: 'toast-center',
+      });
+      // this.updateTotals();
       return;
     }
 
@@ -1273,36 +1287,30 @@ export class HeaderComponent {
             this.toastr.success(response.message, '');
 
             // Clear session cart indicators
-            sessionStorage.removeItem('CART_REDIRECT');
-            sessionStorage.removeItem('SESSION_KEYS');
-
             // Update UI with migrated cart
-            this.cartItems = this.cartService.getCartItems();
+            // this.updateTotals();
             this.senddatatoCheckout = {
               cartDetails: this.cartItems,
               subtotal: this.subtotal,
             };
 
-            this.updateTotals();
-            this.isCheckoutVisible = true;
-
-            this.toastr.success('You have login Successfully!', 'success',{
-      positionClass: 'toast-center' 
-    });
+            this.toastr.success('You have login Successfully!', 'success', {
+              positionClass: 'toast-center',
+            });
           }
         },
         error: (error) => {
           // console.error('Migration error:', error);
-    //       this.toastr.error(
-    //         'Failed to migrate cart items. Items may be in your account.',
-    //         '',{
-    //   positionClass: 'toast-center' 
-    // }
-    //       );
+          //       this.toastr.error(
+          //         'Failed to migrate cart items. Items may be in your account.',
+          //         '',{
+          //   positionClass: 'toast-center'
+          // }
+          //       );
           this.updateTotals();
-    //       this.toastr.success('You have login Successfully!', 'success',{
-    //   positionClass: 'toast-center' 
-    // });
+          //       this.toastr.success('You have login Successfully!', 'success',{
+          //   positionClass: 'toast-center'
+          // });
         },
       });
   }
@@ -1462,7 +1470,7 @@ export class HeaderComponent {
   }
 
   closeModal() {
-    console.log('Closing profile modal...');
+    // console.log('Closing profile modal...');
     this.showModal = false;
     this.renderer.removeClass(document.body, 'modal-open');
     this.cdRef.detectChanges();
@@ -1493,7 +1501,7 @@ export class HeaderComponent {
 
         // Initialize camera after modal is shown with longer delay
         setTimeout(() => {
-          console.log('Modal should be visible now, initializing camera...');
+          // console.log('Modal should be visible now, initializing camera...');
           this.initializeCameraWithRetry();
         }, 300); // Increased delay for better DOM rendering
       }, 10);
@@ -1516,43 +1524,43 @@ export class HeaderComponent {
     // Check if the modal is actually visible
     const modal = document.getElementById('CapturePhotoModal');
     if (!modal) {
-      console.log('Modal not found in DOM');
+      // console.log('Modal not found in DOM');
       setTimeout(() => {
         this.initializeCameraWithRetry(attempts + 1);
       }, 200);
       return;
     }
 
-    console.log('Modal found:', modal);
-    console.log('Modal display:', modal.style.display);
-    console.log('Modal classes:', modal.className);
+    // console.log('Modal found:', modal);
+    // console.log('Modal display:', modal.style.display);
+    // console.log('Modal classes:', modal.className);
 
     // Try ViewChild first, then fall back to direct DOM query
     let video = this.videoElement?.nativeElement;
-    console.log('ViewChild video element:', video);
+    // console.log('ViewChild video element:', video);
 
     if (!video) {
       // Fallback: try to find video element directly in the modal
       video = modal.querySelector('video');
-      console.log('Video element found via querySelector:', video);
+      // console.log('Video element found via querySelector:', video);
     }
 
     if (!video) {
-      console.log(
-        `Video element not ready yet, attempt ${attempts + 1}/${maxAttempts}`
-      );
-      console.log('Video element ref:', this.videoElement);
-      console.log('Modal visible:', modal.style.display !== 'none');
-      console.log('Modal classes:', modal.className);
-      console.log('Modal HTML:', modal.innerHTML);
+      // console.log(
+      //   `Video element not ready yet, attempt ${attempts + 1}/${maxAttempts}`
+      // );
+      // console.log('Video element ref:', this.videoElement);
+      // console.log('Modal visible:', modal.style.display !== 'none');
+      // console.log('Modal classes:', modal.className);
+      // console.log('Modal HTML:', modal.innerHTML);
       setTimeout(() => {
         this.initializeCameraWithRetry(attempts + 1);
       }, 200);
       return;
     }
 
-    console.log('Video element found, initializing camera...');
-    console.log('Video element:', video);
+    // console.log('Video element found, initializing camera...');
+    // console.log('Video element:', video);
     this.initializeCamera();
   }
 
@@ -1592,13 +1600,13 @@ export class HeaderComponent {
         },
       })
       .then((stream) => {
-        console.log('Camera stream obtained successfully');
+        // console.log('Camera stream obtained successfully');
         this.stream = stream;
         video.srcObject = stream;
 
         // Wait for video to be ready
         video.onloadedmetadata = () => {
-          console.log('Video metadata loaded');
+          // console.log('Video metadata loaded');
           video.play().catch((err: any) => {
             console.error('Error playing video:', err);
             this.toastr.error('Error starting video stream.', 'Camera Error');
@@ -1607,13 +1615,13 @@ export class HeaderComponent {
         };
 
         video.onerror = (err: any) => {
-          console.error('Video error:', err);
+          // console.error('Video error:', err);
           this.toastr.error('Error with video stream.', 'Camera Error');
           this.closeCapturePhotoModal();
         };
       })
       .catch((err) => {
-        console.error('Error accessing camera:', err);
+        // console.error('Error accessing camera:', err);
         let errorMessage = 'Unable to access camera.';
 
         if (err.name === 'NotAllowedError') {
@@ -1847,7 +1855,7 @@ export class HeaderComponent {
             // }
             this.closeModal();
             this.clearCanvasAndVideo();
-            console.log('this.imagePreview', this.imagePreview);
+            // console.log('this.imagePreview', this.imagePreview);
           } else {
             this.toastr.error('Image upload failed.', '');
             this.imagePreview = null;
@@ -1905,7 +1913,7 @@ export class HeaderComponent {
     this.USER_ID = this.userId
       ? this.commonFunction.decryptdata(this.userId)
       : '0';
-     
+
     this.api.getUserDetails(Number(this.USER_ID)).subscribe(
       (data) => {
         if (data['code'] == 200) {
@@ -1935,7 +1943,7 @@ export class HeaderComponent {
             };
             this.imagePreview =
               this.IMAGEuRL + 'CustomerProfile/' + this.user.PROFILE_URL;
-            console.log('this.imagePreview kkkk', this.imagePreview);
+            // console.log('this.imagePreview kkkk', this.imagePreview);
           }
 
           this.cdRef.detectChanges();
@@ -2081,18 +2089,18 @@ export class HeaderComponent {
         !this.mobileNumberorEmail.trim() &&
         !this.pass.trim()
       ) {
-        this.toastr.error('Please fill all fields.', '',{
-      positionClass: 'toast-center' 
-    });
+        this.toastr.error('Please fill all fields.', '', {
+          positionClass: 'toast-center',
+        });
         return;
       } else if (
         this.data.CUSTOMER_NAME.trim() == '' ||
         this.data.CUSTOMER_NAME == undefined ||
         this.data.CUSTOMER_NAME == null
       ) {
-        this.toastr.error('Please enter name.', '',{
-      positionClass: 'toast-center' 
-    });
+        this.toastr.error('Please enter name.', '', {
+          positionClass: 'toast-center',
+        });
         return;
       } else if (
         !this.mobileNumberorEmail ||
@@ -2107,35 +2115,35 @@ export class HeaderComponent {
             ? 'your mobile number'
             : 'email or mobile number';
 
-        this.toastr.error(`Please enter ${fieldName}.`, '',{
-      positionClass: 'toast-center' 
-    });
+        this.toastr.error(`Please enter ${fieldName}.`, '', {
+          positionClass: 'toast-center',
+        });
         // this.toastr.error('Please enter mobile no. or email', 'Error');
         // return;
       } else if (
         this.inputType === 'email' &&
         !this.commonFunction.emailpattern.test(this.mobileNumberorEmail)
       ) {
-        this.toastr.error(`Please enter valid email address.`, '',{
-      positionClass: 'toast-center' 
-    });
+        this.toastr.error(`Please enter valid email address.`, '', {
+          positionClass: 'toast-center',
+        });
         return;
       } else if (
         this.inputType === 'mobile' &&
         !this.commonFunction.mobpattern.test(this.mobileNumberorEmail)
       ) {
-        this.toastr.error(`Please enter valid Mobile No.`, '',{
-      positionClass: 'toast-center' 
-    });
+        this.toastr.error(`Please enter valid Mobile No.`, '', {
+          positionClass: 'toast-center',
+        });
         return;
       } else if (
         this.pass == '' ||
         this.pass == undefined ||
         this.pass == null
       ) {
-        this.toastr.error('Please enter password.', '',{
-      positionClass: 'toast-center' 
-    });
+        this.toastr.error('Please enter password.', '', {
+          positionClass: 'toast-center',
+        });
         return;
       }
 
@@ -2150,14 +2158,14 @@ export class HeaderComponent {
 
         return;
       } else if (!this.confirmPass) {
-        this.toastr.error('Please enter confirm password.', '',{
-      positionClass: 'toast-center' 
-    });
+        this.toastr.error('Please enter confirm password.', '', {
+          positionClass: 'toast-center',
+        });
         return;
       } else if (this.pass !== this.confirmPass) {
-        this.toastr.error('Password and confirm password must be same.', '',{
-      positionClass: 'toast-center' 
-    });
+        this.toastr.error('Password and confirm password must be same.', '', {
+          positionClass: 'toast-center',
+        });
         return;
       }
 
@@ -2205,9 +2213,9 @@ export class HeaderComponent {
 
               this.startTimer();
 
-              this.toastr.success('OTP Sent Successfully...', '',{
-      positionClass: 'toast-center' 
-    });
+              this.toastr.success('OTP Sent Successfully...', '', {
+                positionClass: 'toast-center',
+              });
 
               this.openRegister = false;
 
@@ -2227,17 +2235,19 @@ export class HeaderComponent {
               this.statusCode =
                 'The user is either not registered or has been deactivated.';
               this.toastr.error(
-                'The user is either not registered or has been deactivated.','',{
-      positionClass: 'toast-center' 
-    }
+                'The user is either not registered or has been deactivated.',
+                '',
+                {
+                  positionClass: 'toast-center',
+                }
               );
               this.issignUpLoading = false;
               this.stopLoader();
             } else if (successCode.code == '400') {
               // this.statusCode = 'The User already exists.';
-              this.toastr.error('The User already exists.','',{
-      positionClass: 'toast-center' 
-    });
+              this.toastr.error('The User already exists.', '', {
+                positionClass: 'toast-center',
+              });
               this.issignUpLoading = false;
               this.stopLoader();
             } else {
@@ -2263,14 +2273,15 @@ export class HeaderComponent {
               this.toastr.info(
                 'The user is either not registered or has been deactivated.',
 
-                '',{
-      positionClass: 'toast-center' 
-    }
+                '',
+                {
+                  positionClass: 'toast-center',
+                }
               );
             } else {
-              this.toastr.error('Something went Wrong', '',{
-      positionClass: 'toast-center' 
-    });
+              this.toastr.error('Something went Wrong', '', {
+                positionClass: 'toast-center',
+              });
             }
 
             this.isloginSendOTP = false;
@@ -2556,12 +2567,12 @@ export class HeaderComponent {
     const mobileData = { mobileNumber: this.identifier };
     this.http.post('YOUR_BACKEND_WHATSAPP_API_URL', mobileData).subscribe(
       (response) => {
-        console.log('WhatsApp link sent successfully', response);
+        // console.log('WhatsApp link sent successfully', response);
         this.getLinkLoading = false;
         // Handle success
       },
       (error) => {
-        console.error('Error sending WhatsApp link', error);
+        // console.error('Error sending WhatsApp link', error);
         this.getLinkLoading = false;
         // Handle error
       }
@@ -2592,7 +2603,7 @@ export class HeaderComponent {
     //     this._message.error('Error', 'Invalid Otp: ' + error.error.message);
     //   }
     // );
-    console.log('OTP Submitted:', this.otp);
+    // console.log('OTP Submitted:', this.otp);
   }
 
   startOTPCountdown(): void {
@@ -3015,7 +3026,7 @@ export class HeaderComponent {
             // console.log('wertyuiko');
             //  this.USER_NAME = this.data.CUSTOMER_NAME
             // this.isverifyOTP = false; // Set true before API call
-            console.log(this.isverifyOTP, 'this.isverifyOTP');
+            // console.log(this.isverifyOTP, 'this.isverifyOTP');
             this.toastr.success('OTP verified successfully...', '');
             this.modalService.dismissAll();
             this.isOk = false;
@@ -3086,7 +3097,7 @@ export class HeaderComponent {
           if (successCode.body.code == '200') {
             this.isloginSendOTP = false;
             this.modalService1.closeModal();
-            console.log(successCode);
+            // console.log(successCode);
             sessionStorage.setItem(
               'userId',
               this.commonFunction.encryptdata(

@@ -38,7 +38,7 @@ export class ModalService {
  
   openModal() {
     this.modalSubject.next(true);
-    console.log(this.modalSubject, "servicereached");
+    // console.log(this.modalSubject, "servicereached");
  
   }
  

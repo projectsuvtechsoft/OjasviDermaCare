@@ -1665,12 +1665,12 @@ export class CartDrawerComponent {
     const mobileData = { mobileNumber: this.identifier };
     this.http.post('YOUR_BACKEND_WHATSAPP_API_URL', mobileData).subscribe(
       (response) => {
-        console.log('WhatsApp link sent successfully', response);
+        // console.log('WhatsApp link sent successfully', response);
         this.getLinkLoading = false;
         // Handle success
       },
       (error) => {
-        console.error('Error sending WhatsApp link', error);
+        // console.error('Error sending WhatsApp link', error);
         this.getLinkLoading = false;
         // Handle error
       }
@@ -1701,7 +1701,7 @@ export class CartDrawerComponent {
     //     this._message.error('Error', 'Invalid Otp: ' + error.error.message);
     //   }
     // );
-    console.log('OTP Submitted:', this.otp);
+    // console.log('OTP Submitted:', this.otp);
   }
 
   startOTPCountdown(): void {
@@ -2195,7 +2195,7 @@ export class CartDrawerComponent {
           if (successCode.body.code == '200') {
             this.isloginSendOTP = false;
             this.modalService1.closeModal();
-            console.log(successCode);
+            // console.log(successCode);
             sessionStorage.setItem(
               'userId',
               this.commonFunction.encryptdata(
@@ -2384,6 +2384,7 @@ export class CartDrawerComponent {
   selectedDiscount = 0;
   // UPDATE updateTotals function:
   updateTotals() {
+    this.loader=false
     // this.deletedItems = [];
 
     // Calculate totals for ALL items (no filtering by selected)

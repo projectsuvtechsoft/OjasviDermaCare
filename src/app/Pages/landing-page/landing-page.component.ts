@@ -91,7 +91,7 @@ export class LandingPageComponent {
           sessionStorage.setItem('SESSION_KEYS', ekey);
         },
         (err) => {
-          console.log(err);
+          // console.log(err);
         }
       );
     }
@@ -535,7 +535,7 @@ prevMobile(tab: string): void {
         }
       },
       (err) => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }
@@ -789,7 +789,7 @@ prevMobile(tab: string): void {
         }
       },
       (err) => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }

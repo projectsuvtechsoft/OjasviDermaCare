@@ -390,6 +390,24 @@
                   </div>
                 </div>
               </div>
+
+              <div class="mt-4 pt-3 border-t border-gray-100">
+                <div class="grid grid-cols-3 gap-2 items-center">
+                  <div class="text-sm font-medium text-gray-500">Password</div>
+                  <div
+                    class="col-span-2 text-gray-800 flex justify-between items-center"
+                  >
+                    <span>********</span>
+                    <button
+                      (click)="openChangePasswordModal()"
+                      class="text-[#5a8f69] text-sm hover:underline flex items-center"
+                    >
+                      <i class="ri-edit-line mr-1"></i>
+                      Change
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -609,7 +627,7 @@
                       {{ address.COUNTRY_NAME }}
                     </p>
                     <p class="text-sm text-gray-600 mt-1">
-                      {{address.COUNTRY_CODE}}
+                      {{ address.COUNTRY_CODE }}
                       {{ address.MOBILE_NO || "Phone not provided" }}
                     </p>
                     <span
@@ -1744,506 +1762,512 @@
     </div>
 
     <div class="overflow-y-scroll max-h-[calc(90vh-100px)] rounded-b-lg">
-      <div class="px-4 pb-4">
-        <form
-          #addressFormTemp="ngForm"
-          (ngSubmit)="saveAddress(false, addressFormTemp)"
-          class="space-y-0"
-        >
-          <!-- Contact Details Section -->
+  <div class="px-4 pb-4">
+    <form
+      #addressFormTemp="ngForm"
+      (ngSubmit)="saveAddress(false, addressFormTemp)"
+      class="space-y-0"
+    >
+      <div>
+        <h3 class="text-lg font-semibold text-[#5a8f69] mb-2">
+          Contact Details
+        </h3>
+        <div class="space-y-4">
           <div>
-            <h3 class="text-lg font-semibold text-[#5a8f69] mb-2">
-              Contact Details
-            </h3>
-            <div class="space-y-4">
-              <div>
-                <label
-                  for="fullName"
-                  class="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  id="fullName"
-                  [(ngModel)]="addressForm.NAME"
-                  name="customerName"
-                  placeholder="Enter Name"
-                  required
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
-                />
-              </div>
+            <label
+              for="fullName"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Full Name
+            </label>
+            <input
+              type="text"
+              id="fullName"
+              [(ngModel)]="addressForm.NAME"
+              name="customerName"
+              placeholder="Enter Name"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+            />
+          </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label
-                    for="mobileNumber"
-                    class="block text-sm font-medium text-gray-700 mb-1"
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label
+                for="mobileNumber"
+                class="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Mobile number
+              </label>
+              <div class="flex items-stretch relative">
+                <div class="relative min-w-[5.5rem]">
+                  <div
+                    class="unique-country-code-selector flex items-center cursor-pointer px-3 h-10 border border-gray-300 rounded-l-md **bg-white** text-sm focus:outline-none w-full **shadow-sm**"
+                    (click)="toggleCountryDropdown($event)"
+                    aria-label="Country code selector"
+                    [ngClass]="{
+                      '!border-r-0': !showCountryDropdown,
+
+                      'rounded-r-none': showCountryDropdown
+                    }"
                   >
-                    Mobile number
-                  </label>
-                  <div class="flex items-stretch relative">
-                    <div class="relative min-w-[5.5rem]">
-                      <div
-                        class="unique-country-code-selector flex items-center cursor-pointer px-3 h-10 border border-gray-300 rounded-l-md **bg-white** text-sm focus:outline-none w-full **shadow-sm**"
-                        (click)="toggleCountryDropdown($event)"
-                        aria-label="Country code selector"
-                        [ngClass]="{
-                          '!border-r-0': !showCountryDropdown,
+                    <span class="text-gray-700 font-medium">{{
+                      addressForm.COUNTRY_CODE || "+1"
+                    }}</span>
+                    <svg
+                      class="ml-auto transform transition-transform"
+                      [class.rotate-180]="showCountryDropdown"
+                      width="10"
+                      height="6"
+                      viewBox="0 0 10 6"
+                      fill="none"
+                    >
+                      <path
+                        d="M1 1L5 5L9 1"
+                        stroke="#666"
+                        stroke-width="1.5"
+                      />
+                    </svg>
+                  </div>
 
-                          'rounded-r-none': showCountryDropdown
-                        }"
-                      >
-                        <span class="text-gray-700 font-medium">{{
-                          addressForm.COUNTRY_CODE || "+1"
-                        }}</span>
-                        <svg
-                          class="ml-auto transform transition-transform"
-                          [class.rotate-180]="showCountryDropdown"
-                          width="10"
-                          height="6"
-                          viewBox="0 0 10 6"
-                          fill="none"
-                        >
-                          <path
-                            d="M1 1L5 5L9 1"
-                            stroke="#666"
-                            stroke-width="1.5"
-                          />
-                        </svg>
+                  <div
+                    class="absolute z-10 top-full left-0 mt-1 w-80"
+                    *ngIf="showCountryDropdown"
+                  >
+                    <div
+                      class="unique-country-dropdown bg-white shadow-lg ring-1 ring-black ring-opacity-5 rounded-md p-2"
+                      style="
+                        max-height: 300px;
+                        overflow-y: auto;
+                        min-width: 100%;
+                      "
+                    >
+                      <div class="unique-search-box mb-2">
+                        <input
+                          type="text"
+                          class="w-full px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                          placeholder="Search country..."
+                          [(ngModel)]="searchQuery"
+                          (input)="filterCountriesd($event)"
+                          (click)="$event.stopPropagation()"
+                          autocomplete="off"
+                          name="searchCountry"
+                        />
                       </div>
-
-                      <div
-                        class="absolute z-10 top-full left-0 mt-1 w-80"
-                        *ngIf="showCountryDropdown"
-                      >
+                      <div class="unique-country-list">
                         <div
-                          class="unique-country-dropdown bg-white shadow-lg ring-1 ring-black ring-opacity-5 rounded-md p-2"
-                          style="
-                            max-height: 300px;
-                            overflow-y: auto;
-                            min-width: 100%;
+                          class="unique-country-item px-3 py-2 cursor-pointer hover:bg-gray-100 rounded-sm text-base"
+                          *ngFor="let country of filteredCountryCodes"
+                          (click)="
+                            selectCountrycode(country.value);
+                            $event.stopPropagation()
                           "
                         >
-                          <div class="unique-search-box mb-2">
-                            <input
-                              type="text"
-                              class="w-full px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-[#5a8f69] focus:border-[#5a8f69]"
-                              placeholder="Search country..."
-                              [(ngModel)]="searchQuery"
-                              (input)="filterCountriesd($event)"
-                              (click)="$event.stopPropagation()"
-                              autocomplete="off"
-                              name="searchCountry"
-                            />
-                          </div>
-                          <div class="unique-country-list">
-                            <div
-                              class="unique-country-item px-3 py-2 cursor-pointer hover:bg-gray-100 rounded-sm text-base"
-                              *ngFor="let country of filteredCountryCodes"
-                              (click)="
-                                selectCountrycode(country.value);
-                                $event.stopPropagation()
-                              "
-                            >
-                              {{ country.label }}
-                            </div>
-                          </div>
+                          {{ country.label }}
                         </div>
                       </div>
                     </div>
-
-                    <input
-                      type="tel"
-                      id="mobileNumber"
-                      [(ngModel)]="addressForm.MOBILE_NO"
-                      name="Mobile_number"
-                      placeholder="Enter Mobile no"
-                      (keypress)="commonFunction.omit($event)"
-                      [pattern]="commonFunction.internationalmobpattern"
-                      maxlength="10"
-                      required
-                      class="flex-1 px-3 **h-10** border border-gray-300 rounded-r-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
-                      [ngClass]="{
-                        '!border-l-0 rounded-l-none': !showCountryDropdown,
-                        'border-l-0 rounded-l-none': showCountryDropdown
-                      }"
-                    />
                   </div>
                 </div>
 
-                <div>
-                  <label
-                    for="emailId"
-                    class="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Email
-                  </label>
-
-                  <!-- Responsive Input Group -->
-                  <div class="flex w-full">
-                    <input
-                      type="text"
-                      id="emailId"
-                      [(ngModel)]="addressForm.EMAIL_ID"
-                      name="Email"
-                      placeholder="Enter Email"
-                      maxlength="50"
-                      [pattern]="commonFunction.emailpattern"
-                      required
-                      class="flex-1 px-3 py-2 border border-gray-300 border-r-0 rounded-l-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
-                      (ngModelChange)="onEmailChange()"
-                    />
-
-                    <button
-                      *ngIf="addressForm.EMAIL_ID"
-                      type="button"
-                      class="px-4 py-2 bg-[#5a8f69] hover:bg-green-800 rounded-r-md text-white disabled:opacity-50 text-sm font-medium transition-colors whitespace-nowrap"
-                      (click)="verifyEmail(); $event.stopPropagation()"
-                      [disabled]="
-                        !isEmailValid() || verificationStatus == 'verified'
-                      "
-                    >
-                      {{
-                        verificationStatus === "verified"
-                          ? "✓ Verified"
-                          : "Verify"
-                      }}
-                    </button>
-                  </div>
-
-                  <!-- Status Messages -->
-                  <small
-                    *ngIf="verificationStatus === 'verified'"
-                    class="block mt-1 text-xs text-green-600"
-                  >
-                    Email verified successfully!
-                  </small>
-
-                  <small
-                    *ngIf="verificationStatus === 'failed'"
-                    class="block mt-1 text-xs text-red-600"
-                  >
-                    Verification failed. Please try again.
-                  </small>
-                </div>
+                <input
+                  type="tel"
+                  id="mobileNumber"
+                  [(ngModel)]="addressForm.MOBILE_NO"
+                  name="Mobile_number"
+                  placeholder="Enter Mobile no"
+                  (keypress)="commonFunction.omit($event)"
+                  [pattern]="commonFunction.internationalmobpattern"
+                  maxlength="10"
+                  required
+                  class="flex-1 px-3 **h-10** border border-gray-300 rounded-r-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                  [ngClass]="{
+                    '!border-l-0 rounded-l-none': !showCountryDropdown,
+                    'border-l-0 rounded-l-none': showCountryDropdown
+                  }"
+                />
               </div>
+            </div>
+
+            <div>
+              <label
+                for="emailId"
+                class="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Email
+              </label>
+
+              <div class="flex w-full">
+                <input
+                  type="text"
+                  id="emailId"
+                  [(ngModel)]="addressForm.EMAIL_ID"
+                  name="Email"
+                  placeholder="Enter Email"
+                  maxlength="50"
+                  [pattern]="commonFunction.emailpattern"
+                  required
+                  class="flex-1 px-3 py-2 border border-gray-300 border-r-0 rounded-l-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                  (ngModelChange)="onEmailChange()"
+                />
+
+                <button
+                  *ngIf="addressForm.EMAIL_ID"
+                  type="button"
+                  class="px-4 py-2 bg-[#5a8f69] hover:bg-green-800 rounded-r-md text-white disabled:opacity-50 text-sm font-medium transition-colors whitespace-nowrap"
+                  (click)="verifyEmail(); $event.stopPropagation()"
+                  [disabled]="
+                    !isEmailValid() || verificationStatus == 'verified'
+                  "
+                >
+                  {{
+                    verificationStatus === "verified"
+                      ? "✓ Verified"
+                      : "Verify"
+                  }}
+                </button>
+              </div>
+
+              <small
+                *ngIf="verificationStatus === 'verified'"
+                class="block mt-1 text-xs text-green-600"
+              >
+                Email verified successfully!
+              </small>
+
+              <small
+                *ngIf="verificationStatus === 'failed'"
+                class="block mt-1 text-xs text-red-600"
+              >
+                Verification failed. Please try again.
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="border-gray-200 pt-2">
+        <h3 class="text-lg font-semibold text-[#5a8f69] mb-2">Address</h3>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Address Type
+            </label>
+            <div class="flex flex-wrap gap-4">
+              <label class="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  name="addressType"
+                  value="R"
+                  [(ngModel)]="addressForm.ADDRESS_TYPE"
+                  class="w-4 h-4 text-[#5a8f69] border-gray-300 focus:ring-[#5a8f69]"
+                />
+                <span class="ml-2 text-sm text-gray-700">Residential</span>
+              </label>
+              <label class="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  name="addressType"
+                  value="O"
+                  [(ngModel)]="addressForm.ADDRESS_TYPE"
+                  class="w-4 h-4 text-[#5a8f69] border-gray-300 focus:ring-[#5a8f69]"
+                />
+                <span class="ml-2 text-sm text-gray-700">Office</span>
+              </label>
+              <label class="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  name="addressType"
+                  value="P"
+                  [(ngModel)]="addressForm.ADDRESS_TYPE"
+                  class="w-4 h-4 text-[#5a8f69] border-gray-300 focus:ring-[#5a8f69]"
+                />
+                <span class="ml-2 text-sm text-gray-700"
+                  >Local Pickup</span
+                >
+              </label>
             </div>
           </div>
 
-          <!-- Address Section -->
-          <div class="border-gray-200 pt-2">
-            <h3 class="text-lg font-semibold text-[#5a8f69] mb-2">Address</h3>
-
-            <div class="space-y-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
-                  Address Type
-                </label>
-                <div class="flex gap-4">
-                  <label class="flex items-center cursor-pointer">
-                    <input
-                      type="radio"
-                      name="addressType"
-                      value="R"
-                      [(ngModel)]="addressForm.ADDRESS_TYPE"
-                      class="w-4 h-4 text-[#5a8f69] border-gray-300 focus:ring-[#5a8f69]"
-                    />
-                    <span class="ml-2 text-sm text-gray-700">Residential</span>
-                  </label>
-                  <label class="flex items-center cursor-pointer">
-                    <input
-                      type="radio"
-                      name="addressType"
-                      value="O"
-                      [(ngModel)]="addressForm.ADDRESS_TYPE"
-                      class="w-4 h-4 text-[#5a8f69] border-gray-300 focus:ring-[#5a8f69]"
-                    />
-                    <span class="ml-2 text-sm text-gray-700">Office</span>
-                  </label>
-                </div>
-              </div>
-
+          <ng-container *ngIf="addressForm.ADDRESS_TYPE !== 'P'">
+            <div>
+              <label
+                for="streetAddress"
+                class="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Flat, House no., Building, Company, Apartment
+              </label>
+              <textarea
+                type="text"
+                id="streetAddress"
+                [(ngModel)]="addressForm.ADDRESS"
+                name="streetAddress"
+                placeholder="Enter Address"
+                [required]="addressForm.ADDRESS_TYPE !== 'P'" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+              ></textarea>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label
-                  for="streetAddress"
+                  for="landmark"
                   class="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  Flat, House no., Building, Company, Apartment
+                  Landmark
                 </label>
-                <textarea
+                <input
                   type="text"
-                  id="streetAddress"
-                  [(ngModel)]="addressForm.ADDRESS"
-                  name="streetAddress"
-                  placeholder="Enter Address"
-                  required
+                  id="landmark"
+                  [(ngModel)]="addressForm.LANDMARK"
+                  name="landmark"
+                  placeholder="Enter Landmark"
                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
-                ></textarea>
+                />
               </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label
-                    for="landmark"
-                    class="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Landmark
-                  </label>
-                  <input
-                    type="text"
-                    id="landmark"
-                    [(ngModel)]="addressForm.LANDMARK"
-                    name="landmark"
-                    placeholder="Enter Landmark"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
-                  />
-                </div>
-                <div>
-                  <label
-                    for="area"
-                    class="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Area
-                  </label>
-                  <input
-                    type="text"
-                    id="area"
-                    [(ngModel)]="addressForm.LOCALITY"
-                    name="area"
-                    placeholder="Enter Area"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
-                  />
-                </div>
+              <div>
+                <label
+                  for="area"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Area
+                </label>
+                <input
+                  type="text"
+                  id="area"
+                  [(ngModel)]="addressForm.LOCALITY"
+                  name="area"
+                  placeholder="Enter Area"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                />
               </div>
+            </div>
+          </ng-container>
 
-              <!-- <div>
-                      <label
-                        for="landmark"
-                        class="block text-sm font-medium text-gray-700 mb-1"
-                      >
-                        Area, Street, Sector, Village
-                      </label>
-                      <input
-                        type="text"
-                        id="landmark"
-                        [(ngModel)]="addressForm.LANDMARK"
-                        name="landmark"
-                        placeholder="e.g. Near station, Hospital"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
-                      />
-                    </div> -->
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="relative">
-                  <label
-                    for="country"
-                    class="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Country/Region
-                  </label>
-                  <input
-                    id="country"
-                    type="text"
-                    [(ngModel)]="countrySearch"
-                    (input)="filterCountries(); onCountryInputChange()"
-                    (blur)="onCountryBlur()"
-                    name="COUNTRY_NAME"
-                    #COUNTRY_NAME="ngModel"
-                    placeholder="Enter Country/Region"
-                    required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-                  />
-                  <div
-                    *ngIf="
-                      filteredCountries.length ||
-                      showAddCountryOption ||
-                      isLoadingCountries
-                    "
-                    class="absolute z-20 w-full bg-white mt-1 rounded-md shadow-md max-h-48 overflow-y-auto"
-                  >
-                    <div
-                      *ngIf="isLoadingCountries"
-                      class="p-3 text-center text-gray-500 text-sm"
-                    >
-                      Loading countries...
-                    </div>
-                    <div
-                      *ngFor="let c of filteredCountries"
-                      (mousedown)="selectCountry(c)"
-                      class="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                    >
-                      {{ c.NAME }}
-                    </div>
-                  </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="relative">
+              <label
+                for="country"
+                class="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Country/Region
+              </label>
+              <input
+                id="country"
+                type="text"
+                [(ngModel)]="countrySearch"
+                (input)="filterCountries(); onCountryInputChange()"
+                (blur)="onCountryBlur()"
+                name="COUNTRY_NAME"
+                #COUNTRY_NAME="ngModel"
+                placeholder="Enter Country/Region"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
+              />
+              <div
+                *ngIf="
+                  filteredCountries.length ||
+                  showAddCountryOption ||
+                  isLoadingCountries
+                "
+                class="absolute z-20 w-full bg-white mt-1 rounded-md shadow-md max-h-48 overflow-y-auto"
+              >
+                <div
+                  *ngIf="isLoadingCountries"
+                  class="p-3 text-center text-gray-500 text-sm"
+                >
+                  Loading countries...
                 </div>
-                <div class="relative">
-                  <label
-                    for="state"
-                    class="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    State/Province
-                  </label>
-                  <input
-                    id="state"
-                    type="text"
-                    [(ngModel)]="stateSearch"
-                    (input)="filterStates(); onStateInputChange()"
-                    (blur)="onStateBlur()"
-                    name="STATE_NAME"
-                    #STATE_NAME="ngModel"
-                    placeholder="Enter State/Province"
-                    required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-                  />
-                  <div
-                    *ngIf="
-                      filteredStates.length ||
-                      showAddStateOption ||
-                      isLoadingStates
-                    "
-                    class="absolute z-20 w-full bg-white mt-1 rounded-md shadow-md max-h-48 overflow-y-auto"
-                  >
-                    <div
-                      *ngIf="isLoadingStates"
-                      class="p-3 text-center text-gray-500 text-sm"
-                    >
-                      Loading states...
-                    </div>
-                    <div
-                      *ngFor="let s of filteredStates"
-                      (mousedown)="selectState(s)"
-                      class="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                    >
-                      {{ s.NAME }}
-                    </div>
-                  </div>
+                <div
+                  *ngFor="let c of filteredCountries"
+                  (mousedown)="selectCountry(c)"
+                  class="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                >
+                  {{ c.NAME }}
                 </div>
               </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="relative">
-                  <label
-                    for="city"
-                    class="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Town/City
-                  </label>
-                  <input
-                    id="city"
-                    type="text"
-                    [(ngModel)]="citySearch"
-                    (input)="filterCities()"
-                    (blur)="onCityBlur()"
-                    name="CITY"
-                    placeholder="Enter Town/City"
-                    required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-                  />
-                  <div
-                    *ngIf="
-                      filteredCities.length ||
-                      showAddCityOption ||
-                      isLoadingCities
-                    "
-                    class="absolute z-20 w-full bg-white mt-1 rounded-md shadow-md max-h-48 overflow-y-auto"
-                  >
-                    <div
-                      *ngIf="isLoadingCities"
-                      class="p-3 text-center text-gray-500 text-sm"
-                    >
-                      Loading cities...
-                    </div>
-                    <div
-                      *ngFor="let c of filteredCities"
-                      (mousedown)="selectCity(c)"
-                      class="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                    >
-                      {{ c.NAME }}
-                    </div>
-                  </div>
+            </div>
+            <div class="relative">
+              <label
+                for="state"
+                class="block text-sm font-medium text-gray-700 mb-1"
+              >
+                State/Province
+              </label>
+              <input
+                id="state"
+                type="text"
+                [(ngModel)]="stateSearch"
+                (input)="filterStates(); onStateInputChange()"
+                (blur)="onStateBlur()"
+                name="STATE_NAME"
+                #STATE_NAME="ngModel"
+                placeholder="Enter State/Province"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
+              />
+              <div
+                *ngIf="
+                  filteredStates.length ||
+                  showAddStateOption ||
+                  isLoadingStates
+                "
+                class="absolute z-20 w-full bg-white mt-1 rounded-md shadow-md max-h-48 overflow-y-auto"
+              >
+                <div
+                  *ngIf="isLoadingStates"
+                  class="p-3 text-center text-gray-500 text-sm"
+                >
+                  Loading states...
                 </div>
-                <div>
-                  <label
-                    for="zipcode"
-                    class="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Pincode/Zipcode
-                  </label>
-                  <input
-                    type="text"
-                    id="zipcode"
-                    maxlength="6"
-                    [(ngModel)]="addressForm.PINCODE"
-                    name="pincode"
-                    placeholder="6 digits [0-9] PIN/ZIP code"
-                    (keypress)="onlyNumbers($event)"
-                    required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              <div class="flex items-start">
-                <div class="flex items-center h-5">
-                  <input
-                    id="isDefault"
-                    type="checkbox"
-                    name="isDefault"
-                    [(ngModel)]="addressForm.IS_DEFUALT_ADDRESS"
-                    class="w-4 h-4 text-[#5a8f69] border-gray-300 rounded focus:ring-[#5a8f69]"
-                  />
-                </div>
-                <div class="ml-3">
-                  <label
-                    for="isDefault"
-                    class="text-sm font-medium text-gray-700"
-                  >
-                    Make this my default address
-                  </label>
+                <div
+                  *ngFor="let s of filteredStates"
+                  (mousedown)="selectState(s)"
+                  class="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                >
+                  {{ s.NAME }}
                 </div>
               </div>
             </div>
           </div>
 
-          <div
-            class="border-t border-gray-200 pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
-          >
-            <div class="flex-1">
-              <p
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div
+              class="relative"
+              [class.md:col-span-2]="addressForm.ADDRESS_TYPE === 'P'"
+            >
+              <label
+                for="city"
+                class="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Town/City
+              </label>
+              <input
+                id="city"
+                type="text"
+                [(ngModel)]="citySearch"
+                (input)="filterCities()"
+                (blur)="onCityBlur()"
+                name="CITY"
+                placeholder="Enter Town/City"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
+              />
+              <div
                 *ngIf="
-                  verificationStatus !== 'verified' && addressForm.EMAIL_ID
+                  filteredCities.length ||
+                  showAddCityOption ||
+                  isLoadingCities
                 "
-                class="text-sm text-orange-600 flex items-center gap-1"
+                class="absolute z-20 w-full bg-white mt-1 rounded-md shadow-md max-h-48 overflow-y-auto"
               >
-                <i class="ri-alert-line"></i>
-                Email not verified. We recommend verifying your email for order
-                updates.
-              </p>
+                <div
+                  *ngIf="isLoadingCities"
+                  class="p-3 text-center text-gray-500 text-sm"
+                >
+                  Loading cities...
+                </div>
+                <div
+                  *ngFor="let c of filteredCities"
+                  (mousedown)="selectCity(c)"
+                  class="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                >
+                  {{ c.NAME }}
+                </div>
+              </div>
+              <small
+                *ngIf="addressForm.ADDRESS_TYPE === 'P'"
+                class="block mt-1 text-xs text-gray-500"
+              >
+                Please select your city to find local pickup facilities.
+              </small>
             </div>
-            <div class="flex gap-3">
-              <button
-                type="button"
-                class="px-6 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
-                (click)="closeAddressModal()"
-              >
-                Cancel
-              </button>
-              <button
-                *ngIf="
-                  verificationStatus === 'verified' && addressForm.EMAIL_ID
-                "
-                type="submit"
-                class="bg-[#5a8f69] hover:bg-green-800 text-white font-medium px-6 py-2 rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                [disabled]="isSavingAddress || addressFormTemp.invalid"
-              >
-                <span *ngIf="!isSavingAddress">Save Address</span>
-                <span *ngIf="isSavingAddress">SAVING...</span>
-              </button>
-            </div>
+
+            <ng-container *ngIf="addressForm.ADDRESS_TYPE !== 'P'">
+              <div>
+                <label
+                  for="zipcode"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Pincode/Zipcode
+                </label>
+                <input
+                  type="text"
+                  id="zipcode"
+                  maxlength="6"
+                  [(ngModel)]="addressForm.PINCODE"
+                  name="pincode"
+                  placeholder="6 digits [0-9] PIN/ZIP code"
+                  (keypress)="onlyNumbers($event)"
+                  [required]="addressForm.ADDRESS_TYPE !== 'P'" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
+                />
+              </div>
+            </ng-container>
           </div>
-        </form>
+
+          <ng-container *ngIf="addressForm.ADDRESS_TYPE !== 'P'">
+            <div class="flex items-start">
+              <div class="flex items-center h-5">
+                <input
+                  id="isDefault"
+                  type="checkbox"
+                  name="isDefault"
+                  [(ngModel)]="addressForm.IS_DEFUALT_ADDRESS"
+                  class="w-4 h-4 text-[#5a8f69] border-gray-300 rounded focus:ring-[#5a8f69]"
+                />
+              </div>
+              <div class="ml-3">
+                <label
+                  for="isDefault"
+                  class="text-sm font-medium text-gray-700"
+                >
+                  Make this my default address
+                </label>
+              </div>
+            </div>
+          </ng-container>
+
+        </div>
       </div>
-    </div>
+
+      <div
+        class="border-t border-gray-200 pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+      >
+        <div class="flex-1">
+          <p
+            *ngIf="
+              verificationStatus !== 'verified' && addressForm.EMAIL_ID
+            "
+            class="text-sm text-orange-600 flex items-center gap-1"
+          >
+            <i class="ri-alert-line"></i>
+            Email not verified. We recommend verifying your email for order
+            updates.
+          </p>
+        </div>
+        <div class="flex gap-3">
+          <button
+            type="button"
+            class="px-6 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
+            (click)="closeAddressModal()"
+          >
+            Cancel
+          </button>
+          <button
+            *ngIf="
+              verificationStatus === 'verified' && addressForm.EMAIL_ID
+            "
+            type="submit"
+            class="bg-[#5a8f69] hover:bg-green-800 text-white font-medium px-6 py-2 rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            [disabled]="isSavingAddress || addressFormTemp.invalid"
+          >
+            <span *ngIf="!isSavingAddress">Save Address</span>
+            <span *ngIf="isSavingAddress">SAVING...</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
   </div>
 </div>
 
@@ -2712,5 +2736,275 @@
         Verify
       </button>
     </form>
+  </div>
+</div>
+<div
+  *ngIf="changePasswordModalOpen"
+  class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
+>
+  <div class="bg-white rounded-lg p-6 w-[85%] max-w-sm shadow-md">
+    <h2 class="text-xl font-semibold mb-4 text-gray-800">Set New Password</h2>
+    <form (ngSubmit)="confirmPasswordChange()">
+      <div class="mb-4">
+        <label
+          for="newPassword"
+          class="block text-sm font-medium text-gray-700 mb-1"
+          >New Password</label
+        >
+        <div class="relative">
+          <input
+            [type]="showNewPassword ? 'text' : 'password'"
+            id="newPassword"
+            [(ngModel)]="newPasswordForm.password"
+            name="newPassword"
+            placeholder="New Password (min 8 chars)"
+            class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm pr-10 focus:outline-none focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+            required
+          />
+          <button
+            type="button"
+            (click)="togglePasswordVisibility('new')"
+            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+            aria-label="Toggle password visibility"
+          >
+            <svg
+              *ngIf="!showNewPassword"
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <svg
+              *ngIf="showNewPassword"
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path>
+              <path
+                d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"
+              ></path>
+              <path d="M1.67 12a13.16 13.16 0 0 1 1.67-2.68L19 19"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <label
+          for="confirmPassword"
+          class="block text-sm font-medium text-gray-700 mb-1"
+          >Confirm Password</label
+        >
+        <div class="relative">
+          <input
+            [type]="showConfirmPassword ? 'text' : 'password'"
+            id="confirmPassword"
+            [(ngModel)]="newPasswordForm.confirmPassword"
+            name="confirmPassword"
+            placeholder="Re-enter New Password"
+            class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm pr-10 focus:outline-none focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+            required
+          />
+          <button
+            type="button"
+            (click)="togglePasswordVisibility('confirm')"
+            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+            aria-label="Toggle confirm password visibility"
+          >
+            <svg
+              *ngIf="!showConfirmPassword"
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <svg
+              *ngIf="showConfirmPassword"
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path>
+              <path
+                d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"
+              ></path>
+              <path d="M1.67 12a13.16 13.16 0 0 1 1.67-2.68L19 19"></path>
+            </svg>
+          </button>
+        </div>
+
+        <p
+          *ngIf="
+            newPasswordForm.password &&
+            newPasswordForm.confirmPassword &&
+            newPasswordForm.password !== newPasswordForm.confirmPassword
+          "
+          class="mt-1 text-xs text-red-600 text-left"
+        >
+          Passwords do not match.
+        </p>
+      </div>
+
+      <div class="flex justify-end gap-3">
+        <button
+          type="button"
+          (click)="closeChangePasswordModal()"
+          class="bg-gray-200 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="
+            isChangingPassword ||
+            newPasswordForm.password !== newPasswordForm.confirmPassword ||
+            !newPasswordForm.password
+          "
+          class="bg-[#5a8f69] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1"
+        >
+          <span *ngIf="isChangingPassword" class="small-loader"></span>
+          <span>{{ isChangingPassword ? "Verifying..." : "Confirm" }}</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div
+  class="auth-card-container fixed inset-0 z-[60]"
+  *ngIf="openPasswordVerify"
+>
+  <div
+    class="min-h-screen d-flex justify-content-center align-items-center"
+    style="min-height: 100vh"
+  >
+    <div class="auth-wrapper">
+      <div
+        class="auth-card frosted-glass shadow-sm p-4 rounded-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-8 relative overflow-hidden"
+        style="width: 380px !important; position: relative"
+      >
+        <div class="otp-content text-center">
+          <h2 class="text-xl font-bold mb-2">Verify Password Change</h2>
+          <p class="verification-text text-sm text-gray-600 mb-4">
+            We've sent a 4-digit verification code to your registered:
+            <br />
+            <span class="contact-info font-medium text-gray-800">
+              <span *ngIf="user?.mobile" class="mobile-number">{{
+                user.mobile
+              }}</span>
+              <span *ngIf="user?.mobile && user?.email"> / </span>
+              <span *ngIf="user?.email" class="email">{{ user.email }}</span>
+              <span *ngIf="!user?.mobile && !user?.email">Mobile/Email</span>
+            </span>
+          </p>
+
+          <div
+            style="color: red; margin-bottom: 15px"
+            *ngIf="passwordStatusCode != ''"
+          >
+            {{ passwordStatusCode }}
+          </div>
+
+          <form (ngSubmit)="verifyPasswordOTPF()" class="otp-form">
+            <div class="otp-input-group justify-center mb-6">
+              <input
+                *ngFor="let i of [0, 1, 2, 3]"
+                class="otp-input w-12 h-12 text-center text-xl border rounded-md mx-1 focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                type="text"
+                [id]="'password-otp-input-' + i"
+                [(ngModel)]="passwordOTP[i]"
+                [name]="'passwordotpn' + i"
+                maxlength="1"
+                (input)="onOtpInput($event, i)"
+                (keydown)="onOtpKeydown($event, i)"
+                (paste)="onOtpPaste($event)"
+                (keypress)="allowOnlyNumbers($event)"
+                required
+                autocomplete="off"
+              />
+            </div>
+            <div class="timer-section mb-6">
+              <span
+                *ngIf="passwordRemainingTime > 0"
+                class="timer-display text-sm text-gray-600"
+                >Resend in {{ passwordRemainingTime }}s</span
+              >
+              <p class="resend-text text-sm" style="color: #636363">
+                Didn’t receive the code?
+                <a
+                  (click)="
+                    passwordRemainingTime == 0 ? resendPasswordOtp() : ''
+                  "
+                  [ngStyle]="{
+                    cursor: passwordRemainingTime > 0 ? 'wait' : 'pointer',
+                    color:
+                      passwordRemainingTime > 0
+                        ? '#636363 !important'
+                        : 'rgb(90, 143, 105) !important'
+                  }"
+                  [class.disabled]="passwordRemainingTime > 0"
+                  [ngClass]="{
+                    'finished-time': passwordRemainingTime <= 0
+                  }"
+                >
+                  <span> Resend </span>
+                </a>
+              </p>
+            </div>
+
+            <div class="flex gap-3 w-full">
+              <button
+                type="button"
+                (click)="openPasswordVerify = false"
+                class="w-1/2 bg-gray-200 text-gray-700 py-2.5 rounded-button font-medium hover:bg-gray-300 transition"
+                aria-label="Cancel"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="w-1/2 bg-[#5a8f69] text-white py-2.5 rounded-button font-medium hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1"
+                [disabled]="
+                  isVerifyingPasswordOTP || passwordOTP.join('').length < 4
+                "
+              >
+                <span
+                  *ngIf="isVerifyingPasswordOTP"
+                  class="small-loader"
+                ></span>
+                <span>{{
+                  isVerifyingPasswordOTP ? "Verifying..." : "Verify"
+                }}</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

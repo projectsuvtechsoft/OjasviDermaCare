@@ -32,23 +32,23 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 export class AddressMaster {
   ADDRESS = '';
-  COUNTRY_NAME:any = '';
+  COUNTRY_NAME: any = '';
   // STATE_ID = '';
   CITY_NAME = '';
   PINCODE = '';
   LANDMARK = '';
   ID = '';
   LOCALITY = '';
-  STATE_NAME:any = '';
+  STATE_NAME: any = '';
   CUST_ID = '';
   MOBILE_NO = '';
   NAME = '';
-  EMAIL_ID=''
+  EMAIL_ID = '';
   IS_LAST_SHIPPING_ADDRESS = false;
   ADDRESS_TYPE = 'R';
   IS_DEFUALT_ADDRESS = false;
-  IS_DEFAULT=false;
-  COUNTRY_CODE='+1';
+  IS_DEFAULT = false;
+  COUNTRY_CODE = '+1';
 }
 @Component({
   selector: 'app-user-profile',
@@ -69,7 +69,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     ID: '',
     password: '', // Add password for display
     PROFILE_URL: '',
-    code:''
+    code: '',
   };
 
   currentSection: string = 'dashboard-section';
@@ -100,7 +100,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     LANDMARK: string;
     LOCALITY: string;
     IS_DEFUALT_ADDRESS: number;
-    COUNTRY_CODE:any
+    COUNTRY_CODE: any;
     [key: string]: any; // to allow other dynamic properties
   }[] = [];
 
@@ -110,14 +110,14 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   editField: 'email' | 'password' | null = null;
   editValue: string = '';
   isUpdating = false;
-  COUNTRY_CODE:any='+1'
+  COUNTRY_CODE: any = '+1';
 
   // User details modal state
   userDetailsModalOpen = false;
   userDetailsForm = {
     name: '',
     mobile: '',
-    code:'+1'
+    code: '+1',
   };
   isUpdatingUserDetails = false;
 
@@ -131,7 +131,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   activeSection: string = 'dashboard-section';
   showCountryDropdown!: boolean;
   searchQuery!: string;
-  filteredCountryCodes!: { label: string; value: string; }[];
+  filteredCountryCodes!: { label: string; value: string }[];
   ngOnInit(): void {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
@@ -273,8 +273,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           this.cartService.cartUpdated.next(this.cartService.cartItems);
           this.cartService.updateCartCount();
           this.router.navigate(['/home']);
-
-          
         } else {
           this.toastr.error('Failed to logout!', '');
         }
@@ -318,7 +316,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.userDetailsForm = {
       name: this.user.NAME || '',
       mobile: this.user.mobile || '',
-      code :this.user.code || '+1'
+      code: this.user.code || '+1',
     };
     this.userDetailsModalOpen = true;
   }
@@ -328,7 +326,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.userDetailsForm = {
       name: '',
       mobile: '',
-      code:'+1'
+      code: '+1',
     };
     // this.remainingTime=60;
     // this.timerSubscription=null
@@ -338,7 +336,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     if (
       !this.userDetailsForm.name.trim() &&
       !this.userDetailsForm.mobile.trim()
-
     ) {
       this.toastr.error('Please fill in all fields.', 'Error');
       return;
@@ -444,7 +441,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       },
     });
   }
-  
+
   getUserData() {
     // this.IMAGEuRL = this.api.retriveimgUrl2();
     // this.loadData();
@@ -478,7 +475,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
               ID: this.USER_ID,
 
               password: userData.PASSWORD || '', // Set password for display
-              code:userData.COUNTRY_CODE
+              code: userData.COUNTRY_CODE,
             };
             this.imagePreview =
               this.IMAGEuRL + 'CustomerProfile/' + this.user.PROFILE_URL;
@@ -523,7 +520,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         }
       },
       (err) => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }
@@ -577,13 +574,13 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.isEditingAddress = !!address;
     this.addressForm = Object.assign({}, address);
     // this.addressForm.COUNTRY_CODE= "+1"
-      this.citySearch = address?.CITY_NAME;
-        this.stateSearch = address?.STATE_NAME;
-        this.countrySearch = address?.COUNTRY_NAME
+    this.citySearch = address?.CITY_NAME;
+    this.stateSearch = address?.STATE_NAME;
+    this.countrySearch = address?.COUNTRY_NAME;
     if (this.addressForm.ID) {
       this.onCountryChange(this.addressForm.COUNTRY_NAME);
-      if(this.addressForm.EMAIL_ID){
-      this.verificationStatus='verified'
+      if (this.addressForm.EMAIL_ID) {
+        this.verificationStatus = 'verified';
       }
     }
 
@@ -615,7 +612,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     // this.loadCountry(); // Load country list
   }
 
-   selectCountrycode(country: any) {
+  selectCountrycode(country: any) {
     this.addressForm.COUNTRY_CODE = country;
     // console.log('Selected country code:', this.addressForm.COUNTRY_CODE);
     // this.data.COUNTRY_CODE = this.selectedCountryCode;
@@ -623,49 +620,49 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.searchQuery = '';
   }
   filterCountriesd(event: any) {
-      const query = event.target.value.toLowerCase().trim();
-      this.searchQuery = query;
-      this.filteredCountryCodes = this.countryCodes.filter(
-        (country) =>
-          country.label.toLowerCase().includes(query) ||
-          country.value.toLowerCase().includes(query)
-      );
-    }
-  
-    toggleCountryDropdown(event: Event) {
-      event.stopPropagation();
-      this.showCountryDropdown = !this.showCountryDropdown;
+    const query = event.target.value.toLowerCase().trim();
+    this.searchQuery = query;
+    this.filteredCountryCodes = this.countryCodes.filter(
+      (country) =>
+        country.label.toLowerCase().includes(query) ||
+        country.value.toLowerCase().includes(query)
+    );
+  }
+
+  toggleCountryDropdown(event: Event) {
+    event.stopPropagation();
+    this.showCountryDropdown = !this.showCountryDropdown;
+    // console.log('showCountryDropdown: ', this.showCountryDropdown);
+
+    if (this.showCountryDropdown) {
       // console.log('showCountryDropdown: ', this.showCountryDropdown);
-  
-      if (this.showCountryDropdown) {
-        // console.log('showCountryDropdown: ', this.showCountryDropdown);
-        this.filteredCountryCodes = [...this.countryCodes]; // Create a new array copy
-        this.searchQuery = '';
-      }
+      this.filteredCountryCodes = [...this.countryCodes]; // Create a new array copy
+      this.searchQuery = '';
     }
-  
-    // Close-on-outside-click support for any country dropdown instance in this component
-    @ViewChildren('dropdownWrapper') dropdownWrappers!: QueryList<ElementRef>;
-  
-    @HostListener('document:click', ['$event'])
-    onDocumentClick(event: MouseEvent) {
-      if (!this.showCountryDropdown) return;
-      const target = event.target as Node;
-      const wrappers = this.dropdownWrappers
-        ? this.dropdownWrappers.toArray()
-        : [];
-      const clickedInside = wrappers.some((ref) =>
-        ref.nativeElement.contains(target)
-      );
-      if (!clickedInside) {
-        this.showCountryDropdown = false;
-        this.searchQuery = '';
-      }
+  }
+
+  // Close-on-outside-click support for any country dropdown instance in this component
+  @ViewChildren('dropdownWrapper') dropdownWrappers!: QueryList<ElementRef>;
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.showCountryDropdown) return;
+    const target = event.target as Node;
+    const wrappers = this.dropdownWrappers
+      ? this.dropdownWrappers.toArray()
+      : [];
+    const clickedInside = wrappers.some((ref) =>
+      ref.nativeElement.contains(target)
+    );
+    if (!clickedInside) {
+      this.showCountryDropdown = false;
+      this.searchQuery = '';
     }
+  }
   // Close modal
   closeAddressModal() {
     this.addressModalOpen = false;
-    this.verificationStatus='pending'
+    this.verificationStatus = 'pending';
   }
 
   // On country change
@@ -775,7 +772,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     //   this.toastr.error('Please Enter Area', '');
     // }
     else if (
-      this.addressForm.CITY_NAME== null ||
+      this.addressForm.CITY_NAME == null ||
       this.addressForm.CITY_NAME.trim() == ''
     ) {
       this.isOk = false;
@@ -841,10 +838,14 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     //   this.isOk = false;
     //   this.toastr.error('Please Select Address Type', '');
     // }
-     if(!this.addressForm.COUNTRY_CODE || this.addressForm.COUNTRY_CODE=='' || this.addressForm.COUNTRY_CODE==null || this.addressForm.COUNTRY_CODE==undefined){
-      this.addressForm.COUNTRY_CODE = '+1'
-    }
-    else if (!this.addressForm.ID) {
+    if (
+      !this.addressForm.COUNTRY_CODE ||
+      this.addressForm.COUNTRY_CODE == '' ||
+      this.addressForm.COUNTRY_CODE == null ||
+      this.addressForm.COUNTRY_CODE == undefined
+    ) {
+      this.addressForm.COUNTRY_CODE = '+1';
+    } else if (!this.addressForm.ID) {
       if (this.dataList1.length > 0) {
         if (this.addressForm.IS_DEFUALT_ADDRESS == true) {
           for (let i = 0; i < this.dataList1.length; i++) {
@@ -931,7 +932,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         (data: any) => {
           if (data['code'] == 200) {
             // this.totalRecords = data['count'];
-            this.dataList1 = data['data'];            
+            this.dataList1 = data['data'];
             // console.log(data['data']);
             // this.loadingRecords = false;
             // if(this.totalRecords==0){
@@ -943,7 +944,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           }
         },
         (err: any) => {
-          console.log(err);
+          // console.log(err);
         }
       );
   }
@@ -979,7 +980,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
                 this.cartItemsMap[order.ID] = JSON.parse(
                   order.CART_ITEMS || '[]'
                 );
-                console.log(this.cartItemsMap);
+                // console.log(this.cartItemsMap);
               } catch (e) {
                 console.error(
                   'Error parsing CART_ITEMS for order',
@@ -1003,7 +1004,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           }
         },
         (err: any) => {
-          console.log(err);
+          // console.log(err);
           this.isloadstate = false;
         }
       );
@@ -1047,9 +1048,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           : item.PRICE * item.QUANTITY) || 0),
       0
     );
-    this.photoUrls = this.cartitemDataList.map(
-      (item) => item.PHOTO_URL || ''
-    );
+    this.photoUrls = this.cartitemDataList.map((item) => item.PHOTO_URL || '');
 
     const stageMap: { [key: string]: number } = {
       A: 1,
@@ -1326,7 +1325,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
               this.IMAGEuRL + 'CustomerProfile/' + this.user.PROFILE_URL;
 
             // Close the capture photo modal first
-            console.log('Closing capture photo modal after successful upload');
+            // console.log('Closing capture photo modal after successful upload');
             this.closeCapturePhotoModal();
             this.clearCanvasAndVideo();
 
@@ -1335,7 +1334,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
             // Close the photo selection modal with a small delay to ensure capture modal closes first
             setTimeout(() => {
-              console.log('Closing photo selection modal');
+              // console.log('Closing photo selection modal');
               this.closeModal();
             }, 100);
           } else {
@@ -1395,14 +1394,14 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   closeCapturePhotoModal() {
-    console.log('closeCapturePhotoModal called');
+    // console.log('closeCapturePhotoModal called');
     const modal = document.getElementById('CapturePhotoModal');
     if (!modal) {
-      console.error('Capture photo modal not found for closing');
+      // console.error('Capture photo modal not found for closing');
       return;
     }
 
-    console.log('Modal found, closing...');
+    // console.log('Modal found, closing...');
 
     // Stop the camera stream if it's active
     if (this.stream) {
@@ -1424,7 +1423,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     // Force a change detection cycle
     this.cdRef.detectChanges();
 
-    console.log('Modal closed successfully');
+    // console.log('Modal closed successfully');
   }
 
   updateUserProfile(form?: NgForm) {
@@ -1618,7 +1617,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         }
       },
       (err) => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }
@@ -1913,7 +1912,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     }
   }
   deleteAddress(addressID: number, customer_id: number) {
-    console.log('Deleting Address ID:', addressID, 'Customer ID:', customer_id);
+    // console.log('Deleting Address ID:', addressID, 'Customer ID:', customer_id);
     this.api.DeleteAddress(addressID, customer_id).subscribe(
       (data: any) => {
         if (data['code'] == 200) {
@@ -1924,7 +1923,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         }
       },
       (err: any) => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }
@@ -1952,9 +1951,9 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     }
   }
 
-  navigateToProduct(productId: number,varientId:number) {
+  navigateToProduct(productId: number, varientId: number) {
     // Navigate to product detail page
-    this.router.navigate(['product_details', productId,varientId]);
+    this.router.navigate(['product_details', productId, varientId]);
   }
 
   today = new Date();
@@ -2033,7 +2032,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       filterss += ` AND DATE(ORDER_DATETIME) BETWEEN '${formattedStart}' AND '${formattedToday}'`;
     }
 
-    console.log('Final filter:', filterss);
+    // console.log('Final filter:', filterss);
 
     this.api
       .Ordermaster(
@@ -2062,7 +2061,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           }
         },
         (err: any) => {
-          console.log(err);
+          // console.log(err);
           this.isloadstate = false;
         }
       );
@@ -2086,33 +2085,33 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   // }
 
   moveToNext(event: KeyboardEvent, index: number) {
-  const key = event.key;
-  const inputs = document.getElementsByClassName('otp-input') as HTMLCollectionOf<HTMLInputElement>;
+    const key = event.key;
+    const inputs = document.getElementsByClassName(
+      'otp-input'
+    ) as HTMLCollectionOf<HTMLInputElement>;
 
-  if (key === 'Backspace') {
-   
-    event.preventDefault();
+    if (key === 'Backspace') {
+      event.preventDefault();
 
-    if (inputs[index].value) {
-      inputs[index].value = '';
-      this.otp[index] = '';
-      return;
-    }
+      if (inputs[index].value) {
+        inputs[index].value = '';
+        this.otp[index] = '';
+        return;
+      }
 
-    if (index > 0) {
-      const prev = inputs[index - 1];
-      prev.focus();
-      prev.value = '';
-      this.otp[index - 1] = '';
-    }
-  } else if (/^[0-9]$/.test(key)) {
-    this.otp[index] = key;
-    if (index < inputs.length - 1) {
-      setTimeout(() => inputs[index + 1].focus(), 0);
+      if (index > 0) {
+        const prev = inputs[index - 1];
+        prev.focus();
+        prev.value = '';
+        this.otp[index - 1] = '';
+      }
+    } else if (/^[0-9]$/.test(key)) {
+      this.otp[index] = key;
+      if (index < inputs.length - 1) {
+        setTimeout(() => inputs[index + 1].focus(), 0);
+      }
     }
   }
-}
-
 
   allowOnlyNumbers(event: KeyboardEvent) {
     const charCode = event.which ? event.which : event.keyCode;
@@ -2152,9 +2151,9 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       return;
     }
     const otp1 = this.otp.join('');
-    this.isverifyOTP = true; 
+    this.isverifyOTP = true;
     this.USER_NAME = sessionStorage.getItem('USER_NAME');
- 
+
     this.api
       .verifyOTP(
         this.type,
@@ -2206,7 +2205,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       });
     // }
   }
-    VerifyOTP2() {
+  VerifyOTP2() {
     if (this.otp.join('').length < 4) {
       this.toastr.error('Please Enter OTP...', '');
       return;
@@ -2321,9 +2320,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       });
   }
   openVerifyModal() {
-        this.openVerify = false;
-        console.log("asdfghjkl",this.openVerify);
-        
+    this.openVerify = false;
+    // console.log("asdfghjkl",this.openVerify);
 
     if (
       !this.userDetailsForm.name.trim() &&
@@ -2605,19 +2603,18 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       this.api.sendotp(this.userDetailsForm.mobile, '', this.USER_ID).subscribe(
         (successCode: any) => {
           if (successCode.code == 200) {
-            this.openVerify= true
+            this.openVerify = true;
             this.toastr.success('OTP send Successfully.', 'Success');
             this.startTimer();
 
             this.isSendOtpSpinning = false;
-          } 
-           else if (successCode.code == 300) {
-        this.toastr.error(`Mobile No. already exist, please try different.`, '');
+          } else if (successCode.code == 300) {
+            this.toastr.error(
+              `Mobile No. already exist, please try different.`,
+              ''
+            );
             this.openVerify = false;
-
- }
-          
-          else {
+          } else {
             this.toastr.error('failed to send OTP', 'Error');
 
             this.isSendOtpSpinning = false;
@@ -2635,9 +2632,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
   isNameChanged = false;
   isMobileChanged = false;
-  isCountryCodeChanged=false;
-    internationalmobpattern = /^\+?\d{1,4}?[\s-]?(\(?\d{1,4}\)?[\s-]?)*\d{4,14}$/;
-
+  isCountryCodeChanged = false;
+  internationalmobpattern = /^\+?\d{1,4}?[\s-]?(\(?\d{1,4}\)?[\s-]?)*\d{4,14}$/;
 
   // IsMobileorEmail() {
 
@@ -2668,7 +2664,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   //   }
   // }
 
- 
   updateUserNameOnly() {
     const payload: any = {
       ID: this.USER_ID,
@@ -2685,7 +2680,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
         if (response?.code === 200) {
           this.toastr.success('User Info Updated successfully!', 'Success');
-                    window.location.reload()
+          window.location.reload();
 
           this.userDetailsModalOpen = false;
           if (this.editField === 'email') this.user.email = this.editValue;
@@ -2706,82 +2701,73 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
   OTP: string[] = ['', '', '', ''];
 
-  isVerifyOtpSpinning:boolean = false
+  isVerifyOtpSpinning: boolean = false;
 
   verifyOTPP() {
-    this.isVerifyOtpSpinning = true
+    this.isVerifyOtpSpinning = true;
     this.userDetailsModalOpen = false;
     const otpValue = this.OTP.join('');
     if (!otpValue || otpValue.length < 4) {
       this.toastr.error('Please Enter Valid OTP', '');
       return;
     }
-    if(!this.email)
-    {
-          this.api
-      .verifyotpp(this.userDetailsForm.mobile, this.userDetailsForm.code,'', otpValue, this.USER_ID)
-      .subscribe(
+    if (!this.email) {
+      this.api
+        .verifyotpp(
+          this.userDetailsForm.mobile,
+          this.userDetailsForm.code,
+          '',
+          otpValue,
+          this.USER_ID
+        )
+        .subscribe(
+          (successCode: any) => {
+            if (successCode.code == 200) {
+              this.toastr.success('OTP Verified Successfully', '');
+              this.isVerifyOtpSpinning = false;
+              window.location.reload();
+              this.otp = ['', '', '', ''];
+              this.openVerify = false;
+            } else {
+              this.isVerifyOtpSpinning = false;
+
+              this.toastr.error('OTP verification failed', '');
+            }
+          },
+          () => this.toastr.error('something went wrong, try again later', '')
+        );
+    } else {
+      this.isVerifyOtpSpinning = true;
+
+      this.api.verifyotpp('', '', this.email, otpValue, this.USER_ID).subscribe(
         (successCode: any) => {
           if (successCode.code == 200) {
             this.toastr.success('OTP Verified Successfully', '');
-            this.isVerifyOtpSpinning = false
-            window.location.reload();
-            this.otp = ['', '', '', '']; 
-            this.openVerify =false
-          } else {
-                this.isVerifyOtpSpinning = false
-
-            this.toastr.error('OTP verification failed', '');
-          }
-        },
-        () => this.toastr.error('something went wrong, try again later', '')
-      );
-
-    }
-    else
-    {
-          this.isVerifyOtpSpinning = true
-      
-       this.api
-      .verifyotpp('', '',this.email, otpValue, this.USER_ID)
-      .subscribe(
-        (successCode: any) => {
-          if (successCode.code == 200) {
-            this.toastr.success('OTP Verified Successfully', '');
             window.location.reload();
 
-                this.isVerifyOtpSpinning = false
+            this.isVerifyOtpSpinning = false;
 
             // this.update();
-            this.otp = ['', '', '', '']; 
-                        this.userEmailDetailsModalOpen=false
-                        this.openVerify =false
-
-          } 
-                   else if (successCode.code == 300) {
-                        this.isVerifyOtpSpinning = false
+            this.otp = ['', '', '', ''];
+            this.userEmailDetailsModalOpen = false;
+            this.openVerify = false;
+          } else if (successCode.code == 300) {
+            this.isVerifyOtpSpinning = false;
 
             this.toastr.error('OTP Invalid, Please Enter Valid OTP', '');
-          } 
-
-         else if (successCode.code == 304) {
-                                  this.isVerifyOtpSpinning = false
+          } else if (successCode.code == 304) {
+            this.isVerifyOtpSpinning = false;
 
             this.toastr.error('OTP is Expired', '');
-          } 
-          
-          else {
-                                    this.isVerifyOtpSpinning = false
+          } else {
+            this.isVerifyOtpSpinning = false;
 
             this.toastr.error('OTP verification failed', '');
           }
         },
         () => this.toastr.error('something went wrong, try again later', '')
       );
-
     }
-
-
   }
 
   update() {
@@ -2805,7 +2791,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           this.user.mobile = this.userDetailsForm.mobile;
           this.openVerify = false;
           this.userDetailsModalOpen = false;
-          this.userEmailDetailsModalOpen=false //by sanjana
+          this.userEmailDetailsModalOpen = false; //by sanjana
         } else {
           this.toastr.error('User Info Updation failed', 'Error');
         }
@@ -2825,7 +2811,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
   openUserEmailDetailsModal() {
     this.userEmailDetailsModalOpen = true;
-     this.email = this.user.email || '';
+    this.email = this.user.email || '';
   }
 
   closeUserEmailDetailsModal() {
@@ -2833,11 +2819,10 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   isSendOtpEmailSpinning: boolean = false;
-  isLoaderSpinning:boolean =false
-
+  isLoaderSpinning: boolean = false;
 
   sendOTPEmail() {
-                // this.isSendOtpEmailSpinning=true
+    // this.isSendOtpEmailSpinning=true
 
     if (
       this.email == '' ||
@@ -2855,26 +2840,19 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           if (successCode.code == 200) {
             this.toastr.success('OTP send Successfully.', 'Success');
             this.openVerify = true;
-            this.isSendOtpEmailSpinning=false
+            this.isSendOtpEmailSpinning = false;
             this.startTimer();
 
             this.isSendOtpEmailSpinning = false;
-          }
- else if (successCode.code == 300) {
-        this.toastr.error(`Email already exist, please try different.`, '');
+          } else if (successCode.code == 300) {
+            this.toastr.error(`Email already exist, please try different.`, '');
             this.openVerify = false;
             this.isSendOtpEmailSpinning = false;
-
-
- }
-
-          
-          else {
+          } else {
             this.toastr.error('failed to send OTP', 'Error');
 
             this.isSendOtpEmailSpinning = false;
-                            this.isSendOtpEmailSpinning=false
-
+            this.isSendOtpEmailSpinning = false;
           }
         },
         (err) => {
@@ -2883,34 +2861,34 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           this.toastr.error('something went wrong', 'please try again later');
 
           this.isSendOtpEmailSpinning = false;
-                          this.isSendOtpEmailSpinning=false
-
+          this.isSendOtpEmailSpinning = false;
         }
       );
     }
   }
 
-
   hasItemsInCart(productId: number, productData: any): boolean {
-  const itemsFromService = this.cartService.getCartItems();
-  const items = itemsFromService;
+    const itemsFromService = this.cartService.getCartItems();
+    const items = itemsFromService;
 
-  if (!items || items.length === 0) return false;
-  const variants =
-    typeof productData?.VARIENTS === 'string'
-      ? JSON.parse(productData?.VARIENTS)
-      : productData?.VARIENTS || [];
-  return variants.some((variant: any) =>
-    items.some(
-      (item: any) =>
-        item.PRODUCT_ID === productId && item.VERIENT_ID === variant.VARIENT_ID && this.selectedVariantMap[productId] == variant.VARIENT_ID
-    )
-  );
-}
-navigateTocart(){
-  this.router.navigate(['/cart'])
-}
- isLoadingCountries = false;
+    if (!items || items.length === 0) return false;
+    const variants =
+      typeof productData?.VARIENTS === 'string'
+        ? JSON.parse(productData?.VARIENTS)
+        : productData?.VARIENTS || [];
+    return variants.some((variant: any) =>
+      items.some(
+        (item: any) =>
+          item.PRODUCT_ID === productId &&
+          item.VERIENT_ID === variant.VARIENT_ID &&
+          this.selectedVariantMap[productId] == variant.VARIENT_ID
+      )
+    );
+  }
+  navigateTocart() {
+    this.router.navigate(['/cart']);
+  }
+  isLoadingCountries = false;
   isLoadingStates = false;
   isLoadingCities = false;
 
@@ -2952,7 +2930,7 @@ navigateTocart(){
 
               // }, 300);
             } else {
-              console.log(this.addressForm);
+              // console.log(this.addressForm);
               this.stateSearch = this.stateSearch;
             }
           } else {
@@ -2965,8 +2943,8 @@ navigateTocart(){
         }
       );
   }
-   cityList: any[] = [];
-   fetchCities(stateId: number) {
+  cityList: any[] = [];
+  fetchCities(stateId: number) {
     this.isLoadingCities = true;
     this.api
       .getCityData(
@@ -2987,14 +2965,14 @@ navigateTocart(){
             this.citySearch = selectedCity
               ? selectedCity.NAME
               : this.citySearch;
-            console.log('citySearch', this.citySearch);
+            // console.log('citySearch', this.citySearch);
           } else {
             this.cityList = [];
           }
         },
         (error: any) => {
           this.isLoadingCities = false;
-          console.error('Error fetching cities:', error);
+          // console.error('Error fetching cities:', error);
           this.cityList = [];
         }
       );
@@ -3048,11 +3026,11 @@ navigateTocart(){
     const term = this.stateSearch?.trim().toLowerCase();
     return term && !this.stateList.some((s) => s.NAME.toLowerCase() === term);
   }
- visible: boolean = false;
+  visible: boolean = false;
   dismiss() {
     this.visible = false;
   }
-verificationStatus: 'initial' | 'pending' | 'verified' | 'failed' = 'initial';
+  verificationStatus: 'initial' | 'pending' | 'verified' | 'failed' = 'initial';
   onEmailChange() {
     // Reset verification when email changes
     this.verificationStatus = 'initial';
@@ -3068,7 +3046,7 @@ verificationStatus: 'initial' | 'pending' | 'verified' | 'failed' = 'initial';
     const regex = new RegExp(this.commonFunction.emailpattern);
     return regex.test(email);
   }
- prefillCountryStateCity() {
+  prefillCountryStateCity() {
     // --- Prefill Country ---
     const selectedCountry = this.countryList.find(
       (c) => c.ID === this.addressForm.COUNTRY_NAME
@@ -3146,14 +3124,14 @@ verificationStatus: 'initial' | 'pending' | 'verified' | 'failed' = 'initial';
       }
     );
   }
-   onStateInputChange() {
+  onStateInputChange() {
     if (!this.stateSearch || this.stateSearch?.trim() === '') {
       this.addressForm.STATE_NAME = null;
       this.filteredStates = [];
     }
     this.addressForm.STATE_NAME = this.stateSearch;
   }
-    filterCities() {
+  filterCities() {
     const term = this.citySearch?.trim().toLowerCase();
     if (!term) {
       this.filteredCities = [];
@@ -3164,7 +3142,7 @@ verificationStatus: 'initial' | 'pending' | 'verified' | 'failed' = 'initial';
       c.NAME.toLowerCase().includes(term)
     );
   }
-    onCityBlur() {
+  onCityBlur() {
     this.addressForm.CITY_NAME = this.citySearch;
     setTimeout(() => (this.filteredCities = []), 100);
   }
@@ -3174,11 +3152,11 @@ verificationStatus: 'initial' | 'pending' | 'verified' | 'failed' = 'initial';
     this.citySearch = city.NAME;
     this.filteredCities = [];
   }
-    get showAddCityOption(): any {
+  get showAddCityOption(): any {
     const term = this.citySearch?.trim().toLowerCase();
     return term && !this.cityList.some((c) => c.NAME.toLowerCase() === term);
   }
-    onlyNumbers(event: KeyboardEvent) {
+  onlyNumbers(event: KeyboardEvent) {
     const charCode = event.which ? event.which : event.keyCode;
     if (charCode < 48 || charCode > 57) {
       event.preventDefault();
@@ -3186,13 +3164,11 @@ verificationStatus: 'initial' | 'pending' | 'verified' | 'failed' = 'initial';
   }
   isSavingAddress: boolean = false;
 
-
-
   //  isCountryCodeChanged=false;
-   IsMobileorEmail() {
+  IsMobileorEmail() {
     this.isNameChanged = false;
     this.isMobileChanged = false;
-    this.isCountryCodeChanged=false;
+    this.isCountryCodeChanged = false;
 
     if (this.userDetailsForm.name !== this.user.NAME) {
       this.isNameChanged = true;
@@ -3201,31 +3177,26 @@ verificationStatus: 'initial' | 'pending' | 'verified' | 'failed' = 'initial';
     if (this.userDetailsForm.mobile !== this.user.mobile) {
       this.isMobileChanged = true;
     }
-      if (this.userDetailsForm.code !== this.user.code) {
+    if (this.userDetailsForm.code !== this.user.code) {
       this.isCountryCodeChanged = true;
     }
 
     if (this.isNameChanged && !this.isMobileChanged) {
       this.updateUserNameOnly();
-    }
-    else if (this.isMobileChanged) {
+    } else if (this.isMobileChanged) {
       this.openVerifyModal();
-    }
-    else if(this.isCountryCodeChanged)
-    {
-            this.updateCountryCodeOnly();
-
-    }
-    else {
+    } else if (this.isCountryCodeChanged) {
+      this.updateCountryCodeOnly();
+    } else {
       this.toastr.info('No changes detected', 'Info');
     }
   }
 
-   updateCountryCodeOnly() {
+  updateCountryCodeOnly() {
     const payload: any = {
       ID: this.USER_ID,
-            NAME: this.userDetailsForm.name ? this.userDetailsForm.name : '',
-      COUNTRY_CODE :this.userDetailsForm.code ? this.userDetailsForm.code : ''
+      NAME: this.userDetailsForm.name ? this.userDetailsForm.name : '',
+      COUNTRY_CODE: this.userDetailsForm.code ? this.userDetailsForm.code : '',
     };
 
     this.api.updateUserData(payload).subscribe({
@@ -3237,7 +3208,7 @@ verificationStatus: 'initial' | 'pending' | 'verified' | 'failed' = 'initial';
         if (response?.code === 200) {
           this.toastr.success('User Info Updated successfully!', 'Success');
           this.userDetailsModalOpen = false;
-                    window.location.reload()
+          window.location.reload();
 
           this.closeEditModal();
         } else {
@@ -3251,5 +3222,268 @@ verificationStatus: 'initial' | 'pending' | 'verified' | 'failed' = 'initial';
       },
     });
   }
-  
+  changePasswordModalOpen: boolean = false;
+  openPasswordVerify: boolean = false;
+  isChangingPassword: boolean = false;
+  isVerifyingPasswordOTP: boolean = false;
+
+  // Form models
+  newPasswordForm: any = {
+    password: '',
+    confirmPassword: '',
+  };
+
+  // OTP verification
+  passwordOTP: string[] = ['', '', '', ''];
+  passwordStatusCode: string = '';
+  passwordRemainingTime: number = 60; // Countdown timer value
+  passwordTimer: any; // To hold the interval reference
+
+  // --- Change Password Modal Handlers ---
+
+  openChangePasswordModal() {
+    this.newPasswordForm = { password: '', confirmPassword: '' }; // Reset form
+    this.changePasswordModalOpen = true;
+  }
+
+  closeChangePasswordModal() {
+    this.changePasswordModalOpen = false;
+    this.newPasswordForm = { password: '', confirmPassword: '' };
+  }
+
+  // 1. Initiate password change (New Password -> OTP Modal)
+  confirmPasswordChange() {
+    const password = this.newPasswordForm.password;
+
+    // --- UPDATED Validation ---
+    // This regex checks for:
+    // 1. (?=.*[A-Za-z]) - At least one letter
+    // 2. (?=.*\d)         - At least one number
+    // 3. .{8,}            - At least 8 characters long (and allows ANY character, including specials)
+
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/; // <-- This is the change
+
+    if (!passwordRegex.test(password)) {
+      // Show a specific error for the password requirement
+      this.toastr.error(
+        'Password must be at least 8 characters and include both letters and numbers.'
+      );
+      return;
+    }
+    // --- End of Validation ---
+
+    if (
+      this.newPasswordForm.password !== this.newPasswordForm.confirmPassword
+    ) {
+      // Show error notification/toast for password mismatch
+      this.toastr.error('Passwords do not match');
+      return;
+    }
+
+    this.isChangingPassword = true;
+
+    // TODO: Step 1: Call your backend API to SEND OTP (e.g., via mobile or email)
+    // On success:
+    // console.log(this.user);
+    const payload = {
+      MOBILE_NO: this.user.mobile,
+      EMAIL_ID: this.user.email,
+      CUSTOMER_ID: this.user.ID,
+    };
+    this.api.getChangePasswordOtp(payload).subscribe(
+      (res) => {
+        if (res.code == 200) {
+          this.toastr.success('Otp Sent successfully');
+          this.openPasswordOTPModal();
+          this.startPasswordTimer(); // Start the 60-second countdown
+        } else {
+          this.isChangingPassword = false;
+
+          this.toastr.error('Failed to send otp');
+        }
+      },
+      (err) => {
+        this.isChangingPassword = false;
+
+        this.toastr.error('Failed to send otp');
+      }
+    );
+
+    // On failure:
+    // this.isChangingPassword = false;
+    // this.passwordStatusCode = 'Failed to send OTP. Try again.';
+  }
+
+  // --- OTP Verification Handlers ---
+
+  openPasswordOTPModal() {
+    this.passwordOTP = ['', '', '', '']; // Reset OTP field
+    this.passwordStatusCode = '';
+    this.changePasswordModalOpen = false; // Close the new password modal
+    this.isChangingPassword = false;
+    this.openPasswordVerify = true;
+  }
+
+  // 2. Verify OTP and save the new password
+  verifyPasswordOTPF() {
+    const fullOTP = this.passwordOTP.join('');
+    if (fullOTP.length < 4) {
+      this.passwordStatusCode = 'Please enter the full 4-digit code.';
+      return;
+    }
+
+    this.isVerifyingPasswordOTP = true;
+
+    // TODO: Step 2: Call your backend API to VERIFY OTP AND SAVE PASSWORD
+    // Pass 'fullOTP' and 'this.newPasswordForm.password' to your API.
+
+    // On successful verification and save:
+    // Show success toast/notification
+    // Reset timer/OTP state:
+    const payload = {
+      MOBILE_NO: this.user.mobile,
+      EMAIL_ID: this.user.email,
+      OTP: this.passwordOTP.join(''),
+      PASSWORD: this.newPasswordForm.confirmPassword,
+      CUSTOMER_ID: this.user.ID,
+    };
+    this.api.verifyChangePasswordOtp(payload).subscribe((res) => {
+      if (res.code == 200) {
+        this.toastr.success('Otp Verified Successfully');
+        this.stopPasswordTimer();
+        this.passwordRemainingTime = 60;
+        this.newPasswordForm = { password: '', confirmPassword: '' };
+        this.openPasswordVerify = false;
+        this.isVerifyingPasswordOTP = false;
+      } else if (res.code == 300) {
+        this.passwordRemainingTime = 60;
+        this.toastr.error('Invalid Otp');
+        this.isVerifyingPasswordOTP = false;
+      } else if (res.code == 304) {
+        this.passwordRemainingTime = 60;
+        this.toastr.error('Otp Expired');
+        this.isVerifyingPasswordOTP = false;
+      }
+    });
+    // Important: clear password inputs
+
+    // On failure:
+    // this.isVerifyingPasswordOTP = false;
+    // this.passwordStatusCode = 'Invalid OTP. Please try again.';
+  }
+
+  // --- OTP Logic Utilities ---
+
+  startPasswordTimer() {
+    this.passwordRemainingTime = 60; // Reset
+    if (this.passwordTimer) clearInterval(this.passwordTimer);
+
+    this.passwordTimer = setInterval(() => {
+      if (this.passwordRemainingTime > 0) {
+        this.passwordRemainingTime--;
+      } else {
+        clearInterval(this.passwordTimer);
+      }
+    }, 1000);
+  }
+
+  stopPasswordTimer() {
+    if (this.passwordTimer) {
+      clearInterval(this.passwordTimer);
+    }
+  }
+
+  resendPasswordOtp() {
+    if (this.passwordRemainingTime === 0) {
+      // TODO: Step 3: Call your backend API to RESEND OTP
+      // On success, restart the timer:
+      // this.startPasswordTimer();
+      this.confirmPasswordChange();
+      this.passwordStatusCode = ''; // Clear previous error
+      // Show a "New OTP sent" toast/notification
+    }
+  }
+
+  onOtpInput(event: any, index: number) {
+    const input = event.target as HTMLInputElement;
+    let value = input.value;
+
+    // Ensure only one character is in the box
+    if (value.length > 1) {
+      value = value.slice(0, 1);
+    }
+    input.value = value;
+
+    // Update the model
+    this.passwordOTP[index] = value;
+
+    // If a character was entered (and it's not a backspace)
+    if (value.length === 1 && index < 3) {
+      const nextInput = document.getElementById(
+        `password-otp-input-${index + 1}`
+      );
+      if (nextInput) {
+        nextInput.focus();
+      }
+    }
+  }
+
+  onOtpKeydown(event: KeyboardEvent, index: number) {
+    if (event.key === 'Backspace' && index > 0) {
+      const currentInput = event.target as HTMLInputElement;
+      if (currentInput.value.length === 0) {
+        const prevInput = document.getElementById(
+          `password-otp-input-${index - 1}`
+        );
+        if (prevInput) {
+          prevInput.focus();
+        }
+      }
+    }
+  }
+  onOtpPaste(event: ClipboardEvent) {
+    event.preventDefault(); // Stop the default paste action
+
+    const pastedData = event.clipboardData
+      ?.getData('text')
+      .trim()
+      .replace(/[^0-9]/g, ''); // Get only numbers
+
+    if (pastedData) {
+      const otpLength = 4;
+      for (let i = 0; i < otpLength && i < pastedData.length; i++) {
+        this.passwordOTP[i] = pastedData[i];
+      }
+
+      // Focus the last input that was filled
+      const lastFilledIndex = Math.min(pastedData.length - 1, otpLength - 1);
+      const lastInput = document.getElementById(
+        `password-otp-input-${lastFilledIndex}`
+      );
+      if (lastInput) {
+        lastInput.focus();
+      }
+    }
+  }
+
+  // allowOnlyNumbers(event: KeyboardEvent) {
+  //     const charCode = event.which ? event.which : event.keyCode;
+  //     if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+  //         event.preventDefault();
+  //     }
+  // }
+
+  // Remember to call this.stopPasswordTimer() in your component's ngOnDestroy() method!
+  // ngOnDestroy() {
+  //     this.stopPasswordTimer();
+  // }
+  showNewPassword: boolean = false;
+  showConfirmPassword: boolean = false;
+  togglePasswordVisibility(field: 'new' | 'confirm'): void {
+    if (field === 'new') {
+      this.showNewPassword = !this.showNewPassword;
+    } else if (field === 'confirm') {
+      this.showConfirmPassword = !this.showConfirmPassword;
+    }
+  }
 }

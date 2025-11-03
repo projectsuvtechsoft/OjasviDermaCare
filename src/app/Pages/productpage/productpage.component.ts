@@ -538,7 +538,7 @@ export class ProductpageComponent {
         if (data && data.data && Array.isArray(data.data)) {
           // handle your FAQ data here
           this.FAQData = data.data;
-          console.log('FAQ Details:', this.FAQData);
+          // console.log('FAQ Details:', this.FAQData);
         } else {
           console.error('Something Went Wrong.', '');
         }
@@ -566,9 +566,9 @@ export class ProductpageComponent {
           }
           this.ViewData = { data: ids }; // normalize into array
           this.getpropertyDetails1();
-          console.log('ViewData Details:', this.ViewData);
+          // console.log('ViewData Details:', this.ViewData);
         } else {
-          console.error('Something Went Wrong.');
+          // console.error('Something Went Wrong.');
         }
       });
   }
@@ -627,8 +627,8 @@ export class ProductpageComponent {
           this.variantRateMap[product.ID] = matchingVariant.RATE || 0;
           this.variantStockMap[product.ID] = matchingVariant.OPENING_STOCK || 0;
           this.selectedVariantStock = matchingVariant.CURRENT_STOCK || 0;
-          console.log('Matching ', matchingVariant);
-          console.log('propertyData', this.propertyyData);
+          // console.log('Matching ', matchingVariant);
+          // console.log('propertyData', this.propertyyData);
         } else {
           const firstAvailable = variants.find((v: any) => v.STATUS === 1);
           if (firstAvailable) {
@@ -637,7 +637,7 @@ export class ProductpageComponent {
             this.variantStockMap[product.ID] =
               firstAvailable.OPENING_STOCK || 0;
             this.selectedVariantStock = firstAvailable.CURRENT_STOCK || 0;
-            console.log('first Available', firstAvailable);
+            // console.log('first Available', firstAvailable);
           }
         }
       }
@@ -767,7 +767,7 @@ export class ProductpageComponent {
             this.benefitsArray = product.BENIFITS.split(',').map((b: string) =>
               b.trim()
             );
-            console.log(this.benefitsArray, 'this.benefitsArray');
+            // console.log(this.benefitsArray, 'this.benefitsArray');
           } else {
             // No benefits found
             this.benefitsArray = [];
@@ -1117,7 +1117,7 @@ export class ProductpageComponent {
         }
       },
       (err) => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }
@@ -1212,13 +1212,13 @@ export class ProductpageComponent {
     // Refresh the userId from sessionStorage
     const currentUserId = sessionStorage.getItem('userId');
     this.guest = sessionStorage.getItem('IS_GUEST') || 'false';
-    console.log('Updated userId:', this.userId);
+    // console.log('Updated userId:', this.userId);
 
     if (!currentUserId && this.guest == 'false') {
       this.showLoginModal();
     } else {
       // User is logged in
-      console.log('User is logged in');
+      // console.log('User is logged in');
     }
   }
   getThumbnailStyle(photoUrl: string, i: number, data: any) {
@@ -1332,9 +1332,9 @@ shareProduct(product: any): void {
       text: `Check out ${product.NAME}!`,
       url: productUrl
     }).then(() => {
-      console.log('Product shared successfully');
+      // console.log('Product shared successfully');
     }).catch((error) => {
-      console.log('Error sharing:', error);
+      // console.log('Error sharing:', error);
       this.fallbackShare(productUrl);
     });
   } else {

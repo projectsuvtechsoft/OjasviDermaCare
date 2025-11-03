@@ -29,7 +29,7 @@ ngOnInit() {
   // this.orderId = this.route.snapshot.paramMap.get('orderId')!;
     this.route.queryParamMap.subscribe(params => {
       this.orderId = params.get('orderId') || 0;
-      console.log('Order ID:', this.orderId);
+      // console.log('Order ID:', this.orderId);
       // You can now fetch your order details using this.orderId
     });
   this.photoURL = this.api.retriveimgUrl + 'productImages/';

@@ -118,7 +118,7 @@ export class AppComponent {
           sessionStorage.setItem('SESSION_KEYS', ekey);
         },
         (err) => {
-          console.log(err);
+          // console.log(err);
         }
       );
     }

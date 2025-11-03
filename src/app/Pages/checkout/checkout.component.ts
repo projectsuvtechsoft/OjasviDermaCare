@@ -106,6 +106,7 @@ export class CheckoutComponent {
   searchQuery: any;
   filteredCountryCodes!: { label: string; value: string }[];
   showCountryDropdown!: boolean;
+  paymentConfiguration: any;
 
   constructor(
     private api: ApiServiceService,
@@ -301,7 +302,7 @@ export class CheckoutComponent {
           if (response['count'] == 0) {
             this.hasAddresses = false;
             // if (sessionStorage.getItem('IS_GUEST')) {
-              this.showAddressForm=true
+            this.showAddressForm = true;
             // }
           } else {
             this.hasAddresses = true;
@@ -455,7 +456,7 @@ export class CheckoutComponent {
   onDefaultAddressChange(event: Event) {
     const target = event.target as HTMLInputElement;
     this.addressForm.IS_DEFAULT = target.checked;
-    console.log('Checkbox changed to:', this.addressForm.IS_DEFAULT);
+    // console.log('Checkbox changed to:', this.addressForm.IS_DEFAULT);
   }
 
   saveAddress(form: NgForm) {
@@ -663,7 +664,7 @@ export class CheckoutComponent {
   }
 
   deleteAddress(addressID: any, customer_id: any) {
-    console.log('Deleting Address ID:', addressID, 'Customer ID:', customer_id);
+    // console.log('Deleting Address ID:', addressID, 'Customer ID:', customer_id);
     this.api.DeleteAddress(addressID, customer_id).subscribe(
       (data: any) => {
         if (data['code'] == 200) {
@@ -674,7 +675,7 @@ export class CheckoutComponent {
         }
       },
       (err: any) => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }
@@ -783,7 +784,7 @@ export class CheckoutComponent {
 
               // }, 300);
             } else {
-              console.log(this.addressForm);
+              // console.log(this.addressForm);
               this.stateSearch = this.stateSearch;
             }
           } else {
@@ -850,28 +851,47 @@ export class CheckoutComponent {
     // console.log(match.SHIPPING_CHARGES);
     return match ? Number(match.SHIPPING_CHARGES) : 0;
   }
+  // Assuming 'this.paymentConfiguration' is a property in your component (e.g., initialized as null)
+
   fetchShipingcharges() {
     this.api.getAllCharges(0, 0, 'id', 'desc', '').subscribe(
       (response: any) => {
-        if (response['code'] === 200) {
-          // const index=response['data'].findIndex(data=>data.KEY1=='')
-          // this.Shiping_Charge = response['data'][0]['VALUE_1'];
-          // console.log('dataaaly ', response['data']);
-          // console.log('charges ', this.Shiping_Charge);
-          // console.log(this.pincodeList,response,'Debug')
+        if (
+          response['code'] === 200 &&
+          response['data'] &&
+          Array.isArray(response['data'])
+        ) {
+          const dataList = response['data'];
+
+          // 1. Find the object where KEY1 is 'PAYMENT_CONFIGURATION'
+          const paymentConfig = dataList.find(
+            (data: any) => data.KEY1 === 'PAYMENT_CONFIGURATION'
+          );
+
+          if (paymentConfig) {
+            // 2. Extract VALUE_1
+            this.paymentConfiguration = paymentConfig.VALUE_1;
+            // console.log(
+            //   'Payment Configuration Value:',
+            //   this.paymentConfiguration
+            // );
+          } else {
+            console.log('Payment configuration not found in data.');
+          }
         } else {
-          // console.error('Failed to fetch pincode:', response['message']);
+          // console.error('Failed to fetch data or data is empty/invalid:', response['message']);
           // this.pincodeList = [];
-          console.log('failed shipping', response['data']);
         }
       },
       (error: any) => {
-        // console.error('Error fetching pincode:', error);
-        this.pincodeList = [];
-        this.toastr.error('Failed to load shipping charges.', 'Error');
+        // console.error('Error fetching data:', error);
+        this.toastr.error('Failed to load configuration data.', 'Error');
       }
     );
   }
+
+  // Don't forget to declare the property in your component class:
+  // paymentConfiguration: string | null = null;
   fetchPincodes(status: string) {
     this.api.getPincodeData(0, 0, 'id', 'desc', 'AND STATUS=1').subscribe(
       (response: any) => {
@@ -895,8 +915,127 @@ export class CheckoutComponent {
   selectedAddress: any = null;
   proceedToPayment() {
     this.showOrderSummaryModal = false;
-    this.showPaymentModal = true;
-    this.initiateSquarePayment(); // custom method to render Square card form
+    if (this.paymentConfiguration == '1') {
+      this.initiateSquarePayment(); // custom method to render Square card form
+      this.showPaymentModal = true;
+    } else {
+      const baseUrl = this.api.baseUrl;
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        applicationkey: this.api.commonapplicationkey,
+        apikey: this.api.commonapikey,
+        token: sessionStorage.getItem('token') || '',
+        supportkey: this.cookie.get('supportKey'),
+      });
+      this.http
+        .post(
+          baseUrl + 'web/cart/proceedToPaymentTesting',
+          {
+            amount:
+              (this.selectedPrice -
+                this.selectedDiscount +
+                (this.cartDetails?.cartDetails?.[0]?.['DATA'].NET_AMOUNT -
+                  this.cartDetails?.cartDetails?.[0]?.['DATA']
+                    .TOTAL_DISCOUNT_AMOUNT)) *
+              100,
+            PAYMENT_MODE: 'O',
+            ADDRESS_ID: this.selectedAddress!.ID,
+            CART_ID: this.cartId,
+            CUSTOMER_ID: this.userId ? this.userId : 0,
+            SESSION_KEY: this.SESSION_KEYS,
+            COUNTRY_NAME: this.selectedAddress.COUNTRY_NAME,
+            STATE_NAME: this.selectedAddress.STATE_NAME,
+            CITY_NAME: this.selectedAddress.CITY_NAME,
+            PINCODE: this.selectedAddress.PINCODE,
+            COUNTRY_CODE: this.selectedAddress.COUNTRY_CODE,
+            CLIENT_ID: 1,
+          },
+          {
+            headers,
+          }
+        )
+        .subscribe({
+          next: (response: any) => {
+            // const paymentKey = response.payment.id;
+            // const paymentStatus = 'S';
+            // const paymentDatetime = this.datePipe.transform(
+            //   new Date(),
+            //   'yyyy-MM-dd HH:mm:ss'
+            // );
+            if (response.code == 200) {
+              this.toastr.success('Payment successful!', 'Success');
+              this.cartDetails.cartDetails[0]['INVOICE_NUMBER'] =
+                response.invoiceNumber;
+
+              var redirectionOrderId = response.order_id;
+              this.currentStep = 4;
+              // this.closePaymentModal();
+              // this.orderPlaced.emit(true);
+              // this.visibleChange.emit(false);
+              this.isProcessingPayment = false;
+
+              this.showPaymentModal = false;
+              // this.showReceiptModal = true;
+
+              this.router
+                .navigate(['order'], {
+                  queryParams: { orderId: redirectionOrderId },
+                })
+                .then(() => {
+                  this.addressDrawerOpen = false;
+                  this.cartService.cartItems = [];
+                  this.cartService.cartUpdated.next(this.cartService.cartItems);
+                  this.cartService.updateCartCount();
+                });
+              setTimeout(() => {
+                this.enableDownload = true;
+              }, 5000);
+              // this.paymentSuccessModalVisible = true;
+            } else {
+              this.toastr.error('Payment failed!', 'Error');
+              this.isProcessingPayment = false;
+            }
+            // console.log(response.body);
+
+            // this.api
+            //   .proceedToCheckout(
+            //     'S',
+            //     this.selectedAddress!.ID,
+            //     this.cartId,
+            //     this.userId,
+            //     paymentKey,
+            //     paymentStatus,
+            //     paymentDatetime,
+            //     1
+            //   )
+            //   .subscribe({
+            //     next: (res) => {
+            //       if (res.code === 200) {
+            //         this.toastr.success(
+            //           'Order placed successfully!',
+            //           'Success'
+            //         );
+            //         this.closeAddressDrawer();
+            //         this.closePaymentModal();
+            //       } else {
+            //         this.toastr.error(
+            //           'Failed to place order: ' + res.message,
+            //           'Error'
+            //         );
+            //       }
+            //     },
+            //     error: (err) => {
+            //       this.toastr.error('Checkout failed after payment', 'Error');
+            //     },
+            //   });
+          },
+          error: () => {
+            this.isProcessingPayment = false;
+
+            this.toastr.error('Payment failed. Please try again.', 'Error');
+          },
+        });
+    }
   }
   paymentSuccessModalVisible: boolean = false;
 
@@ -1337,7 +1476,7 @@ export class CheckoutComponent {
             this.citySearch = selectedCity
               ? selectedCity.NAME
               : this.citySearch;
-            console.log('citySearch', this.citySearch);
+            // console.log('citySearch', this.citySearch);
           } else {
             this.cityList = [];
           }

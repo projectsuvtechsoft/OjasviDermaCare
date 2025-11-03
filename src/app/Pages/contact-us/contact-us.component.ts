@@ -108,7 +108,7 @@ export class ContactUsComponent {
       {
         this.api.SendMessage(this.contactData).subscribe(
           (successCode) => {
-            console.log('contactData', this.contactData);
+            // console.log('contactData', this.contactData);
             if (successCode.code == 200) {
               this.isSpinning = false;
               contactData.resetForm();
@@ -136,13 +136,13 @@ export class ContactUsComponent {
       this.emailaddress == null ||
       this.emailaddress == ''
     ) {
-      console.log('1', this.emailaddress);
+      // console.log('1', this.emailaddress);
 
       this.toastr.error('Please enter email ID', '');
     } else if (!this.commonFunction.emailpattern.test(this.emailaddress)) {
       this.toastr.error('Please enter valid email ID', '');
     } else {
-      console.log('11');
+      // console.log('11');
 
       var data: any = {
         DATE: this.datepipe.transform(new Date(), 'yyyy-MM-dd HH:mm:ss'),

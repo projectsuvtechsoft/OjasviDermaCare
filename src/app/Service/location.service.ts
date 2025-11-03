@@ -29,7 +29,7 @@ export class LocationService {
   constructor(private http: HttpClient) {}
 
   getLocation(jobCardId: string): Observable<{ latitude: number; longitude: number } | null> {
-    console.log(jobCardId);
+    // console.log(jobCardId);
     
     return this.http
       .get<any>(`${this.firebaseUrl}/${jobCardId}/location.json`)

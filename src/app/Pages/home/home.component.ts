@@ -30,7 +30,7 @@ export class HomeComponent {
   sortDirection: string | null = 'desc';
   variantRateMap: { [productId: number]: number } = {};
   currentStockMap: { [productId: number]: number } = {};
-  discounts: number[] = [70, 60, 50, 40, 30];
+  discounts: number[] = [70, 60, 50, 40, 30, 20, 10];
 
   constructor(
     private renderer: Renderer2,
@@ -182,7 +182,7 @@ export class HomeComponent {
     this.selectedIngredient = [];
     this.selectedDiscounts = [];
     this.minRange = 0;
-    this.maxRange = 400;
+    this.maxRange = 50;
     this.priceRange = 0;
     this.rangeQuery = '';
     // this.selectedSubCategory = null;
@@ -603,7 +603,7 @@ export class HomeComponent {
       );
     }
 
-    console.log(this.selectedDiscounts);
+    // console.log(this.selectedDiscounts);
     this.getProducts();
   }
 
@@ -630,23 +630,23 @@ export class HomeComponent {
   mobileContent!: ViewContainerRef;
   @ViewChild('desktopFilters', { static: false }) desktopFilters!: ElementRef;
   @ViewChild('filtersTemplate') filtersTemplate!: TemplateRef<any>;
-//  isDrawerOpen: boolean = false;
+  //  isDrawerOpen: boolean = false;
 
-openMobileFilters() {
-  this.isDrawerOpen = true;
-  document.body.style.overflow = 'hidden';
-}
-
-closeMobileFilters() {
-  this.isDrawerOpen = false;
-  document.body.style.overflow = 'auto';
-}
-
-onDrawerClick(event: any) {
-  if (event.target.id === 'mobileFiltersOverlay') {
-    this.closeMobileFilters();
+  openMobileFilters() {
+    this.isDrawerOpen = true;
+    document.body.style.overflow = 'hidden';
   }
-}
+
+  closeMobileFilters() {
+    this.isDrawerOpen = false;
+    document.body.style.overflow = 'auto';
+  }
+
+  onDrawerClick(event: any) {
+    if (event.target.id === 'mobileFiltersOverlay') {
+      this.closeMobileFilters();
+    }
+  }
   onSortChange(event: Event) {
     const select = event.target as HTMLSelectElement; // cast here
     const value = select.value; // now TypeScript knows 'value' exists
@@ -762,7 +762,7 @@ onDrawerClick(event: any) {
           sessionStorage.setItem('SESSION_KEYS', ekey);
         },
         (err) => {
-          console.log(err);
+          // console.log(err);
         }
       );
     }
@@ -856,11 +856,11 @@ onDrawerClick(event: any) {
             isLiked: favouriteProductIds.includes(product.ID),
           }));
 
-          console.log(this.products, 'isLiked');
+          // console.log(this.products, 'isLiked');
         }
       },
       (err) => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }
@@ -892,7 +892,7 @@ onDrawerClick(event: any) {
       this.showLoginModal();
     } else {
       // User is logged in
-      console.log('User is logged in');
+      // console.log('User is logged in');
     }
   }
 
@@ -902,12 +902,12 @@ onDrawerClick(event: any) {
       this.priceRange > 0 ||
       this.selectedDiscounts.length > 0 ||
       this.minRange > 0 ||
-      this.maxRange < 400
+      this.maxRange < 50
     );
   }
 
   minRange: number = 0;
-  maxRange: number = 400;
+  maxRange: number = 50;
 
   onMinSliderChange() {
     if (this.minRange > this.maxRange) {
@@ -935,8 +935,8 @@ onDrawerClick(event: any) {
     // this.tooltipTimeout = setTimeout(() => {
     //   this.showTooltip = false;
     // }, 4000);
-    console.log(minRange);
-    console.log(maxRange);
+    // console.log(minRange);
+    // console.log(maxRange);
     this.onPriceChange1(minRange, maxRange);
   }
 

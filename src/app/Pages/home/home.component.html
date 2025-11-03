@@ -208,13 +208,13 @@
                   <div class="range-container relative w-full h-1 rounded-full bg-gray-300">
                     <div
                       class="absolute h-1 bg-[rgb(90,143,105)] rounded-full"
-                      [style.left.%]="(minRange / 400) * 100"
-                      [style.width.%]="((maxRange - minRange) / 400) * 100"
+                      [style.left.%]="(minRange / 50 ) * 100"
+                      [style.width.%]="((maxRange - minRange) / 50) * 100"
                     ></div>
                     <input
                       type="range"
                       min="0"
-                      max="400"
+                      max="50"
                       step="10"
                       [(ngModel)]="minRange"
                       (input)="onMinSliderChange()"
@@ -223,7 +223,7 @@
                     <input
                       type="range"
                       min="0"
-                      max="400"
+                      max="50"
                       step="10"
                       [(ngModel)]="maxRange"
                       (input)="onMaxSliderChange()"

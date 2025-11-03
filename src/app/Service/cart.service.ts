@@ -20,12 +20,12 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class CartService {
   //Testing
-  // commonapikey = 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY';
-  // commonapplicationkey = 'awlcQRwoZxAJQm7b';
+  commonapikey = 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY';
+  commonapplicationkey = 'awlcQRwoZxAJQm7b';
 
   //Live
-  commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
-  commonapplicationkey = '26lLNSmaKlcFziHH';
+  // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
+  // commonapplicationkey = '26lLNSmaKlcFziHH';
   // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
   // commonapplicationkey = '26lLNSmaKlcFziHH';
   // private cartCountSource = new BehaviorSubject<number>(0);
@@ -178,9 +178,9 @@ export class CartService {
               };
             });
             // console.log(this.cartItems);
+            this.cartUpdated.next(this.cartItems);
+            this.updateCartCount();
           }
-          this.cartUpdated.next(this.cartItems);
-          this.updateCartCount();
         },
         (err) => this.toastr.error('Error fetching cart:', '')
       );
@@ -192,7 +192,7 @@ export class CartService {
   currentProduct: any = {};
 
   addToCart(product: any): void {
-    this.loaderUpdate.next(true)
+    this.loaderUpdate.next(true);
     // console.log(product);
     // if()
     this.euserID = sessionStorage.getItem('userId') || 0;
@@ -339,17 +339,17 @@ export class CartService {
         (response: any) => {
           if (response.code === 200) {
             this.toastr.success(`${this.currentProduct.NAME} added to cart`);
-            this.loaderUpdate.next(false)
+            this.loaderUpdate.next(false);
             this.updateCartCount();
             // this.toastr.success('Cart updated successfully');
             this.fetchCartFromServer(this.userID, this.etoken);
-          } else if(response.code === 400){
+          } else if (response.code === 400) {
             this.toastr.error('Not Enough Stock');
             this.fetchCartFromServer(this.userID, this.etoken);
-            this.loaderUpdate.next(false)
+            this.loaderUpdate.next(false);
           } else {
             this.fetchCartFromServer(this.userID, this.etoken);
-            this.loaderUpdate.next(false)
+            this.loaderUpdate.next(false);
             this.toastr.error(`Failed to add ${this.currentProduct.NAME}`, '');
           }
         },
@@ -358,7 +358,7 @@ export class CartService {
             'Something went wrong please try again later',
             error
           );
-            this.loaderUpdate.next(false)
+          this.loaderUpdate.next(false);
         }
       );
   }
@@ -614,7 +614,7 @@ export class CartService {
       return new Observable((observer) => {
         observer.next({
           success: true,
-          message: 'No items to migrate',
+          // message: 'No items to migrate',
           migratedCount: 0,
         });
         observer.complete();
@@ -643,7 +643,7 @@ export class CartService {
     if (sessionCartItems.length === 0) {
       return of({
         success: true,
-        message: 'No items to migrate',
+        // message: 'No items to migrate',
         migratedCount: 0,
       });
     }
@@ -664,7 +664,7 @@ export class CartService {
         sessionCartItems[0].UNIT_ID || sessionCartItems[0].PRODUCT_UNIT_ID,
     };
 
-    console.log('Adding first item to create cart:', firstItemPayload);
+    // console.log('Adding first item to create cart:', firstItemPayload);
 
     // Add first item - this will create a new CART_ID
     return this.http
@@ -679,13 +679,13 @@ export class CartService {
           // If only one item, we're done
           if (sessionCartItems.length === 1) {
             return of({
-              success: true,
-              message: 'Successfully migrated 1 item to your cart',
+              // success: true,
+              // message: 'Successfully migrated 1 item to your cart',
               migratedCount: 1,
               cartId: cartId,
             }).pipe(
               tap(() => {
-                console.log('Refreshing cart from server...');
+                // console.log('Refreshing cart from server...');
                 this.fetchCartFromServer(customerId, this.etoken);
               })
             );
@@ -709,7 +709,7 @@ export class CartService {
                 CART_ID: cartId, // ✅ Use the same CART_ID from first item
               };
 
-              console.log(`Adding item ${index + 2} with CART_ID:`, cartId);
+              // console.log(`Adding item ${index + 2} with CART_ID:`, cartId);
 
               return this.http.post(
                 this.api.baseUrl + 'web/cart/addToCart',
@@ -721,20 +721,20 @@ export class CartService {
           // Execute all remaining additions in parallel
           return forkJoin(remainingOperations).pipe(
             map((results) => ({
-              success: true,
-              message: `Successfully migrated ${sessionCartItems.length} items to your cart`,
+              // success: true,
+              // message: `Successfully migrated ${sessionCartItems.length} items to your cart`,
               migratedCount: sessionCartItems.length,
               cartId: cartId,
             })),
             tap(() => {
-              console.log('All items migrated. Refreshing cart from server...');
+              // console.log('All items migrated. Refreshing cart from server...');
               this.fetchCartFromServer(customerId, this.etoken);
             }),
             catchError((error) => {
-              console.error('Error adding remaining items:', error);
+              // console.error('Error adding remaining items:', error);
               return of({
-                success: true, // First item was added successfully
-                message: `Partially migrated ${sessionCartItems.length} items. Please refresh.`,
+                // success: true, // First item was added successfully
+                // message: `Partially migrated ${sessionCartItems.length} items. Please refresh.`,
                 migratedCount: 1,
                 cartId: cartId,
                 partialError: true,
@@ -743,10 +743,10 @@ export class CartService {
           );
         }),
         catchError((error) => {
-          console.error('Migration error on first item:', error);
+          // console.error('Migration error on first item:', error);
           return of({
-            success: false,
-            message: 'Failed to migrate cart items',
+            // success: false,
+            // message: 'Failed to migrate cart items',
             migratedCount: 0,
             error: error,
           });

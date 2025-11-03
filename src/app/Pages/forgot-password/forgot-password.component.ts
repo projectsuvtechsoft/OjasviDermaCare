@@ -106,7 +106,7 @@ export class ForgotPasswordComponent {
 
     this.api.sendLink(mobileNoToSend, emailToSend).subscribe(
       (data) => {
-        console.log('Reset email sent:', data);
+        // console.log('Reset email sent:', data);
         if (data.code == '200') {
           this.getLinkLoading = false;
           this.linkSent = true;
@@ -161,12 +161,12 @@ export class ForgotPasswordComponent {
     const mobileData = { mobileNumber: this.identifier };
     this.http.post('YOUR_BACKEND_WHATSAPP_API_URL', mobileData).subscribe(
       (response) => {
-        console.log('WhatsApp link sent successfully', response);
+        // console.log('WhatsApp link sent successfully', response);
         this.getLinkLoading = false;
         // Handle success
       },
       (error) => {
-        console.error('Error sending WhatsApp link', error);
+        // console.error('Error sending WhatsApp link', error);
         this.getLinkLoading = false;
         // Handle error
       }
@@ -197,7 +197,7 @@ export class ForgotPasswordComponent {
     //     this._message.error('Error', 'Invalid Otp: ' + error.error.message);
     //   }
     // );
-    console.log('OTP Submitted:', this.otp);
+    // console.log('OTP Submitted:', this.otp);
   }
 
   startOTPCountdown(): void {
@@ -301,8 +301,8 @@ export class ForgotPasswordComponent {
 
   onIdentifierInput(event: any) {
     const value = event.target.value;
-    console.log(this.mobileNumberorEmail, 'mobileoremail');
-    console.log(event, 'event');
+    // console.log(this.mobileNumberorEmail, 'mobileoremail');
+    // console.log(event, 'event');
     if (!value || value.length < 3) {
       this.inputType = 'initial';
       return;

@@ -258,7 +258,7 @@ export class LoginComponent {
 
       // for loading map
 
-      console.log('this.modalVisible', this.modalVisible);
+      // console.log('this.modalVisible', this.modalVisible);
 
       this.data = new registerdata();
       // this.modalService.open(state, { centered: true });
@@ -344,7 +344,7 @@ export class LoginComponent {
       )
       .subscribe({
         next: (successCode: any) => {
-          console.log('in login');
+          // console.log('in login');
 
           if (successCode.code == '200') {
             // console.log(this.data, 'iotrriuuiyoio');
@@ -624,7 +624,7 @@ export class LoginComponent {
       }
       this.issignUpLoading = true;
       const temp = this.data.CUSTOMER_NAME;
-      console.log('name', this.data.CUSTOMER_NAME);
+      // console.log('name', this.data.CUSTOMER_NAME);
 
       this.api
 
@@ -632,9 +632,9 @@ export class LoginComponent {
 
         .subscribe({
           next: (successCode: any) => {
-            console.log(this.data, 'dkjfiohfo');
+            // console.log(this.data, 'dkjfiohfo');
 
-            console.log(successCode, 'scty');
+            // console.log(successCode, 'scty');
 
             if (successCode.code == '200') {
               // this.isloginSendOTP = false;
@@ -669,9 +669,9 @@ export class LoginComponent {
 
               this.openVerify = true;
               this.data.CUSTOMER_NAME = temp;
-              console.log('name', this.data.CUSTOMER_NAME);
+              // console.log('name', this.data.CUSTOMER_NAME);
 
-              console.log(this.openVerify, 'openverify');
+              // console.log(this.openVerify, 'openverify');
 
               // this.openRegister = false;
 
@@ -700,7 +700,7 @@ export class LoginComponent {
           },
 
           error: (error) => {
-            console.log('error', error);
+            // console.log('error', error);
             this.issignUpLoading = false;
             this.stopLoader();
 
@@ -925,7 +925,7 @@ export class LoginComponent {
             // console.log('wertyuiko');
             //  this.USER_NAME = this.data.CUSTOMER_NAME
             // this.isverifyOTP = false; // Set true before API call
-            console.log(this.isverifyOTP, 'this.isverifyOTP');
+            // console.log(this.isverifyOTP, 'this.isverifyOTP');
             this.toastr.success('OTP verified successfully...', '');
             this.modalService.dismissAll();
             this.isOk = false;
@@ -1187,11 +1187,11 @@ export class LoginComponent {
         next: (successCode: any) => {
           // console.log(successCode)
           if (successCode.body.code == '200') {
-            console.log('in customer login');
+            // console.log('in customer login');
 
             this.isloginSendOTP = false;
             this.modalService1.closeModal();
-            console.log(successCode);
+            // console.log(successCode);
             sessionStorage.setItem(
               'userId',
               this.commonFunction.encryptdata(
@@ -1444,8 +1444,8 @@ export class LoginComponent {
   // }
   onIdentifierInput(event: any) {
     let value: string = event.target.value;
-    console.log(this.mobileNumberorEmail, 'mobileoremail');
-    console.log(event, 'event');
+    // console.log(this.mobileNumberorEmail, 'mobileoremail');
+    // console.log(event, 'event');
 
     if (!value || value.length < 3) {
       this.inputType = 'initial';
