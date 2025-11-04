@@ -283,88 +283,128 @@
     <app-common-loader></app-common-loader>
   </div>
   <div class="drawer-content" (click)="$event.stopPropagation()">
-    <header class="navbar">
-      <div class="logo-section">
-        <img
-          src="assets/img/logo1.png"
-          alt="Ojasvi Logo"
-          class="h-12 sm:h-16 md:h-20 w-auto object-contain"
-        />
-        <div class="flex flex-col logo-text-container">
-          <span
-            class="text-lg sm:text-xl md:text-2xl text-[#5a8f69] font-semibold"
-          >
-            Ojasvi Derma Care
-          </span>
-          <span
-            class="text-xs sm:text-sm font-[Pacifico,sans-serif] text-[#ffc200]"
-          >
-            From Garden To Glow
-          </span>
-        </div>
-      </div>
-
-      <!-- <div class="progress-bar">
-        <span class="progress-step completed-step" (click)="goToStep('cart')"
-          >CART</span
-        >
-        <span class="progress-separator completed-separator">--------</span>
-
-        <span
-          class="progress-step"
-          [class]="isStepActive('address') ? 'active-step' : 'completed-step'"
-          (click)="goToStep('address')"
-          >ADDRESS</span
-        >
-        <span
-          class="progress-separator"
-          [class]="
-            isStepActive('payment')
-              ? 'completed-separator'
-              : 'inactive-separator'
-          "
-          >--------</span
-        >
-
-        <span
-          class="progress-step"
-          [class]="isStepActive('payment') ? 'active-step' : 'inactive-step'"
-          (click)="goToStep('payment')"
-          >PAYMENT</span
-        >
-      </div> -->
-      <div class="progress-bar">
-        <div class="progress-step-container" (click)="goToStep('cart')">
-          <div class="circle completed">
-            <span class="circle active">1</span>
-          </div>
-          <span class="label">CART</span>
-        </div>
-
-        <div class="line completed"></div>
-
+    <header
+      class="sticky top-0 z-50 bg-white shadow-sm bg-gray-50 overflow-x-hidden"
+    >
+      <div class="container mx-auto px-3 sm:px-4 py-1.5">
         <div
-          class="progress-step-container"
-          (click)="goToStep('address')"
-          [class.active]="isStepActive('address')"
+          class="flex flex-col md:flex-row md:items-center md:justify-between gap-2 sm:gap-3"
         >
-          <div class="circle active">
-            <span>2</span>
-          </div>
-          <span class="label">ADDRESS</span>
-        </div>
+          <!-- ✅ Logo -->
+          <a
+            href="/"
+            class="flex items-center justify-center md:justify-start gap-2 flex-shrink-0 text-center md:text-left"
+          >
+            <img
+              src="assets/img/logo1.png"
+              alt="Ojasvi Logo"
+              class="h-[2.3rem] sm:h-[3rem] md:h-[3.5rem] w-auto object-contain"
+            />
+            <div class="flex flex-col leading-tight">
+              <span
+                class="text-base sm:text-lg md:text-2xl text-[#5a8f69] font-semibold"
+                >Ojasvi Derma Care</span
+              >
+              <span
+                class="text-[10px] sm:text-xs md:text-sm font-[Pacifico,sans-serif] text-[#ffc200]"
+                >From Garden To Glow</span
+              >
+            </div>
+          </a>
 
-        <div class="line"></div>
+          <!-- ✅ Progress Bar -->
+          <div
+            class="progress-bar flex flex-wrap items-center justify-center gap-3 sm:gap-5 mt-2 md:mt-0"
+          >
+            <!-- 🛒 CART -->
+            <div
+              class="text-center cursor-pointer flex flex-col items-center"
+              (click)="goToStep('cart')"
+            >
+              <div
+                class="circle flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-all duration-200"
+                [ngClass]="{
+                  'bg-[#5a8f69]': isStepActive('cart'),
+                  'bg-gray-300': !isStepActive('cart')
+                }"
+                [innerHTML]="cartIcon"
+              >
+                <!-- Lucide ShoppingCart -->
+                
+              </div>
+              <span
+                class="block mt-1 text-[10px] sm:text-xs font-medium text-gray-700"
+                >CART</span
+              >
+            </div>
 
-        <div
-          class="progress-step-container"
-          (click)="goToStep('payment')"
-          [class.waiting]="!isStepActive('payment')"
-        >
-          <div class="circle waiting">
-            <span>3</span>
+            <div
+              class="line h-[2px] bg-gray-300 flex-shrink-0 w-8 sm:w-10 md:w-12"
+            ></div>
+
+            <!-- 📍 ADDRESS -->
+            <div
+              class="text-center cursor-pointer flex flex-col items-center"
+              (click)="goToStep('address')"
+            >
+              <div
+                class="circle flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-all duration-200"
+                [ngClass]="{
+                  'bg-[#5a8f69]': isStepActive('address'),
+                  'bg-gray-300': !isStepActive('address')
+                }"
+                 [innerHTML]="addressIcon"
+              >
+            
+              </div>
+              <span
+                class="block mt-1 text-[10px] sm:text-xs font-medium text-gray-700"
+                >ADDRESS</span
+              >
+            </div>
+
+            <div
+              class="line h-[2px] bg-gray-300 flex-shrink-0 w-8 sm:w-10 md:w-12"
+            ></div>
+
+            <!-- 💳 PAYMENT -->
+            <div
+              class="text-center cursor-pointer flex flex-col items-center"
+              (click)="goToStep('payment')"
+            >
+              <div
+                class="circle flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-all duration-200"
+                [ngClass]="{
+                  'bg-[#5a8f69]': isStepActive('payment'),
+                  'bg-gray-300': !isStepActive('payment')
+                }"
+                 [innerHTML]="paymentIcon"
+              >
+                <!-- Lucide CreditCard -->
+                <!-- <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6"
+                  [ngClass]="{
+                    'text-white': isStepActive('payment'),
+                    'text-gray-700': !isStepActive('payment')
+                  }"
+                >
+                  <rect x="2" y="5" width="20" height="14" rx="2" ry="2" />
+                  <line x1="2" y1="10" x2="22" y2="10" />
+                </svg> -->
+              </div>
+              <span
+                class="block mt-1 text-[10px] sm:text-xs font-medium text-gray-700"
+                >PAYMENT</span
+              >
+            </div>
           </div>
-          <span class="label">PAYMENT</span>
         </div>
       </div>
     </header>
@@ -1677,7 +1717,6 @@
                         </div>
                       </div>
                     </ng-container>
-
                   </div>
                 </div>
 

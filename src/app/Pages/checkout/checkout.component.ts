@@ -20,6 +20,7 @@ import { Router } from '@angular/router';
 import { CartService } from 'src/app/Service/cart.service';
 import { NgForm } from '@angular/forms';
 import { interval, takeWhile } from 'rxjs';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 interface Address {
   ID?: string; // Made optional for new addresses
   NAME: string;
@@ -111,7 +112,9 @@ export class CheckoutComponent {
   filteredCountryCodes!: { label: string; value: string }[];
   showCountryDropdown!: boolean;
   paymentConfiguration: any;
-
+ cartIcon!: SafeHtml;
+  addressIcon!: SafeHtml;
+  paymentIcon!: SafeHtml;
   constructor(
     private api: ApiServiceService,
     private toastr: ToastrService,
@@ -119,7 +122,8 @@ export class CheckoutComponent {
     private http: HttpClient,
     private cookie: CookieService,
     private router: Router,
-    private cartService: CartService
+    private cartService: CartService,
+    private sanitizer: DomSanitizer
   ) {
     this.cartService.cartUpdated$.subscribe((cartItems) => {
       this.cartDetails.cartDetails = cartItems;
@@ -128,6 +132,30 @@ export class CheckoutComponent {
       // this.loadingProducts = false;
       // this.cd.detectChanges(); // Optional but ensures view update
     });
+     this.cartIcon = this.sanitizer.bypassSecurityTrustHtml(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        class="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6">
+        <circle cx="9" cy="21" r="1"></circle>
+        <circle cx="20" cy="21" r="1"></circle>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+      </svg>`);
+
+    this.addressIcon = this.sanitizer.bypassSecurityTrustHtml(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        class="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6">
+        <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"></path>
+        <circle cx="12" cy="10" r="3"></circle>
+      </svg>`);
+
+    this.paymentIcon = this.sanitizer.bypassSecurityTrustHtml(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        class="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6">
+        <rect x="2" y="5" width="20" height="14" rx="2" ry="2"></rect>
+        <line x1="2" y1="10" x2="22" y2="10"></line>
+      </svg>`);
   }
 
   showOrderSummaryModal: boolean = false;

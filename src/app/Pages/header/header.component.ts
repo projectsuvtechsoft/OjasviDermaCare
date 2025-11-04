@@ -1263,8 +1263,6 @@ export class HeaderComponent {
   }
   private handleCartMigration(customerId: string): void {
     const cartItems = this.cartService.getCartItems();
-     sessionStorage.removeItem('CART_REDIRECT');
-            sessionStorage.removeItem('SESSION_KEYS');
 
     if (!cartItems || cartItems.length === 0) {
       // No items to migrate
@@ -1313,6 +1311,8 @@ export class HeaderComponent {
           // });
         },
       });
+    sessionStorage.removeItem('CART_REDIRECT');
+    sessionStorage.removeItem('SESSION_KEYS');
   }
   //by sanjana
   goToProductDetails(id: number) {
@@ -1446,7 +1446,7 @@ export class HeaderComponent {
           this.router.navigate(['/home']);
           this.showLogoutModal = false;
           this.isMobileMenuOpen = false;
-          this.isCartVisible=false
+          this.isCartVisible = false;
         } else {
           this.toastr.error('Failed to logout!', '');
         }
