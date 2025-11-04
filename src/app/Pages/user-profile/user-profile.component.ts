@@ -3240,8 +3240,10 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
   // Form models
   newPasswordForm: any = {
+    oldPassword: '',
     password: '',
     confirmPassword: '',
+    
   };
 
   // OTP verification
@@ -3300,6 +3302,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       MOBILE_NO: this.user.mobile,
       EMAIL_ID: this.user.email,
       CUSTOMER_ID: this.user.ID,
+      OLD_PASSWORD:this.newPasswordForm.oldPassword
     };
     this.api.getChangePasswordOtp(payload).subscribe(
       (res) => {
@@ -3307,7 +3310,14 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           this.toastr.success('Otp Sent successfully');
           this.openPasswordOTPModal();
           this.startPasswordTimer(); // Start the 60-second countdown
-        } else {
+        } 
+        else if (res.code == 402) {
+          this.toastr.error('Old password is incorrect');
+          this.isChangingPassword = false;
+          // this.openPasswordOTPModal();
+          // this.startPasswordTimer(); // Start the 60-second countdown
+        } 
+        else {
           this.isChangingPassword = false;
 
           this.toastr.error('Failed to send otp');
@@ -3366,6 +3376,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         this.newPasswordForm = { password: '', confirmPassword: '' };
         this.openPasswordVerify = false;
         this.isVerifyingPasswordOTP = false;
+        this.router.navigate(['./home'])
       } else if (res.code == 300) {
         this.passwordRemainingTime = 60;
         this.toastr.error('Invalid Otp');
@@ -3488,15 +3499,18 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   // ngOnDestroy() {
   //     this.stopPasswordTimer();
   // }
-  showNewPassword: boolean = false;
-  showConfirmPassword: boolean = false;
-  togglePasswordVisibility(field: 'new' | 'confirm'): void {
-    if (field === 'new') {
-      this.showNewPassword = !this.showNewPassword;
-    } else if (field === 'confirm') {
-      this.showConfirmPassword = !this.showConfirmPassword;
-    }
-  }
+ showOldPassword = false;
+showNewPassword = false;
+showConfirmPassword = false;
+
+
+
+togglePasswordVisibility(type: string) {
+  if (type === 'old') this.showOldPassword = !this.showOldPassword;
+  if (type === 'new') this.showNewPassword = !this.showNewPassword;
+  if (type === 'confirm') this.showConfirmPassword = !this.showConfirmPassword;
+}
+
 
   // pickupLocations: any[] = [];
 isLoadingPickupLocations: boolean = false;

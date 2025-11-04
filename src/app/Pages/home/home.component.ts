@@ -226,7 +226,8 @@ export class HomeComponent {
       );
 
       filter +=
-        ' AND DISCOUNT BETWEEN ' + selectedCategoryIds[0] + ' AND ' + 80;
+        // ' AND DISCOUNT BETWEEN ' + selectedCategoryIds[0] + ' AND ' + 80;
+       ` AND ((MIN_DISCOUNT_PERCENT BETWEEN ${selectedCategoryIds[0]} AND 80) OR (MAX_DISCOUNT_PERCENT BETWEEN ${selectedCategoryIds[0]} AND 80))`
     }
 
     let selectedIngredientIds = [];
@@ -361,7 +362,7 @@ export class HomeComponent {
     }
   }
 
-  change(selectedId: string, productId: number): void {
+  change(selectedId: string, productId: number,product:any): void {
     const variants = this.variantMap[productId] || [];
     const selected = variants.find(
       (v: any) => v.VARIENT_ID === Number(selectedId)
@@ -375,6 +376,7 @@ export class HomeComponent {
       this.currentStockMap[productId] = selected.CURRENT_STOCK
         ? selected.CURRENT_STOCK
         : 0;
+      this.convertToarrayVairents(product)
       this.updateTotalPrice();
     }
   }
@@ -383,8 +385,20 @@ export class HomeComponent {
     this.viewCart = isVisible;
   }
   productImageUrl: string = this.api.retriveimgUrl + 'productImages/';
-  imageIndices: { [productId: string]: number } = {};
+  vareintImageUrl: string = this.api.retriveimgUrl + 'VarientImages/';
 
+  imageIndices: { [productId: string]: number } = {};
+  convertToarrayVairents(data: any) {
+    // console.log(data,this.selectedVariantMap)
+    let varients = JSON.parse(data?.VARIENTS);
+    let name = '';
+    const varientData = varients.find((varient:any) => varient.VARIENT_ID === this.selectedVariantMap[data.ID]);
+    if (varientData) {
+      // console.log(varientData)
+      name = varientData.VARIENT_IMAGE_URL;
+    }
+    return name;
+  }
   getImageArray(product: any): string[] {
     try {
       const images = JSON.parse(product.Images);

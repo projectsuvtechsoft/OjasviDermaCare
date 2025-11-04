@@ -513,7 +513,7 @@
                     *ngIf="initImageIndex(product.ID) === undefined"
                   ></ng-container>
                   <img
-                    *ngIf="getImageArray(product).length > 0"
+                    *ngIf="getImageArray(product).length > 0 && !convertToarrayVairents(product)"
                     [src]="
                       productImageUrl +
                       getImageArray(product)[imageIndices[product.ID]]
@@ -521,6 +521,15 @@
                     [alt]="product.NAME"
                     class="rounded-lg object-cover w-full h-full"
                   />
+                   <img
+                    *ngIf="selectedVariantMap && selectedVariantMap[product.ID] && convertToarrayVairents(product)"
+                    [src]="
+                      vareintImageUrl +
+                      convertToarrayVairents(product)
+                    "
+                    [alt]="product.NAME"
+                    class="rounded-lg object-cover w-full h-full"
+                  /> 
                 </div>
 
                 <div class="absolute top-3 right-3 flex space-x-2">
@@ -672,7 +681,7 @@
                         selectedVariantMap[product.ID] != item.VARIENT_ID
                     }"
                     class="cursor-pointer text-gray-800 text-xs font-medium px-3 py-1 rounded-full transition-all duration-150"
-                    (click)="change(item.VARIENT_ID, product.ID)"
+                    (click)="change(item.VARIENT_ID, product.ID,product)"
                   >
                     {{ item.SIZE }} {{ item.UNIT_NAME }}
                   </small>

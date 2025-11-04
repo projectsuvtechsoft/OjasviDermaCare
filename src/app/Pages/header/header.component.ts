@@ -1446,6 +1446,7 @@ export class HeaderComponent {
           this.router.navigate(['/home']);
           this.showLogoutModal = false;
           this.isMobileMenuOpen = false;
+          this.isCartVisible=false
         } else {
           this.toastr.error('Failed to logout!', '');
         }
