@@ -3084,12 +3084,13 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     }
     this.addressForm.COUNTRY_NAME = this.countrySearch;
   }
+  loadingButton=false
   verifyEmail(): void {
     if (!this.isEmailValid()) {
       this.toastr.info('Please enter a valid email address before verifying.');
       return;
     }
-
+    this.loadingButton=true
     this.verificationStatus = 'pending';
     // this.visible=true
     // --- REAL-WORLD SCENARIO: Call an API ---
@@ -3115,15 +3116,19 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       (res) => {
         if (res['code'] == 200) {
           this.toastr.success('Otp Sent Successfully');
+          this.loadingButton=false
           this.startTimer();
           this.visible = true;
         } else {
           this.toastr.error('Failed to send otp');
           this.verificationStatus = 'failed';
+          this.loadingButton=false
+          
         }
       },
       (err) => {
         this.verificationStatus = 'failed';
+        this.loadingButton=false
       }
     );
   }

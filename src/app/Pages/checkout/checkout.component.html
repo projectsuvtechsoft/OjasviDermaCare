@@ -313,95 +313,105 @@
           </a>
 
           <!-- ✅ Progress Bar -->
-          <div
-            class="progress-bar flex flex-wrap items-center justify-center gap-3 sm:gap-5 mt-2 md:mt-0"
-          >
-            <!-- 🛒 CART -->
-            <div
-              class="text-center cursor-pointer flex flex-col items-center"
-              (click)="goToStep('cart')"
-            >
-              <div
-                class="circle flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-all duration-200"
-                [ngClass]="{
-                  'bg-[#5a8f69]': isStepActive('cart'),
-                  'bg-gray-300': !isStepActive('cart')
-                }"
-                [innerHTML]="cartIcon"
-              >
-                <!-- Lucide ShoppingCart -->
-              </div>
-              <span
-                class="block mt-1 text-[10px] sm:text-xs font-medium text-gray-700"
-                >CART</span
-              >
-            </div>
+         <!-- Progress Bar -->
+<div
+  class="progress-bar flex flex-wrap items-center justify-center gap-3 sm:gap-5 mt-2 md:mt-0"
+>
+  <!-- 🛒 CART -->
+  <div
+    class="text-center cursor-pointer flex flex-col items-center"
+    (click)="goToStep('cart')"
+  >
+    <div
+      class="circle flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-all duration-300 hover:scale-110"
+      [ngClass]="{
+        'bg-[#5a8f69]': isStepActive('cart'),
+        'bg-gray-300': !isStepActive('cart')
+      }"
+    >
+      <i
+        class="bi bi-cart3 text-lg sm:text-xl transition-colors duration-300"
+        [ngClass]="{
+          'text-white': isStepActive('cart'),
+          'text-gray-700': !isStepActive('cart')
+        }"
+      ></i>
+    </div>
+    <span
+      class="block mt-1 text-[10px] sm:text-xs font-medium text-gray-700"
+      >CART</span
+    >
+  </div>
 
-            <div
-              class="line h-[2px] bg-gray-300 flex-shrink-0 w-8 sm:w-10 md:w-12"
-            ></div>
+  <div
+    class="line h-[2px] flex-shrink-0 w-8 sm:w-10 md:w-12 transition-all duration-300"
+    [ngClass]="{
+      'bg-[#5a8f69]': currentStep >= 2,
+      'bg-gray-300': currentStep < 2
+    }"
+  ></div>
 
-            <!-- 📍 ADDRESS -->
-            <div
-              class="text-center cursor-pointer flex flex-col items-center"
-              (click)="goToStep('address')"
-            >
-              <div
-                class="circle flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-all duration-200"
-                [ngClass]="{
-                  'bg-[#5a8f69]': isStepActive('address'),
-                  'bg-gray-300': !isStepActive('address')
-                }"
-                [innerHTML]="addressIcon"
-              ></div>
-              <span
-                class="block mt-1 text-[10px] sm:text-xs font-medium text-gray-700"
-                >ADDRESS</span
-              >
-            </div>
+  <!-- 📍 ADDRESS -->
+  <div
+    class="text-center cursor-pointer flex flex-col items-center"
+    (click)="goToStep('address')"
+  >
+    <div
+      class="circle flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-all duration-300 hover:scale-110"
+      [ngClass]="{
+        'bg-[#5a8f69]': isStepActive('address'),
+        'bg-gray-300': !isStepActive('address')
+      }"
+    >
+      <i
+        class="bi bi-geo-alt text-lg sm:text-xl transition-colors duration-300"
+        [ngClass]="{
+          'text-white': isStepActive('address'),
+          'text-gray-700': !isStepActive('address')
+        }"
+      ></i>
+    </div>
+    <span
+      class="block mt-1 text-[10px] sm:text-xs font-medium text-gray-700"
+      >ADDRESS</span
+    >
+  </div>
 
-            <div
-              class="line h-[2px] bg-gray-300 flex-shrink-0 w-8 sm:w-10 md:w-12"
-            ></div>
+  <div
+    class="line h-[2px] flex-shrink-0 w-8 sm:w-10 md:w-12 transition-all duration-300"
+    [ngClass]="{
+      'bg-[#5a8f69]': currentStep >= 3,
+      'bg-gray-300': currentStep < 3
+    }"
+  ></div>
 
-            <!-- 💳 PAYMENT -->
-            <div
-              class="text-center cursor-pointer flex flex-col items-center"
-              (click)="goToStep('payment')"
-            >
-              <div
-                class="circle flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-all duration-200"
-                [ngClass]="{
-                  'bg-[#5a8f69]': isStepActive('payment'),
-                  'bg-gray-300': !isStepActive('payment')
-                }"
-                [innerHTML]="paymentIcon"
-              >
-                <!-- Lucide CreditCard -->
-                <!-- <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6"
-                  [ngClass]="{
-                    'text-white': isStepActive('payment'),
-                    'text-gray-700': !isStepActive('payment')
-                  }"
-                >
-                  <rect x="2" y="5" width="20" height="14" rx="2" ry="2" />
-                  <line x1="2" y1="10" x2="22" y2="10" />
-                </svg> -->
-              </div>
-              <span
-                class="block mt-1 text-[10px] sm:text-xs font-medium text-gray-700"
-                >PAYMENT</span
-              >
-            </div>
-          </div>
+  <!-- 💳 PAYMENT -->
+  <div
+    class="text-center cursor-pointer flex flex-col items-center"
+    (click)="goToStep('payment')"
+  >
+    <div
+      class="circle flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-all duration-300 hover:scale-110"
+      [ngClass]="{
+        'bg-[#5a8f69]': isStepActive('payment'),
+        'bg-gray-300': !isStepActive('payment')
+      }"
+    >
+      <i
+        class="bi bi-credit-card-2-front text-lg sm:text-xl transition-colors duration-300"
+        [ngClass]="{
+          'text-white': isStepActive('payment'),
+          'text-gray-700': !isStepActive('payment')
+        }"
+      ></i>
+    </div>
+    <span
+      class="block mt-1 text-[10px] sm:text-xs font-medium text-gray-700"
+      >PAYMENT</span
+    >
+  </div>
+</div>
+
         </div>
       </div>
     </header>

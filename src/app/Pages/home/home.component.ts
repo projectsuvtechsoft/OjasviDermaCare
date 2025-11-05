@@ -187,11 +187,7 @@ export class HomeComponent {
     this.rangeQuery = '';
     // this.selectedSubCategory = null;
     this.priceRangeBetween =
-      ' AND ((RATE BETWEEN ' +
-      this.minRange +
-      ' AND ' +
-      this.maxRange +
-      ') OR (MIN_DISCOUNTED_PRICE BETWEEN ' +
+      ' AND (MIN_DISCOUNTED_PRICE BETWEEN ' +
       this.minRange +
       ' AND ' +
       this.maxRange +

@@ -365,12 +365,12 @@ export class CheckoutComponent {
             SESSION_KEY: addr.SESSION_KEY,
             MOBILE_NO: addr.MOBILE_NO,
             COUNTRY_CODE: addr.COUNTRY_CODE,
-            IS_LOCAL_PICKUP: addr.IS_LOCAL_PICKUP,
+            IS_LOCAL_PICKUP: addr?.IS_LOCAL_PICKUP,
           }));
           this.selectedAddress =
             this.savedAddresses.find((a) => a.IS_DEFAULT) ||
             this.savedAddresses[0];
-           this.IS_LOCAL_PICKUP=this.selectedAddress.IS_LOCAL_PICKUP
+           this.IS_LOCAL_PICKUP=this.selectedAddress?.IS_LOCAL_PICKUP
           // console.log(this.selectedAddress,'Default selected')
           if (
             this.selectedAddress &&
@@ -445,7 +445,7 @@ export class CheckoutComponent {
         this.getCountryFromID(address.COUNTRY_NAME)
       ); // Update sessionStorage
       // Update sessionStorage
-      this.IS_LOCAL_PICKUP=address.IS_LOCAL_PICKUP
+      this.IS_LOCAL_PICKUP=address?.IS_LOCAL_PICKUP
       sessionStorage.setItem('pincode', String(address.PINCODE));
       var CART_ID = this.cartDetails.cartDetails[0].CART_ID;
       var CART_ITEM_ID = this.cartDetails.cartDetails[0].ID;
@@ -962,6 +962,11 @@ export class CheckoutComponent {
   showPaymentModal = false;
   selectedAddress: any = null;
   proceedToPayment() {
+    let userID=sessionStorage.getItem('userId');
+    let decryptedUserID:any;
+    if(userID){
+       decryptedUserID = this.commonFunction.decryptdata(userID);
+    }
     this.showOrderSummaryModal = false;
     if (this.paymentConfiguration == '1') {
       this.initiateSquarePayment(); // custom method to render Square card form
@@ -991,7 +996,7 @@ export class CheckoutComponent {
             PAYMENT_MODE: 'O',
             ADDRESS_ID: this.selectedAddress!.ID,
             CART_ID: this.cartId,
-            CUSTOMER_ID: this.userId ? this.userId : 0,
+            CUSTOMER_ID: this.userId ? this.userId : decryptedUserID ? decryptedUserID : 0,
             SESSION_KEY: this.SESSION_KEYS,
             COUNTRY_NAME: this.selectedAddress.COUNTRY_NAME,
             STATE_NAME: this.selectedAddress.STATE_NAME,
@@ -999,7 +1004,7 @@ export class CheckoutComponent {
             PINCODE: this.selectedAddress.PINCODE,
             COUNTRY_CODE: this.selectedAddress.COUNTRY_CODE,
             CLIENT_ID: 1,
-            IS_LOCAL_PICKUP:this.deliveryOption=='pickup'?this.selectedAddress.IS_LOCAL_PICKUP:0, 
+            IS_LOCAL_PICKUP:this.deliveryOption=='pickup'?this.selectedAddress?.IS_LOCAL_PICKUP:0, 
             PICKUP_LOCATION_MASTER_ID:this.PICKUP_LOCATION_MASTER_ID, 
             MOBILE_NO:this.selectedAddress.MOBILE_NO
           },
@@ -1134,6 +1139,11 @@ export class CheckoutComponent {
   isProcessingPayment = false;
   enableDownload = false;
   async processPaymentWithToken() {
+     let userID=sessionStorage.getItem('userId');
+    let decryptedUserID:any;
+    if(userID){
+       decryptedUserID = this.commonFunction.decryptdata(userID);
+    }
     this.isProcessingPayment = true;
     if (!this.selectedAddress) {
       this.toastr.error('No address selected.', 'Error');
@@ -1183,14 +1193,15 @@ export class CheckoutComponent {
             PAYMENT_MODE: 'O',
             ADDRESS_ID: this.selectedAddress!.ID,
             CART_ID: this.cartId,
-            CUSTOMER_ID: this.userId ? this.userId : 0,
+            CUSTOMER_ID: this.userId ? this.userId : decryptedUserID ? decryptedUserID : 0,
             SESSION_KEY: this.SESSION_KEYS,
             COUNTRY_NAME: this.selectedAddress.COUNTRY_NAME,
             STATE_NAME: this.selectedAddress.STATE_NAME,
             CITY_NAME: this.selectedAddress.CITY_NAME,
             PINCODE: this.selectedAddress.PINCODE,
             COUNTRY_CODE: this.selectedAddress.COUNTRY_CODE,
-            IS_LOCAL_PICKUP:this.deliveryOption=='pickup'?this.selectedAddress.IS_LOCAL_PICKUP:0, 
+            
+            IS_LOCAL_PICKUP:this.deliveryOption=='pickup'?this.selectedAddress?.IS_LOCAL_PICKUP:0, 
             PICKUP_LOCATION_MASTER_ID:this.PICKUP_LOCATION_MASTER_ID, 
             MOBILE_NO:this.selectedAddress.MOBILE_NO,
             CLIENT_ID: 1,
@@ -1736,13 +1747,12 @@ export class CheckoutComponent {
     // }
   }
   isStepActive(step: 'cart' | 'address' | 'payment'): boolean {
-    // Simple logic: true if currentStep is the target step OR a step after it.
-    if (step === 'cart') return true;
-    if (step === 'address')
-      return this.currentStep === 1 || this.currentStep === 2;
-    if (step === 'payment') return this.currentStep === 3;
-    return false;
-  }
+  if (step === 'cart') return this.currentStep >= 1;
+  if (step === 'address') return this.currentStep >= 2;
+  if (step === 'payment') return this.currentStep >= 3;
+  return false;
+}
+
 
   isEmailValid(): boolean {
     const email = this.addressForm.EMAIL_ID;
@@ -1810,7 +1820,7 @@ export class CheckoutComponent {
   otpVerified: boolean = false;
   resendOTP: boolean = false;
   showRegisterOtp: boolean = false;
-  countdownTime: number = 60; // Countdown time in seconds
+  countdownTime: number = 180; // Countdown time in seconds
   remainingTime: number = this.countdownTime;
   // otp: string[] = ['', '', '', '']; // For 4-digit OTP
   // statusCode: string = '';
@@ -1821,6 +1831,7 @@ export class CheckoutComponent {
   visible: boolean = false;
   dismiss() {
     this.visible = false;
+    this.remainingTime = this.countdownTime;
   }
   @ViewChild('otpInputs') otpInputs: ElementRef | undefined;
 
@@ -1986,7 +1997,7 @@ handlePaste(event: ClipboardEvent) {
     }
 
     this.otpSent = false;
-    this.remainingTime = 60; // reset timer
+    this.remainingTime = 180; // reset timer
     this.startTimer();
     //  if (this.whichOTP == 'login') {
     //    this.loginotpverification();
@@ -1996,7 +2007,7 @@ handlePaste(event: ClipboardEvent) {
   }
   resendforgotOtp(content: any) {
     this.otpSent = false; // Resend OTP action
-    this.remainingTime = 60; // Reset timer
+    this.remainingTime = 180; // Reset timer
     this.startTimer();
   }
 
@@ -2005,7 +2016,7 @@ handlePaste(event: ClipboardEvent) {
       return;
     }
 
-    const maxDuration = 60; // 30 seconds max
+    const maxDuration = 180; // 30 seconds max
     this.remainingTime = Math.min(this.remainingTime, maxDuration);
 
     this.timerSubscription = interval(1000)

@@ -1192,7 +1192,7 @@ export class HeaderComponent {
               // console.log(this.isLoggedIn, 'this.isLoggedIn');
               this.toastr.success('You have login Successfully!', 'success');
               sessionStorage.removeItem('SESSION_KEYS');
-              if (sessionStorage.getItem('CART_REDIRECT') === 'true') {
+              if (sessionStorage.getItem('userId') && sessionStorage.getItem('CART_REDIRECT') === 'true') {
                 this.cartItems = this.cartService.getCartItems();
                 this.senddatatoCheckout = {
                   cartDetails: this.cartItems, // Send all items
@@ -1208,7 +1208,7 @@ export class HeaderComponent {
                   );
                   this.cartItems = this.cartService.getCartItems();
                   this.updateTotals();
-
+                  
                   this.isCheckoutVisible = true;
                   //  console.log(this.migrateCartItems(this.cartItems,successCode.data[0]['UserData'][0].ID))
                 }
