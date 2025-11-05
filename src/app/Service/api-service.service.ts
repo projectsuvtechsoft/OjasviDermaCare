@@ -43,8 +43,8 @@ export class ApiServiceService {
   // commonimgUrl = 'https://h10rqczh-9878.inc1.devtunnels.ms/api/upload/';
 
   // pooja
-  // commoncode = 'https://h10rqczh-9090.inc1.devtunnels.ms';
-  // commonimgUrl = 'https://h10rqczh-9090.inc1.devtunnels.ms/api/upload/';
+  // commoncode = 'https://h10rqczh-9092.inc1.devtunnels.ms';
+  // commonimgUrl = 'https://h10rqczh-9092.inc1.devtunnels.ms/api/upload/';
 
   // commoncode = 'https://p8rhkmb7-9878.inc1.devtunnels.ms';
   // commonimgUrl = 'https://p8rhkmb7-9878.inc1.devtunnels.ms/api/upload/';
@@ -4324,6 +4324,51 @@ export class ApiServiceService {
     });
     return this.httpClient.post<any>(
       this.baseUrl + 'api/customer/verifyChangePassOtp',
+      JSON.stringify(data),
+      {
+        headers: headers,
+      }
+    );
+  }
+  getAllpickupLocation(
+    pageIndex: number,
+    pageSize: number,
+    sortKey: string,
+    sortValue: string,
+    filter: string
+  ): Observable<any> {
+    var data = {
+      pageIndex: pageIndex,
+      pageSize: pageSize,
+      sortKey: sortKey,
+      sortValue: sortValue,
+      filter: filter,
+      CLIENT_ID:this.clientId
+    };
+      const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      applicationkey: this.commonapplicationkey,
+      apikey: this.commonapikey,
+
+      token: this.cookie.get('token'),
+    });
+    // this.getheader();
+
+    // this.httpHeaders = new HttpHeaders({
+    //   'Content-Type': 'application/json',
+    //   'apikey': 'yxPlx4hTu5xzEXRiqB3dgKbFDDYNDl82',
+    //   'applicationkey': 'B71DIrzfXKPF97Ci',
+    //   'deviceid':this.cookie.get('deviceId'),
+    //   'supportkey':this.cookie.get('supportKey'),
+    //   'Token': this.cookie.get('token'),
+    //     });
+    //     this.options = {
+    //   headers: this.httpHeaders
+    // };
+
+    // data.CLIENT_ID=this.clientId
+    return this.httpClient.post<any>(
+      this.baseUrl + 'web/pickupLocation/get/',
       JSON.stringify(data),
       {
         headers: headers,

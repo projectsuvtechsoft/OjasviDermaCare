@@ -325,7 +325,12 @@
               >
             </div>
             <span class="text-[11px] mt-1 text-gray-800 font-medium"
+              *ngIf="cartDetails.cartDetails[0].IS_LOCAL_PICKUP_SELECTED == 0"
               >Dispatched</span
+            >
+             <span class="text-[11px] mt-1 text-gray-800 font-medium"
+              *ngIf="cartDetails.cartDetails[0].IS_LOCAL_PICKUP_SELECTED == 1"
+              >Ready For Pickup</span
             >
             <span
               class="text-[10px] text-gray-500"
@@ -384,7 +389,12 @@
               >
             </div>
             <span class="text-[11px] mt-1 text-gray-800 font-medium"
+              *ngIf="cartDetails.cartDetails[0].IS_LOCAL_PICKUP_SELECTED==0"
               >Delivered</span
+            >
+            <span class="text-[11px] mt-1 text-gray-800 font-medium"
+              *ngIf="cartDetails.cartDetails[0].IS_LOCAL_PICKUP_SELECTED==1"
+              >Picked Up</span
             >
             <span
               class="text-[10px] text-gray-500"

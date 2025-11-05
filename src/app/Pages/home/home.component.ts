@@ -182,7 +182,7 @@ export class HomeComponent {
     this.selectedIngredient = [];
     this.selectedDiscounts = [];
     this.minRange = 0;
-    this.maxRange = 50;
+    this.maxRange = 40;
     this.priceRange = 0;
     this.rangeQuery = '';
     // this.selectedSubCategory = null;
@@ -203,6 +203,19 @@ export class HomeComponent {
     this.getProducts();
   }
 
+  onDiscountChange(event: any, discount: number) {
+    if (event.target.checked) {
+      this.selectedDiscounts.push(discount);
+    } else {
+      this.selectedDiscounts = this.selectedDiscounts.filter(
+        (d: number) => d !== discount
+      );
+    }
+
+    this.selectedDiscounts.sort((a: number, b: number) => b - a); // sort descending (e.g. 70,60,...)
+
+    this.getProducts();
+  }
   getProducts() {
     this.loadingProducts = true;
     var filter = '';
@@ -217,18 +230,17 @@ export class HomeComponent {
     }
 
     // Filter by selected discounts
-    if (this.selectedDiscounts.length > 0) {
-      this.selectedDiscounts = this.selectedDiscounts.sort(
-        (a: any, b: any) => a - b
-      );
-      const selectedCategoryIds = this.selectedDiscounts.map(
-        (discount: any) => discount
-      );
+  if (this.selectedDiscounts.length > 0) {
+  const discountConditions = this.selectedDiscounts.map(
+    (discount: any) =>
+      `((MIN_DISCOUNT_PERCENT BETWEEN ${discount} AND 95) OR (MAX_DISCOUNT_PERCENT BETWEEN ${discount} AND 95))`
+  );
 
-      filter +=
-        // ' AND DISCOUNT BETWEEN ' + selectedCategoryIds[0] + ' AND ' + 80;
-       ` AND ((MIN_DISCOUNT_PERCENT BETWEEN ${selectedCategoryIds[0]} AND 80) OR (MAX_DISCOUNT_PERCENT BETWEEN ${selectedCategoryIds[0]} AND 80))`
-    }
+  // Combine all conditions with OR
+  const discountFilter = discountConditions.join(' OR ');
+
+  filter += ` AND (${discountFilter})`;
+}
 
     let selectedIngredientIds = [];
 
@@ -362,7 +374,7 @@ export class HomeComponent {
     }
   }
 
-  change(selectedId: string, productId: number,product:any): void {
+  change(selectedId: string, productId: number, product: any): void {
     const variants = this.variantMap[productId] || [];
     const selected = variants.find(
       (v: any) => v.VARIENT_ID === Number(selectedId)
@@ -376,7 +388,7 @@ export class HomeComponent {
       this.currentStockMap[productId] = selected.CURRENT_STOCK
         ? selected.CURRENT_STOCK
         : 0;
-      this.convertToarrayVairents(product)
+      this.convertToarrayVairents(product);
       this.updateTotalPrice();
     }
   }
@@ -392,7 +404,9 @@ export class HomeComponent {
     // console.log(data,this.selectedVariantMap)
     let varients = JSON.parse(data?.VARIENTS);
     let name = '';
-    const varientData = varients.find((varient:any) => varient.VARIENT_ID === this.selectedVariantMap[data.ID]);
+    const varientData = varients.find(
+      (varient: any) => varient.VARIENT_ID === this.selectedVariantMap[data.ID]
+    );
     if (varientData) {
       // console.log(varientData)
       name = varientData.VARIENT_IMAGE_URL;
@@ -916,12 +930,12 @@ export class HomeComponent {
       this.priceRange > 0 ||
       this.selectedDiscounts.length > 0 ||
       this.minRange > 0 ||
-      this.maxRange < 50
+      this.maxRange < 40
     );
   }
 
   minRange: number = 0;
-  maxRange: number = 50;
+  maxRange: number = 40;
 
   onMinSliderChange() {
     if (this.minRange > this.maxRange) {

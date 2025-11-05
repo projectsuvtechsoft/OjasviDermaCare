@@ -182,23 +182,24 @@
 
               <!-- Discount -->
               <div class="mb-4">
-                <h4 class="text-gray-900 mb-3 font-medium text-sm">Discount</h4>
-                <div class="space-y-2 px-3">
-                  <label
-                    class="custom-checkbox flex items-center cursor-pointer"
-                    *ngFor="let discount of discounts; let i = index"
-                  >
-                    <input
-                      name="discount{{ i }}"
-                      type="checkbox"
-                      [checked]="selectedCategories.includes(discount)"
-                      (change)="onProductChange($event, discount)"
-                    />
-                    <span class="checkmark mr-2"></span>
-                    <span class="text-[12px]">{{ discount }}% and above</span>
-                  </label>
-                </div>
-              </div>
+  <h4 class="text-gray-900 mb-3 font-medium text-sm">Discount</h4>
+  <div class="space-y-2 px-3">
+    <label
+      class="custom-checkbox flex items-center cursor-pointer"
+      *ngFor="let discount of discounts; let i = index"
+    >
+      <input
+        name="discount{{ i }}"
+        type="checkbox"
+        [checked]="selectedDiscounts.includes(discount)"
+        (change)="onDiscountChange($event, discount)"
+      />
+      <span class="checkmark mr-2"></span>
+      <span class="text-[12px]">{{ discount }}% and above</span>
+    </label>
+  </div>
+</div>
+
 
               <!-- Price Range -->
               <div class="mb-4">
@@ -208,13 +209,13 @@
                   <div class="range-container relative w-full h-1 rounded-full bg-gray-300">
                     <div
                       class="absolute h-1 bg-[rgb(90,143,105)] rounded-full"
-                      [style.left.%]="(minRange / 50 ) * 100"
-                      [style.width.%]="((maxRange - minRange) / 50) * 100"
+                      [style.left.%]="(minRange / 40 ) * 100"
+                      [style.width.%]="((maxRange - minRange) / 40) * 100"
                     ></div>
                     <input
                       type="range"
                       min="0"
-                      max="50"
+                      max="40"
                       step="10"
                       [(ngModel)]="minRange"
                       (input)="onMinSliderChange()"
@@ -223,7 +224,7 @@
                     <input
                       type="range"
                       min="0"
-                      max="50"
+                      max="40"
                       step="10"
                       [(ngModel)]="maxRange"
                       (input)="onMaxSliderChange()"

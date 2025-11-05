@@ -653,8 +653,6 @@ export class CartDrawerComponent {
       this.loader = true;
 
       this.cartService.cartUpdated$.subscribe((cartItems) => {
-        this.loader = false;
-
         // 2. Apply the old selections to the new cart items
         this.cartItems = cartItems;
 
@@ -670,7 +668,7 @@ export class CartDrawerComponent {
   decreaseQty(item: any) {
     if (item.quantity > 1) {
       // 1. Store the current selections
-      const currentSelections = this.mapCurrentSelections();
+      // const currentSelections = this.mapCurrentSelections();
 
       item.quantity--;
       item.QUANTITY--;
@@ -679,9 +677,9 @@ export class CartDrawerComponent {
 
       this.cartService.cartUpdated$.subscribe((cartItems) => {
         // 2. Apply the old selections to the new cart items
-        this.cartItems = this.applySelections(cartItems, currentSelections);
+        this.cartItems = cartItems;
 
-        this.loader = false;
+        // this.loader = false;
         this.cd.detectChanges();
         this.updateTotals();
       });
@@ -1031,8 +1029,9 @@ export class CartDrawerComponent {
   closeMobileMenu() {
     this.isMobileMenuOpen = false;
   }
-  isCartRedirected:any=true
+  isCartRedirected:any=false
   openLoginModal() {
+    this.isCartRedirected=true
     sessionStorage.setItem('CART_REDIRECT',this.isCartRedirected)
     this.activeTab = 'login';
     // const modalEl = document.getElementById('loginmodal');

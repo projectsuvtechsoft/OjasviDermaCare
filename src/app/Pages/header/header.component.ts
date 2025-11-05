@@ -223,6 +223,7 @@ export class HeaderComponent {
           sessionStorage.removeItem('userId');
           sessionStorage.removeItem('USER_NAME');
           sessionStorage.removeItem('token');
+          sessionStorage.removeItem('SESSION_KEYS')
           this.cookie.delete('token');
 
           this.toastr.success('You have logged out successfully!', 'Success');
@@ -1206,15 +1207,14 @@ export class HeaderComponent {
                     successCode.data[0]['UserData'][0].ID
                   );
                   this.cartItems = this.cartService.getCartItems();
+                  this.updateTotals();
 
+                  this.isCheckoutVisible = true;
                   //  console.log(this.migrateCartItems(this.cartItems,successCode.data[0]['UserData'][0].ID))
                 }
                 // console.log(this.cartItems)
                 // setTimeout(() => {
 
-                this.updateTotals();
-
-                this.isCheckoutVisible = true;
                 // window.location.reload();
                 // }, 700);
                 // this.updateTotals();
@@ -1437,12 +1437,15 @@ export class HeaderComponent {
           // ✅ Clear session storage
           sessionStorage.removeItem('userId');
           sessionStorage.removeItem('token');
+          sessionStorage.removeItem('SESSION_KEYS')
           this.cookie.delete('token');
 
           this.toastr.success('You have logged out successfully!', 'Success');
           this.cartService.cartItems = [];
           this.cartService.cartUpdated.next(this.cartService.cartItems);
           this.cartService.updateCartCount();
+          this.isCheckoutVisible=false
+
           this.router.navigate(['/home']);
           this.showLogoutModal = false;
           this.isMobileMenuOpen = false;

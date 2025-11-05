@@ -149,15 +149,18 @@
       </ng-container>
 
       <ng-template #loadingState>
-        <div
-          class="flex flex-col items-center justify-center text-center py-10"
-          style="height: 100%"
-        >
-          <div
-            class="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mb-3"
-          ></div>
-          <p class="text-lg font-medium text-gray-700">Loading your cart...</p>
-        </div>
+              <div class="col-span-full loader-container">
+            <div class="loader-content text-center">
+              <div class="logo-wrapper">
+                <img
+                  src="assets/img/logo1.png"
+                  alt="Ojasvi Logo"
+                  class="ojasvi-logo"
+                />
+                <div class="processing-ring"></div>
+              </div>
+            </div>
+          </div>    
       </ng-template>
     </div>
 

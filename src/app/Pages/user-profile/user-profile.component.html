@@ -2223,7 +2223,7 @@
                     />
                     <span class="ml-2 text-sm text-gray-700">Office</span>
                   </label>
-                  <label class="flex items-center cursor-pointer">
+                  <!-- <label class="flex items-center cursor-pointer">
                     <input
                       type="radio"
                       name="addressType"
@@ -2232,7 +2232,7 @@
                       class="w-4 h-4 text-[#5a8f69] border-gray-300 focus:ring-[#5a8f69]"
                     />
                     <span class="ml-2 text-sm text-gray-700">Local Pickup</span>
-                  </label>
+                  </label> -->
                 </div>
               </div>
 
@@ -2349,8 +2349,8 @@
                 </div>
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div
+               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!--<div
                   class="relative"
                   [class.md:col-span-2]="addressForm.ADDRESS_TYPE === 'P'"
                 >
@@ -2385,7 +2385,7 @@
                   >
                     Please select your city to find local pickup facilities.
                   </small>
-                </div>
+                </div> -->
 
                 <ng-container *ngIf="addressForm.ADDRESS_TYPE !== 'P'">
                   <div>
@@ -2432,7 +2432,7 @@
                 </div>
               </ng-container>
 
-              <ng-container *ngIf="addressForm.ADDRESS_TYPE === 'P'">
+              <!-- <ng-container *ngIf="addressForm.ADDRESS_TYPE === 'P'">
                 <div class="space-y-2">
                   <div class="flex items-end gap-4">
                     <div class="flex-1">
@@ -2561,7 +2561,7 @@
                     No pickup locations found for the selected city.
                   </div>
                 </div>
-              </ng-container>
+              </ng-container> -->
             </div>
           </div>
 
@@ -2801,7 +2801,8 @@
                   </div>
 
                   <div class="detail-item">
-                    <div class="status-header">Dispatched</div>
+                    <div class="status-header" *ngIf="order.IS_LOCAL_PICKUP_SELECTED == 0">Dispatched</div>
+                    <div class="status-header" *ngIf="order.IS_LOCAL_PICKUP_SELECTED == 1">Ready For Pickup</div>
                     <small class="status-subtitle">{{
                       order.ACTUAL_DISPATCH_DATETIME
                         ? (order.ACTUAL_DISPATCH_DATETIME
@@ -2811,7 +2812,8 @@
                   </div>
 
                   <div class="detail-item">
-                    <div class="status-header">Delivered</div>
+                    <div class="status-header" *ngIf="order.IS_LOCAL_PICKUP_SELECTED == 0">Delivered</div>
+                    <div class="status-header" *ngIf="order.IS_LOCAL_PICKUP_SELECTED == 1">Picked Up</div>
                     <small class="status-subtitle">{{
                       order.ACTUAL_DELIVERY_DATETIME
                         ? (order.ACTUAL_DELIVERY_DATETIME

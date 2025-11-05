@@ -267,5 +267,59 @@ h4,
 .rounded-lg{
    border-radius: 8px !important;
 }
+.loader-container {
+  position: absolute;
+  inset: 0; /* cover the entire grid */
+  background: rgba(249, 253, 249, 0.95); /* semi-transparent background */
+  display: flex; /* Enable flexbox */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  z-index: 20;
+  min-height: 400px; /* Match parent minimum height */
+}
+
+.loader-content {
+  position: relative;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.ojasvi-logo {
+  width: 100px;
+  z-index: 2;
+  position: relative;
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.processing-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 140px;
+  height: 140px;
+  border: 4px solid rgba(90, 143, 105, 0.3);
+  border-top-color: #5a8f69;
+  border-radius: 50%;
+  animation: spin 1.8s linear infinite;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+@keyframes spin {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
  
 

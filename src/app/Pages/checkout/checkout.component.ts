@@ -40,7 +40,9 @@ interface Address {
   CUST_ID?: string; // Assuming CUST_ID is for customer association
   SESSION_KEY: any;
   COUNTRY_CODE: any;
-  CITY_ID:any;
+  CITY_ID: any;
+  STATE_ID: any;
+  COUNTRY_ID: any;
   PICKUP_LOCATION_ID?: any; // New field for pickup location
 }
 
@@ -89,14 +91,16 @@ export class CheckoutComponent {
     STATE_NAME: '',
     LANDMARK: '',
     LOCALITY: '',
-    ADDRESS_TYPE: 'Residential',  
+    ADDRESS_TYPE: 'Residential',
     AREA: '',
     IS_DEFAULT: false,
     IS_DEFUALT_ADDRESS: false,
     SESSION_KEY: '',
     COUNTRY_CODE: '+1',
-    CITY_ID:'',
-    PICKUP_LOCATION_ID:''
+    CITY_ID: '',
+    STATE_ID: '',
+    COUNTRY_ID: '',
+    PICKUP_LOCATION_ID: '',
   };
 
   countryList: any[] = [];
@@ -112,7 +116,7 @@ export class CheckoutComponent {
   filteredCountryCodes!: { label: string; value: string }[];
   showCountryDropdown!: boolean;
   paymentConfiguration: any;
- cartIcon!: SafeHtml;
+  cartIcon!: SafeHtml;
   addressIcon!: SafeHtml;
   paymentIcon!: SafeHtml;
   constructor(
@@ -132,7 +136,7 @@ export class CheckoutComponent {
       // this.loadingProducts = false;
       // this.cd.detectChanges(); // Optional but ensures view update
     });
-     this.cartIcon = this.sanitizer.bypassSecurityTrustHtml(`
+    this.cartIcon = this.sanitizer.bypassSecurityTrustHtml(`
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
         class="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6">
@@ -345,6 +349,9 @@ export class CheckoutComponent {
             ID: addr.ID,
             NAME: addr.NAME,
             ADDRESS: addr.ADDRESS,
+            CITY_ID: addr.CITY_ID ?? 0,
+            STATE_ID: addr.STATE_ID ?? 0,
+            COUNTRY_ID: addr.COUNTRY_ID ?? 0,
             CITY_NAME: addr.CITY_NAME,
             PINCODE: addr.PINCODE,
             COUNTRY_NAME: addr.COUNTRY_NAME,
@@ -358,11 +365,13 @@ export class CheckoutComponent {
             SESSION_KEY: addr.SESSION_KEY,
             MOBILE_NO: addr.MOBILE_NO,
             COUNTRY_CODE: addr.COUNTRY_CODE,
+            IS_LOCAL_PICKUP: addr.IS_LOCAL_PICKUP,
           }));
           this.selectedAddress =
             this.savedAddresses.find((a) => a.IS_DEFAULT) ||
             this.savedAddresses[0];
-
+           this.IS_LOCAL_PICKUP=this.selectedAddress.IS_LOCAL_PICKUP
+          // console.log(this.selectedAddress,'Default selected')
           if (
             this.selectedAddress &&
             this.selectedAddress.COUNTRY_NAME != null
@@ -436,6 +445,7 @@ export class CheckoutComponent {
         this.getCountryFromID(address.COUNTRY_NAME)
       ); // Update sessionStorage
       // Update sessionStorage
+      this.IS_LOCAL_PICKUP=address.IS_LOCAL_PICKUP
       sessionStorage.setItem('pincode', String(address.PINCODE));
       var CART_ID = this.cartDetails.cartDetails[0].CART_ID;
       var CART_ITEM_ID = this.cartDetails.cartDetails[0].ID;
@@ -476,7 +486,10 @@ export class CheckoutComponent {
       IS_DEFAULT: false,
       AREA: '',
       SESSION_KEY: '',
-      CITY_ID:'',
+      CITY_ID: '',
+      STATE_ID: '',
+      COUNTRY_ID: '',
+      PICKUP_LOCATION_ID: '',
       COUNTRY_CODE: '+1',
     };
     // this.stateList = []; // Clear states when resetting country
@@ -785,7 +798,8 @@ export class CheckoutComponent {
   }
 
   onCountryChange(countryname: number) {
-    this.addressForm.STATE_NAME = ''; // Clear state selection on country change
+    this.addressForm.STATE_NAME = '';
+    // Clear state selection on country change
     this.stateList = []; // Clear state list
     if (countryname) {
       this.fetchStates(countryname);
@@ -807,6 +821,7 @@ export class CheckoutComponent {
             const selectedState = this.stateList.find(
               (s) => s.ID === this.addressForm.STATE_NAME
             );
+            this.addressForm.STATE_ID = selectedState ? selectedState.ID : 0;
 
             if (selectedState) {
               this.stateSearch = selectedState.NAME;
@@ -964,7 +979,9 @@ export class CheckoutComponent {
         .post(
           baseUrl + 'web/cart/proceedToPaymentTesting',
           {
-            amount:
+            amount:this.IS_LOCAL_PICKUP==1 && this.deliveryOption == 'pickup'?
+            (this.selectedPrice -
+                this.selectedDiscount) * 100 :
               (this.selectedPrice -
                 this.selectedDiscount +
                 (this.cartDetails?.cartDetails?.[0]?.['DATA'].NET_AMOUNT -
@@ -982,6 +999,9 @@ export class CheckoutComponent {
             PINCODE: this.selectedAddress.PINCODE,
             COUNTRY_CODE: this.selectedAddress.COUNTRY_CODE,
             CLIENT_ID: 1,
+            IS_LOCAL_PICKUP:this.deliveryOption=='pickup'?this.selectedAddress.IS_LOCAL_PICKUP:0, 
+            PICKUP_LOCATION_MASTER_ID:this.PICKUP_LOCATION_MASTER_ID, 
+            MOBILE_NO:this.selectedAddress.MOBILE_NO
           },
           {
             headers,
@@ -1094,7 +1114,7 @@ export class CheckoutComponent {
 
     try {
       const payments = await (window as any).Square.payments(
-        'sq0idp-MZsV8XmKikjtR3cQ_FqOXw',
+        'sandbox-sq0idb-rV2VaHliz7OXmsejGzJq4Q',
         ''
       );
       this.card = await payments.card();
@@ -1151,7 +1171,9 @@ export class CheckoutComponent {
           baseUrl + 'web/cart/proceedToPayment',
           {
             nonce: token,
-            amount:
+            amount:this.IS_LOCAL_PICKUP==1 && this.deliveryOption == 'pickup'?
+            (this.selectedPrice -
+                this.selectedDiscount) * 100 :
               (this.selectedPrice -
                 this.selectedDiscount +
                 (this.cartDetails?.cartDetails?.[0]?.['DATA'].NET_AMOUNT -
@@ -1168,6 +1190,9 @@ export class CheckoutComponent {
             CITY_NAME: this.selectedAddress.CITY_NAME,
             PINCODE: this.selectedAddress.PINCODE,
             COUNTRY_CODE: this.selectedAddress.COUNTRY_CODE,
+            IS_LOCAL_PICKUP:this.deliveryOption=='pickup'?this.selectedAddress.IS_LOCAL_PICKUP:0, 
+            PICKUP_LOCATION_MASTER_ID:this.PICKUP_LOCATION_MASTER_ID, 
+            MOBILE_NO:this.selectedAddress.MOBILE_NO,
             CLIENT_ID: 1,
           },
           {
@@ -1312,8 +1337,16 @@ export class CheckoutComponent {
     this.visibleChange.emit(false); // Notify parent to close drawer
     // Optionally: show cart drawer if controlled separately
   }
+  IS_LOCAL_PICKUP:any
+  PICKUP_LOCATION_MASTER_ID:any
+  MOBILE_NO :any
   steped() {
     this.currentStep = 3;
+    if(this.selectedAddress.IS_LOCAL_PICKUP==1 && this.deliveryOption == 'pickup' && !this.selectedPickupName){
+      this.toastr.error('Please select local pickup location')
+      return
+    }
+    this.showOrderSummaryInDrawer = true;
     this.isStepActive('payment');
   }
   desteper() {
@@ -1361,6 +1394,7 @@ export class CheckoutComponent {
   selectCountry(country: any) {
     // Set the selected value
     this.addressForm.COUNTRY_NAME = country.NAME ?? this.countrySearch;
+    this.addressForm.COUNTRY_ID = country.ID ?? 0;
     this.countrySearch = country.NAME;
     this.filteredCountries = [];
     this.fetchStates(country.ID);
@@ -1375,9 +1409,10 @@ export class CheckoutComponent {
   }
   selectState(state: any) {
     this.addressForm.STATE_NAME = state.NAME ?? this.stateSearch;
+    this.addressForm.STATE_ID = state.ID ?? 0;
     this.stateSearch = state.NAME;
-    this.fetchCities(state.ID);
     this.filteredStates = [];
+    this.fetchCities(state.ID);
   }
 
   filterCountries() {
@@ -1467,19 +1502,20 @@ export class CheckoutComponent {
 
   selectCity(city: any) {
     this.addressForm.CITY_NAME = city.NAME ?? this.citySearch;
+    // this.addressForm.CITY_ID = city.ID ?? 0;
     this.citySearch = city.NAME;
     this.filteredCities = [];
     // 1. Store the city's unique ID
-  //    (Use the correct property from your city object, e.g., city.ID, city.cityId)
-  this.addressForm.CITY_ID = city.ID; // <-- IMPORTANT
-  
-  // 2. If the user changes the city, reset the pickup location
-  this.clearPickupLocation();
+    //    (Use the correct property from your city object, e.g., city.ID, city.cityId)
+    this.addressForm.CITY_ID = city.ID ?? 0; // <-- IMPORTANT
 
-  // 3. (Optional) Automatically search if "Local Pickup" is already selected
-  if (this.addressForm.ADDRESS_TYPE === 'P') {
-    this.findPickupLocations();
-  }
+    // 2. If the user changes the city, reset the pickup location
+    // this.clearPickupLocation();
+
+    // 3. (Optional) Automatically search if "Local Pickup" is already selected
+    // if (this.addressForm.ADDRESS_TYPE === 'P') {
+    //   this.findPickupLocations();
+    // }
   }
 
   filterCities() {
@@ -1517,6 +1553,7 @@ export class CheckoutComponent {
             const selectedCity = this.cityList.find(
               (c) => c.ID === this.addressForm.CITY_NAME
             );
+            this.addressForm.CITY_ID = selectedCity ? selectedCity.ID : 0;
             this.citySearch = selectedCity
               ? selectedCity.NAME
               : this.citySearch;
@@ -1720,12 +1757,13 @@ export class CheckoutComponent {
 
   verificationStatus: 'initial' | 'pending' | 'verified' | 'failed' = 'initial';
   // 2. The verification function
+  loadingButton=false
   verifyEmail(): void {
     if (!this.isEmailValid()) {
       this.toastr.info('Please enter a valid email address before verifying.');
       return;
     }
-
+    this.loadingButton=true
     this.verificationStatus = 'pending';
     // this.visible=true
     // --- REAL-WORLD SCENARIO: Call an API ---
@@ -1751,15 +1789,19 @@ export class CheckoutComponent {
       (res) => {
         if (res['code'] == 200) {
           this.toastr.success('Otp Sent Successfully');
+          this.loadingButton=false
           this.startTimer();
           this.visible = true;
         } else {
           this.toastr.error('Failed to send otp');
           this.verificationStatus = 'failed';
+          this.loadingButton=false
+          
         }
       },
       (err) => {
         this.verificationStatus = 'failed';
+        this.loadingButton=false
       }
     );
   }
@@ -1788,17 +1830,17 @@ export class CheckoutComponent {
   // otp: string[] = ['', '', '', '', '', ''];  // OTP Array to store individual digits
 
   // Method to move to the next input field
-  moveToNext(event: KeyboardEvent, index: number) {
-    if (event.key === 'Backspace' && !this.otp[index] && index > 0) {
-      // If backspace is pressed on empty input, move to previous input
-      const prevInput = document.getElementsByClassName('otp-input')[
-        index - 1
-      ] as HTMLInputElement;
-      if (prevInput) {
-        prevInput.focus();
-      }
-    }
-  }
+  // moveToNext(event: KeyboardEvent, index: number) {
+  //   if (event.key === 'Backspace' && !this.otp[index] && index > 0) {
+  //     // If backspace is pressed on empty input, move to previous input
+  //     const prevInput = document.getElementsByClassName('otp-input')[
+  //       index - 1
+  //     ] as HTMLInputElement;
+  //     if (prevInput) {
+  //       prevInput.focus();
+  //     }
+  //   }
+  // }
 
   onChange(value: string, index: number) {
     // Ensure the input is a number
@@ -1837,22 +1879,89 @@ export class CheckoutComponent {
   //     this.loginforgot(content);
   //   }
   // }
-  allowOnlyNumbers(event: KeyboardEvent) {
-    const charCode = event.which ? event.which : event.keyCode;
-    if (charCode < 48 || charCode > 57) {
-      event.preventDefault();
+  allowOnlyNumbers(event: any,index:any) {
+   const input  = event.target as HTMLInputElement;;
+  const value = input.value.replace(/\D/g, ''); // Remove non-digits
+  input.value = value;
+
+  if (value && index < this.otp.length - 1) {
+    const next = document.querySelectorAll<HTMLInputElement>('input[type=text]')[index + 1];
+    next?.focus();
+  }
+  }
+  // handlePaste(event: ClipboardEvent) {
+  //   event.preventDefault();
+  //   const pastedData = event.clipboardData?.getData('text');
+  //   if (pastedData && /^\d{4}$/.test(pastedData)) {
+  //     // If pasted data is 4 digits, distribute across inputs
+  //     for (let i = 0; i < 4; i++) {
+  //       this.otp[i] = pastedData[i];
+  //     }
+  //   }
+  // }
+  onOtpInput(event: Event, index: number) {
+  const input = event.target as HTMLInputElement;
+  let value = input.value.replace(/\D/g, ''); // Remove non-digits
+
+  // Allow only one digit per box
+  if (value.length > 1) {
+    value = value.charAt(value.length - 1);
+  }
+
+  input.value = value;
+  this.otp[index] = value;
+
+  // Move focus to next input if a digit is entered
+  if (value && index < this.otp.length - 1) {
+    const next = document.querySelectorAll<HTMLInputElement>('.otp-input')[index + 1];
+    next?.focus();
+  }
+
+  // Auto-submit if all digits entered
+  if (this.otp.join('').length === this.otp.length && !this.otp.includes('')) {
+    this.VerifyOTP();
+  }
+}
+
+moveToNext(event: KeyboardEvent, index: number) {
+  const inputs = document.querySelectorAll<HTMLInputElement>('.otp-input');
+
+  if (event.key === 'Backspace') {
+    if (!(inputs[index] as HTMLInputElement).value && index > 0) {
+      (inputs[index - 1] as HTMLInputElement).focus();
     }
   }
-  handlePaste(event: ClipboardEvent) {
-    event.preventDefault();
-    const pastedData = event.clipboardData?.getData('text');
-    if (pastedData && /^\d{4}$/.test(pastedData)) {
-      // If pasted data is 4 digits, distribute across inputs
-      for (let i = 0; i < 4; i++) {
-        this.otp[i] = pastedData[i];
-      }
+
+  // Optional: handle arrow navigation
+  if (event.key === 'ArrowLeft' && index > 0) {
+    (inputs[index - 1] as HTMLInputElement).focus();
+  } else if (event.key === 'ArrowRight' && index < inputs.length - 1) {
+    (inputs[index + 1] as HTMLInputElement).focus();
+  }
+}
+
+handlePaste(event: ClipboardEvent) {
+  event.preventDefault();
+  const pastedData = event.clipboardData?.getData('text') || '';
+  const cleanData = pastedData.replace(/\D/g, '').slice(0, 4);
+
+  if (cleanData) {
+    for (let i = 0; i < 4; i++) {
+      this.otp[i] = cleanData[i] || '';
+      const input = document.querySelectorAll<HTMLInputElement>('.otp-input')[i];
+      (input as HTMLInputElement).value = this.otp[i] || '';
+    }
+
+    // Focus last field
+    const lastInput = document.querySelectorAll<HTMLInputElement>('.otp-input')[cleanData.length - 1];
+    lastInput?.focus();
+
+    // Auto-submit if complete
+    if (cleanData.length === this.otp.length) {
+      this.VerifyOTP();
     }
   }
+}
   // handleLoginEnterKey(content: any) {
   //   if (this.isloginSendOTP) {
   //   } else {
@@ -2383,98 +2492,155 @@ export class CheckoutComponent {
 
   isChanged: any = 0;
 
-  pickupLocations: any[] = []; 
+  pickupLocations: any[] = [];
 
-// Controls the loading spinner/text
-isLoadingPickupLocations: boolean = false; 
+  // Controls the loading spinner/text
+  isLoadingPickupLocations: boolean = false;
 
-// Shows the "No locations found" message
-showPickupError: boolean = false; 
+  // Shows the "No locations found" message
+  showPickupError: boolean = false;
 
-// Toggles the custom dropdown's visibility
-isPickupDropdownOpen: boolean = false;
-/**
- * Fetches pickup locations based on the selected city.
- * This is triggered by the "Find" button.
- */
-findPickupLocations() {
-  // Guard clause: Don't search if no city is selected
-  if (!this.addressForm.CITY_ID) {
-    console.error("No city selected. Cannot find locations.");
-    this.showPickupError = true; // Show an error message
-    return;
+  // Toggles the custom dropdown's visibility
+  isPickupDropdownOpen: boolean = false;
+  /**
+   * Fetches pickup locations based on the selected city.
+   * This is triggered by the "Find" button.
+   */
+  // findPickupLocations() {
+  //   // Guard clause: Don't search if no city is selected
+  //   if (!this.addressForm.CITY_ID) {
+  //     console.error("No city selected. Cannot find locations.");
+  //     this.showPickupError = true; // Show an error message
+  //     return;
+  //   }
+
+  //   console.log("Finding locations for city ID:", this.addressForm.CITY_ID);
+
+  //   // Reset state before searching
+  //   this.isLoadingPickupLocations = true;
+  //   this.showPickupError = false;
+  //   this.pickupLocations = []; // Clear old locations
+  //   this.addressForm.PICKUP_LOCATION_ID = null; // Reset selection
+  //   this.isPickupDropdownOpen = false; // Close dropdown while searching
+
+  //   // --- SIMULATED API CALL ---
+  //   // In a real app, you would replace this setTimeout
+  //   // with your 'this.http.get(...)' or 'this.myApiService.getLocations(...)'
+
+  //   setTimeout(() => {
+  //     // Mock data - replace with your real API response
+  //     // We check the city ID to return different results
+  //     if (this.addressForm.CITY_ID === 'city_id_1') { // Use a real ID from your 'selectCity'
+  //       this.pickupLocations = [
+  //         { id: 'loc_001', name: 'Main Warehouse', address: '123 Main St, Near City Park' },
+  //         { id: 'loc_002', name: 'Downtown Hub', address: '456 Central Ave, Suite 100' },
+  //         { id: 'loc_003', name: 'Westside Pickup', address: '789 West End Blvd' },
+  //         { id: 'loc_004', name: 'Eastside Store', address: '101 East Market' },
+  //       ];
+  //     } else {
+  //       // Simulate no locations found for other cities
+  //       this.pickupLocations = [];
+  //     }
+  //     // --- END SIMULATED API CALL ---
+
+  //     this.isLoadingPickupLocations = false;
+
+  //     if (this.pickupLocations.length > 0) {
+  //       this.isPickupDropdownOpen = true; // Automatically open the dropdown to show results
+  //     } else {
+  //       this.showPickupError = true; // Show "No locations found" message
+  //     }
+  //   }, 1000); // 1-second delay to simulate network
+  // }
+
+  /**
+   * Selects a pickup location from the custom dropdown.
+   * This is triggered by (mousedown) on an option.
+   */
+  // selectPickupLocation(location: any) {
+  //   // console.log("Selected location:", location);
+  //   this.addressForm.PICKUP_LOCATION_ID = location.id;
+  //   this.isPickupDropdownOpen = false; // Close dropdown on selection
+  // }
+
+  /**
+   * Helper function to display the selected location's name in the button.
+   * Used by the <span> in your dropdown button.
+   */
+  getSelectedPickupLocation() {
+    if (!this.addressForm.PICKUP_LOCATION_ID) {
+      return null;
+    }
+    // Find the location object in our array by its ID
+    return this.pickupLocations.find(
+      (loc) => loc.id === this.addressForm.PICKUP_LOCATION_ID
+    );
   }
 
-  console.log("Finding locations for city ID:", this.addressForm.CITY_ID);
-  
-  // Reset state before searching
-  this.isLoadingPickupLocations = true;
-  this.showPickupError = false;
-  this.pickupLocations = []; // Clear old locations
-  this.addressForm.PICKUP_LOCATION_ID = null; // Reset selection
-  this.isPickupDropdownOpen = false; // Close dropdown while searching
-
-  // --- SIMULATED API CALL ---
-  // In a real app, you would replace this setTimeout
-  // with your 'this.http.get(...)' or 'this.myApiService.getLocations(...)'
-  
-  setTimeout(() => {
-    // Mock data - replace with your real API response
-    // We check the city ID to return different results
-    if (this.addressForm.CITY_ID === 'city_id_1') { // Use a real ID from your 'selectCity'
-      this.pickupLocations = [
-        { id: 'loc_001', name: 'Main Warehouse', address: '123 Main St, Near City Park' },
-        { id: 'loc_002', name: 'Downtown Hub', address: '456 Central Ave, Suite 100' },
-        { id: 'loc_003', name: 'Westside Pickup', address: '789 West End Blvd' },
-        { id: 'loc_004', name: 'Eastside Store', address: '101 East Market' },
-      ];
-    } else {
-      // Simulate no locations found for other cities
-      this.pickupLocations = [];
-    }
-    // --- END SIMULATED API CALL ---
-
+  /**
+   * Clears pickup location data when switching back to Residential/Office.
+   * This is triggered by (ngModelChange) on those radio buttons.
+   */
+  clearPickupLocation() {
+    this.pickupLocations = [];
+    this.addressForm.PICKUP_LOCATION_ID = null;
     this.isLoadingPickupLocations = false;
-    
-    if (this.pickupLocations.length > 0) {
-      this.isPickupDropdownOpen = true; // Automatically open the dropdown to show results
-    } else {
-      this.showPickupError = true; // Show "No locations found" message
-    }
-  }, 1000); // 1-second delay to simulate network
-}
-
-/**
- * Selects a pickup location from the custom dropdown.
- * This is triggered by (mousedown) on an option.
- */
-selectPickupLocation(location: any) {
-  // console.log("Selected location:", location);
-  this.addressForm.PICKUP_LOCATION_ID = location.id;
-  this.isPickupDropdownOpen = false; // Close dropdown on selection
-}
-
-/**
- * Helper function to display the selected location's name in the button.
- * Used by the <span> in your dropdown button.
- */
-getSelectedPickupLocation() {
-  if (!this.addressForm.PICKUP_LOCATION_ID) {
-    return null;
+    this.showPickupError = false;
+    this.isPickupDropdownOpen = false;
   }
-  // Find the location object in our array by its ID
-  return this.pickupLocations.find(loc => loc.id === this.addressForm.PICKUP_LOCATION_ID);
-}
+  deliveryOption: 'delivery' | 'pickup' = 'delivery';
+  pickupDropdownOpen = false;
+  // selectedPickupLocation: string = '';
+  selectedPickupLocation: any;
 
-/**
- * Clears pickup location data when switching back to Residential/Office.
- * This is triggered by (ngModelChange) on those radio buttons.
- */
-clearPickupLocation() {
-  this.pickupLocations = [];
-  this.addressForm.PICKUP_LOCATION_ID = null;
-  this.isLoadingPickupLocations = false;
-  this.showPickupError = false;
-  this.isPickupDropdownOpen = false;
-}
+  // pickupLocations = [
+  //   { id: 'loc1', name: 'San Jose Center', address: '123 Main St, San Jose, CA' },
+  //   { id: 'loc2', name: 'Downtown Hub', address: '45 Market St, San Jose, CA' },
+  //   { id: 'loc3', name: 'West Valley Store', address: '78 Sunset Blvd, San Jose' },
+  // ];
+  get selectedPickupName(): string | null {
+    const p = this.pickupLocations.find(
+      (loc) => loc.ID === this.selectedPickupLocation
+    );
+    this.PICKUP_LOCATION_MASTER_ID=p?.ID
+    // this.IS_LOCAL_PICKUP=p?.IS_LOCAL_PICKUP
+    return p ? p.ADDRESS : null;
+  }
+
+  // toggle dropdown
+  togglePickupDropdown(): void {
+    this.pickupDropdownOpen = !this.pickupDropdownOpen;
+  }
+
+  // select and close
+  selectPickupLocation(location: { ID: any }): void {
+    this.selectedPickupLocation = location.ID;
+    this.pickupDropdownOpen = false;
+  }
+ onDeliveryOptionChange(event:any){
+  if(event=='pickup'){
+    this.getPickupLocationByCity(this.selectedAddress.CITY_ID)
+  }
+  else{
+    this.selectedPickupLocation=null
+  }
+ }
+
+  getPickupLocationByCity(cityID: any) {
+    this.api
+      .getAllpickupLocation(
+        0,
+        0,
+        'id',
+        'desc',
+        ' AND STATUS=1 AND CITY_ID=' + cityID
+      )
+      .subscribe((res) => {
+        if (res.code == 200) {
+          this.pickupLocations = res.data;
+        } else {
+          this.pickupLocations = [];
+        }
+      });
+  }
 }
