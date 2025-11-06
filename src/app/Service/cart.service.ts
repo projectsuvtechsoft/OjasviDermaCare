@@ -20,12 +20,12 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class CartService {
   //Testing
-  // commonapikey = 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY';
-  // commonapplicationkey = 'awlcQRwoZxAJQm7b';
+  commonapikey = 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY';
+  commonapplicationkey = 'awlcQRwoZxAJQm7b';
 
   //Live
-  commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
-  commonapplicationkey = '26lLNSmaKlcFziHH';
+  // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
+  // commonapplicationkey = '26lLNSmaKlcFziHH';
   // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
   // commonapplicationkey = '26lLNSmaKlcFziHH';
   // private cartCountSource = new BehaviorSubject<number>(0);

@@ -313,105 +313,104 @@
           </a>
 
           <!-- ✅ Progress Bar -->
-         <!-- Progress Bar -->
-<div
-  class="progress-bar flex flex-wrap items-center justify-center gap-3 sm:gap-5 mt-2 md:mt-0"
->
-  <!-- 🛒 CART -->
-  <div
-    class="text-center cursor-pointer flex flex-col items-center"
-    (click)="goToStep('cart')"
-  >
-    <div
-      class="circle flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-all duration-300 hover:scale-110"
-      [ngClass]="{
-        'bg-[#5a8f69]': isStepActive('cart'),
-        'bg-gray-300': !isStepActive('cart')
-      }"
-    >
-      <i
-        class="bi bi-cart3 text-lg sm:text-xl transition-colors duration-300"
-        [ngClass]="{
-          'text-white': isStepActive('cart'),
-          'text-gray-700': !isStepActive('cart')
-        }"
-      ></i>
-    </div>
-    <span
-      class="block mt-1 text-[10px] sm:text-xs font-medium text-gray-700"
-      >CART</span
-    >
-  </div>
+          <!-- Progress Bar -->
+          <div
+            class="progress-bar flex flex-wrap items-center justify-center gap-3 sm:gap-5 mt-2 md:mt-0"
+          >
+            <!-- 🛒 CART -->
+            <div
+              class="text-center cursor-pointer flex flex-col items-center"
+              (click)="goToStep('cart')"
+            >
+              <div
+                class="circle flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-all duration-300 hover:scale-110"
+                [ngClass]="{
+                  'bg-[#5a8f69]': isStepActive('cart'),
+                  'bg-gray-300': !isStepActive('cart')
+                }"
+              >
+                <i
+                  class="bi bi-cart3 text-lg sm:text-xl transition-colors duration-300"
+                  [ngClass]="{
+                    'text-white': isStepActive('cart'),
+                    'text-gray-700': !isStepActive('cart')
+                  }"
+                ></i>
+              </div>
+              <span
+                class="block mt-1 text-[10px] sm:text-xs font-medium text-gray-700"
+                >CART</span
+              >
+            </div>
 
-  <div
-    class="line h-[2px] flex-shrink-0 w-8 sm:w-10 md:w-12 transition-all duration-300"
-    [ngClass]="{
-      'bg-[#5a8f69]': currentStep >= 2,
-      'bg-gray-300': currentStep < 2
-    }"
-  ></div>
+            <div
+              class="line h-[2px] flex-shrink-0 w-8 sm:w-10 md:w-12 transition-all duration-300"
+              [ngClass]="{
+                'bg-[#5a8f69]': currentStep >= 2,
+                'bg-gray-300': currentStep < 2
+              }"
+            ></div>
 
-  <!-- 📍 ADDRESS -->
-  <div
-    class="text-center cursor-pointer flex flex-col items-center"
-    (click)="goToStep('address')"
-  >
-    <div
-      class="circle flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-all duration-300 hover:scale-110"
-      [ngClass]="{
-        'bg-[#5a8f69]': isStepActive('address'),
-        'bg-gray-300': !isStepActive('address')
-      }"
-    >
-      <i
-        class="bi bi-geo-alt text-lg sm:text-xl transition-colors duration-300"
-        [ngClass]="{
-          'text-white': isStepActive('address'),
-          'text-gray-700': !isStepActive('address')
-        }"
-      ></i>
-    </div>
-    <span
-      class="block mt-1 text-[10px] sm:text-xs font-medium text-gray-700"
-      >ADDRESS</span
-    >
-  </div>
+            <!-- 📍 ADDRESS -->
+            <div
+              class="text-center cursor-pointer flex flex-col items-center"
+              (click)="goToStep('address')"
+            >
+              <div
+                class="circle flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-all duration-300 hover:scale-110"
+                [ngClass]="{
+                  'bg-[#5a8f69]': isStepActive('address'),
+                  'bg-gray-300': !isStepActive('address')
+                }"
+              >
+                <i
+                  class="bi bi-geo-alt text-lg sm:text-xl transition-colors duration-300"
+                  [ngClass]="{
+                    'text-white': isStepActive('address'),
+                    'text-gray-700': !isStepActive('address')
+                  }"
+                ></i>
+              </div>
+              <span
+                class="block mt-1 text-[10px] sm:text-xs font-medium text-gray-700"
+                >ADDRESS</span
+              >
+            </div>
 
-  <div
-    class="line h-[2px] flex-shrink-0 w-8 sm:w-10 md:w-12 transition-all duration-300"
-    [ngClass]="{
-      'bg-[#5a8f69]': currentStep >= 3,
-      'bg-gray-300': currentStep < 3
-    }"
-  ></div>
+            <div
+              class="line h-[2px] flex-shrink-0 w-8 sm:w-10 md:w-12 transition-all duration-300"
+              [ngClass]="{
+                'bg-[#5a8f69]': currentStep >= 3,
+                'bg-gray-300': currentStep < 3
+              }"
+            ></div>
 
-  <!-- 💳 PAYMENT -->
-  <div
-    class="text-center cursor-pointer flex flex-col items-center"
-    (click)="goToStep('payment')"
-  >
-    <div
-      class="circle flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-all duration-300 hover:scale-110"
-      [ngClass]="{
-        'bg-[#5a8f69]': isStepActive('payment'),
-        'bg-gray-300': !isStepActive('payment')
-      }"
-    >
-      <i
-        class="bi bi-credit-card-2-front text-lg sm:text-xl transition-colors duration-300"
-        [ngClass]="{
-          'text-white': isStepActive('payment'),
-          'text-gray-700': !isStepActive('payment')
-        }"
-      ></i>
-    </div>
-    <span
-      class="block mt-1 text-[10px] sm:text-xs font-medium text-gray-700"
-      >PAYMENT</span
-    >
-  </div>
-</div>
-
+            <!-- 💳 PAYMENT -->
+            <div
+              class="text-center cursor-pointer flex flex-col items-center"
+              (click)="goToStep('payment')"
+            >
+              <div
+                class="circle flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-all duration-300 hover:scale-110"
+                [ngClass]="{
+                  'bg-[#5a8f69]': isStepActive('payment'),
+                  'bg-gray-300': !isStepActive('payment')
+                }"
+              >
+                <i
+                  class="bi bi-credit-card-2-front text-lg sm:text-xl transition-colors duration-300"
+                  [ngClass]="{
+                    'text-white': isStepActive('payment'),
+                    'text-gray-700': !isStepActive('payment')
+                  }"
+                ></i>
+              </div>
+              <span
+                class="block mt-1 text-[10px] sm:text-xs font-medium text-gray-700"
+                >PAYMENT</span
+              >
+            </div>
+          </div>
         </div>
       </div>
     </header>
@@ -619,15 +618,23 @@
 
                   <div class="flex justify-between">
                     <span class="text-gray-700">Delivery</span>
-                    <span class="text-gray-900" *ngIf="IS_LOCAL_PICKUP!=1 || deliveryOption == 'delivery'">
+                    <span
+                      class="text-gray-900"
+                      *ngIf="
+                        IS_LOCAL_PICKUP != 1 || deliveryOption == 'delivery'
+                      "
+                    >
                       {{
               cartDetails?.cartDetails?.[0]?.["DATA"].NET_AMOUNT -
                 cartDetails?.cartDetails?.[0]?.["DATA"].TOTAL_DISCOUNT_AMOUNT
                 | currency : "USD" : "symbol" : "1.2-2"
                       }}
                     </span>
-                     <span class="text-gray-900" *ngIf="IS_LOCAL_PICKUP==1 && deliveryOption == 'pickup'">
-                       0
+                    <span
+                      class="text-gray-900"
+                      *ngIf="IS_LOCAL_PICKUP == 1 && deliveryOption == 'pickup'"
+                    >
+                      0
                     </span>
                   </div>
                 </div>
@@ -638,7 +645,10 @@
                   <span class="text-lg font-semibold text-red-700"
                     >Order Total</span
                   >
-                  <span class="text-lg font-semibold text-red-700" *ngIf="IS_LOCAL_PICKUP!=1 || deliveryOption == 'delivery'">
+                  <span
+                    class="text-lg font-semibold text-red-700"
+                    *ngIf="IS_LOCAL_PICKUP != 1 || deliveryOption == 'delivery'"
+                  >
                     {{
             selectedPrice -
               selectedDiscount +
@@ -648,13 +658,14 @@
               | currency : "USD"
                     }}
                   </span>
-                   <span class="text-lg font-semibold text-red-700" *ngIf="IS_LOCAL_PICKUP==1 && deliveryOption == 'pickup'">
+                  <span
+                    class="text-lg font-semibold text-red-700"
+                    *ngIf="IS_LOCAL_PICKUP == 1 && deliveryOption == 'pickup'"
+                  >
                     {{
-            selectedPrice -
-              selectedDiscount 
-
-              | number : "1.2-2"
-              | currency : "USD"
+                      selectedPrice - selectedDiscount
+                        | number : "1.2-2"
+                        | currency : "USD"
                     }}
                   </span>
                 </div>
@@ -675,7 +686,7 @@
                       type="radio"
                       name="deliveryOption"
                       [(ngModel)]="deliveryOption"
-                       (ngModelChange)="onDeliveryOptionChange($event)"
+                      (ngModelChange)="onDeliveryOptionChange($event)"
                       value="delivery"
                       class="text-green-600 focus:ring-green-500"
                     />
@@ -687,7 +698,7 @@
                       type="radio"
                       name="deliveryOption"
                       [(ngModel)]="deliveryOption"
-                       (ngModelChange)="onDeliveryOptionChange($event)"
+                      (ngModelChange)="onDeliveryOptionChange($event)"
                       value="pickup"
                       class="text-green-600 focus:ring-green-500"
                     />
@@ -752,13 +763,9 @@
                       <div class="text-xs text-gray-600">
                         {{ location.LOCALITY }}
                       </div>
-                      <div
-                        
-                        class="text-[11px] text-gray-500 mt-0.5 italic"
-                      >
-                        {{ location.CITY_NAME }} {{location.STATE_NAME}} {{location.COUNTRY_NAME}}
-
-
+                      <div class="text-[11px] text-gray-500 mt-0.5 italic">
+                        {{ location.CITY_NAME }} {{ location.STATE_NAME }}
+                        {{ location.COUNTRY_NAME }}
                       </div>
                     </div>
                   </div>
@@ -1383,44 +1390,47 @@
                           />
 
                           <button
-  *ngIf="addressForm.EMAIL_ID"
-  type="button"
-  class="px-4 py-2 bg-[#5a8f69] hover:bg-green-800 rounded-r-md text-white disabled:opacity-50 text-sm font-medium transition-colors whitespace-nowrap flex items-center justify-center gap-2"
-  (click)="verifyEmail()"
-  [disabled]="
-    !isEmailValid() ||
-    verificationStatus == 'verified' ||
-    loadingButton
-  "
->
-  <ng-container *ngIf="!loadingButton">
-    {{ verificationStatus === 'verified' ? '✓ Verified' : 'Verify' }}
-  </ng-container>
-  <ng-container *ngIf="loadingButton">
-    <svg
-      class="animate-spin h-4 w-4 text-white"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <circle
-        class="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        stroke-width="4"
-      ></circle>
-      <path
-        class="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"
-      ></path>
-    </svg>
-    <span>Verifying...</span>
-  </ng-container>
-</button>
-
+                            *ngIf="addressForm.EMAIL_ID"
+                            type="button"
+                            class="px-4 py-2 bg-[#5a8f69] hover:bg-green-800 rounded-r-md text-white disabled:opacity-50 text-sm font-medium transition-colors whitespace-nowrap flex items-center justify-center gap-2"
+                            (click)="verifyEmail()"
+                            [disabled]="
+                              !isEmailValid() ||
+                              verificationStatus == 'verified' ||
+                              loadingButton
+                            "
+                          >
+                            <ng-container *ngIf="!loadingButton">
+                              {{
+                                verificationStatus === "verified"
+                                  ? "✓ Verified"
+                                  : "Verify"
+                              }}
+                            </ng-container>
+                            <ng-container *ngIf="loadingButton">
+                              <svg
+                                class="animate-spin h-4 w-4 text-white"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                              >
+                                <circle
+                                  class="opacity-25"
+                                  cx="12"
+                                  cy="12"
+                                  r="10"
+                                  stroke="currentColor"
+                                  stroke-width="4"
+                                ></circle>
+                                <path
+                                  class="opacity-75"
+                                  fill="currentColor"
+                                  d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"
+                                ></path>
+                              </svg>
+                              <span>Verifying...</span>
+                            </ng-container>
+                          </button>
                         </div>
 
                         <small
@@ -2083,15 +2093,21 @@
 
                 <div class="flex justify-between">
                   <span class="text-gray-700">Shipping & handling:</span>
-                  <span class="text-gray-900" *ngIf="IS_LOCAL_PICKUP!=1 || deliveryOption == 'delivery'">
+                  <span
+                    class="text-gray-900"
+                    *ngIf="IS_LOCAL_PICKUP != 1 || deliveryOption == 'delivery'"
+                  >
                     {{
                       cartDetails?.cartDetails?.[0]?.["DATA"].NET_AMOUNT -
                         cartDetails?.cartDetails?.[0]?.["DATA"].TOTAL_DISCOUNT_AMOUNT
                         | currency : "USD" : "symbol" : "1.2-2"
                     }}
                   </span>
-                   <span class="text-gray-900" *ngIf="IS_LOCAL_PICKUP==1 && deliveryOption == 'pickup'">
-                      0
+                  <span
+                    class="text-gray-900"
+                    *ngIf="IS_LOCAL_PICKUP == 1 && deliveryOption == 'pickup'"
+                  >
+                    0
                   </span>
                 </div>
               </div>
@@ -2103,7 +2119,10 @@
                   Order total:
                 </span>
 
-                <span class="text-lg font-semibold text-red-700" *ngIf="IS_LOCAL_PICKUP!=1 || deliveryOption == 'delivery'">
+                <span
+                  class="text-lg font-semibold text-red-700"
+                  *ngIf="IS_LOCAL_PICKUP != 1 || deliveryOption == 'delivery'"
+                >
                   {{
                     selectedPrice -
                       selectedDiscount +
@@ -2114,10 +2133,12 @@
                       | currency : "USD"
                   }}
                 </span>
-                 <span class="text-lg font-semibold text-red-700" *ngIf="IS_LOCAL_PICKUP==1 && deliveryOption == 'pickup'">
+                <span
+                  class="text-lg font-semibold text-red-700"
+                  *ngIf="IS_LOCAL_PICKUP == 1 && deliveryOption == 'pickup'"
+                >
                   {{
-                    selectedPrice -
-                      selectedDiscount
+                    selectedPrice - selectedDiscount
                       | number : "1.2-2"
                       | currency : "USD"
                   }}
@@ -2170,24 +2191,23 @@
 
     <form (ngSubmit)="VerifyOTP()" class="otp-form">
       <div class="otp-input-group">
-       <div class="flex gap-2 justify-center mt-4">
-  <input
-    *ngFor="let i of [0, 1, 2, 3]; let last = last"
-    class="otp-input w-10 h-10 text-center border border-gray-300 rounded-md focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
-    type="text"
-    inputmode="numeric"
-    pattern="[0-9]*"
-    maxlength="1"
-    [(ngModel)]="otp[i]"
-    [name]="'otp-' + i"
-    (keydown)="moveToNext($event, i)"
-    (input)="onOtpInput($event, i)"
-    (paste)="handlePaste($event)"
-    required
-    autocomplete="off"
-  />
-</div>
-
+        <div class="flex gap-2 justify-center mt-4">
+          <input
+            *ngFor="let i of [0, 1, 2, 3]; let last = last"
+            class="otp-input w-10 h-10 text-center border border-gray-300 rounded-md focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+            type="text"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            maxlength="1"
+            [(ngModel)]="otp[i]"
+            [name]="'otp-' + i"
+            (keydown)="moveToNext($event, i)"
+            (input)="onOtpInput($event, i)"
+            (paste)="handlePaste($event)"
+            required
+            autocomplete="off"
+          />
+        </div>
       </div>
 
       <div class="timer-section">
@@ -2856,7 +2876,7 @@
       </ng-container>
       <ng-template #payText>
         Pay &nbsp;
-        <span *ngIf="IS_LOCAL_PICKUP!=1 || deliveryOption == 'delivery'">
+        <span *ngIf="IS_LOCAL_PICKUP != 1 || deliveryOption == 'delivery'">
           {{
             selectedPrice -
               selectedDiscount +
@@ -2866,10 +2886,9 @@
               | currency : "USD"
           }}
         </span>
-         <span *ngIf="IS_LOCAL_PICKUP==1 && deliveryOption == 'pickup'">
+        <span *ngIf="IS_LOCAL_PICKUP == 1 && deliveryOption == 'pickup'">
           {{
-            selectedPrice -
-              selectedDiscount
+            selectedPrice - selectedDiscount
               | number : "1.2-2"
               | currency : "USD"
           }}
@@ -2937,18 +2956,26 @@
 
       <div class="flex justify-between gap-4">
         <span class="font-semibold text-green-600">Total Amount</span>
-        <span class="text-green-600 font-semibold" *ngIf="IS_LOCAL_PICKUP!=1 || deliveryOption == 'delivery'">{{
-          (cartDetails.cartDetails[0].NET_AMOUNT
-            ? cartDetails.cartDetails[0].NET_AMOUNT
-            : 0
-          ) | currency : "USD" : "symbol" : "1.2-2"
-        }}</span>
-         <span class="text-green-600 font-semibold" *ngIf="IS_LOCAL_PICKUP==1 && deliveryOption == 'pickup'">{{
-          (cartDetails.cartDetails[0].TOTAL_PRICE
-            ? cartDetails.cartDetails[0].TOTAL_PRICE
-            : 0
-          ) | currency : "USD" : "symbol" : "1.2-2"
-        }}</span>
+        <span
+          class="text-green-600 font-semibold"
+          *ngIf="IS_LOCAL_PICKUP != 1 || deliveryOption == 'delivery'"
+          >{{
+            (cartDetails.cartDetails[0].NET_AMOUNT
+              ? cartDetails.cartDetails[0].NET_AMOUNT
+              : 0
+            ) | currency : "USD" : "symbol" : "1.2-2"
+          }}</span
+        >
+        <span
+          class="text-green-600 font-semibold"
+          *ngIf="IS_LOCAL_PICKUP == 1 && deliveryOption == 'pickup'"
+          >{{
+            (cartDetails.cartDetails[0].TOTAL_PRICE
+              ? cartDetails.cartDetails[0].TOTAL_PRICE
+              : 0
+            ) | currency : "USD" : "symbol" : "1.2-2"
+          }}</span
+        >
       </div>
     </div>
     <div class="mt-4 text-right">

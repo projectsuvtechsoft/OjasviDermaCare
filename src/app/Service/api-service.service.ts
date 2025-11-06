@@ -57,12 +57,12 @@ export class ApiServiceService {
   // commonapplicationkey = '26lLNSmaKlcFziHH';
 
   //Testing
-  // commonapikey = 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY';
-  // commonapplicationkey = 'awlcQRwoZxAJQm7b';
+  commonapikey = 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY';
+  commonapplicationkey = 'awlcQRwoZxAJQm7b';
 
   //Live
-  commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
-    commonapplicationkey = '26lLNSmaKlcFziHH';
+  // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
+  //   commonapplicationkey = '26lLNSmaKlcFziHH';
   // live ojasvi
   //   APPLICATION_KEY = '26lLNSmaKlcFziHH'
   // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla'

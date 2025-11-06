@@ -156,7 +156,7 @@
               [ngClass]="{
                 'bg-green-500':
                   cartDetails.cartDetails[0]
-                    .ACTUAL_PREPARE_PACKAGING_DATETIME &&
+                    .ACTUAL_PREPARE_PACKAGING_DATETIME || cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME &&
                   !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
                 'bg-yellow-500':
                   cartDetails.cartDetails[0].ORDER_CONFIRMED_DATETIME &&

@@ -91,16 +91,16 @@ export class CheckoutComponent {
     STATE_NAME: '',
     LANDMARK: '',
     LOCALITY: '',
-    ADDRESS_TYPE: 'Residential',
+    ADDRESS_TYPE: 'R',
     AREA: '',
     IS_DEFAULT: false,
     IS_DEFUALT_ADDRESS: false,
     SESSION_KEY: '',
     COUNTRY_CODE: '+1',
-    CITY_ID: '',
-    STATE_ID: '',
-    COUNTRY_ID: '',
-    PICKUP_LOCATION_ID: '',
+    CITY_ID: 0,
+    STATE_ID: 0,
+    COUNTRY_ID: 0,
+    PICKUP_LOCATION_ID: 0,
   };
 
   countryList: any[] = [];
@@ -1119,7 +1119,7 @@ export class CheckoutComponent {
 
     try {
       const payments = await (window as any).Square.payments(
-        'sq0idp-MZsV8XmKikjtR3cQ_FqOXw',
+        'sandbox-sq0idb-rV2VaHliz7OXmsejGzJq4Q',
         ''
       );
       this.card = await payments.card();
