@@ -1119,7 +1119,7 @@ export class CheckoutComponent {
 
     try {
       const payments = await (window as any).Square.payments(
-        'sandbox-sq0idb-rV2VaHliz7OXmsejGzJq4Q',
+        'sq0idp-MZsV8XmKikjtR3cQ_FqOXw',
         ''
       );
       this.card = await payments.card();
