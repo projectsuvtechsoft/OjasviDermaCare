@@ -540,7 +540,7 @@
                             ? "Packaging"
                             : order.ORDER_STATUS === "D" ||
                               order.ORDER_STATUS === "DD"
-                            ? "Dispatched"
+                            ? order.ORDER_STATUS === "D" ? "Preparing for dispatch": "Dispatched"
                             : order.ORDER_STATUS === "OD"
                             ? "Delivered"
                             : order.ORDER_STATUS === "OC"
@@ -2610,7 +2610,7 @@
 
                   <div
                     class="timeline-step"
-                    [class.active]="order.ACTUAL_PREPARE_PACKAGING_DATETIME"
+                    [class.active]="order.ACTUAL_PREPARE_PACKAGING_DATETIME || order.EXPECTED_DISPATCH_DATETIME"
                   >
                     <div class="circle">3</div>
                     <div class="line"></div>
@@ -2655,8 +2655,8 @@
                   <div class="detail-item">
                     <div class="status-header">Packaging Done</div>
                     <small class="status-subtitle">{{
-                      order.ACTUAL_PREPARE_PACKAGING_DATETIME
-                        ? (order.ACTUAL_PREPARE_PACKAGING_DATETIME
+                      order.ACTUAL_PREPARE_PACKAGING_DATETIME || order.EXPECTED_DISPATCH_DATETIME
+                        ? (order.ACTUAL_PREPARE_PACKAGING_DATETIME || order.EXPECTED_DISPATCH_DATETIME
                           | date : "dd-MM-yyyy hh:mm:a")
                         : "Pending"
                     }}</small>

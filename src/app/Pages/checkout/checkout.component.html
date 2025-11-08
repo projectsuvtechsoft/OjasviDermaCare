@@ -2098,8 +2098,8 @@
                     *ngIf="IS_LOCAL_PICKUP != 1 || deliveryOption == 'delivery'"
                   >
                     {{
-                      cartDetails?.cartDetails?.[0]?.["DATA"].NET_AMOUNT -
-                        cartDetails?.cartDetails?.[0]?.["DATA"].TOTAL_DISCOUNT_AMOUNT
+                      cartDetails?.cartDetails?.[0]?.["DATA"]?.NET_AMOUNT -
+                        cartDetails?.cartDetails?.[0]?.["DATA"]?.TOTAL_DISCOUNT_AMOUNT
                         | currency : "USD" : "symbol" : "1.2-2"
                     }}
                   </span>
@@ -2126,9 +2126,8 @@
                   {{
                     selectedPrice -
                       selectedDiscount +
-                      (cartDetails?.cartDetails?.[0]?.["DATA"].NET_AMOUNT -
-                        cartDetails?.cartDetails?.[0]?.["DATA"]
-                          .TOTAL_DISCOUNT_AMOUNT)
+                      (cartDetails?.cartDetails?.[0]?.["DATA"]?.NET_AMOUNT -
+                        cartDetails?.cartDetails?.[0]?.["DATA"]?.TOTAL_DISCOUNT_AMOUNT)
                       | number : "1.2-2"
                       | currency : "USD"
                   }}
@@ -2823,7 +2822,7 @@
     </div>
   </div> -->
 <!-- </div> -->
-<div
+<!-- <div
   *ngIf="showPaymentModal"
   class="fixed inset-0 flex items-center justify-center bg-black/50"
   style="z-index: 1001"
@@ -2896,7 +2895,58 @@
       </ng-template>
     </button>
   </div>
+</div> -->
+<div
+  *ngIf="showPaymentModal"
+  class="fixed inset-0 z-[1001] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+  (click)="closePaymentModal()"
+>
+  <div
+    class="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] flex flex-col relative"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Header -->
+    <div class="flex justify-between items-center border-b p-4">
+      <h3 class="text-xl font-semibold text-gray-800 flex items-center gap-2">
+        <img
+          src="https://www.paypalobjects.com/webstatic/icon/pp258.png"
+          alt="PayPal"
+          class="h-6 w-6"
+        />
+        Pay with PayPal
+      </h3>
+      <button
+        class="text-gray-400 hover:text-gray-600 transition"
+        (click)="closePaymentModal()"
+      >
+        ✕
+      </button>
+    </div>
+
+    <!-- Scrollable PayPal container -->
+    <div class="flex-1 overflow-y-auto px-6 py-4">
+      <div id="paypal-container" class="flex justify-center"></div>
+
+      <div class="mt-6 text-center text-sm text-gray-500">
+        <p>Secure sandbox checkout — no real money involved.</p>
+        <p class="mt-1 text-gray-400">Test mode active</p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="border-t p-4 flex justify-center">
+      <button
+        (click)="closePaymentModal()"
+        class="px-6 py-2 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
 </div>
+
+
+
 <!-- <div id="card-container" class="my-4"></div> -->
 
 <div

@@ -1902,4 +1902,15 @@ select::-ms-expand {
 select {
   transform-origin: top center !important;
 }
+/* Optional: Make scroll look nice in modal */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #aaa;
+}
 

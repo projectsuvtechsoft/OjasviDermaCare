@@ -11,7 +11,8 @@ import {
 } from '@angular/core';
 import { ApiServiceService } from 'src/app/Service/api-service.service';
 import { CommonFunctionService } from 'src/app/Service/CommonFunctionService';
-declare var Razorpay: any;
+// declare var Razorpay: any;
+declare var paypal: any;
 import { ToastrService } from 'ngx-toastr';
 import { DatePipe } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -196,12 +197,12 @@ export class CheckoutComponent {
 
   getImageArray(product: any): string[] {
     try {
-      const images = JSON.parse(product.PHOTO_URL);
+      const images = JSON.parse(product?.PHOTO_URL);
       // console.log(images,'images')
       // console.log(this.imageIndices,'imagesIndices')
       return images.map((img: any) => img);
     } catch (e) {
-      console.error('Invalid image format', e);
+      // console.error('Invalid image format', e);
       return [];
     }
   }
@@ -325,6 +326,7 @@ export class CheckoutComponent {
   fetchSavedAddresses() {
     let euid = sessionStorage.getItem('userId');
     let duid = euid ? this.commonFunction.decryptdata(euid) : null;
+    this.cartDetails.cartDetails = this.cartService.getCartItems();
     if (this.userId || duid) {
       var filter = ` AND CUST_ID = ${this.userId || duid}`;
     } else {
@@ -370,7 +372,8 @@ export class CheckoutComponent {
           this.selectedAddress =
             this.savedAddresses.find((a) => a.IS_DEFAULT) ||
             this.savedAddresses[0];
-           this.IS_LOCAL_PICKUP=this.selectedAddress?.IS_LOCAL_PICKUP
+
+          this.IS_LOCAL_PICKUP = this.selectedAddress?.IS_LOCAL_PICKUP;
           // console.log(this.selectedAddress,'Default selected')
           if (
             this.selectedAddress &&
@@ -396,6 +399,8 @@ export class CheckoutComponent {
             var CART_ITEM_ID = this.cartDetails.cartDetails[0].ID;
             var COUNTRY_NAME = this.addressForm.COUNTRY_NAME;
             var ADDRESS_ID = this.addressForm.ID;
+            this.cartDetails.cartDetails = this.cartService.getCartItems();
+            this.cartId = this.cartDetails?.cartDetails[0]?.CART_ID || '';
             this.cartDetails.cartDetails[0]['COUNTRY_ID'] = COUNTRY_NAME;
             this.cartDetails.cartDetails[0]['ADDRESS_ID'] = ADDRESS_ID;
             this.cartDetails.cartDetails[0]['CART_ID'] = CART_ID;
@@ -445,7 +450,7 @@ export class CheckoutComponent {
         this.getCountryFromID(address.COUNTRY_NAME)
       ); // Update sessionStorage
       // Update sessionStorage
-      this.IS_LOCAL_PICKUP=address?.IS_LOCAL_PICKUP
+      this.IS_LOCAL_PICKUP = address?.IS_LOCAL_PICKUP;
       sessionStorage.setItem('pincode', String(address.PINCODE));
       var CART_ID = this.cartDetails.cartDetails[0].CART_ID;
       var CART_ITEM_ID = this.cartDetails.cartDetails[0].ID;
@@ -961,140 +966,140 @@ export class CheckoutComponent {
   card: any;
   showPaymentModal = false;
   selectedAddress: any = null;
-  proceedToPayment() {
-    let userID=sessionStorage.getItem('userId');
-    let decryptedUserID:any;
-    if(userID){
-       decryptedUserID = this.commonFunction.decryptdata(userID);
-    }
-    this.showOrderSummaryModal = false;
-    if (this.paymentConfiguration == '1') {
-      this.initiateSquarePayment(); // custom method to render Square card form
-      this.showPaymentModal = true;
-    } else {
-      const baseUrl = this.api.baseUrl;
-      const headers = new HttpHeaders({
-        'Content-Type': 'application/json',
-        applicationkey: this.api.commonapplicationkey,
-        apikey: this.api.commonapikey,
-        token: sessionStorage.getItem('token') || '',
-        supportkey: this.cookie.get('supportKey'),
-      });
-      this.http
-        .post(
-          baseUrl + 'web/cart/proceedToPaymentTesting',
-          {
-            amount:this.IS_LOCAL_PICKUP==1 && this.deliveryOption == 'pickup'?
-            (this.selectedPrice -
-                this.selectedDiscount) * 100 :
-              (this.selectedPrice -
-                this.selectedDiscount +
-                (this.cartDetails?.cartDetails?.[0]?.['DATA'].NET_AMOUNT -
-                  this.cartDetails?.cartDetails?.[0]?.['DATA']
-                    .TOTAL_DISCOUNT_AMOUNT)) *
-              100,
-            PAYMENT_MODE: 'O',
-            ADDRESS_ID: this.selectedAddress!.ID,
-            CART_ID: this.cartId,
-            CUSTOMER_ID: this.userId ? this.userId : decryptedUserID ? decryptedUserID : 0,
-            SESSION_KEY: this.SESSION_KEYS,
-            COUNTRY_NAME: this.selectedAddress.COUNTRY_NAME,
-            STATE_NAME: this.selectedAddress.STATE_NAME,
-            CITY_NAME: this.selectedAddress.CITY_NAME,
-            PINCODE: this.selectedAddress.PINCODE,
-            COUNTRY_CODE: this.selectedAddress.COUNTRY_CODE,
-            CLIENT_ID: 1,
-            IS_LOCAL_PICKUP:this.deliveryOption=='pickup'?this.selectedAddress?.IS_LOCAL_PICKUP:0, 
-            PICKUP_LOCATION_MASTER_ID:this.PICKUP_LOCATION_MASTER_ID, 
-            MOBILE_NO:this.selectedAddress.MOBILE_NO
-          },
-          {
-            headers,
-          }
-        )
-        .subscribe({
-          next: (response: any) => {
-            // const paymentKey = response.payment.id;
-            // const paymentStatus = 'S';
-            // const paymentDatetime = this.datePipe.transform(
-            //   new Date(),
-            //   'yyyy-MM-dd HH:mm:ss'
-            // );
-            if (response.code == 200) {
-              this.toastr.success('Payment successful!', 'Success');
-              this.cartDetails.cartDetails[0]['INVOICE_NUMBER'] =
-                response.invoiceNumber;
+  // proceedToPayment() {
+  //   let userID=sessionStorage.getItem('userId');
+  //   let decryptedUserID:any;
+  //   if(userID){
+  //      decryptedUserID = this.commonFunction.decryptdata(userID);
+  //   }
+  //   this.showOrderSummaryModal = false;
+  //   if (this.paymentConfiguration == '1') {
+  //     this.initiateSquarePayment(); // custom method to render Square card form
+  //     this.showPaymentModal = true;
+  //   } else {
+  //     const baseUrl = this.api.baseUrl;
+  //     const headers = new HttpHeaders({
+  //       'Content-Type': 'application/json',
+  //       applicationkey: this.api.commonapplicationkey,
+  //       apikey: this.api.commonapikey,
+  //       token: sessionStorage.getItem('token') || '',
+  //       supportkey: this.cookie.get('supportKey'),
+  //     });
+  //     this.http
+  //       .post(
+  //         baseUrl + 'web/cart/proceedToPaymentTesting',
+  //         {
+  //           amount:this.IS_LOCAL_PICKUP==1 && this.deliveryOption == 'pickup'?
+  //           (this.selectedPrice -
+  //               this.selectedDiscount) * 100 :
+  //             (this.selectedPrice -
+  //               this.selectedDiscount +
+  //               (this.cartDetails?.cartDetails?.[0]?.['DATA'].NET_AMOUNT -
+  //                 this.cartDetails?.cartDetails?.[0]?.['DATA']
+  //                   .TOTAL_DISCOUNT_AMOUNT)) *
+  //             100,
+  //           PAYMENT_MODE: 'O',
+  //           ADDRESS_ID: this.selectedAddress!.ID,
+  //           CART_ID: this.cartId,
+  //           CUSTOMER_ID: this.userId ? Number(this.userId) : decryptedUserID ? Number(decryptedUserID) : 0,
+  //           SESSION_KEY: this.SESSION_KEYS,
+  //           COUNTRY_NAME: this.selectedAddress.COUNTRY_NAME,
+  //           STATE_NAME: this.selectedAddress.STATE_NAME,
+  //           CITY_NAME: this.selectedAddress.CITY_NAME,
+  //           PINCODE: this.selectedAddress.PINCODE,
+  //           COUNTRY_CODE: this.selectedAddress.COUNTRY_CODE,
+  //           CLIENT_ID: 1,
+  //           IS_LOCAL_PICKUP:this.deliveryOption=='pickup'?this.selectedAddress?.IS_LOCAL_PICKUP:0,
+  //           PICKUP_LOCATION_MASTER_ID:this.PICKUP_LOCATION_MASTER_ID,
+  //           MOBILE_NO:this.selectedAddress.MOBILE_NO
+  //         },
+  //         {
+  //           headers,
+  //         }
+  //       )
+  //       .subscribe({
+  //         next: (response: any) => {
+  //           // const paymentKey = response.payment.id;
+  //           // const paymentStatus = 'S';
+  //           // const paymentDatetime = this.datePipe.transform(
+  //           //   new Date(),
+  //           //   'yyyy-MM-dd HH:mm:ss'
+  //           // );
+  //           if (response.code == 200) {
+  //             this.toastr.success('Payment successful!', 'Success');
+  //             this.cartDetails.cartDetails[0]['INVOICE_NUMBER'] =
+  //               response.invoiceNumber;
 
-              var redirectionOrderId = response.order_id;
-              this.currentStep = 4;
-              // this.closePaymentModal();
-              // this.orderPlaced.emit(true);
-              // this.visibleChange.emit(false);
-              this.isProcessingPayment = false;
+  //             var redirectionOrderId = response.order_id;
+  //             this.currentStep = 4;
+  //             // this.closePaymentModal();
+  //             // this.orderPlaced.emit(true);
+  //             // this.visibleChange.emit(false);
+  //             this.isProcessingPayment = false;
 
-              this.showPaymentModal = false;
-              // this.showReceiptModal = true;
+  //             this.showPaymentModal = false;
+  //             // this.showReceiptModal = true;
 
-              this.router
-                .navigate(['order'], {
-                  queryParams: { orderId: redirectionOrderId },
-                })
-                .then(() => {
-                  this.addressDrawerOpen = false;
-                  this.cartService.cartItems = [];
-                  this.cartService.cartUpdated.next(this.cartService.cartItems);
-                  this.cartService.updateCartCount();
-                });
-              setTimeout(() => {
-                this.enableDownload = true;
-              }, 5000);
-              // this.paymentSuccessModalVisible = true;
-            } else {
-              this.toastr.error('Payment failed!', 'Error');
-              this.isProcessingPayment = false;
-            }
-            // console.log(response.body);
+  //             this.router
+  //               .navigate(['order'], {
+  //                 queryParams: { orderId: redirectionOrderId },
+  //               })
+  //               .then(() => {
+  //                 this.addressDrawerOpen = false;
+  //                 this.cartService.cartItems = [];
+  //                 this.cartService.cartUpdated.next(this.cartService.cartItems);
+  //                 this.cartService.updateCartCount();
+  //               });
+  //             setTimeout(() => {
+  //               this.enableDownload = true;
+  //             }, 5000);
+  //             // this.paymentSuccessModalVisible = true;
+  //           } else {
+  //             this.toastr.error('Payment failed!', 'Error');
+  //             this.isProcessingPayment = false;
+  //           }
+  //           // console.log(response.body);
 
-            // this.api
-            //   .proceedToCheckout(
-            //     'S',
-            //     this.selectedAddress!.ID,
-            //     this.cartId,
-            //     this.userId,
-            //     paymentKey,
-            //     paymentStatus,
-            //     paymentDatetime,
-            //     1
-            //   )
-            //   .subscribe({
-            //     next: (res) => {
-            //       if (res.code === 200) {
-            //         this.toastr.success(
-            //           'Order placed successfully!',
-            //           'Success'
-            //         );
-            //         this.closeAddressDrawer();
-            //         this.closePaymentModal();
-            //       } else {
-            //         this.toastr.error(
-            //           'Failed to place order: ' + res.message,
-            //           'Error'
-            //         );
-            //       }
-            //     },
-            //     error: (err) => {
-            //       this.toastr.error('Checkout failed after payment', 'Error');
-            //     },
-            //   });
-          },
-          error: () => {
-            this.isProcessingPayment = false;
+  //           // this.api
+  //           //   .proceedToCheckout(
+  //           //     'S',
+  //           //     this.selectedAddress!.ID,
+  //           //     this.cartId,
+  //           //     this.userId,
+  //           //     paymentKey,
+  //           //     paymentStatus,
+  //           //     paymentDatetime,
+  //           //     1
+  //           //   )
+  //           //   .subscribe({
+  //           //     next: (res) => {
+  //           //       if (res.code === 200) {
+  //           //         this.toastr.success(
+  //           //           'Order placed successfully!',
+  //           //           'Success'
+  //           //         );
+  //           //         this.closeAddressDrawer();
+  //           //         this.closePaymentModal();
+  //           //       } else {
+  //           //         this.toastr.error(
+  //           //           'Failed to place order: ' + res.message,
+  //           //           'Error'
+  //           //         );
+  //           //       }
+  //           //     },
+  //           //     error: (err) => {
+  //           //       this.toastr.error('Checkout failed after payment', 'Error');
+  //           //     },
+  //           //   });
+  //         },
+  //         error: () => {
+  //           this.isProcessingPayment = false;
 
-            this.toastr.error('Payment failed. Please try again.', 'Error');
-          },
-        });
-    }
-  }
+  //           this.toastr.error('Payment failed. Please try again.', 'Error');
+  //         },
+  //       });
+  //   }
+  // }
   paymentSuccessModalVisible: boolean = false;
 
   // processPaymentWithToken() {
@@ -1139,10 +1144,10 @@ export class CheckoutComponent {
   isProcessingPayment = false;
   enableDownload = false;
   async processPaymentWithToken() {
-     let userID=sessionStorage.getItem('userId');
-    let decryptedUserID:any;
-    if(userID){
-       decryptedUserID = this.commonFunction.decryptdata(userID);
+    let userID = sessionStorage.getItem('userId');
+    let decryptedUserID: any;
+    if (userID) {
+      decryptedUserID = this.commonFunction.decryptdata(userID);
     }
     this.isProcessingPayment = true;
     if (!this.selectedAddress) {
@@ -1181,29 +1186,36 @@ export class CheckoutComponent {
           baseUrl + 'web/cart/proceedToPayment',
           {
             nonce: token,
-            amount:this.IS_LOCAL_PICKUP==1 && this.deliveryOption == 'pickup'?
-            (this.selectedPrice -
-                this.selectedDiscount) * 100 :
-              (this.selectedPrice -
-                this.selectedDiscount +
-                (this.cartDetails?.cartDetails?.[0]?.['DATA'].NET_AMOUNT -
-                  this.cartDetails?.cartDetails?.[0]?.['DATA']
-                    .TOTAL_DISCOUNT_AMOUNT)) *
-              100,
+            amount:
+              this.IS_LOCAL_PICKUP == 1 && this.deliveryOption == 'pickup'
+                ? (this.selectedPrice - this.selectedDiscount) * 100
+                : (this.selectedPrice -
+                    this.selectedDiscount +
+                    (this.cartDetails?.cartDetails?.[0]?.['DATA'].NET_AMOUNT -
+                      this.cartDetails?.cartDetails?.[0]?.['DATA']
+                        .TOTAL_DISCOUNT_AMOUNT)) *
+                  100,
             PAYMENT_MODE: 'O',
             ADDRESS_ID: this.selectedAddress!.ID,
             CART_ID: this.cartId,
-            CUSTOMER_ID: this.userId ? this.userId : decryptedUserID ? decryptedUserID : 0,
+            CUSTOMER_ID: this.userId
+              ? Number(this.userId)
+              : decryptedUserID
+              ? Number(decryptedUserID)
+              : 0,
             SESSION_KEY: this.SESSION_KEYS,
             COUNTRY_NAME: this.selectedAddress.COUNTRY_NAME,
             STATE_NAME: this.selectedAddress.STATE_NAME,
             CITY_NAME: this.selectedAddress.CITY_NAME,
             PINCODE: this.selectedAddress.PINCODE,
             COUNTRY_CODE: this.selectedAddress.COUNTRY_CODE,
-            
-            IS_LOCAL_PICKUP:this.deliveryOption=='pickup'?this.selectedAddress?.IS_LOCAL_PICKUP:0, 
-            PICKUP_LOCATION_MASTER_ID:this.PICKUP_LOCATION_MASTER_ID, 
-            MOBILE_NO:this.selectedAddress.MOBILE_NO,
+
+            IS_LOCAL_PICKUP:
+              this.deliveryOption == 'pickup'
+                ? this.selectedAddress?.IS_LOCAL_PICKUP
+                : 0,
+            PICKUP_LOCATION_MASTER_ID: this.PICKUP_LOCATION_MASTER_ID,
+            MOBILE_NO: this.selectedAddress.MOBILE_NO,
             CLIENT_ID: 1,
           },
           {
@@ -1348,14 +1360,18 @@ export class CheckoutComponent {
     this.visibleChange.emit(false); // Notify parent to close drawer
     // Optionally: show cart drawer if controlled separately
   }
-  IS_LOCAL_PICKUP:any
-  PICKUP_LOCATION_MASTER_ID:any
-  MOBILE_NO :any
+  IS_LOCAL_PICKUP: any;
+  PICKUP_LOCATION_MASTER_ID: any;
+  MOBILE_NO: any;
   steped() {
     this.currentStep = 3;
-    if(this.selectedAddress.IS_LOCAL_PICKUP==1 && this.deliveryOption == 'pickup' && !this.selectedPickupName){
-      this.toastr.error('Please select local pickup location')
-      return
+    if (
+      this.selectedAddress.IS_LOCAL_PICKUP == 1 &&
+      this.deliveryOption == 'pickup' &&
+      !this.selectedPickupName
+    ) {
+      this.toastr.error('Please select local pickup location');
+      return;
     }
     this.showOrderSummaryInDrawer = true;
     this.isStepActive('payment');
@@ -1747,12 +1763,11 @@ export class CheckoutComponent {
     // }
   }
   isStepActive(step: 'cart' | 'address' | 'payment'): boolean {
-  if (step === 'cart') return this.currentStep >= 1;
-  if (step === 'address') return this.currentStep >= 2;
-  if (step === 'payment') return this.currentStep >= 3;
-  return false;
-}
-
+    if (step === 'cart') return this.currentStep >= 1;
+    if (step === 'address') return this.currentStep >= 2;
+    if (step === 'payment') return this.currentStep >= 3;
+    return false;
+  }
 
   isEmailValid(): boolean {
     const email = this.addressForm.EMAIL_ID;
@@ -1767,13 +1782,13 @@ export class CheckoutComponent {
 
   verificationStatus: 'initial' | 'pending' | 'verified' | 'failed' = 'initial';
   // 2. The verification function
-  loadingButton=false
+  loadingButton = false;
   verifyEmail(): void {
     if (!this.isEmailValid()) {
       this.toastr.info('Please enter a valid email address before verifying.');
       return;
     }
-    this.loadingButton=true
+    this.loadingButton = true;
     this.verificationStatus = 'pending';
     // this.visible=true
     // --- REAL-WORLD SCENARIO: Call an API ---
@@ -1799,19 +1814,18 @@ export class CheckoutComponent {
       (res) => {
         if (res['code'] == 200) {
           this.toastr.success('Otp Sent Successfully');
-          this.loadingButton=false
+          this.loadingButton = false;
           this.startTimer();
           this.visible = true;
         } else {
           this.toastr.error('Failed to send otp');
           this.verificationStatus = 'failed';
-          this.loadingButton=false
-          
+          this.loadingButton = false;
         }
       },
       (err) => {
         this.verificationStatus = 'failed';
-        this.loadingButton=false
+        this.loadingButton = false;
       }
     );
   }
@@ -1890,15 +1904,18 @@ export class CheckoutComponent {
   //     this.loginforgot(content);
   //   }
   // }
-  allowOnlyNumbers(event: any,index:any) {
-   const input  = event.target as HTMLInputElement;;
-  const value = input.value.replace(/\D/g, ''); // Remove non-digits
-  input.value = value;
+  allowOnlyNumbers(event: any, index: any) {
+    const input = event.target as HTMLInputElement;
+    const value = input.value.replace(/\D/g, ''); // Remove non-digits
+    input.value = value;
 
-  if (value && index < this.otp.length - 1) {
-    const next = document.querySelectorAll<HTMLInputElement>('input[type=text]')[index + 1];
-    next?.focus();
-  }
+    if (value && index < this.otp.length - 1) {
+      const next =
+        document.querySelectorAll<HTMLInputElement>('input[type=text]')[
+          index + 1
+        ];
+      next?.focus();
+    }
   }
   // handlePaste(event: ClipboardEvent) {
   //   event.preventDefault();
@@ -1911,68 +1928,76 @@ export class CheckoutComponent {
   //   }
   // }
   onOtpInput(event: Event, index: number) {
-  const input = event.target as HTMLInputElement;
-  let value = input.value.replace(/\D/g, ''); // Remove non-digits
+    const input = event.target as HTMLInputElement;
+    let value = input.value.replace(/\D/g, ''); // Remove non-digits
 
-  // Allow only one digit per box
-  if (value.length > 1) {
-    value = value.charAt(value.length - 1);
-  }
-
-  input.value = value;
-  this.otp[index] = value;
-
-  // Move focus to next input if a digit is entered
-  if (value && index < this.otp.length - 1) {
-    const next = document.querySelectorAll<HTMLInputElement>('.otp-input')[index + 1];
-    next?.focus();
-  }
-
-  // Auto-submit if all digits entered
-  if (this.otp.join('').length === this.otp.length && !this.otp.includes('')) {
-    this.VerifyOTP();
-  }
-}
-
-moveToNext(event: KeyboardEvent, index: number) {
-  const inputs = document.querySelectorAll<HTMLInputElement>('.otp-input');
-
-  if (event.key === 'Backspace') {
-    if (!(inputs[index] as HTMLInputElement).value && index > 0) {
-      (inputs[index - 1] as HTMLInputElement).focus();
-    }
-  }
-
-  // Optional: handle arrow navigation
-  if (event.key === 'ArrowLeft' && index > 0) {
-    (inputs[index - 1] as HTMLInputElement).focus();
-  } else if (event.key === 'ArrowRight' && index < inputs.length - 1) {
-    (inputs[index + 1] as HTMLInputElement).focus();
-  }
-}
-
-handlePaste(event: ClipboardEvent) {
-  event.preventDefault();
-  const pastedData = event.clipboardData?.getData('text') || '';
-  const cleanData = pastedData.replace(/\D/g, '').slice(0, 4);
-
-  if (cleanData) {
-    for (let i = 0; i < 4; i++) {
-      this.otp[i] = cleanData[i] || '';
-      const input = document.querySelectorAll<HTMLInputElement>('.otp-input')[i];
-      (input as HTMLInputElement).value = this.otp[i] || '';
+    // Allow only one digit per box
+    if (value.length > 1) {
+      value = value.charAt(value.length - 1);
     }
 
-    // Focus last field
-    const lastInput = document.querySelectorAll<HTMLInputElement>('.otp-input')[cleanData.length - 1];
-    lastInput?.focus();
+    input.value = value;
+    this.otp[index] = value;
 
-    // Auto-submit if complete
-    if (cleanData.length === this.otp.length) {
+    // Move focus to next input if a digit is entered
+    if (value && index < this.otp.length - 1) {
+      const next =
+        document.querySelectorAll<HTMLInputElement>('.otp-input')[index + 1];
+      next?.focus();
+    }
+
+    // Auto-submit if all digits entered
+    if (
+      this.otp.join('').length === this.otp.length &&
+      !this.otp.includes('')
+    ) {
       this.VerifyOTP();
     }
   }
-}
+
+  moveToNext(event: KeyboardEvent, index: number) {
+    const inputs = document.querySelectorAll<HTMLInputElement>('.otp-input');
+
+    if (event.key === 'Backspace') {
+      if (!(inputs[index] as HTMLInputElement).value && index > 0) {
+        (inputs[index - 1] as HTMLInputElement).focus();
+      }
+    }
+
+    // Optional: handle arrow navigation
+    if (event.key === 'ArrowLeft' && index > 0) {
+      (inputs[index - 1] as HTMLInputElement).focus();
+    } else if (event.key === 'ArrowRight' && index < inputs.length - 1) {
+      (inputs[index + 1] as HTMLInputElement).focus();
+    }
+  }
+
+  handlePaste(event: ClipboardEvent) {
+    event.preventDefault();
+    const pastedData = event.clipboardData?.getData('text') || '';
+    const cleanData = pastedData.replace(/\D/g, '').slice(0, 4);
+
+    if (cleanData) {
+      for (let i = 0; i < 4; i++) {
+        this.otp[i] = cleanData[i] || '';
+        const input =
+          document.querySelectorAll<HTMLInputElement>('.otp-input')[i];
+        (input as HTMLInputElement).value = this.otp[i] || '';
+      }
+
+      // Focus last field
+      const lastInput =
+        document.querySelectorAll<HTMLInputElement>('.otp-input')[
+          cleanData.length - 1
+        ];
+      lastInput?.focus();
+
+      // Auto-submit if complete
+      if (cleanData.length === this.otp.length) {
+        this.VerifyOTP();
+      }
+    }
+  }
   // handleLoginEnterKey(content: any) {
   //   if (this.isloginSendOTP) {
   //   } else {
@@ -2613,7 +2638,7 @@ handlePaste(event: ClipboardEvent) {
     const p = this.pickupLocations.find(
       (loc) => loc.ID === this.selectedPickupLocation
     );
-    this.PICKUP_LOCATION_MASTER_ID=p?.ID
+    this.PICKUP_LOCATION_MASTER_ID = p?.ID;
     // this.IS_LOCAL_PICKUP=p?.IS_LOCAL_PICKUP
     return p ? p.ADDRESS : null;
   }
@@ -2628,14 +2653,13 @@ handlePaste(event: ClipboardEvent) {
     this.selectedPickupLocation = location.ID;
     this.pickupDropdownOpen = false;
   }
- onDeliveryOptionChange(event:any){
-  if(event=='pickup'){
-    this.getPickupLocationByCity(this.selectedAddress.CITY_ID)
+  onDeliveryOptionChange(event: any) {
+    if (event == 'pickup') {
+      this.getPickupLocationByCity(this.selectedAddress.CITY_ID);
+    } else {
+      this.selectedPickupLocation = null;
+    }
   }
-  else{
-    this.selectedPickupLocation=null
-  }
- }
 
   getPickupLocationByCity(cityID: any) {
     this.api
@@ -2654,4 +2678,162 @@ handlePaste(event: ClipboardEvent) {
         }
       });
   }
+  async proceedToPayment() {
+    let userID = sessionStorage.getItem('userId');
+    let decryptedUserID: any;
+    if (userID) {
+      decryptedUserID = this.commonFunction.decryptdata(userID);
+    }
+
+    this.showOrderSummaryModal = false;
+
+    // PayPal mode
+    if (this.paymentConfiguration === '1') {
+      // 2 = PayPal
+      this.initiatePayPalPayment();
+      this.showPaymentModal = true;
+    } else {
+      // Your existing non-PayPal logic (e.g. internal test payments)
+      this.callProceedToPaymentAPI(decryptedUserID);
+    }
+  }
+
+  /** ✅ Common function reused by PayPal and direct call **/
+  private callProceedToPaymentAPI(decryptedUserID: any) {
+    const baseUrl = this.api.baseUrl;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      applicationkey: this.api.commonapplicationkey,
+      apikey: this.api.commonapikey,
+      token: sessionStorage.getItem('token') || '',
+      supportkey: this.cookie.get('supportKey'),
+    });
+
+    this.http
+      .post(
+        baseUrl + 'web/cart/proceedToPaymentTesting',
+        {
+          amount:
+            this.IS_LOCAL_PICKUP == 1 && this.deliveryOption == 'pickup'
+              ? (this.selectedPrice - this.selectedDiscount) * 100
+              : (this.selectedPrice -
+                  this.selectedDiscount +
+                  (this.cartDetails?.cartDetails?.[0]?.['DATA'].NET_AMOUNT -
+                    this.cartDetails?.cartDetails?.[0]?.['DATA']
+                      .TOTAL_DISCOUNT_AMOUNT)) *
+                100,
+          PAYMENT_MODE: 'O',
+          ADDRESS_ID: this.selectedAddress!.ID,
+          CART_ID: this.cartId,
+          CUSTOMER_ID: this.userId
+            ? Number(this.userId)
+            : decryptedUserID
+            ? Number(decryptedUserID)
+            : 0,
+          SESSION_KEY: this.SESSION_KEYS,
+          COUNTRY_NAME: this.selectedAddress.COUNTRY_NAME,
+          STATE_NAME: this.selectedAddress.STATE_NAME,
+          CITY_NAME: this.selectedAddress.CITY_NAME,
+          PINCODE: this.selectedAddress.PINCODE,
+          COUNTRY_CODE: this.selectedAddress.COUNTRY_CODE,
+          CLIENT_ID: 1,
+          IS_LOCAL_PICKUP:
+            this.deliveryOption == 'pickup'
+              ? this.selectedAddress?.IS_LOCAL_PICKUP
+              : 0,
+          PICKUP_LOCATION_MASTER_ID: this.PICKUP_LOCATION_MASTER_ID,
+          MOBILE_NO: this.selectedAddress.MOBILE_NO,
+        },
+        { headers }
+      )
+      .subscribe({
+        next: (response: any) => {
+          if (response.code == 200) {
+            this.toastr.success('Payment successful!', 'Success');
+            this.navigateToOrder(response.order_id, response.invoiceNumber);
+          } else {
+            this.toastr.error('Payment failed!', 'Error');
+          }
+        },
+        error: () => {
+          this.toastr.error('Payment failed. Please try again.', 'Error');
+        },
+      });
+  }
+
+  /** ✅ Navigate and clean up after success **/
+  private navigateToOrder(orderId: string, invoiceNumber: string) {
+    this.cartDetails.cartDetails[0]['INVOICE_NUMBER'] = invoiceNumber;
+    this.currentStep = 4;
+    this.isProcessingPayment = false;
+    this.showPaymentModal = false;
+
+    this.router.navigate(['order'], { queryParams: { orderId } }).then(() => {
+      this.addressDrawerOpen = false;
+      this.cartService.cartItems = [];
+      this.cartService.cartUpdated.next(this.cartService.cartItems);
+      this.cartService.updateCartCount();
+    });
+
+    setTimeout(() => {
+      this.enableDownload = true;
+    }, 5000);
+  }
+  
+  async initiatePayPalPayment() {
+    if (!this.selectedAddress) {
+      this.toastr.error('Please select an address first.', 'Error');
+      return;
+    }
+
+    await this.delay(100); // Allow modal to render
+    const paypalContainer = document.getElementById('paypal-container');
+    if (!paypalContainer) return;
+
+    paypalContainer.innerHTML = ''; // clear old buttons
+
+    paypal
+      .Buttons({
+        style: {
+          layout: 'vertical',
+          color: 'gold',
+          shape: 'rect',
+          label: 'paypal',
+        },
+        createOrder: (data: any, actions: any) => {
+          const amount = this.IS_LOCAL_PICKUP==1 && this.deliveryOption == 'pickup'?
+            (this.selectedPrice -
+                this.selectedDiscount)  :
+              (this.selectedPrice -
+                this.selectedDiscount +
+                (this.cartDetails?.cartDetails?.[0]?.['DATA'].NET_AMOUNT -
+                  this.cartDetails?.cartDetails?.[0]?.['DATA']
+                    .TOTAL_DISCOUNT_AMOUNT))
+          ;
+
+          return actions.order.create({
+            purchase_units: [
+              {
+                description: 'Checkout Payment',
+                amount: { currency_code: 'USD', value: amount },
+              },
+            ],
+          });
+        },
+        onApprove: async (data: any, actions: any) => {
+          const order = await actions.order.capture();
+          console.log('Order approved:', order);
+          this.toastr.success('Payment successful!', 'Success');
+
+          // Optionally notify backend
+          this.callProceedToPaymentAPI(null);
+        },
+        onError: (err: any) => {
+          console.error('PayPal Checkout error:', err);
+          this.toastr.error('Payment failed!', 'Error');
+        },
+      })
+      .render('#paypal-container');
+  }
+  
 }

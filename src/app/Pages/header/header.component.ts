@@ -1203,10 +1203,10 @@ export class HeaderComponent {
                   // this.cartItems.forEach((data:any)=>{
                   //    this.cartService.addToCart(data)
                   // })
+                  // this.cartItems = this.cartService.getCartItems();
                   this.handleCartMigration(
                     successCode.data[0]['UserData'][0].ID
                   );
-                  this.cartItems = this.cartService.getCartItems();
                   this.updateTotals();
                   
                   this.isCheckoutVisible = true;
@@ -1263,7 +1263,7 @@ export class HeaderComponent {
   }
   private handleCartMigration(customerId: string): void {
     const cartItems = this.cartService.getCartItems();
-
+ 
     if (!cartItems || cartItems.length === 0) {
       // No items to migrate
       this.toastr.success('You have login Successfully!', 'success', {
@@ -1277,20 +1277,23 @@ export class HeaderComponent {
     // this.toastr.info('Migrating cart items...', '');
 
     // Call migration service
+     
     this.cartService
       .migrateSessionCartToCustomer(cartItems, customerId)
       .subscribe({
         next: (response) => {
           if (response.success) {
+           
             this.toastr.success(response.message, '');
 
             // Clear session cart indicators
             // Update UI with migrated cart
             // this.updateTotals();
             this.senddatatoCheckout = {
-              cartDetails: this.cartItems,
+              cartDetails: cartItems,
               subtotal: this.subtotal,
             };
+           
 
             this.toastr.success('You have login Successfully!', 'success', {
               positionClass: 'toast-center',

@@ -36,15 +36,15 @@ export class ApiServiceService {
   // commonimgUrl = 'https://ojasviadmin.uvtechsoft.com:9090/api/upload/';
 
   // ojasvi live
-  commoncode = 'https://admin.ojasvidermacare.com:9092';
-  commonimgUrl = 'https://admin.ojasvidermacare.com:9092/api/upload/';
+  // commoncode = 'https://admin.ojasvidermacare.com:9092';
+  // commonimgUrl = 'https://admin.ojasvidermacare.com:9092/api/upload/';
 
   // commoncode = 'https://h10rqczh-9878.inc1.devtunnels.ms';
   // commonimgUrl = 'https://h10rqczh-9878.inc1.devtunnels.ms/api/upload/';
 
   // pooja
-  // commoncode = 'https://h10rqczh-9092.inc1.devtunnels.ms';
-  // commonimgUrl = 'https://h10rqczh-9092.inc1.devtunnels.ms/api/upload/';
+  commoncode = 'https://h10rqczh-9092.inc1.devtunnels.ms';
+  commonimgUrl = 'https://h10rqczh-9092.inc1.devtunnels.ms/api/upload/';
 
   // commoncode = 'https://p8rhkmb7-9878.inc1.devtunnels.ms';
   // commonimgUrl = 'https://p8rhkmb7-9878.inc1.devtunnels.ms/api/upload/';
@@ -63,6 +63,7 @@ export class ApiServiceService {
   //Live
   // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
   //   commonapplicationkey = '26lLNSmaKlcFziHH';
+  
   // live ojasvi
   //   APPLICATION_KEY = '26lLNSmaKlcFziHH'
   // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla'
