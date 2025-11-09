@@ -2684,6 +2684,7 @@ export class CheckoutComponent {
     if (userID) {
       decryptedUserID = this.commonFunction.decryptdata(userID);
     }
+    // console.log('Proceeding to payment with user ID:', decryptedUserID);
 
     this.showOrderSummaryModal = false;
 
@@ -2711,7 +2712,7 @@ export class CheckoutComponent {
 
     this.http
       .post(
-        baseUrl + 'web/cart/proceedToPaymentTesting',
+        baseUrl + 'web/cart/proceedToPayment',
         {
           amount:
             this.IS_LOCAL_PICKUP == 1 && this.deliveryOption == 'pickup'
@@ -2743,6 +2744,7 @@ export class CheckoutComponent {
               : 0,
           PICKUP_LOCATION_MASTER_ID: this.PICKUP_LOCATION_MASTER_ID,
           MOBILE_NO: this.selectedAddress.MOBILE_NO,
+          paymentId: this.paymentId || ''
         },
         { headers }
       )
@@ -2779,7 +2781,7 @@ export class CheckoutComponent {
       this.enableDownload = true;
     }, 5000);
   }
-  
+  paymentId: string = '';
   async initiatePayPalPayment() {
     if (!this.selectedAddress) {
       this.toastr.error('Please select an address first.', 'Error');
@@ -2801,17 +2803,16 @@ export class CheckoutComponent {
           label: 'paypal',
         },
         createOrder: (data: any, actions: any) => {
-          const amount = this.IS_LOCAL_PICKUP==1 && this.deliveryOption == 'pickup'?
-            (this.selectedPrice -
-                this.selectedDiscount)  :
-              (this.selectedPrice -
+          const amount =
+            this.IS_LOCAL_PICKUP == 1 && this.deliveryOption == 'pickup'
+              ? this.selectedPrice - this.selectedDiscount
+              : this.selectedPrice -
                 this.selectedDiscount +
                 (this.cartDetails?.cartDetails?.[0]?.['DATA'].NET_AMOUNT -
                   this.cartDetails?.cartDetails?.[0]?.['DATA']
-                    .TOTAL_DISCOUNT_AMOUNT))
-          ;
-
+                    .TOTAL_DISCOUNT_AMOUNT);
           return actions.order.create({
+            intent: 'CAPTURE',
             purchase_units: [
               {
                 description: 'Checkout Payment',
@@ -2823,10 +2824,15 @@ export class CheckoutComponent {
         onApprove: async (data: any, actions: any) => {
           const order = await actions.order.capture();
           console.log('Order approved:', order);
-          this.toastr.success('Payment successful!', 'Success');
-
+          this.paymentId = order.purchase_units[0].payments.captures[0].id
+          // this.toastr.success('Payment successful!', 'Success');
+          let userID = sessionStorage.getItem('userId');
+          let decryptedUserID: any;
+          if (userID) {
+            decryptedUserID = this.commonFunction.decryptdata(userID);
+          }
           // Optionally notify backend
-          this.callProceedToPaymentAPI(null);
+          this.callProceedToPaymentAPI(decryptedUserID);
         },
         onError: (err: any) => {
           console.error('PayPal Checkout error:', err);
@@ -2835,5 +2841,4 @@ export class CheckoutComponent {
       })
       .render('#paypal-container');
   }
-  
 }
