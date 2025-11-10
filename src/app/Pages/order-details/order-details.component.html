@@ -48,9 +48,15 @@
             ></ng-container>
             <div class="flex items-start gap-2 w-2/3">
               <img
-                *ngIf="item.PHOTO_URL && item.PHOTO_URL.length"
+                *ngIf="item.PHOTO_URL && item.PHOTO_URL.length && !item?.VARIENT_IMAGE_URL?.trim()"
                 [src]="photoURL + item.PHOTO_URL[imageIndices[item.ID]]"
                 alt="{{ item.PRODUCT_NAME }}"
+                class="w-10 h-10 rounded-md object-cover border border-gray-200"
+              />
+                <img
+                *ngIf="item?.VARIENT_IMAGE_URL?.trim()"
+                [src]="vareintImageUrl + item.VARIENT_IMAGE_URL"
+                alt="{{ item.VARIENT_IMAGE_URL }}"
                 class="w-10 h-10 rounded-md object-cover border border-gray-200"
               />
               <div class="flex-grow leading-tight">

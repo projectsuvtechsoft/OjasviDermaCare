@@ -254,17 +254,21 @@ export class CartService {
     }
   }
   removeFromCartnotoast(productId: any): void {
-    const index = this.cartItems.findIndex((p) => p.ID === productId.ID);
+    const sessionCartItemsStr = sessionStorage.getItem('sessionCart');
+    const sessionCartItems = sessionCartItemsStr
+      ? JSON.parse(sessionCartItemsStr)
+      : [];
+    const index = sessionCartItems.findIndex((p: any) => p.ID === productId.ID);
     // console.log(this.cartItems[index],productId);
 
     if (index !== -1) {
       // }
-      this.currentProduct = this.cartItems[index];
+      this.currentProduct = sessionCartItems[index];
       if (this.currentProduct.CART_ID && this.currentProduct.CART_ITEM_ID) {
         this.removeItemforServerwithouttoast();
         this.cartUpdated.next(this.cartItems);
       } else {
-        this.cartItems.splice(index, 1);
+        sessionCartItems.splice(index, 1);
         this.currentProduct.CART_ID = productId.CART_ID;
         this.currentProduct.CART_ITEM_ID = productId.CART_ITEM_ID
           ? productId.CART_ITEM_ID
@@ -532,7 +536,9 @@ export class CartService {
       );
   }
   private removeItemforServerwithouttoast(): void {
-    this.userID = this.commonFunction.decryptdata(this.euserID);
+    const encryptedId=sessionStorage.getItem('userId')
+    const decryptedId=encryptedId?this.commonFunction.decryptdata(encryptedId):''
+    // this.userID = this.commonFunction.decryptdata(this.euserID);
     // if (!this.userID) return;
 
     const payload = {
@@ -562,7 +568,9 @@ export class CartService {
         (response: any) => {
           if (response.code === 200) {
             // this.toastr.info('Cart item removed successfully');
-            this.fetchCartFromServer(this.userID, this.etoken); // Refresh cart after removal
+            sessionStorage.removeItem('sessionCart');
+            this.fetchCartFromServer(decryptedId, this.etoken);
+             // Refresh cart after removal
           } else {
             // this.toastr.error('Failed to update cart:', '');
           }
@@ -679,7 +687,7 @@ export class CartService {
           // If only one item, we're done
           if (sessionCartItems.length === 1) {
             return of({
-              // success: true,
+              success: true,
               // message: 'Successfully migrated 1 item to your cart',
               migratedCount: 1,
               cartId: cartId,
@@ -721,7 +729,7 @@ export class CartService {
           // Execute all remaining additions in parallel
           return forkJoin(remainingOperations).pipe(
             map((results) => ({
-              // success: true,
+              success: true,
               // message: `Successfully migrated ${sessionCartItems.length} items to your cart`,
               migratedCount: sessionCartItems.length,
               cartId: cartId,
@@ -745,7 +753,7 @@ export class CartService {
         catchError((error) => {
           // console.error('Migration error on first item:', error);
           return of({
-            // success: false,
+            success: false,
             // message: 'Failed to migrate cart items',
             migratedCount: 0,
             error: error,

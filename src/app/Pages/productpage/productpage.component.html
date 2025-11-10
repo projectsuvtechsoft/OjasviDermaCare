@@ -114,7 +114,7 @@
         <!-- Thumbnail Navigation -->
         <div
           class="flex gap-2 mb-2 md:mb-3 px-3 md:px-0 overflow-x-auto pb-1 scrollbar-hide"
-          *ngIf="getImages(data).length > 0"
+          *ngIf="getImages(data).length > 0 && !convertToarrayVairents(data)"
         >
           <button
             *ngFor="let img of getImages(data); let idx = index"
@@ -130,17 +130,39 @@
             />
           </button>
         </div>
-
+         <div
+          class="flex gap-2 mb-2 md:mb-3 px-3 md:px-0 overflow-x-auto pb-1 scrollbar-hide"
+          *ngIf="convertToarrayVairents(data)"
+        >
+          <button
+            [class.ring-2]="selectedImages[0] === convertToarrayVairents(data)"
+            [class.ring-green-600]="selectedImages[0] === convertToarrayVairents(data)"
+            class="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded-lg md:rounded-xl overflow-hidden border-2 border-transparent hover:border-green-400 transition-all duration-300 transform hover:scale-105 mt-2"
+          >
+            <img
+              [src]="vareintImageUrl + convertToarrayVairents(data)"
+              alt="Thumbnail"
+              class="w-full h-full object-cover"
+            />
+          </button>
+        </div>
         <!-- Main Image -->
         <div
           class="relative overflow-hidden rounded-xl md:rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 shadow-sm md:shadow-md group"
+          
         >
-          <img
+          <img *ngIf="!convertToarrayVairents(data)"
             [src]="
               getImageUrl(
                 selectedImages[0] || getImages(data)[0]?.PHOTO_URL || ''
               )
             "
+            [alt]="data.NAME"
+            class="w-full h-auto object-contain rounded-xl md:rounded-2xl transform transition-transform duration-500 group-hover:scale-105"
+            style="max-height: 280px; min-height: 200px"
+          />
+          <img *ngIf="convertToarrayVairents(data)"
+           [src]="vareintImageUrl + convertToarrayVairents(data)"
             [alt]="data.NAME"
             class="w-full h-auto object-contain rounded-xl md:rounded-2xl transform transition-transform duration-500 group-hover:scale-105"
             style="max-height: 280px; min-height: 200px"

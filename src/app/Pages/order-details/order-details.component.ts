@@ -127,4 +127,5 @@ calculateSubtotal() {
       // window.location.reload();
     }); // change as needed
   }
+  vareintImageUrl: string = this.api.retriveimgUrl + 'VarientImages/';
 }

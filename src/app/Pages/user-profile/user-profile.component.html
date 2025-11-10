@@ -557,8 +557,16 @@
                       <!-- Product Image -->
                       <div class="order-img me-3 flex-shrink-0">
                         <img
+                          *ngIf="!item?.VARIENT_IMAGE_URL?.trim()"
                           [src]="producctImageurl + item['PHOTO_URL'][0]"
                           [alt]="item.PRODUCT_NAME"
+                          class="img-fluid rounded"
+                          style="width: 100px; height: 100px; object-fit: cover"
+                        />
+                        <img
+                          *ngIf="item?.VARIENT_IMAGE_URL?.trim()"
+                          [src]="vareintImageUrl + item.VARIENT_IMAGE_URL"
+                          [alt]="item.VARIENT_IMAGE_URL"
                           class="img-fluid rounded"
                           style="width: 100px; height: 100px; object-fit: cover"
                         />
@@ -2560,9 +2568,16 @@
             >
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                  <img
+                  <img 
+                    *ngIf="!order?.VARIENT_IMAGE_URL?.trim()"
                     [src]="producctImageurl + photoUrls[i]"
                     [alt]="order.PRODUCT_NAME"
+                    class="product-img"
+                  />
+                  <img 
+                    *ngIf="order?.VARIENT_IMAGE_URL?.trim()"
+                    [src]="vareintImageUrl + order.VARIENT_IMAGE_URL"
+                    [alt]="order.VARIENT_IMAGE_URL"
                     class="product-img"
                   />
                   <div>

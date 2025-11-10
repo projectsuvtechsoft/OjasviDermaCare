@@ -32,8 +32,8 @@ export class ApiServiceService {
     headers: this.httpHeaders1,
   };
 
-  // commoncode = 'https://ojasviadmin.uvtechsoft.com:9090';
-  // commonimgUrl = 'https://ojasviadmin.uvtechsoft.com:9090/api/upload/';
+  commoncode = 'https://ojasviadmin.uvtechsoft.com:9090';
+  commonimgUrl = 'https://ojasviadmin.uvtechsoft.com:9090/api/upload/';
 
   // ojasvi live
   // commoncode = 'https://admin.ojasvidermacare.com:9092';
@@ -43,8 +43,8 @@ export class ApiServiceService {
   // commonimgUrl = 'https://h10rqczh-9878.inc1.devtunnels.ms/api/upload/';
 
   // pooja
-  commoncode = 'https://h10rqczh-9092.inc1.devtunnels.ms';
-  commonimgUrl = 'https://h10rqczh-9092.inc1.devtunnels.ms/api/upload/';
+  // commoncode = 'https://h10rqczh-9092.inc1.devtunnels.ms';
+  // commonimgUrl = 'https://h10rqczh-9092.inc1.devtunnels.ms/api/upload/';
 
   // commoncode = 'https://p8rhkmb7-9878.inc1.devtunnels.ms';
   // commonimgUrl = 'https://p8rhkmb7-9878.inc1.devtunnels.ms/api/upload/';
@@ -3660,7 +3660,7 @@ export class ApiServiceService {
 
       apikey: this.commonapikey,
 
-      token: this.cookie.get('token'),
+      token: this.cookie.get('token') ?? sessionStorage.getItem('token'),
     });
 
     return this.httpClient.post<any>(
@@ -4351,7 +4351,7 @@ export class ApiServiceService {
       applicationkey: this.commonapplicationkey,
       apikey: this.commonapikey,
 
-      token: this.cookie.get('token'),
+      token: this.cookie.get('token') ?? sessionStorage.getItem('token'),
     });
     // this.getheader();
 

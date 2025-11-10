@@ -132,7 +132,11 @@
     <div class="flex flex-col lg:flex-row gap-8">
       <!-- Desktop Filters Sidebar -->
       <div class="hidden lg:block lg:w-1/4 sidebar-filters-desktop">
-        <div class="sticky top-32" style="padding: 0px !important" #desktopFilters>
+        <div
+          class="sticky top-32"
+          style="padding: 0px !important"
+          #desktopFilters
+        >
           <ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
 
           <ng-template #filtersTemplate>
@@ -156,7 +160,9 @@
 
               <!-- Categories -->
               <div class="mb-4">
-                <h4 class="text-gray-900 mb-3 font-medium text-sm">Categories</h4>
+                <h4 class="text-gray-900 mb-3 font-medium text-sm">
+                  Categories
+                </h4>
                 <div class="space-y-2 px-3">
                   <label
                     class="custom-checkbox flex items-center cursor-pointer"
@@ -182,34 +188,37 @@
 
               <!-- Discount -->
               <div class="mb-4">
-  <h4 class="text-gray-900 mb-3 font-medium text-sm">Discount</h4>
-  <div class="space-y-2 px-3">
-    <label
-      class="custom-checkbox flex items-center cursor-pointer"
-      *ngFor="let discount of discounts; let i = index"
-    >
-      <input
-        name="discount{{ i }}"
-        type="checkbox"
-        [checked]="selectedDiscounts.includes(discount)"
-        (change)="onDiscountChange($event, discount)"
-      />
-      <span class="checkmark mr-2"></span>
-      <span class="text-[12px]">{{ discount }}% and above</span>
-    </label>
-  </div>
-</div>
-
+                <h4 class="text-gray-900 mb-3 font-medium text-sm">Discount</h4>
+                <div class="space-y-2 px-3">
+                  <label
+                    class="custom-checkbox flex items-center cursor-pointer"
+                    *ngFor="let discount of discounts; let i = index"
+                  >
+                    <input
+                      name="discount{{ i }}"
+                      type="checkbox"
+                      [checked]="selectedDiscounts.includes(discount)"
+                      (change)="onDiscountChange($event, discount)"
+                    />
+                    <span class="checkmark mr-2"></span>
+                    <span class="text-[12px]">{{ discount }}% and above</span>
+                  </label>
+                </div>
+              </div>
 
               <!-- Price Range -->
               <div class="mb-4">
-                <h4 class="text-gray-900 mb-3 font-medium text-sm">Price Range</h4>
+                <h4 class="text-gray-900 mb-3 font-medium text-sm">
+                  Price Range
+                </h4>
 
                 <div class="relative w-full px-3">
-                  <div class="range-container relative w-full h-1 rounded-full bg-gray-300">
+                  <div
+                    class="range-container relative w-full h-1 rounded-full bg-gray-300"
+                  >
                     <div
                       class="absolute h-1 bg-[rgb(90,143,105)] rounded-full"
-                      [style.left.%]="(minRange / 40 ) * 100"
+                      [style.left.%]="(minRange / 40) * 100"
                       [style.width.%]="((maxRange - minRange) / 40) * 100"
                     ></div>
                     <input
@@ -258,7 +267,9 @@
         class="fixed top-0 left-0 z-50 w-4/5 max-w-sm h-full bg-white shadow-lg overflow-y-auto transition-transform duration-300 lg:hidden"
       >
         <!-- Mobile Filters Header -->
-        <div class="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
+        <div
+          class="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between"
+        >
           <h3 class="text-lg font-semibold text-gray-900">Filters</h3>
           <button
             id="closeFiltersMobile"
@@ -287,7 +298,9 @@
 
           <!-- Categories -->
           <div>
-            <h4 class="text-gray-900 mb-3 font-medium text-sm border-b pb-2">Categories</h4>
+            <h4 class="text-gray-900 mb-3 font-medium text-sm border-b pb-2">
+              Categories
+            </h4>
             <div class="space-y-2">
               <label
                 class="custom-checkbox flex items-center cursor-pointer"
@@ -313,7 +326,9 @@
 
           <!-- Discount -->
           <div>
-            <h4 class="text-gray-900 mb-3 font-medium text-sm border-b pb-2">Discount</h4>
+            <h4 class="text-gray-900 mb-3 font-medium text-sm border-b pb-2">
+              Discount
+            </h4>
             <div class="space-y-2">
               <label
                 class="custom-checkbox flex items-center cursor-pointer"
@@ -333,10 +348,14 @@
 
           <!-- Price Range -->
           <div>
-            <h4 class="text-gray-900 mb-3 font-medium text-sm border-b pb-2">Price Range</h4>
+            <h4 class="text-gray-900 mb-3 font-medium text-sm border-b pb-2">
+              Price Range
+            </h4>
 
             <div class="relative w-full">
-              <div class="range-container relative w-full h-1 rounded-full bg-gray-300">
+              <div
+                class="range-container relative w-full h-1 rounded-full bg-gray-300"
+              >
                 <div
                   class="absolute h-1 bg-[rgb(90,143,105)] rounded-full"
                   [style.left.%]="(minRange / 400) * 100"
@@ -401,13 +420,18 @@
           <div class="flex items-center gap-2 w-full sm:w-auto flex-wrap">
             <h3 class="text-sm font-semibold text-gray-900">Sort</h3>
 
-            <div class="relative flex-1 sm:flex-none sm:w-40" (clickOutside)="dropdownOpen = false">
+            <div
+              class="relative flex-1 sm:flex-none sm:w-40"
+              (clickOutside)="dropdownOpen = false"
+            >
               <!-- Dropdown button -->
               <button
                 (click)="dropdownOpen = !dropdownOpen"
                 class="w-full bg-[#f5f8f6] text-green-700 px-2 py-2 rounded text-xs sm:text-sm flex justify-between items-center hover:bg-[#e9f2ec] transition-colors"
               >
-                <span class="truncate">{{ selectedOptionLabel || "Popularity" }}</span>
+                <span class="truncate">{{
+                  selectedOptionLabel || "Popularity"
+                }}</span>
                 <span class="ml-2">▼</span>
               </button>
 
@@ -510,11 +534,14 @@
                 <div
                   class="w-full h-48 sm:h-56 md:h-60 bg-white flex items-center justify-center overflow-hidden"
                 >
-                <ng-container
+                  <ng-container
                     *ngIf="initImageIndex(product.ID) === undefined"
                   ></ng-container>
                   <img
-                    *ngIf="getImageArray(product).length > 0 && !convertToarrayVairents(product)"
+                    *ngIf="
+                      getImageArray(product).length > 0 &&
+                      !convertToarrayVairents(product)
+                    "
                     [src]="
                       productImageUrl +
                       getImageArray(product)[imageIndices[product.ID]]
@@ -522,15 +549,16 @@
                     [alt]="product.NAME"
                     class="rounded-lg object-cover w-full h-full"
                   />
-                   <img
-                    *ngIf="selectedVariantMap && selectedVariantMap[product.ID] && convertToarrayVairents(product)"
-                    [src]="
-                      vareintImageUrl +
+                  <img
+                    *ngIf="
+                      selectedVariantMap &&
+                      selectedVariantMap[product.ID] &&
                       convertToarrayVairents(product)
                     "
+                    [src]="vareintImageUrl + convertToarrayVairents(product)"
                     [alt]="product.NAME"
                     class="rounded-lg object-cover w-full h-full"
-                  /> 
+                  />
                 </div>
 
                 <div class="absolute top-3 right-3 flex space-x-2">
@@ -671,9 +699,7 @@
 
             <div class="px-3 mb-3 mt-2">
               <div class="flex flex-wrap gap-2">
-                <ng-container
-                  *ngFor="let item of variantMap[product.ID] || []"
-                >
+                <ng-container *ngFor="let item of variantMap[product.ID] || []">
                   <small
                     [ngClass]="{
                       'border border-black bg-gray-100':
@@ -682,7 +708,7 @@
                         selectedVariantMap[product.ID] != item.VARIENT_ID
                     }"
                     class="cursor-pointer text-gray-800 text-xs font-medium px-3 py-1 rounded-full transition-all duration-150"
-                    (click)="change(item.VARIENT_ID, product.ID,product)"
+                    (click)="change(item.VARIENT_ID, product.ID, product)"
                   >
                     {{ item.SIZE }} {{ item.UNIT_NAME }}
                   </small>

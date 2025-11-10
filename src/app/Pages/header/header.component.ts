@@ -1207,6 +1207,7 @@ export class HeaderComponent {
                   this.handleCartMigration(
                     successCode.data[0]['UserData'][0].ID
                   );
+
                   this.updateTotals();
                   
                   this.isCheckoutVisible = true;
@@ -1221,7 +1222,7 @@ export class HeaderComponent {
               } else {
                 setTimeout(() => {
                   window.location.reload();
-                }, 300);
+                }, 500);
               }
             } else if (successCode.code == '404') {
               // form?.resetForm();
@@ -1261,62 +1262,75 @@ export class HeaderComponent {
         });
     }
   }
-  private handleCartMigration(customerId: string): void {
-    const cartItems = this.cartService.getCartItems();
- 
-    if (!cartItems || cartItems.length === 0) {
-      // No items to migrate
-      this.toastr.success('You have login Successfully!', 'success', {
+ private handleCartMigration(customerId: string): void {
+  const cartItems = this.cartService.getCartItems();
+  this.cartService.cartUpdated.next(cartItems);
+
+  const sessionCartItemsStr = sessionStorage.getItem('sessionCart');
+  const sessionCartItems = sessionCartItemsStr ? JSON.parse(sessionCartItemsStr) : [];
+  // console.log(sessionCartItems)
+    
+  if (!cartItems || cartItems.length === 0) {
+    this.toastr.success('You have logged in successfully!', 'Success', {
+      positionClass: 'toast-center',
+    });
+    return;
+  }
+
+  // 🧹 Step 1: Remove old session cart items (fire and forget)
+
+if (sessionCartItems && sessionCartItems.length > 0) {
+    // console.log('Removing old session cart items...');
+    sessionCartItems.forEach((item: any) => {
+      try {
+        this.cartService.removeFromCartnotoast(item);
+        // sessionStorage
+      } catch (error) {
+        console.error('Error removing session cart item:', item.PRODUCT_ID, error);
+      }
+    });
+  }
+  // 🧩 Step 2: Proceed with migration
+  this.cartService.migrateSessionCartToCustomer(cartItems, customerId).subscribe({
+    next: (response) => {
+      // console.log(response,'Migration Response')
+      if (response.success) {
+        this.toastr.success(response.message || 'Cart migrated successfully!', '', {
+          positionClass: 'toast-center',
+        });
+
+        this.senddatatoCheckout = {
+          cartDetails: cartItems,
+          subtotal: this.subtotal,
+        };
+
+        this.updateTotals();
+
+        this.toastr.success('You have logged in successfully!', 'Success', {
+          positionClass: 'toast-center',
+        });
+      } else {
+        this.toastr.warning(
+          response.message || 'Some cart items could not be migrated.',
+          '',
+          { positionClass: 'toast-center' }
+        );
+      }
+    },
+    error: (err) => {
+      console.error('Cart migration failed:', err);
+      this.toastr.error('Failed to migrate cart items. Please try again later.', '', {
         positionClass: 'toast-center',
       });
-      // this.updateTotals();
-      return;
-    }
+      this.updateTotals();
+    },
+  });
 
-    // Show loading indicator
-    // this.toastr.info('Migrating cart items...', '');
+  // 🧽 Cleanup session flags
+  sessionStorage.removeItem('CART_REDIRECT');
+  sessionStorage.removeItem('SESSION_KEYS');
+}
 
-    // Call migration service
-     
-    this.cartService
-      .migrateSessionCartToCustomer(cartItems, customerId)
-      .subscribe({
-        next: (response) => {
-          if (response.success) {
-           
-            this.toastr.success(response.message, '');
-
-            // Clear session cart indicators
-            // Update UI with migrated cart
-            // this.updateTotals();
-            this.senddatatoCheckout = {
-              cartDetails: cartItems,
-              subtotal: this.subtotal,
-            };
-           
-
-            this.toastr.success('You have login Successfully!', 'success', {
-              positionClass: 'toast-center',
-            });
-          }
-        },
-        error: (error) => {
-          // console.error('Migration error:', error);
-          //       this.toastr.error(
-          //         'Failed to migrate cart items. Items may be in your account.',
-          //         '',{
-          //   positionClass: 'toast-center'
-          // }
-          //       );
-          this.updateTotals();
-          //       this.toastr.success('You have login Successfully!', 'success',{
-          //   positionClass: 'toast-center'
-          // });
-        },
-      });
-    sessionStorage.removeItem('CART_REDIRECT');
-    sessionStorage.removeItem('SESSION_KEYS');
-  }
   //by sanjana
   goToProductDetails(id: number) {
     this.router.navigateByUrl(`/product_details/${id}`);

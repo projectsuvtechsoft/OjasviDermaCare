@@ -363,6 +363,7 @@ export class CheckoutComponent {
             LOCALITY: addr.LOCALITY,
             ADDRESS_TYPE: addr.ADDRESS_TYPE,
             IS_DEFAULT: addr.IS_DEFUALT_ADDRESS == 1 ? true : false,
+            IS_DEFUALT_ADDRESS: addr.IS_DEFUALT_ADDRESS == 1 ? true : false,
             CUST_ID: addr.CUST_ID,
             SESSION_KEY: addr.SESSION_KEY,
             MOBILE_NO: addr.MOBILE_NO,
@@ -1373,13 +1374,14 @@ export class CheckoutComponent {
       this.toastr.error('Please select local pickup location');
       return;
     }
+    // console.log(this.cartDetails)
     this.showOrderSummaryInDrawer = true;
     this.isStepActive('payment');
   }
   desteper() {
     this.currentStep = 2;
   }
-
+vareintImageUrl: string = this.api.retriveimgUrl + 'VarientImages/';
   showOrderSummaryInDrawer: boolean = false;
 
   openr() {
@@ -2695,7 +2697,7 @@ export class CheckoutComponent {
       this.showPaymentModal = true;
     } else {
       // Your existing non-PayPal logic (e.g. internal test payments)
-      this.callProceedToPaymentAPI(decryptedUserID);
+      this.callProceedToNonPaymentAPI(decryptedUserID);
     }
   }
 
@@ -2731,7 +2733,7 @@ export class CheckoutComponent {
             : decryptedUserID
             ? Number(decryptedUserID)
             : 0,
-          SESSION_KEY: this.SESSION_KEYS,
+          SESSION_KEY: decryptedUserID ? '' : this.SESSION_KEYS,
           COUNTRY_NAME: this.selectedAddress.COUNTRY_NAME,
           STATE_NAME: this.selectedAddress.STATE_NAME,
           CITY_NAME: this.selectedAddress.CITY_NAME,
@@ -2744,7 +2746,9 @@ export class CheckoutComponent {
               : 0,
           PICKUP_LOCATION_MASTER_ID: this.PICKUP_LOCATION_MASTER_ID,
           MOBILE_NO: this.selectedAddress.MOBILE_NO,
-          paymentId: this.paymentId || ''
+          paymentId: this.paymentId || '',
+          status: this.status || '',
+          responseData: this.response,
         },
         { headers }
       )
@@ -2782,12 +2786,14 @@ export class CheckoutComponent {
     }, 5000);
   }
   paymentId: string = '';
+  status: string = '';
+  response: any;
   async initiatePayPalPayment() {
     if (!this.selectedAddress) {
       this.toastr.error('Please select an address first.', 'Error');
       return;
     }
-
+    console.log(this.selectedAddress);
     await this.delay(100); // Allow modal to render
     const paypalContainer = document.getElementById('paypal-container');
     if (!paypalContainer) return;
@@ -2811,20 +2817,59 @@ export class CheckoutComponent {
                 (this.cartDetails?.cartDetails?.[0]?.['DATA'].NET_AMOUNT -
                   this.cartDetails?.cartDetails?.[0]?.['DATA']
                     .TOTAL_DISCOUNT_AMOUNT);
+
+          const addr = this.selectedAddress;
+
           return actions.order.create({
             intent: 'CAPTURE',
+            payer: {
+              name: {
+                given_name: addr.NAME.split(' ')[0],
+                surname: addr.NAME.split(' ')[1],
+              },
+              email_address: addr.EMAIL_ID,
+              address: {
+                address_line_1: addr.ADDRESS,
+                address_line_2: addr.addressLine2 || '',
+                admin_area_2: addr.CITY_NAME,
+                admin_area_1: '',
+                postal_code: addr.PINCODE,
+                country_code: addr.countryCode || 'US',
+              },
+            },
             purchase_units: [
               {
                 description: 'Checkout Payment',
                 amount: { currency_code: 'USD', value: amount },
+                shipping: {
+                  name: {
+                    full_name: `${addr.NAME} `,
+                  },
+                  email_address: addr.EMAIL_ID,
+                  address: {
+                    address_line_1: addr.ADDRESS,
+                    address_line_2: addr.addressLine2 || '',
+                    admin_area_2: addr.CITY_NAME,
+                    admin_area_1: '',
+                    postal_code: addr.PINCODE,
+                    country_code: addr.countryCode || 'US',
+                  },
+                },
               },
             ],
+            application_context: {
+              shipping_preference: 'SET_PROVIDED_ADDRESS',
+              user_action: 'PAY_NOW',
+            },
           });
         },
+
         onApprove: async (data: any, actions: any) => {
           const order = await actions.order.capture();
-          console.log('Order approved:', order);
-          this.paymentId = order.purchase_units[0].payments.captures[0].id
+          // console.log('Order approved:', order);
+          this.paymentId = order.purchase_units[0].payments.captures[0].id;
+          this.status = order.purchase_units[0].payments.captures[0].status;
+          this.response = order;
           // this.toastr.success('Payment successful!', 'Success');
           let userID = sessionStorage.getItem('userId');
           let decryptedUserID: any;
@@ -2840,5 +2885,66 @@ export class CheckoutComponent {
         },
       })
       .render('#paypal-container');
+  }
+  private callProceedToNonPaymentAPI(decryptedUserID: any) {
+    const baseUrl = this.api.baseUrl;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      applicationkey: this.api.commonapplicationkey,
+      apikey: this.api.commonapikey,
+      token: sessionStorage.getItem('token') || '',
+      supportkey: this.cookie.get('supportKey'),
+    });
+
+    this.http
+      .post(
+        baseUrl + 'web/cart/proceedToPaymentTesting',
+        {
+          amount:
+            this.IS_LOCAL_PICKUP == 1 && this.deliveryOption == 'pickup'
+              ? (this.selectedPrice - this.selectedDiscount) * 100
+              : (this.selectedPrice -
+                  this.selectedDiscount +
+                  (this.cartDetails?.cartDetails?.[0]?.['DATA'].NET_AMOUNT -
+                    this.cartDetails?.cartDetails?.[0]?.['DATA']
+                      .TOTAL_DISCOUNT_AMOUNT)) *
+                100,
+          PAYMENT_MODE: 'O',
+          ADDRESS_ID: this.selectedAddress!.ID,
+          CART_ID: this.cartId,
+          CUSTOMER_ID: this.userId
+            ? Number(this.userId)
+            : decryptedUserID
+            ? Number(decryptedUserID)
+            : 0,
+          SESSION_KEY: decryptedUserID ? '' : this.SESSION_KEYS,
+          COUNTRY_NAME: this.selectedAddress.COUNTRY_NAME,
+          STATE_NAME: this.selectedAddress.STATE_NAME,
+          CITY_NAME: this.selectedAddress.CITY_NAME,
+          PINCODE: this.selectedAddress.PINCODE,
+          COUNTRY_CODE: this.selectedAddress.COUNTRY_CODE,
+          CLIENT_ID: 1,
+          IS_LOCAL_PICKUP:
+            this.deliveryOption == 'pickup'
+              ? this.selectedAddress?.IS_LOCAL_PICKUP
+              : 0,
+          PICKUP_LOCATION_MASTER_ID: this.PICKUP_LOCATION_MASTER_ID,
+          MOBILE_NO: this.selectedAddress.MOBILE_NO,
+        },
+        { headers }
+      )
+      .subscribe({
+        next: (response: any) => {
+          if (response.code == 200) {
+            this.toastr.success('Payment successful!', 'Success');
+            this.navigateToOrder(response.order_id, response.invoiceNumber);
+          } else {
+            this.toastr.error('Payment failed!', 'Error');
+          }
+        },
+        error: () => {
+          this.toastr.error('Payment failed. Please try again.', 'Error');
+        },
+      });
   }
 }

@@ -78,8 +78,10 @@ export class CartDrawerComponent {
   Loading: boolean = false;
   showConfirmPassword: boolean = false;
   showNewPassword: boolean = false;
+vareintImageUrl: string = this.api.retriveimgUrl + 'VarientImages/';
+
   ngOnInit() {
-      this.loader = true;
+    this.loader = true;
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -93,6 +95,7 @@ export class CartDrawerComponent {
 
       this.cartService.cartUpdated$.subscribe((cartItems) => {
         this.cartItems = cartItems;
+
         this.loadingProducts = false;
         // this.loader = false;
         this.cd.detectChanges();
@@ -109,6 +112,12 @@ export class CartDrawerComponent {
       this.cartService.cartUpdated$.subscribe((cartItems) => {
         this.cartItems = cartItems;
         // this.loader = false;
+        if (!this.euserID) {
+          sessionStorage.setItem(
+            'sessionCart',
+            JSON.stringify(this.cartService.getCartItems())
+          );
+        }
         this.loadingProducts = false;
         this.cd.detectChanges();
         this.updateTotals(); // No need to apply selections
@@ -636,13 +645,13 @@ export class CartDrawerComponent {
   //   //   this.toastr.info('Maximum quantity reached', 'Info');
   //   // }
   // }
-  nextTotalSize=1
+  nextTotalSize = 1;
   increaseQty(item: any) {
     // console.log(item);
     const nextQuantity = this.quantity ? this.quantity + 1 : item.QUANTITY + 1; // simulate the next step
     const nextTotalSize =
       item.VERIENT_CURRENT_STOCK / (item.VERIENT_SIZE * nextQuantity);
-    this.nextTotalSize=nextTotalSize
+    this.nextTotalSize = nextTotalSize;
     // console.log(nextTotalSize,nextQuantity)
     // 1. Store the current selections before the server updates the array
     // const currentSelections = this.mapCurrentSelections();
@@ -660,7 +669,7 @@ export class CartDrawerComponent {
         this.updateTotals();
       });
     } else {
-      this.toastr.info('Maximum quantity reached', 'Info');
+      this.toastr.info('Stock Not available', 'Info');
     }
     // ... rest of the function (setTimeout block)
   }
@@ -701,7 +710,7 @@ export class CartDrawerComponent {
       this.loader = false;
 
       // 2. Apply the old selections to the new cart items (even if one was deleted)
-      this.cartItems = cartItems
+      this.cartItems = cartItems;
 
       this.cd.detectChanges();
       this.updateTotals();
@@ -1029,10 +1038,10 @@ export class CartDrawerComponent {
   closeMobileMenu() {
     this.isMobileMenuOpen = false;
   }
-  isCartRedirected:any=false
+  isCartRedirected: any = false;
   openLoginModal() {
-    this.isCartRedirected=true
-    sessionStorage.setItem('CART_REDIRECT',this.isCartRedirected)
+    this.isCartRedirected = true;
+    sessionStorage.setItem('CART_REDIRECT', this.isCartRedirected);
     this.activeTab = 'login';
     // const modalEl = document.getElementById('loginmodal');
     // const modalInstance =
@@ -2383,7 +2392,7 @@ export class CartDrawerComponent {
   selectedDiscount = 0;
   // UPDATE updateTotals function:
   updateTotals() {
-    this.loader=false
+    this.loader = false;
     // this.deletedItems = [];
 
     // Calculate totals for ALL items (no filtering by selected)
@@ -2425,26 +2434,26 @@ export class CartDrawerComponent {
     return this.cartItems.length > 0; // Simply check if there are items
   }
   // Add these properties to your component class
-showDeleteConfirmation: boolean = false;
-itemToDelete: any = null;
+  showDeleteConfirmation: boolean = false;
+  itemToDelete: any = null;
 
-// Replace your deleteItem method with these three methods:
+  // Replace your deleteItem method with these three methods:
 
-confirmDelete(item: any): void {
-  this.itemToDelete = item;
-  this.showDeleteConfirmation = true;
-}
-
-executeDelete(): void {
-  if (this.itemToDelete) {
-    this.deleteItem(this.itemToDelete);
-    this.updateTotals();
+  confirmDelete(item: any): void {
+    this.itemToDelete = item;
+    this.showDeleteConfirmation = true;
   }
-  this.cancelDelete();
-}
 
-cancelDelete(): void {
-  this.showDeleteConfirmation = false;
-  this.itemToDelete = null;
-}
+  executeDelete(): void {
+    if (this.itemToDelete) {
+      this.deleteItem(this.itemToDelete);
+      this.updateTotals();
+    }
+    this.cancelDelete();
+  }
+
+  cancelDelete(): void {
+    this.showDeleteConfirmation = false;
+    this.itemToDelete = null;
+  }
 }

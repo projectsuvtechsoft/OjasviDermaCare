@@ -846,6 +846,7 @@ export class ProductpageComponent {
     }
     return `${this.producctImageurl}productImages/${photo}`;
   }
+  vareintImageUrl: string = this.api.retriveimgUrl + 'VarientImages/';
   selectedImages: { [index: number]: string } = {};
   changeMainImage(photoUrl: string, index: number): void {
     // this.selectedImages[index] = photoUrl;
@@ -897,7 +898,7 @@ export class ProductpageComponent {
         // item.QUANTITY++;
         this.updateTotalPrice();
           } else {
-          this.toastr.info('Maximum quantity reached', 'Info');
+          this.toastr.info('Stock Not Available', 'Info');
         }
       }
     }
@@ -942,6 +943,7 @@ export class ProductpageComponent {
   currentStockMap: { [productId: number]: number } = {};
   addToCart(product: any, isdetailschange: boolean): void {
     this.isLoading=true
+  
     // console.log(product);
     // console.log(product.COUNTRY_ID);
     // console.log(product.ADDRESS_ID);
@@ -1033,6 +1035,20 @@ export class ProductpageComponent {
       console.error('Invalid image format', e);
       return [];
     }
+  }
+
+    convertToarrayVairents(data: any) {
+    // console.log(data,this.selectedVariantMap)
+    let varients = JSON.parse(data?.VARIENTS);
+    let name = '';
+    const varientData = varients.find(
+      (varient: any) => varient.VARIENT_ID === this.selectedVariantMap[data.ID]
+    );
+    if (varientData) {
+      // console.log(varientData)
+      name = varientData.VARIENT_IMAGE_URL;
+    }
+    return name;
   }
 
   isLiked: boolean = false;

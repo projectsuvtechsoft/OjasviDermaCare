@@ -1025,6 +1025,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   TOTAL_AMOUNT: any;
   NET_AMOUNT: any;
   TOTAL_PRICE: any;
+  vareintImageUrl: string = this.api.retriveimgUrl + 'VarientImages/';
   openProjectDetails(data: any) {
     this.viewdetail = [data];
     // console.log(data);

@@ -41,7 +41,15 @@
               </button>
 
               <img
+                *ngIf="!item.VARIENT_IMAGE_URL?.trim()"
                 [src]="producctImageurl + getImageArray(item)"
+                [alt]="item.NAME"
+                class="w-24 h-[110px] rounded-md object-cover flex-shrink-0"
+              />
+
+                <img
+                *ngIf="item.VARIENT_IMAGE_URL?.trim()"
+                [src]="vareintImageUrl + item.VARIENT_IMAGE_URL"
                 [alt]="item.NAME"
                 class="w-24 h-[110px] rounded-md object-cover flex-shrink-0"
               />

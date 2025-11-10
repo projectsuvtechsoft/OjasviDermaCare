@@ -1894,7 +1894,7 @@
                       </div>
                     </ng-container> -->
 
-                    <ng-container *ngIf="addressForm.ADDRESS_TYPE !== 'P'">
+                    <ng-container *ngIf="addressForm.ADDRESS_TYPE !== 'P' && userId">
                       <div class="flex items-start">
                         <div class="flex items-center h-5">
                           <input
@@ -2014,14 +2014,22 @@
                   <ng-container
                     *ngIf="initImageIndex(item.ID) === undefined"
                   ></ng-container>
-                  <img
+                  <img 
+                    *ngIf="!item.VARIENT_IMAGE_URL"
                     [src]="
                       photoURL + getImageArray(item)[imageIndices[item.ID]]
                     "
                     alt="{{ item.PRODUCT_NAME }}"
                     class="w-24 h-24 object-cover rounded"
                   />
-
+ <img 
+                    *ngIf="item.VARIENT_IMAGE_URL"
+                    [src]="
+                      vareintImageUrl + item.VARIENT_IMAGE_URL
+                    "
+                    alt="{{ item.VARIENT_IMAGE_URL }}"
+                    class="w-24 h-24 object-cover rounded"
+                  />
                   <div class="flex-1 min-w-0">
                     <h4
                       class="font-semibold text-gray-900 text-base leading-tight"
