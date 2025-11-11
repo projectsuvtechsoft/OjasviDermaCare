@@ -73,7 +73,7 @@ export class LandingPageComponent {
     this.getsession();
     this.IMAGEuRL = this.api.retriveimgUrl2();
     this.Imgurl = this.IMAGEuRL + 'CustomerProfile/';
-    sessionStorage.setItem('IS_GUEST', 'false');
+    // sessionStorage.setItem('IS_GUEST', 'false');
   }
   sessionkey: string = '';
   // private commonFunction = new CommonFunctionService(); // Assuming this is a service for common functions

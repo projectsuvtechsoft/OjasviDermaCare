@@ -492,10 +492,10 @@ export class CheckoutComponent {
       IS_DEFAULT: false,
       AREA: '',
       SESSION_KEY: '',
-      CITY_ID: '',
-      STATE_ID: '',
-      COUNTRY_ID: '',
-      PICKUP_LOCATION_ID: '',
+      CITY_ID: 0,
+      STATE_ID: 0,
+      COUNTRY_ID: 0,
+      PICKUP_LOCATION_ID: 0,
       COUNTRY_CODE: '+1',
     };
     // this.stateList = []; // Clear states when resetting country
@@ -2793,7 +2793,7 @@ vareintImageUrl: string = this.api.retriveimgUrl + 'VarientImages/';
       this.toastr.error('Please select an address first.', 'Error');
       return;
     }
-    console.log(this.selectedAddress);
+    // console.log(this.selectedAddress);
     await this.delay(100); // Allow modal to render
     const paypalContainer = document.getElementById('paypal-container');
     if (!paypalContainer) return;
@@ -2917,7 +2917,7 @@ vareintImageUrl: string = this.api.retriveimgUrl + 'VarientImages/';
             : decryptedUserID
             ? Number(decryptedUserID)
             : 0,
-          SESSION_KEY: decryptedUserID ? '' : this.SESSION_KEYS,
+          SESSION_KEY: decryptedUserID ? '' : this.userId ? '' :this.SESSION_KEYS,
           COUNTRY_NAME: this.selectedAddress.COUNTRY_NAME,
           STATE_NAME: this.selectedAddress.STATE_NAME,
           CITY_NAME: this.selectedAddress.CITY_NAME,

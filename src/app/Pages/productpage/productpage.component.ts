@@ -1283,12 +1283,12 @@ export class ProductpageComponent {
     event.stopPropagation();
     // Gate behind login: if not logged in or logged in as guest, show login modal
     const currentUserId = sessionStorage.getItem('userId');
+    this.userID = this.commonFunction.decryptdata(this.euserID);
     const isGuest = (sessionStorage.getItem('IS_GUEST') || 'false') === 'true';
     if (!currentUserId || isGuest) {
       this.showLoginModal();
       return;
     }
-    this.userID = this.commonFunction.decryptdata(this.euserID);
     let sessionKey = sessionStorage.getItem('SESSION_KEYS') || '';
     this.decyptedsessionKey = this.commonFunction.decryptdata(sessionKey);
 

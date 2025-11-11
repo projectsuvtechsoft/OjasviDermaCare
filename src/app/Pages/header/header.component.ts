@@ -330,7 +330,7 @@ export class HeaderComponent {
     // modalInstance._backdrop._config.rootElement.attributes[1].value='overflow:auto'
     // let isGuest: any = false;
     if (!sessionStorage.getItem('IS_GUEST')) {
-      sessionStorage.setItem('IS_GUEST', this.isGuest);
+      sessionStorage.setItem('IS_GUEST', 'true');
       // isGuest =sessionStorage.getItem('IS_GUEST');
       this.isGuest = sessionStorage.getItem('IS_GUEST');
       // this.isGuest = sessionStorage.getItem('IS_GUEST');
@@ -357,7 +357,7 @@ export class HeaderComponent {
     this.cartService.cartCount$.subscribe((count) => {
       this.cartCount = count; // updates automatically when server data arrives
     });
-    this.isGuest = false;
+    // this.isGuest = false;
     // let euserID = sessionStorage.getItem('userId') || '';
     // let etoken = sessionStorage.getItem('token') || '';
     const euserID = sessionStorage.getItem('userId') || '';
@@ -1210,7 +1210,6 @@ export class HeaderComponent {
 
                   this.updateTotals();
                   
-                  this.isCheckoutVisible = true;
                   //  console.log(this.migrateCartItems(this.cartItems,successCode.data[0]['UserData'][0].ID))
                 }
                 // console.log(this.cartItems)
@@ -1298,12 +1297,12 @@ if (sessionCartItems && sessionCartItems.length > 0) {
         this.toastr.success(response.message || 'Cart migrated successfully!', '', {
           positionClass: 'toast-center',
         });
-
+        // this.cartService.fetchCartFromServer(customerId,sessionStorage.getItem('token')??'')
         this.senddatatoCheckout = {
-          cartDetails: cartItems,
+          cartDetails: this.cartService.getCartItems(),
           subtotal: this.subtotal,
         };
-
+        this.isCheckoutVisible = true;
         this.updateTotals();
 
         this.toastr.success('You have logged in successfully!', 'Success', {
@@ -1482,6 +1481,7 @@ if (sessionCartItems && sessionCartItems.length > 0) {
   showLoginModal() {
     this.mobileNumberorEmail = '';
     this.data.PASSWORD = '';
+    this.inputType='initial'
     // const loginModalEl = document.getElementById('loginmodal');
 
     // document.querySelectorAll('.modal-backdrop').forEach((el) => el.remove());

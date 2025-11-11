@@ -50,7 +50,7 @@ export class AddressMaster {
   IS_DEFAULT = false;
   COUNTRY_CODE = '+1';
   CITY_ID: any = 0;
-  PICKUP_LOCATION_ID!:any;
+  PICKUP_LOCATION_ID!: any;
 }
 @Component({
   selector: 'app-user-profile',
@@ -444,7 +444,11 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       },
     });
   }
-
+  preparingOrders = 0;
+  packagingOrders = 0;
+  packagingDoneOrders = 0;
+  dispatchingOrders = 0;
+  dispatched = 0;
   getUserData() {
     // this.IMAGEuRL = this.api.retriveimgUrl2();
     // this.loadData();
@@ -458,7 +462,13 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           this.dataList = data['data'];
           this.statastics = data['data1'];
           this.totalOrders = this.statastics[0][0].TOTAL_ORDERS;
-          this.pendingOrders = this.statastics[1][0].PENDING;
+          this.preparingOrders = this.statastics[1][0].BP; // Preparing
+          this.packagingOrders = this.statastics[1][0].SP; // Packaging
+          this.packagingDoneOrders = this.statastics[1][0].PD; // Packaging Done
+          this.dispatchingOrders = this.statastics[1][0].D;
+          this.dispatched = this.statastics[1][0].DD;
+          this.pendingOrders = this.statastics[1][0].PENDING + this.preparingOrders + this.packagingOrders + this.packagingDoneOrders
+          +this.dispatchingOrders + this.dispatched;
           this.deliveredOrders = this.statastics[1][0].DELIVERED;
 
           // Bind user data dynamically
@@ -3085,13 +3095,13 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     }
     this.addressForm.COUNTRY_NAME = this.countrySearch;
   }
-  loadingButton=false
+  loadingButton = false;
   verifyEmail(): void {
     if (!this.isEmailValid()) {
       this.toastr.info('Please enter a valid email address before verifying.');
       return;
     }
-    this.loadingButton=true
+    this.loadingButton = true;
     this.verificationStatus = 'pending';
     // this.visible=true
     // --- REAL-WORLD SCENARIO: Call an API ---
@@ -3117,19 +3127,18 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       (res) => {
         if (res['code'] == 200) {
           this.toastr.success('Otp Sent Successfully');
-          this.loadingButton=false
+          this.loadingButton = false;
           this.startTimer();
           this.visible = true;
         } else {
           this.toastr.error('Failed to send otp');
           this.verificationStatus = 'failed';
-          this.loadingButton=false
-          
+          this.loadingButton = false;
         }
       },
       (err) => {
         this.verificationStatus = 'failed';
-        this.loadingButton=false
+        this.loadingButton = false;
       }
     );
   }
@@ -3159,14 +3168,14 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   selectCity(city: any) {
     this.addressForm.CITY_NAME = city.NAME ?? this.citySearch;
     this.citySearch = city.NAME;
-     this.addressForm.CITY_ID = city.ID; // Or whatever the city's unique ID is
+    this.addressForm.CITY_ID = city.ID; // Or whatever the city's unique ID is
 
-  // ... more existing logic
+    // ... more existing logic
 
-  // Optional: Automatically search if they've already selected pickup
-  if (this.addressForm.ADDRESS_TYPE === 'P') {
-    this.findPickupLocations();
-  }
+    // Optional: Automatically search if they've already selected pickup
+    if (this.addressForm.ADDRESS_TYPE === 'P') {
+      this.findPickupLocations();
+    }
     this.filteredCities = [];
   }
   get showAddCityOption(): any {
@@ -3249,7 +3258,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     oldPassword: '',
     password: '',
     confirmPassword: '',
-    
   };
 
   // OTP verification
@@ -3308,7 +3316,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       MOBILE_NO: this.user.mobile,
       EMAIL_ID: this.user.email,
       CUSTOMER_ID: this.user.ID,
-      OLD_PASSWORD:this.newPasswordForm.oldPassword
+      OLD_PASSWORD: this.newPasswordForm.oldPassword,
     };
     this.api.getChangePasswordOtp(payload).subscribe(
       (res) => {
@@ -3316,14 +3324,12 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           this.toastr.success('Otp Sent successfully');
           this.openPasswordOTPModal();
           this.startPasswordTimer(); // Start the 60-second countdown
-        } 
-        else if (res.code == 402) {
+        } else if (res.code == 402) {
           this.toastr.error('Old password is incorrect');
           this.isChangingPassword = false;
           // this.openPasswordOTPModal();
           // this.startPasswordTimer(); // Start the 60-second countdown
-        } 
-        else {
+        } else {
           this.isChangingPassword = false;
 
           this.toastr.error('Failed to send otp');
@@ -3382,7 +3388,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         this.newPasswordForm = { password: '', confirmPassword: '' };
         this.openPasswordVerify = false;
         this.isVerifyingPasswordOTP = false;
-        this.router.navigate(['./home'])
+        this.router.navigate(['./home']);
       } else if (res.code == 300) {
         this.passwordRemainingTime = 60;
         this.toastr.error('Invalid Otp');
@@ -3505,106 +3511,110 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   // ngOnDestroy() {
   //     this.stopPasswordTimer();
   // }
- showOldPassword = false;
-showNewPassword = false;
-showConfirmPassword = false;
+  showOldPassword = false;
+  showNewPassword = false;
+  showConfirmPassword = false;
 
-
-
-togglePasswordVisibility(type: string) {
-  if (type === 'old') this.showOldPassword = !this.showOldPassword;
-  if (type === 'new') this.showNewPassword = !this.showNewPassword;
-  if (type === 'confirm') this.showConfirmPassword = !this.showConfirmPassword;
-}
-
+  togglePasswordVisibility(type: string) {
+    if (type === 'old') this.showOldPassword = !this.showOldPassword;
+    if (type === 'new') this.showNewPassword = !this.showNewPassword;
+    if (type === 'confirm')
+      this.showConfirmPassword = !this.showConfirmPassword;
+  }
 
   // pickupLocations: any[] = [];
-isLoadingPickupLocations: boolean = false;
-showPickupError: boolean = false; // To show the "not found" message
+  isLoadingPickupLocations: boolean = false;
+  showPickupError: boolean = false; // To show the "not found" message
 
-// Make sure your addressForm model can hold these new values
-// addressForm: any = {
-//   // ... all your existing properties
-//   ADDRESS_TYPE: 'R', // Default to Residential
-//   CITY_ID: null, // You need this from your city selection
-//   PICKUP_LOCATION_ID: null
-// };
-// Call this function when the "Find" button is clicked
-findPickupLocations() {
-  if (!this.addressForm.CITY_ID) {
-    // You'll need to make sure CITY_ID is set when a city is selected
-    // console.error("No city selected");
+  // Make sure your addressForm model can hold these new values
+  // addressForm: any = {
+  //   // ... all your existing properties
+  //   ADDRESS_TYPE: 'R', // Default to Residential
+  //   CITY_ID: null, // You need this from your city selection
+  //   PICKUP_LOCATION_ID: null
+  // };
+  // Call this function when the "Find" button is clicked
+  findPickupLocations() {
+    if (!this.addressForm.CITY_ID) {
+      // You'll need to make sure CITY_ID is set when a city is selected
+      // console.error("No city selected");
       this.pickupLocations = [
         { id: 'loc_001', name: 'Main Warehouse', address: '123 Main St' },
-        { id: 'loc_002', name: 'Downtown Hub', address: '456 Central Ave' }
+        { id: 'loc_002', name: 'Downtown Hub', address: '456 Central Ave' },
       ];
-    return;
-  }
-
-  this.isLoadingPickupLocations = true;
-  this.showPickupError = false;
-  this.pickupLocations = [];
-  this.addressForm.PICKUP_LOCATION_ID = null;
-
-  // This is where you call your backend API
-  // I'll simulate it with a 1-second delay
-  setTimeout(() => {
-    // --- START MOCK API CALL ---
-    // In a real app, this would be:
-    // this.myApiService.getPickupLocations(this.addressForm.CITY_ID).subscribe(locations => { ... });
-
-    // Mock data based on city
-    // if (this.addressForm.CITY_ID === 'some-city-id-1') {
-      this.pickupLocations = [
-        { id: 'loc_001', name: 'Main Warehouse', address: '123 Main St' },
-        { id: 'loc_002', name: 'Downtown Hub', address: '456 Central Ave' }
-      ];
-    // } else {
-    //   // Simulate no locations found
-    //   this.pickupLocations = [];
-    // }
-    // --- END MOCK API CALL ---
-
-    this.isLoadingPickupLocations = false;
-    if (this.pickupLocations.length === 0) {
-      this.showPickupError = true;
+      return;
     }
 
-  }, 1000);
-}
+    this.isLoadingPickupLocations = true;
+    this.showPickupError = false;
+    this.pickupLocations = [];
+    this.addressForm.PICKUP_LOCATION_ID = null;
 
-// Call this when 'Residential' or 'Office' is clicked
-clearPickupLocation() {
-  this.pickupLocations = [];
-  this.addressForm.PICKUP_LOCATION_ID = null;
-  this.isLoadingPickupLocations = false;
-  this.showPickupError = false;
-}
-// Add this property to control the dropdown's visibility
-isPickupDropdownOpen: boolean = false;
+    // This is where you call your backend API
+    // I'll simulate it with a 1-second delay
+    setTimeout(() => {
+      // --- START MOCK API CALL ---
+      // In a real app, this would be:
+      // this.myApiService.getPickupLocations(this.addressForm.CITY_ID).subscribe(locations => { ... });
 
-// Add this function to set the value and close the dropdown
-selectPickupLocation(location: any) {
-  this.addressForm.PICKUP_LOCATION_ID = location.id;
-  this.isPickupDropdownOpen = false;
-}
+      // Mock data based on city
+      // if (this.addressForm.CITY_ID === 'some-city-id-1') {
+      this.pickupLocations = [
+        { id: 'loc_001', name: 'Main Warehouse', address: '123 Main St' },
+        { id: 'loc_002', name: 'Downtown Hub', address: '456 Central Ave' },
+      ];
+      // } else {
+      //   // Simulate no locations found
+      //   this.pickupLocations = [];
+      // }
+      // --- END MOCK API CALL ---
 
-// Add this helper function to get the selected location's details
-getSelectedPickupLocation() {
-  // console.log(this.addressForm.PICKUP_LOCATION_ID);
-  if (!this.addressForm.PICKUP_LOCATION_ID) {
-    return null;
+      this.isLoadingPickupLocations = false;
+      if (this.pickupLocations.length === 0) {
+        this.showPickupError = true;
+      }
+    }, 1000);
   }
-  return this.pickupLocations.find(loc => loc.id === this.addressForm.PICKUP_LOCATION_ID);
-}
 
+  // Call this when 'Residential' or 'Office' is clicked
+  clearPickupLocation() {
+    this.pickupLocations = [];
+    this.addressForm.PICKUP_LOCATION_ID = null;
+    this.isLoadingPickupLocations = false;
+    this.showPickupError = false;
+  }
+  // Add this property to control the dropdown's visibility
+  isPickupDropdownOpen: boolean = false;
 
+  // Add this function to set the value and close the dropdown
+  selectPickupLocation(location: any) {
+    this.addressForm.PICKUP_LOCATION_ID = location.id;
+    this.isPickupDropdownOpen = false;
+  }
 
-// Ensure your mock data has 'address'
-// (from findPickupLocations() function)
-pickupLocations = [
-  { id: 'loc_001', name: 'Main Warehouse', address: '123 Main St, Near City Park' },
-  { id: 'loc_002', name: 'Downtown Hub', address: '456 Central Ave, Suite 100' }
-];
+  // Add this helper function to get the selected location's details
+  getSelectedPickupLocation() {
+    // console.log(this.addressForm.PICKUP_LOCATION_ID);
+    if (!this.addressForm.PICKUP_LOCATION_ID) {
+      return null;
+    }
+    return this.pickupLocations.find(
+      (loc) => loc.id === this.addressForm.PICKUP_LOCATION_ID
+    );
+  }
 
+  // Ensure your mock data has 'address'
+  // (from findPickupLocations() function)
+  pickupLocations = [
+    {
+      id: 'loc_001',
+      name: 'Main Warehouse',
+      address: '123 Main St, Near City Park',
+    },
+    {
+      id: 'loc_002',
+      name: 'Downtown Hub',
+      address: '456 Central Ave, Suite 100',
+    },
+  ];
 }
