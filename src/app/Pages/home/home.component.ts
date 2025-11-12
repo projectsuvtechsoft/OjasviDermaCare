@@ -400,7 +400,7 @@ export class HomeComponent {
     // console.log(data,this.selectedVariantMap)
     let varients = JSON.parse(data?.VARIENTS);
     let name = '';
-    const varientData = varients.find(
+    const varientData = varients?.find(
       (varient: any) => varient.VARIENT_ID === this.selectedVariantMap[data.ID]
     );
     if (varientData) {
@@ -411,8 +411,8 @@ export class HomeComponent {
   }
   getImageArray(product: any): string[] {
     try {
-      const images = JSON.parse(product.Images);
-      return images.map((img: any) => img.PHOTO_URL);
+      const images = JSON.parse(product?.Images);
+      return images?.map((img: any) => img.PHOTO_URL);
     } catch (e) {
       console.error('Invalid image format', e);
       return [];

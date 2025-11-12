@@ -43,8 +43,8 @@ export class ApiServiceService {
   // commonimgUrl = 'https://h10rqczh-9878.inc1.devtunnels.ms/api/upload/';
 
   // pooja
-  // commoncode = 'https://h10rqczh-9092.inc1.devtunnels.ms';
-  // commonimgUrl = 'https://h10rqczh-9092.inc1.devtunnels.ms/api/upload/';
+  // commoncode = 'https://h10rqczh-9090.inc1.devtunnels.ms';
+  // commonimgUrl = 'https://h10rqczh-9090.inc1.devtunnels.ms/api/upload/';
 
   // commoncode = 'https://p8rhkmb7-9878.inc1.devtunnels.ms';
   // commonimgUrl = 'https://p8rhkmb7-9878.inc1.devtunnels.ms/api/upload/';

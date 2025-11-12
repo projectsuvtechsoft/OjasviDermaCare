@@ -41,7 +41,28 @@ initImageIndex(productId: number) {
     this.imageIndices[productId] = 0;
   }
 }
+fallbackImage = 'assets/images/no-image.png'; // any placeholder image
+private failedImages = new Set<string>(); // cache to avoid reattempts
 
+onImageError(event: Event): void {
+  const img = event.target as HTMLImageElement;
+  if (!img) return;
+
+  // Prevent infinite loops
+  if (!this.failedImages.has(img.src)) {
+    this.failedImages.add(img.src);
+    img.src = this.fallbackImage;
+  }
+}
+
+getSafeImageUrl(url: string): string {
+  // if previously failed, return fallback immediately
+  return this.failedImages.has(url) ? this.fallbackImage : url;
+}
+
+trackByItemId(index: number, item: any): string {
+  return item.ID;
+}
 convertStringtoArray(str: string) {
   return JSON.parse(str);
 }

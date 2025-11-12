@@ -3176,7 +3176,7 @@
         {{ selectedAddress?.CITY }} - {{ selectedAddress?.PINCODE }}
       </p>
       <p class="mt-1">
-        <strong>Order Date:</strong> {{ today | date : "MM/dd/yyyy" }}
+        <strong>Order Date:</strong> {{ today | istDate : "MM/dd/yyyy" }}
       </p>
     </div>
 
@@ -3283,7 +3283,7 @@
           <div class="flex items-center text-base">
             <i class="ri-checkbox-circle-fill text-xl text-green-600 mr-2"></i>
             <span class="font-medium text-gray-800"
-              >Order Placed {{ today | date : "MMM dd" }}</span
+              >Order Placed {{ today | istDate : "MMM dd" }}</span
             >
           </div>
 
@@ -3423,7 +3423,7 @@
 
         <ul class="text-sm text-gray-700 divide-y divide-gray-100">
           <li
-            *ngFor="let item of cartDetails.cartDetails"
+            *ngFor="let item of cartDetails.cartDetails,trackBy: trackByItemId"
             class="flex justify-between items-start py-2"
           >
             <div class="flex items-start gap-2 w-2/3">

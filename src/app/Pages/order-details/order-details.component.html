@@ -17,18 +17,21 @@
     class="bg-white rounded-xl shadow-2xl w-full max-w-5xl p-4 md:p-6 border border-gray-100 grid grid-cols-1 lg:grid-cols-3 gap-4"
   >
     <div class="lg:col-span-3 flex justify-between items-center">
-      <h2 class="text-xl font-bold text-gray-800">Order Confirmation</h2>
+      <h2 *ngIf="cartDetails.cartDetails[0].ORDER_STATUS != 'R'" class="text-xl font-bold text-gray-800">Order Confirmation</h2>
+      <h2 *ngIf="cartDetails.cartDetails[0].ORDER_STATUS == 'R'" class="text-xl font-bold text-gray-800">Order Rejection</h2>
     </div>
 
     <div class="lg:col-span-2 space-y-4">
-      <p class="text-lg md:text-[1.15rem] text-green-600 border-b pb-2">
+      <p class="text-lg md:text-[1.15rem] text-green-600 border-b pb-2" *ngIf="cartDetails.cartDetails[0].ORDER_STATUS != 'R'">
         Thank you for ordering our
         <span class="font-bold">{{
           cartDetails?.cartDetails?.length > 1 ? "products" : "product"
         }}</span
         >! Your order has been successfully placed.
       </p>
-
+      <p class="text-lg md:text-[1.15rem] text-red-600 border-b pb-2" *ngIf="cartDetails.cartDetails[0].ORDER_STATUS == 'R'">
+        Your order has been rejected.
+      </p>
       <div
         class="bg-white rounded-lg p-3 border border-gray-200 shadow-sm space-y-2"
       >
@@ -40,7 +43,7 @@
 
         <ul class="text-sm text-gray-700 divide-y divide-gray-100">
           <li
-            *ngFor="let item of convertStringtoArray(cartDetails?.cartDetails?.[0]['CART_ITEMS'])"
+            *ngFor="let item of convertStringtoArray(cartDetails?.cartDetails?.[0]['CART_ITEMS']), trackBy: trackByItemId"
             class="flex justify-between items-start py-2"
           >
             <ng-container
@@ -51,6 +54,7 @@
                 *ngIf="item.PHOTO_URL && item.PHOTO_URL.length && !item?.VARIENT_IMAGE_URL?.trim()"
                 [src]="photoURL + item.PHOTO_URL[imageIndices[item.ID]]"
                 alt="{{ item.PRODUCT_NAME }}"
+                 (error)="onImageError($event)"
                 class="w-10 h-10 rounded-md object-cover border border-gray-200"
               />
                 <img
@@ -58,6 +62,7 @@
                 [src]="vareintImageUrl + item.VARIENT_IMAGE_URL"
                 alt="{{ item.VARIENT_IMAGE_URL }}"
                 class="w-10 h-10 rounded-md object-cover border border-gray-200"
+                 (error)="onImageError($event)"
               />
               <div class="flex-grow leading-tight">
                 <span class="font-medium text-gray-800 block text-sm">{{
@@ -82,360 +87,384 @@
       </div>
 
       <div
-        class="bg-white rounded-lg p-3 border border-gray-200 shadow-sm space-y-2"
+  class="bg-white rounded-lg p-3 border border-gray-200 shadow-sm space-y-2"
+>
+  <span class="text-base font-semibold text-gray-800"
+    >Order Progress</span
+  >
+
+  <div
+    class="flex justify-between flex-col items-center md:flex-row md:items-start pt-3"
+  >
+    <div class="flex flex-col items-center">
+      <div
+        class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold transition-colors duration-300"
+        [ngClass]="{
+          'bg-green-500':
+            cartDetails.cartDetails[0].ORDER_CONFIRMED_DATETIME &&
+            !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+          'bg-yellow-500':
+            cartDetails.cartDetails[0].ORDER_DATETIME &&
+            !cartDetails.cartDetails[0].ORDER_CONFIRMED_DATETIME &&
+            !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+          'bg-gray-400':
+            !cartDetails.cartDetails[0].ORDER_DATETIME ||
+            cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+        }"
       >
-        <span class="text-base font-semibold text-gray-800"
-          >Order Progress</span
+        <i
+          *ngIf="
+            cartDetails.cartDetails[0].ORDER_CONFIRMED_DATETIME &&
+            !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+          "
+          class="ri-check-line text-sm"
+        ></i>
+        <span
+          *ngIf="
+            !cartDetails.cartDetails[0].ORDER_CONFIRMED_DATETIME ||
+            cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+          "
+          >1</span
         >
-
-        <div class="flex items-center justify-between text-center pt-3">
-          <div class="flex flex-col items-center">
-            <div
-              class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold transition-colors duration-300"
-              [ngClass]="{
-                'bg-green-500':
-                  cartDetails.cartDetails[0].ORDER_CONFIRMED_DATETIME &&
-                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
-                'bg-yellow-500':
-                  cartDetails.cartDetails[0].ORDER_DATETIME &&
-                  !cartDetails.cartDetails[0].ORDER_CONFIRMED_DATETIME &&
-                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
-                'bg-gray-400':
-                  !cartDetails.cartDetails[0].ORDER_DATETIME ||
-                  cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
-              }"
-            >
-              <i
-                *ngIf="
-                  cartDetails.cartDetails[0].ORDER_CONFIRMED_DATETIME &&
-                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
-                "
-                class="ri-check-line text-sm"
-              ></i>
-              <span
-                *ngIf="
-                  !cartDetails.cartDetails[0].ORDER_CONFIRMED_DATETIME ||
-                  cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
-                "
-                >1</span
-              >
-            </div>
-            <span class="text-[11px] mt-1 text-gray-800 font-medium"
-              >Order Placed</span
-            >
-            <span
-              class="text-[10px] text-gray-500"
-              *ngIf="cartDetails.cartDetails[0].ORDER_DATETIME"
-            >
-              {{
-                cartDetails.cartDetails[0].ORDER_DATETIME
-                  | date : "dd/MM/yyyy hh:mm:a"
-              }}
-            </span>
-            <span
-              class="text-[10px] text-gray-400 italic"
-              *ngIf="
-                !cartDetails.cartDetails[0].ORDER_DATETIME &&
-                !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
-              "
-            >
-              Pending
-            </span>
-          </div>
-
-          <div
-            class="h-1 mx-1 flex-1"
-            [ngClass]="{
-              'bg-green-500':
-                cartDetails.cartDetails[0].ORDER_CONFIRMED_DATETIME &&
-                !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
-              'bg-gray-200':
-                !cartDetails.cartDetails[0].ORDER_CONFIRMED_DATETIME ||
-                cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
-            }"
-            style="margin-top: -30px"
-          ></div>
-
-          <div class="flex flex-col items-center">
-            <div
-              class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold transition-colors duration-300"
-              [ngClass]="{
-                'bg-green-500':
-                  cartDetails.cartDetails[0]
-                    .ACTUAL_PREPARE_PACKAGING_DATETIME || cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME &&
-                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
-                'bg-yellow-500':
-                  cartDetails.cartDetails[0].ORDER_CONFIRMED_DATETIME &&
-                  !cartDetails.cartDetails[0]
-                    .ACTUAL_PREPARE_PACKAGING_DATETIME &&
-                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
-                'bg-gray-400':
-                  !cartDetails.cartDetails[0].ORDER_CONFIRMED_DATETIME ||
-                  cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
-              }"
-            >
-              <i
-                *ngIf="
-                  cartDetails.cartDetails[0]
-                    .ACTUAL_PREPARE_PACKAGING_DATETIME &&
-                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
-                "
-                class="ri-check-line text-sm"
-              ></i>
-              <span
-                *ngIf="
-                  !cartDetails.cartDetails[0]
-                    .ACTUAL_PREPARE_PACKAGING_DATETIME ||
-                  cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
-                "
-                >2</span
-              >
-            </div>
-            <span class="text-[11px] mt-1 text-gray-800 font-medium"
-              >Order Accepted</span
-            >
-            <span
-              class="text-[10px] text-gray-500"
-              *ngIf="cartDetails.cartDetails[0].ORDER_CONFIRMED_DATETIME"
-            >
-              {{
-                cartDetails.cartDetails[0].ORDER_CONFIRMED_DATETIME
-                  | date : "dd/MM/yyyy hh:mm:a"
-              }}
-            </span>
-            <span
-              class="text-[10px] text-gray-400 italic"
-              *ngIf="
-                !cartDetails.cartDetails[0].ORDER_CONFIRMED_DATETIME &&
-                !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
-              "
-            >
-              Pending
-            </span>
-          </div>
-
-          <div
-            class="h-1 mx-1 flex-1"
-            [ngClass]="{
-              'bg-green-500':
-                cartDetails.cartDetails[0].ACTUAL_PREPARE_PACKAGING_DATETIME &&
-                !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
-              'bg-gray-200':
-                !cartDetails.cartDetails[0].ACTUAL_PREPARE_PACKAGING_DATETIME ||
-                cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
-            }"
-            style="margin-top: -30px"
-          ></div>
-
-          <div class="flex flex-col items-center">
-            <div
-              class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold transition-colors duration-300"
-              [ngClass]="{
-                'bg-green-500':
-                  cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME &&
-                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
-                'bg-yellow-500':
-                  cartDetails.cartDetails[0]
-                    .ACTUAL_PREPARE_PACKAGING_DATETIME &&
-                  !cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME &&
-                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
-                'bg-gray-400':
-                  !cartDetails.cartDetails[0]
-                    .ACTUAL_PREPARE_PACKAGING_DATETIME ||
-                  cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
-              }"
-            >
-              <i
-                *ngIf="
-                  cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME &&
-                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
-                "
-                class="ri-check-line text-sm"
-              ></i>
-              <span
-                *ngIf="
-                  !cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME ||
-                  cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
-                "
-                >3</span
-              >
-            </div>
-            <span class="text-[11px] mt-1 text-gray-800 font-medium"
-              >Packaging Done</span
-            >
-            <span
-              class="text-[10px] text-gray-500"
-              *ngIf="
-                cartDetails.cartDetails[0].ACTUAL_PREPARE_PACKAGING_DATETIME
-              "
-            >
-              {{
-                cartDetails.cartDetails[0].ACTUAL_PREPARE_PACKAGING_DATETIME
-                  | date : "dd/MM/yyyy hh:mm:a"
-              }}
-            </span>
-            <span
-              class="text-[10px] text-gray-400 italic"
-              *ngIf="
-                !cartDetails.cartDetails[0].ACTUAL_PREPARE_PACKAGING_DATETIME &&
-                !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
-              "
-            >
-              Pending
-            </span>
-          </div>
-
-          <div
-            class="h-1 mx-1 flex-1"
-            [ngClass]="{
-              'bg-green-500':
-                cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME ||
-                (cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
-                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME),
-              'bg-gray-200':
-                !cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME ||
-                cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
-            }"
-            style="margin-top: -30px"
-          ></div>
-
-          <div class="flex flex-col items-center">
-            <div
-              class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold transition-colors duration-300"
-              [ngClass]="{
-                'bg-green-500':
-                  cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
-                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
-                'bg-yellow-500':
-                  cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME &&
-                  !cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
-                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
-                'bg-gray-400':
-                  !cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME ||
-                  cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
-              }"
-            >
-              <i
-                *ngIf="
-                  cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
-                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
-                "
-                class="ri-check-line text-sm"
-              ></i>
-              <span
-                *ngIf="
-                  !cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME ||
-                  cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
-                "
-                >4</span
-              >
-            </div>
-            <span class="text-[11px] mt-1 text-gray-800 font-medium"
-              *ngIf="cartDetails.cartDetails[0].IS_LOCAL_PICKUP_SELECTED == 0"
-              >Dispatched</span
-            >
-             <span class="text-[11px] mt-1 text-gray-800 font-medium"
-              *ngIf="cartDetails.cartDetails[0].IS_LOCAL_PICKUP_SELECTED == 1"
-              >Ready For Pickup</span
-            >
-            <span
-              class="text-[10px] text-gray-500"
-              *ngIf="cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME"
-            >
-              {{
-                cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME
-                  | date : "dd/MM/yyyy hh:mm:a"
-              }}
-            </span>
-            <span
-              class="text-[10px] text-gray-400 italic"
-              *ngIf="
-                !cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME &&
-                !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
-              "
-            >
-              Pending
-            </span>
-          </div>
-
-          <div
-            class="h-1 mx-1 flex-1"
-            [ngClass]="{
-              'bg-green-500':
-                cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
-                !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
-              'bg-gray-200':
-                !cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME ||
-                cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
-            }"
-            style="margin-top: -30px"
-          ></div>
-
-          <div class="flex flex-col items-center">
-            <div
-              class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold transition-colors duration-300"
-              [ngClass]="{
-                'bg-green-500':
-                  cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
-                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
-                'bg-gray-400':
-                  !cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME ||
-                  cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
-              }"
-            >
-              <i
-                *ngIf="
-                  cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
-                  !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
-                "
-                class="ri-check-line text-sm"
-              ></i>
-              <span *ngIf="!cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME"
-                >5</span
-              >
-            </div>
-            <span class="text-[11px] mt-1 text-gray-800 font-medium"
-              *ngIf="cartDetails.cartDetails[0].IS_LOCAL_PICKUP_SELECTED==0"
-              >Delivered</span
-            >
-            <span class="text-[11px] mt-1 text-gray-800 font-medium"
-              *ngIf="cartDetails.cartDetails[0].IS_LOCAL_PICKUP_SELECTED==1"
-              >Picked Up</span
-            >
-            <span
-              class="text-[10px] text-gray-500"
-              *ngIf="cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME"
-            >
-              {{
-                cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME
-                  | date : "dd/MM/yyyy hh:mm:a"
-              }}
-            </span>
-            <span
-              class="text-[10px] text-gray-400 italic"
-              *ngIf="
-                !cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
-                !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
-              "
-            >
-              Pending
-            </span>
-          </div>
-        </div>
-
-        <div
-          *ngIf="cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME"
-          class="text-center pt-2"
-        >
-          <span class="text-sm font-bold text-red-600">Order Canceled</span>
-          <small class="block text-xs text-gray-500">
-            {{
-              cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
-                | date : "dd/MM/yyyy hh:mm:a"
-            }}
-          </small>
-        </div>
       </div>
+      <span class="text-[11px] mt-1 text-gray-800 font-medium w-24 text-center"
+        >Order Placed</span
+      >
+      <span
+        class="text-[10px] text-gray-500"
+        *ngIf="cartDetails.cartDetails[0].ORDER_DATETIME"
+      >
+        {{
+          cartDetails.cartDetails[0].ORDER_DATETIME | date:'dd/MM/yyyy'
+            
+        }}
+      </span>
+      <span
+        class="text-[10px] text-gray-400 italic"
+        *ngIf="
+          !cartDetails.cartDetails[0].ORDER_DATETIME &&
+          !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+        "
+      >
+        Pending
+      </span>
+    </div>
+
+    <div
+      class="w-1 h-10 md:w-auto md:h-1 md:mx-1 md:flex-1 md:mt-3"
+      [ngClass]="{
+        'bg-green-500':
+          cartDetails.cartDetails[0].ORDER_CONFIRMED_DATETIME &&
+          !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+        'bg-gray-200':
+          !cartDetails.cartDetails[0].ORDER_CONFIRMED_DATETIME ||
+          cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+      }"
+    ></div>
+
+    <div class="flex flex-col items-center">
+      <div
+        class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold transition-colors duration-300"
+        [ngClass]="{
+          'bg-green-500':
+            cartDetails.cartDetails[0]
+              .ACTUAL_PREPARE_PACKAGING_DATETIME ||
+            (cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME &&
+              !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME),
+          'bg-yellow-500':
+            cartDetails.cartDetails[0].ORDER_CONFIRMED_DATETIME && cartDetails.cartDetails[0].ORDER_STATUS != 'R' &&
+            !cartDetails.cartDetails[0]
+              .ACTUAL_PREPARE_PACKAGING_DATETIME &&
+            !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+          'bg-red-500':
+            cartDetails.cartDetails[0].ORDER_CONFIRMED_DATETIME && cartDetails.cartDetails[0].ORDER_STATUS == 'R' &&
+            !cartDetails.cartDetails[0]
+              .ACTUAL_PREPARE_PACKAGING_DATETIME &&
+            !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+          'bg-gray-400':
+            !cartDetails.cartDetails[0].ORDER_CONFIRMED_DATETIME ||
+            cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+        }"
+      >
+        <i
+          *ngIf="
+            cartDetails.cartDetails[0]
+              .ACTUAL_PREPARE_PACKAGING_DATETIME &&
+            !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+          "
+          class="ri-check-line text-sm"
+        ></i>
+        <span
+          *ngIf="
+            !cartDetails.cartDetails[0]
+              .ACTUAL_PREPARE_PACKAGING_DATETIME ||
+            cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+          "
+          >2</span
+        >
+      </div>
+      <span *ngIf="cartDetails.cartDetails[0].ORDER_STATUS != 'R'" class="text-[11px] mt-1 text-gray-800 font-medium w-24 text-center"
+        >Order Accepted</span
+      >
+      <span *ngIf="cartDetails.cartDetails[0].ORDER_STATUS == 'R'" class="text-[11px] mt-1 text-gray-800 font-medium w-24 text-center"
+        >Order Rejected</span
+      >
+      <span
+        class="text-[10px] text-gray-500"
+        *ngIf="cartDetails.cartDetails[0].ORDER_CONFIRMED_DATETIME"
+      >
+        {{
+          cartDetails.cartDetails[0].ORDER_CONFIRMED_DATETIME | date:'dd/MM/yyyy'
+            
+        }}
+      </span>
+      <span
+        class="text-[10px] text-gray-400 italic"
+        *ngIf="
+          !cartDetails.cartDetails[0].ORDER_CONFIRMED_DATETIME &&
+          !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+        "
+      >
+        Pending
+      </span>
+    </div>
+
+    <div
+      *ngIf="cartDetails.cartDetails[0].ORDER_STATUS != 'R'" 
+      class="w-1 h-10 md:w-auto md:h-1 md:mx-1 md:flex-1 md:mt-3"
+      [ngClass]="{
+        'bg-green-500':
+          cartDetails.cartDetails[0].ACTUAL_PREPARE_PACKAGING_DATETIME &&
+          !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+        'bg-gray-200':
+          !cartDetails.cartDetails[0].ACTUAL_PREPARE_PACKAGING_DATETIME ||
+          cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+      }"
+    ></div>
+
+    <div class="flex flex-col items-center" *ngIf="cartDetails.cartDetails[0].ORDER_STATUS != 'R'" >
+      <div
+        class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold transition-colors duration-300"
+        [ngClass]="{
+          'bg-green-500':
+            cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME &&
+            !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+          'bg-yellow-500':
+            cartDetails.cartDetails[0]
+              .ACTUAL_PREPARE_PACKAGING_DATETIME &&
+            !cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME &&
+            !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+          'bg-gray-400':
+            !cartDetails.cartDetails[0]
+              .ACTUAL_PREPARE_PACKAGING_DATETIME ||
+            cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+        }"
+      >
+        <i
+          *ngIf="
+            cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME &&
+            !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+          "
+          class="ri-check-line text-sm"
+        ></i>
+        <span
+          *ngIf="
+            !cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME ||
+            cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+          "
+          >3</span
+        >
+      </div>
+      <span class="text-[11px] mt-1 text-gray-800 font-medium w-24 text-center"
+        >Packaging Done</span
+      >
+      <span
+        class="text-[10px] text-gray-500"
+        *ngIf="
+          cartDetails.cartDetails[0].ACTUAL_PREPARE_PACKAGING_DATETIME
+        "
+      >
+        {{
+          cartDetails.cartDetails[0].ACTUAL_PREPARE_PACKAGING_DATETIME | date:'dd/MM/yyyy'
+            
+        }}
+      </span>
+      <span
+        class="text-[10px] text-gray-400 italic"
+        *ngIf="
+          !cartDetails.cartDetails[0]
+            .ACTUAL_PREPARE_PACKAGING_DATETIME &&
+          !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+        "
+      >
+        Pending
+      </span>
+    </div>
+
+    <div
+      class="w-1 h-10 md:w-auto md:h-1 md:mx-1 md:flex-1 md:mt-3"
+      *ngIf="cartDetails.cartDetails[0].ORDER_STATUS != 'R'" 
+      [ngClass]="{
+        'bg-green-500':
+          cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME ||
+          (cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
+            !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME),
+        'bg-gray-200':
+          !cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME ||
+          cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+      }"
+    ></div>
+
+    <div class="flex flex-col items-center" *ngIf="cartDetails.cartDetails[0].ORDER_STATUS != 'R'" >
+      <div
+        class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold transition-colors duration-300"
+        [ngClass]="{
+          'bg-green-500':
+            cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
+            !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+          'bg-yellow-500':
+            cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME &&
+            !cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
+            !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+          'bg-gray-400':
+            !cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME ||
+            cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+        }"
+      >
+        <i
+          *ngIf="
+            cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
+            !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+          "
+          class="ri-check-line text-sm"
+        ></i>
+        <span
+          *ngIf="
+            !cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME ||
+            cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+          "
+          >4</span
+        >
+      </div>
+      <span
+        class="text-[11px] mt-1 text-gray-800 font-medium w-24 text-center"
+        *ngIf="cartDetails.cartDetails[0].IS_LOCAL_PICKUP_SELECTED == 0"
+        >Dispatched</span
+      >
+      <span
+        class="text-[11px] mt-1 text-gray-800 font-medium w-24 text-center"
+        *ngIf="cartDetails.cartDetails[0].IS_LOCAL_PICKUP_SELECTED == 1"
+        >Ready For Pickup</span
+      >
+      <span
+        class="text-[10px] text-gray-500"
+        *ngIf="cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME"
+      >
+        {{
+          cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME | date:'dd/MM/yyyy'
+            
+        }}
+      </span>
+      <span
+        class="text-[10px] text-gray-400 italic"
+        *ngIf="
+          !cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME &&
+          !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+        "
+      >
+        Pending
+      </span>
+    </div>
+
+    <div
+      class="w-1 h-10 md:w-auto md:h-1 md:mx-1 md:flex-1 md:mt-3"
+      *ngIf="cartDetails.cartDetails[0].ORDER_STATUS != 'R'" 
+      [ngClass]="{
+        'bg-green-500':
+          cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
+          !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+        'bg-gray-200':
+          !cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME ||
+          cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+      }"
+    ></div>
+
+    <div class="flex flex-col items-center" *ngIf="cartDetails.cartDetails[0].ORDER_STATUS != 'R'" >
+      <div
+        class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold transition-colors duration-300"
+        [ngClass]="{
+          'bg-green-500':
+            cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
+            !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+          'bg-yellow-500':
+            cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME &&
+            !cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
+            !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+
+          'bg-gray-400':
+            !cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME ||
+            cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+        }"
+      >
+        <i
+          *ngIf="
+            cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
+            !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+          "
+          class="ri-check-line text-sm"
+        ></i>
+        <span
+          *ngIf="
+            !cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME ||
+            cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+          "
+          >5</span
+        >
+      </div>
+      <span
+        class="text-[11px] mt-1 text-gray-800 font-medium w-24 text-center"
+        *ngIf="cartDetails.cartDetails[0].IS_LOCAL_PICKUP_SELECTED == 0"
+        >Delivered</span
+      >
+      <span
+        class="text-[11px] mt-1 text-gray-800 font-medium w-24 text-center"
+        *ngIf="cartDetails.cartDetails[0].IS_LOCAL_PICKUP_SELECTED == 1"
+        >Picked Up</span
+      >
+      <span
+        class="text-[10px] text-gray-500"
+        *ngIf="cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME"
+      >
+        {{
+          cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME | date:'dd/MM/yyyy'
+            
+        }}
+      </span>
+      <span
+        class="text-[10px] text-gray-400 italic"
+        *ngIf="
+          !cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
+          !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+        "
+      >
+        Pending
+      </span>
+    </div>
+  </div>
+
+  <div
+    *ngIf="cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME && cartDetails.cartDetails[0].ORDER_STATUS != 'R'"
+    class="text-center pt-2"
+  >
+    <span class="text-sm font-bold text-red-600">Order Canceled</span>
+    <small class="block text-xs text-gray-500">
+      {{
+        cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME | date:'dd/MM/yyyy'
+          
+      }}
+    </small>
+  </div>
+</div>
     </div>
 
     <div class="space-y-4">

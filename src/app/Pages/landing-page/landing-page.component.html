@@ -395,7 +395,7 @@
 
                       <span
                         class="text-black font-medium me-1"
-                        *ngIf="product.IS_VERIENT_AVAILABLE == 1"
+                        *ngIf="product.IS_VERIENT_AVAILABLE == 1 && product.VARIENTS"
                       >
                         ${{convertStringtoArray(product.VARIENTS)[0].RATE || 0}}
                       </span>
@@ -618,7 +618,7 @@
 
                     <span
                       class="text-black font-medium me-1"
-                      *ngIf="product.IS_VERIENT_AVAILABLE == 1"
+                      *ngIf="product.IS_VERIENT_AVAILABLE == 1 && product.VARIENTS"
                     >
                       ${{convertStringtoArray(product.VARIENTS)[0].RATE || 0}}
                     </span>

@@ -2617,13 +2617,23 @@
 
                   <div
                     class="timeline-step"
-                    [class.active]="order.ORDER_CONFIRMED_DATETIME"
+                    [class.active]="order.ORDER_CONFIRMED_DATETIME && order.ORDER_STATUS!=='R'"
                   >
                     <div class="circle">2</div>
                     <div class="line"></div>
+                    <div class="line" style="color:red" *ngIf="order.ORDER_STATUS =='R'"></div>
+                  </div>
+                  <div
+                    class="timeline-step"
+                    style="colour:red"
+                    [class.active]="order.ORDER_CONFIRMED_DATETIME && order.ORDER_STATUS=='R'"
+                  >
+                    <!-- <div class="circle" style="colour:red">2</div> -->
+                    <!-- <div class="line"></div> -->
                   </div>
 
                   <div
+                    *ngIf="order.ORDER_STATUS !='R'"
                     class="timeline-step"
                     [class.active]="order.ACTUAL_PREPARE_PACKAGING_DATETIME || order.EXPECTED_DISPATCH_DATETIME"
                   >
@@ -2632,6 +2642,7 @@
                   </div>
 
                   <div
+                  *ngIf="order.ORDER_STATUS !='R'"
                     class="timeline-step"
                     [class.active]="order.ACTUAL_DISPATCH_DATETIME"
                   >
@@ -2640,6 +2651,7 @@
                   </div>
 
                   <div
+                  *ngIf="order.ORDER_STATUS !='R'"
                     class="timeline-step"
                     [class.active]="order.ACTUAL_DELIVERY_DATETIME"
                   >
@@ -2652,55 +2664,64 @@
                     <div class="status-header">Order Placed</div>
                     <small class="status-subtitle">{{
                       order.ORDER_DATETIME
-                        ? (order.ORDER_DATETIME | date : "dd-MM-yyyy hh:mm:a")
+                        ? (order.ORDER_DATETIME | date : "dd-MM-yyyy")
                         : "Pending"
                     }}</small>
                   </div>
 
-                  <div class="detail-item">
+                  <div class="detail-item" *ngIf="order.ORDER_STATUS !=='R'">
                     <div class="status-header">Order Accepted</div>
                     <small class="status-subtitle">{{
-                      order.ORDER_CONFIRMED_DATETIME
+                      order.ORDER_CONFIRMED_DATETIME 
                         ? (order.ORDER_CONFIRMED_DATETIME
-                          | date : "dd-MM-yyyy hh:mm:a")
+                          | date : "dd-MM-yyyy")
+                        : "Pending"
+                    }}</small>
+                  </div>
+                   <div class="detail-item" *ngIf="order.ORDER_STATUS =='R'" style="color:red">
+                    <div class="status-header">Order Rejected</div>
+                    <small class="status-subtitle">{{
+                      order.ORDER_CONFIRMED_DATETIME 
+                        ? (order.ORDER_CONFIRMED_DATETIME
+                          | date : "dd-MM-yyyy")
                         : "Pending"
                     }}</small>
                   </div>
 
-                  <div class="detail-item">
+                  <div class="detail-item" *ngIf="order.ORDER_STATUS !='R'">
                     <div class="status-header">Packaging Done</div>
                     <small class="status-subtitle">{{
                       order.ACTUAL_PREPARE_PACKAGING_DATETIME || order.EXPECTED_DISPATCH_DATETIME
                         ? (order.ACTUAL_PREPARE_PACKAGING_DATETIME || order.EXPECTED_DISPATCH_DATETIME
-                          | date : "dd-MM-yyyy hh:mm:a")
+                          | date : "dd-MM-yyyy")
                         : "Pending"
                     }}</small>
                   </div>
 
-                  <div class="detail-item">
+                  <div class="detail-item" *ngIf="order.ORDER_STATUS !='R'">
                     <div class="status-header" *ngIf="order.IS_LOCAL_PICKUP_SELECTED == 0">Dispatched</div>
                     <div class="status-header" *ngIf="order.IS_LOCAL_PICKUP_SELECTED == 1">Ready For Pickup</div>
                     <small class="status-subtitle">{{
                       order.ACTUAL_DISPATCH_DATETIME
                         ? (order.ACTUAL_DISPATCH_DATETIME
-                          | date : "dd-MM-yyyy hh:mm:a")
+                          | date : "dd-MM-yyyy")
                         : "Pending"
                     }}</small>
                   </div>
 
-                  <div class="detail-item">
+                  <div class="detail-item" *ngIf="order.ORDER_STATUS !='R'">
                     <div class="status-header" *ngIf="order.IS_LOCAL_PICKUP_SELECTED == 0">Delivered</div>
                     <div class="status-header" *ngIf="order.IS_LOCAL_PICKUP_SELECTED == 1">Picked Up</div>
                     <small class="status-subtitle">{{
                       order.ACTUAL_DELIVERY_DATETIME
                         ? (order.ACTUAL_DELIVERY_DATETIME
-                          | date : "dd-MM-yyyy hh:mm:a")
+                          | date : "dd-MM-yyyy")
                         : "Pending"
                     }}</small>
                   </div>
 
                   <div
-                    *ngIf="order.ACTUAL_CANCELLED_DATETIME"
+                    *ngIf="order.ACTUAL_CANCELLED_DATETIME && order.ORDER_STATUS!='R'"
                     class="detail-item detail-cancelled"
                     style="padding-top: 10px; margin-top: 10px"
                   >
@@ -2709,7 +2730,7 @@
                     </div>
                     <small class="status-subtitle" style="color: #c62828">{{
                       order.ACTUAL_CANCELLED_DATETIME
-                        | date : "dd-MM-yyyy hh:mm:a"
+                        | date : "dd-MM-yyyy"
                     }}</small>
                   </div>
                 </div>

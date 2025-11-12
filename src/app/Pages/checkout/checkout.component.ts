@@ -2136,7 +2136,7 @@ vareintImageUrl: string = this.api.retriveimgUrl + 'VarientImages/';
     // }
   }
 
-  today = new Date();
+  // today = this.commonFunction.convertUTCToIST(new Date());
   showReceiptModal = false;
 
   closeReceiptModal() {
@@ -2947,4 +2947,7 @@ vareintImageUrl: string = this.api.retriveimgUrl + 'VarientImages/';
         },
       });
   }
+  trackByItemId(index: number, item: any): string {
+  return item.ID;
+}
 }
