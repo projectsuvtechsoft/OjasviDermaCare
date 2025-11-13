@@ -1428,7 +1428,7 @@
                                   d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"
                                 ></path>
                               </svg>
-                              <span>Verifying...</span>
+                              <span>Sending OTP...</span>
                             </ng-container>
                           </button>
                         </div>
@@ -2060,7 +2060,7 @@
                       >
                         Total Price $
                         {{
-                          item.DISCOUNT_TYPE == "Amount"
+                         ( item.DISCOUNT_TYPE == "Amount"
                             ? item.ITEM_DISCOUNT_AMOUNT == 0
                               ? item.VERIENT_RATE * item.QUANTITY
                               : item.ITEM_DISCOUNT_AMOUNT
@@ -2068,7 +2068,7 @@
                             ? (item.VERIENT_RATE -
                                 (item.VERIENT_RATE * item.DISCOUNT) / 100) *
                               item.QUANTITY
-                            : item.VERIENT_RATE * item.QUANTITY
+                            : item.VERIENT_RATE * item.QUANTITY).toFixed(2)
                         }}
                       </span>
                     </p>

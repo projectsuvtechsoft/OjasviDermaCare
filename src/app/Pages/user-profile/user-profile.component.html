@@ -290,7 +290,21 @@
               <p class="text-xl font-bold text-gray-800">{{ pendingOrders }}</p>
             </div>
           </div>
-
+ <div class="bg-white rounded-lg shadow-sm p-3 flex items-center">
+            <div
+              class="w-10 h-10 rounded-full bg-yellow-500 bg-opacity-10 flex items-center justify-center mr-3"
+            >
+              <div
+                class="w-5 h-5 flex items-center justify-center text-yellow-600"
+              >
+                <i class="ri-time-line"></i>
+              </div>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-500">Rejected Orders</p>
+              <p class="text-xl font-bold text-gray-800">{{ rejected }}</p>
+            </div>
+          </div>
           <!-- Delivered Orders Card -->
           <div class="bg-white rounded-lg shadow-sm p-3 flex items-center">
             <div
@@ -1108,7 +1122,16 @@
             </h2>
           </div>
 
+          <!-- Loader -->
+          <div *ngIf="loadingProducts" class="flex justify-center items-center py-16">
+            <div class="flex flex-col items-center">
+              <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#5a8f69]"></div>
+              <p class="text-gray-500 mt-4">Loading your wishlist...</p>
+            </div>
+          </div>
+
           <ul
+            *ngIf="!loadingProducts"
             class="divide-y divide-gray-200 grid grid-cols-1 sm:grid-cols-2 gap-1"
           >
             <li
@@ -1128,6 +1151,13 @@
                   class="object-contain h-full"
                 /> -->
                 <img
+                  *ngIf="convertStringtoArray(product.VARIENTS).length > 0"
+                  [src]="vareintImageUrl + convertStringtoArray(product.VARIENTS)[0]['VARIENT_IMAGE_URL']"
+                  [alt]="product.NAME"
+                  class="object-contain h-full"
+                />
+                <img
+                  *ngIf="getImageArray(product)"
                   [src]="producctImageurl + getImageArray(product)[0]"
                   [alt]="product.NAME"
                   class="object-contain h-full"
@@ -1242,7 +1272,7 @@
 
           <!-- Empty State -->
           <div
-            *ngIf="!products || products.length === 0"
+            *ngIf="!loadingProducts && (!products || products.length === 0)"
             class="text-center py-16 text-gray-500"
           >
             <i class="ri-heart-line text-6xl mb-4"></i>
@@ -2215,7 +2245,7 @@
                         d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"
                       ></path>
                     </svg>
-                    <span>Verifying...</span>
+                    <span>Sending OTP...</span>
                   </ng-container>
                 </button>
               </div>
@@ -2596,8 +2626,8 @@
                   ${{
                     order.ITEM_DISCOUNT_AMOUNT &&
                     order.ITEM_DISCOUNT_AMOUNT !== 0
-                      ? order.ITEM_DISCOUNT_AMOUNT
-                      : order.PRICE * order.QUANTITY
+                      ? (order.ITEM_DISCOUNT_AMOUNT).toFixed(2)
+                      : (order.PRICE * order.QUANTITY).toFixed(2)
                   }}
                 </div>
               </div>
@@ -2618,19 +2648,21 @@
                   <div
                     class="timeline-step"
                     [class.active]="order.ORDER_CONFIRMED_DATETIME && order.ORDER_STATUS!=='R'"
+                    [style.color]="order.ORDER_STATUS =='R'?'red':''"
                   >
-                    <div class="circle">2</div>
-                    <div class="line"></div>
-                    <div class="line" style="color:red" *ngIf="order.ORDER_STATUS =='R'"></div>
+                    <div class="circle" *ngIf="order.ORDER_STATUS !='R'">2</div>
+                    <div class="circle" style="color:red" *ngIf="order.ORDER_STATUS =='R'">2</div>
+                    <div class="line" *ngIf="order.ORDER_STATUS !='R'"></div>
+                    <!-- <div class="line" style="color:red" *ngIf="order.ORDER_STATUS =='R'"></div> -->
                   </div>
-                  <div
+                  <!-- <div
                     class="timeline-step"
                     style="colour:red"
-                    [class.active]="order.ORDER_CONFIRMED_DATETIME && order.ORDER_STATUS=='R'"
+                    [class.active]="order.ORDER_CONFIRMED_DATETIME && order.ORDER_STATUS!='R'"
                   >
-                    <!-- <div class="circle" style="colour:red">2</div> -->
-                    <!-- <div class="line"></div> -->
-                  </div>
+                    <div class="circle" style="colour:red">3</div>
+                    <div class="line"></div>
+                  </div> -->
 
                   <div
                     *ngIf="order.ORDER_STATUS !='R'"
@@ -2772,7 +2804,7 @@
                     >Shipping and Handling
                   </span>
                   <span class="text-gray-900"
-                    >${{ NET_AMOUNT - totalPrice || 0 }}</span
+                    >${{ (NET_AMOUNT - totalPrice).toFixed(2) || 0 }}</span
                   >
                 </div>
                 <hr />

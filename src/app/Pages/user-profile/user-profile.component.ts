@@ -449,6 +449,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   packagingDoneOrders = 0;
   dispatchingOrders = 0;
   dispatched = 0;
+  rejected =0
   getUserData() {
     // this.IMAGEuRL = this.api.retriveimgUrl2();
     // this.loadData();
@@ -462,13 +463,14 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           this.dataList = data['data'];
           this.statastics = data['data1'];
           this.totalOrders = this.statastics[0][0].TOTAL_ORDERS;
-          this.preparingOrders = this.statastics[1][0].BP; // Preparing
+          // this.preparingOrders = this.statastics[1][0].BP; // Preparing
           this.packagingOrders = this.statastics[1][0].SP; // Packaging
           this.packagingDoneOrders = this.statastics[1][0].PD; // Packaging Done
           this.dispatchingOrders = this.statastics[1][0].D;
-          this.dispatched = this.statastics[1][0].DD;
-          this.pendingOrders = this.statastics[1][0].PENDING + this.preparingOrders + this.packagingOrders + this.packagingDoneOrders
+          this.dispatched = this.statastics[1][0].READY_FOR_DELIVERY;
+          this.pendingOrders = this.statastics[1][0].PENDING + this.packagingOrders + this.packagingDoneOrders
           +this.dispatchingOrders + this.dispatched;
+          this.rejected=this.statastics[1][0].REJECTED
           this.deliveredOrders = this.statastics[1][0].DELIVERED;
 
           // Bind user data dynamically
@@ -1081,9 +1083,9 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   getImageArray(product: any): string[] {
     try {
       const images = JSON.parse(product.Images);
-      return images.map((img: any) => img.PHOTO_URL);
+      return images?.map((img: any) => img.PHOTO_URL);
     } catch (e) {
-      console.error('Invalid image format', e);
+      // console.error('Invalid image format', e);
       return [];
     }
   }
@@ -1599,6 +1601,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   getFavoriteProducts() {
+    this.loadingProducts = true;
     this.userID = this.commonFunction.decryptdata(this.euserID);
     let sessionKey = sessionStorage.getItem('SESSION_KEYS') || '';
     this.decyptedsessionKey = this.commonFunction.decryptdata(sessionKey);
@@ -1622,15 +1625,20 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
           if (this.favoriteProductIds.length > 0) {
             this.getProducts();
+          } else {
+            this.loadingProducts = false;
           }
           this.products = this.products?.map((product: any) => ({
             ...product,
             isLiked: this.favoriteProductIds.includes(product.ID),
           }));
           this.products?.forEach((product: any) => {});
+        } else {
+          this.loadingProducts = false;
         }
       },
       (err) => {
+        this.loadingProducts = false;
         // console.log(err);
       }
     );
@@ -1703,6 +1711,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
                 ...product,
                 isLiked: this.favoriteProductIds.includes(product.ID),
               }));
+              // console.log(this.products,'Products')
               if (typeof variants === 'string') {
                 try {
                   variants = JSON.parse(variants);
@@ -3617,4 +3626,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       address: '456 Central Ave, Suite 100',
     },
   ];
+  convertStringtoArray(str: string) {
+  return JSON.parse(str);
+}
+
 }
