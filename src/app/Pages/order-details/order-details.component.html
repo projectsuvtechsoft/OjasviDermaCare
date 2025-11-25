@@ -320,12 +320,14 @@
         class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold transition-colors duration-300"
         [ngClass]="{
           'bg-green-500':
-            cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
-            !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+            (cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
+            !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME) ||
+            cartDetails.cartDetails[0].ORDER_STATUS==='DD',
           'bg-yellow-500':
             cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME &&
             !cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
-            !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+            !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME &&
+            cartDetails.cartDetails[0].ORDER_STATUS!=='DD',
           'bg-gray-400':
             !cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME ||
             cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
@@ -381,8 +383,9 @@
       *ngIf="cartDetails.cartDetails[0].ORDER_STATUS != 'R'" 
       [ngClass]="{
         'bg-green-500':
-          cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
-          !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+         ( cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
+          !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME) ||
+          cartDetails.cartDetails[0].ORDER_STATUS=='DD',
         'bg-gray-200':
           !cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME ||
           cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
@@ -394,12 +397,14 @@
         class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold transition-colors duration-300"
         [ngClass]="{
           'bg-green-500':
-            cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
-            !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+            (cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
+            !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME) ||
+            cartDetails.cartDetails[0].ORDER_STATUS=='DD',
           'bg-yellow-500':
             cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME &&
             !cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
-            !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME,
+            !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME &&
+            cartDetails.cartDetails[0].ORDER_STATUS!=='DD',
 
           'bg-gray-400':
             !cartDetails.cartDetails[0].ACTUAL_DISPATCH_DATETIME ||
@@ -444,10 +449,24 @@
         class="text-[10px] text-gray-400 italic"
         *ngIf="
           !cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
-          !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME
+          !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME &&
+          cartDetails.cartDetails[0].ORDER_STATUS!=='DD'
         "
       >
         Pending
+      </span>
+       <span
+        class="text-[10px] text-gray-400 italic"
+        *ngIf="
+          !cartDetails.cartDetails[0].ACTUAL_DELIVERY_DATETIME &&
+          !cartDetails.cartDetails[0].ACTUAL_CANCELLED_DATETIME &&
+          cartDetails.cartDetails[0].ORDER_STATUS=='DD'
+        "
+      >
+        {{
+          cartDetails.cartDetails[0].EXPECTED_DISPATCH_DATETIME | date:'dd/MM/yyyy'
+            
+        }}
       </span>
     </div>
   </div>

@@ -542,7 +542,7 @@
                             order.ORDER_STATUS === 'D' ||
                             order.ORDER_STATUS === 'DD',
                           'bg-green-600': order.ORDER_STATUS === 'OD',
-                          'bg-red-500': order.ORDER_STATUS === 'OC'
+                          'bg-red-500': order.ORDER_STATUS === 'OC' || order.ORDER_STATUS === 'R'
                         }"
                       >
                         {{
@@ -554,11 +554,17 @@
                             ? "Packaging"
                             : order.ORDER_STATUS === "D" ||
                               order.ORDER_STATUS === "DD"
-                            ? order.ORDER_STATUS === "D" ? "Preparing for dispatch": "Dispatched"
+                            ? order.ORDER_STATUS === "D"
+                              ? "Preparing for dispatch"
+                              : (order.IS_LOCAL_PICKUP_SELECTED == 1
+                                ? "Picked Up"
+                                : "Dispatched")
                             : order.ORDER_STATUS === "OD"
                             ? "Delivered"
                             : order.ORDER_STATUS === "OC"
                             ? "Cancelled"
+                            : order.ORDER_STATUS === "R"
+                            ? "Rejected"
                             : "Unknown"
                         }}
                       </span>
@@ -2667,7 +2673,7 @@
                   <div
                     *ngIf="order.ORDER_STATUS !='R'"
                     class="timeline-step"
-                    [class.active]="order.ACTUAL_PREPARE_PACKAGING_DATETIME || order.EXPECTED_DISPATCH_DATETIME"
+                    [class.active]="order.ACTUAL_PREPARE_PACKAGING_DATETIME || order.EXPECTED_DISPATCH_DATETIME || (order.ORDER_STATUS === 'DD' && order.EXPECTED_DISPATCH_DATETIME && order.IS_LOCAL_PICKUP_SELECTED == 1)"
                   >
                     <div class="circle">3</div>
                     <div class="line"></div>
@@ -2676,7 +2682,7 @@
                   <div
                   *ngIf="order.ORDER_STATUS !='R'"
                     class="timeline-step"
-                    [class.active]="order.ACTUAL_DISPATCH_DATETIME"
+                    [class.active]="order.ACTUAL_DISPATCH_DATETIME || (order.ORDER_STATUS === 'DD' && order.EXPECTED_DISPATCH_DATETIME && order.IS_LOCAL_PICKUP_SELECTED == 1)"
                   >
                     <div class="circle">4</div>
                     <div class="line"></div>
@@ -2685,7 +2691,7 @@
                   <div
                   *ngIf="order.ORDER_STATUS !='R'"
                     class="timeline-step"
-                    [class.active]="order.ACTUAL_DELIVERY_DATETIME"
+                    [class.active]="order.ACTUAL_DELIVERY_DATETIME || (order.ORDER_STATUS === 'DD' && order.EXPECTED_DISPATCH_DATETIME && order.IS_LOCAL_PICKUP_SELECTED == 1)"
                   >
                     <div class="circle">5</div>
                   </div>
@@ -2748,7 +2754,9 @@
                       order.ACTUAL_DELIVERY_DATETIME
                         ? (order.ACTUAL_DELIVERY_DATETIME
                           | date : "dd-MM-yyyy")
-                        : "Pending"
+                        : (order.ORDER_STATUS === 'DD' && order.EXPECTED_DISPATCH_DATETIME && order.IS_LOCAL_PICKUP_SELECTED == 1
+                          ? (order.EXPECTED_DISPATCH_DATETIME | date : "dd-MM-yyyy")
+                          : "Pending")
                     }}</small>
                   </div>
 

@@ -36,8 +36,8 @@ export class ApiServiceService {
   // commonimgUrl = 'https://ojasviadmin.uvtechsoft.com:9090/api/upload/';
 
   // ojasvi live
-  commoncode = 'https://admin.ojasvidermacare.com:9092';
-  commonimgUrl = 'https://admin.ojasvidermacare.com:9092/api/upload/';
+  // commoncode = 'https://admin.ojasvidermacare.com:9092';
+  // commonimgUrl = 'https://admin.ojasvidermacare.com:9092/api/upload/';
 
   // commoncode = 'https://h10rqczh-9878.inc1.devtunnels.ms';
   // commonimgUrl = 'https://h10rqczh-9878.inc1.devtunnels.ms/api/upload/';
@@ -46,17 +46,15 @@ export class ApiServiceService {
   // commoncode = 'https://h10rqczh-9090.inc1.devtunnels.ms';
   // commonimgUrl = 'https://h10rqczh-9090.inc1.devtunnels.ms/api/upload/';
 
-  // commoncode = 'https://p8rhkmb7-9878.inc1.devtunnels.ms';
-  // commonimgUrl = 'https://p8rhkmb7-9878.inc1.devtunnels.ms/api/upload/';
+  commoncode = 'https://p8rhkmb7-9878.inc1.devtunnels.ms';
+  commonimgUrl = 'https://p8rhkmb7-9878.inc1.devtunnels.ms/api/upload/';
 
   //  commoncode = 'http://192.168.29.212:9878';
   // commonimgUrl = 'http://192.168.29.212:9878/api/upload/';
 
-  // local
-  // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
-  // commonapplicationkey = '26lLNSmaKlcFziHH';
+  
 
-  //Testing
+  //Testing or local
   commonapikey = 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY';
   commonapplicationkey = 'awlcQRwoZxAJQm7b';
 

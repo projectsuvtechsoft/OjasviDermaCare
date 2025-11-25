@@ -1607,9 +1607,9 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.decyptedsessionKey = this.commonFunction.decryptdata(sessionKey);
 
     if (this.userID) {
-      var filter = ` AND CUSTOMER_ID = ${this.userID}`;
+      var filter = ` AND CUSTOMER_ID = ${this.userID} AND ARCHIVE_FLAG='F'`;
     } else {
-      var filter = ` AND SESSION_KEY = '${this.decyptedsessionKey}'`;
+      var filter = ` AND SESSION_KEY = '${this.decyptedsessionKey}' AND ARCHIVE_FLAG='F'`;
     }
 
     this.api.getFavoriteProducts(filter).subscribe(

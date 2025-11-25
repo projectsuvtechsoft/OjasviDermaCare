@@ -263,15 +263,33 @@ prevMobile(tab: string): void {
 
   imageIndices: { [productId: string]: number } = {};
 
+  // getImageArray(product: any): string[] {
+  //   try {
+  //     const images = JSON.parse(product.Images);
+  //     return images.map((img: any) => img.PHOTO_URL);
+  //   } catch (e) {
+  //     console.error('Invalid image format', e);
+  //     return [];
+  //   }
+  // }
+
   getImageArray(product: any): string[] {
-    try {
-      const images = JSON.parse(product.Images);
-      return images.map((img: any) => img.PHOTO_URL);
-    } catch (e) {
-      console.error('Invalid image format', e);
-      return [];
-    }
+    
+  try {
+    if (!product?.Varient_image) return [];
+
+    const images = JSON.parse(product.Varient_image);
+
+    // Ensure parsed value is an array
+    if (!Array.isArray(images)) return [];
+
+    return images
+      .map((img: any) => img?.PHOTO_URL)
+      .filter((url: string) => !!url); // remove null / undefined
+  } catch (e) {
+    return [];
   }
+}
 
   initImageIndex(productId: string) {
     if (!(productId in this.imageIndices)) {
@@ -692,7 +710,9 @@ prevMobile(tab: string): void {
   variantMap: { [key: number]: any[] } = {};
   variantStockMap: { [key: number]: number } = {};
   unitIdMap: { [key: number]: number } = {};
-  productImageUrl: string = this.api.retriveimgUrl + 'productImages/';
+  // productImageUrl: string = this.api.retriveimgUrl + 'productImages/';
+  productImageUrl: string = this.api.retriveimgUrl + 'VarientImages/';
+
   // imageIndices: { [productId: string]: number } = {};
   isLiked: boolean = false;
   // euserID: string = sessionStorage.getItem('userId') || '';

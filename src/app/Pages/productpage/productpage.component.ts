@@ -825,15 +825,23 @@ export class ProductpageComponent {
   }
   imageIndices: { [productId: string]: number } = {};
 
- getImageArray(product: any): string[] {
-    try {
-      const images = JSON.parse(product.Images);
-      return images.map((img: any) => img.PHOTO_URL);
-    } catch (e) {
-      console.error('Invalid image format', e);
-      return [];
-    }
+getImageArray(product: any): string[] {
+  try {
+    if (!product?.Images) return [];
+
+    const images = JSON.parse(product.Images);
+
+    // Make sure images is an array
+    if (!Array.isArray(images)) return [];
+
+    return images
+      .map((img: any) => img?.PHOTO_URL)
+      .filter((url: string) => !!url);
+  } catch (e) {
+    return [];
   }
+}
+
 
   producctImageurl: string = this.api.retriveimgUrl;
   producctImageurl2: string = this.api.retriveimgUrl + 'prdoctImages/';
