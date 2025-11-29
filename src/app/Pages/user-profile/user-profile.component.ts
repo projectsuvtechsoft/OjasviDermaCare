@@ -49,6 +49,8 @@ export class AddressMaster {
   IS_DEFUALT_ADDRESS = false;
   IS_DEFAULT = false;
   COUNTRY_CODE = '+1';
+  STATE_ID:any=0;
+  COUNTRY_ID:any=0
   CITY_ID: any = 0;
   PICKUP_LOCATION_ID!: any;
 }
@@ -176,6 +178,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       this.stream.getTracks().forEach((track) => track.stop());
     }
   }
+  
 
   @HostListener('window:resize', ['$event'])
   onResize(): void {
@@ -313,6 +316,35 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.editField = null;
     this.editValue = '';
   }
+
+  onCityInputChange(){
+  const typed = this.citySearch?.trim();
+ 
+    // Empty → clear
+    if (!typed) {
+      this.addressForm.CITY_NAME == null;
+      this.addressForm.CITY_ID == null;
+      this.filteredCities = [];
+      return;
+    }
+ 
+    // Try exact match
+    const exactMatch = this.cityList.find(
+      (s) => s.NAME.toLowerCase() === typed.toLowerCase()
+    );
+ 
+    if (exactMatch) {
+      // Load cities using state ID
+      this.selectCity(exactMatch);
+      return;
+    }
+ 
+    // No match → free text, but DO NOT remove ID
+    this.addressForm.CITY_NAME = typed;
+    this.addressForm.CITY_ID = null;
+ 
+}
+ 
 
   // User details modal methods
   openUserDetailsModal() {
@@ -1547,7 +1579,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   euserID: string = sessionStorage.getItem('userId') || '';
   decyptedsessionKey: any;
   userID: any;
-  favoriteProductIds: any[] = [];
+  favoriteProductIds: any = [];
   isLiked: boolean = false;
 
   toggleLike(product: any) {
@@ -1632,7 +1664,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
             ...product,
             isLiked: this.favoriteProductIds.includes(product.ID),
           }));
-          this.products?.forEach((product: any) => {});
+          // this.products?.forEach((product: any) => {});
+          sessionStorage.setItem('favoriteProducts',this.favoriteProductIds)
         } else {
           this.loadingProducts = false;
         }
@@ -1679,7 +1712,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   variantRateMap: { [productId: number]: number } = {};
-
+  varients:any=[]
   getProducts() {
     this.loadingProducts = true;
     if (this.favoriteProductIds.length > 0) {
@@ -1701,6 +1734,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         (res: any) => {
           if (res && res.data && Array.isArray(res.data)) {
             this.products = res.data;
+            this.varients=res.varient
             this.loadingProducts = false;
             this.totalProducts = res.count;
             this.showTotalProducts = res.count;
@@ -3151,12 +3185,40 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       }
     );
   }
-  onStateInputChange() {
-    if (!this.stateSearch || this.stateSearch?.trim() === '') {
+ onStateInputChange() {
+    const typed = this.stateSearch?.trim();
+ 
+    // Empty → clear
+    if (!typed) {
       this.addressForm.STATE_NAME = null;
+      this.addressForm.STATE_ID = null;
       this.filteredStates = [];
+      this.addressForm.CITY_NAME == null;
+      this.addressForm.CITY_ID = null;
+      this.citySearch = '';
+      this.cityList = [];
+      return;
     }
-    this.addressForm.STATE_NAME = this.stateSearch;
+ 
+    // Try exact match
+    const exactMatch = this.stateList.find(
+      (s) => s.NAME.toLowerCase() === typed.toLowerCase()
+    );
+ 
+    if (exactMatch) {
+      // Load cities using state ID
+      this.selectState(exactMatch);
+      return;
+    }
+ 
+    // No match → free text, but DO NOT remove ID
+    this.addressForm.STATE_NAME = typed;
+    this.addressForm.STATE_ID = null;
+ 
+    this.cityList = [];
+    this.addressForm.CITY_NAME == null;
+    this.addressForm.CITY_ID = null;
+ 
   }
   filterCities() {
     const term = this.citySearch?.trim().toLowerCase();
@@ -3629,5 +3691,25 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   convertStringtoArray(str: string) {
   return JSON.parse(str);
 }
-
+ // getImageArrayvareint(vareintId:any):string{
+  //   let foundVareint=this.varients.find((data:any)=>data.ID===vareintId)
+  //   if(foundVareint){
+  //     // console.log(foundVareint);
+  //     return foundVareint['VARIENT_IMAGE_URL']
+  //   }
+  //   return ''
+  // }
+  convertToarrayVairents2(data: any) {
+    // console.log(data,this.varients)
+    // let varients = JSON.parse(data?.VARIENTS);
+    let name = '';
+    const varientData = this.varients.find(
+      (varient: any) => varient.PRODUCT_ID === data.ID
+    );
+    if (varientData) {
+      // console.log(varientData)
+      name = varientData.VARIENT_IMAGE_URL;
+    }
+    return name;
+  }
 }

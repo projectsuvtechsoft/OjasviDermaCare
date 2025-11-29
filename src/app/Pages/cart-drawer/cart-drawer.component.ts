@@ -95,7 +95,7 @@ vareintImageUrl: string = this.api.retriveimgUrl + 'VarientImages/';
 
       this.cartService.cartUpdated$.subscribe((cartItems) => {
         this.cartItems = cartItems;
-
+        console.log('subscirbed')
         this.loadingProducts = false;
         // this.loader = false;
         this.cd.detectChanges();
@@ -706,15 +706,15 @@ vareintImageUrl: string = this.api.retriveimgUrl + 'VarientImages/';
     this.loadingProducts = false;
     this.loader = true;
 
-    this.cartService.cartUpdated$.subscribe((cartItems) => {
-      this.loader = false;
-
-      // 2. Apply the old selections to the new cart items (even if one was deleted)
-      this.cartItems = cartItems;
-
-      this.cd.detectChanges();
-      this.updateTotals();
-    });
+    // this.cartService.cartUpdated$.subscribe((cartItems) => {
+    //   // 2. Apply the old selections to the new cart items (even if one was deleted)
+    //   this.cartItems = cartItems;
+    //   // if(cartItems.length>0){
+    //   this.loader = false;
+    //   // }
+    //   this.cd.detectChanges();
+    //   this.updateTotals();
+    // });
     // setTimeout(() => {
     //   this.loader = false;
     // }, 200);
@@ -2446,6 +2446,7 @@ vareintImageUrl: string = this.api.retriveimgUrl + 'VarientImages/';
 
   executeDelete(): void {
     if (this.itemToDelete) {
+      this.loader=true
       this.deleteItem(this.itemToDelete);
       this.updateTotals();
     }
@@ -2453,6 +2454,7 @@ vareintImageUrl: string = this.api.retriveimgUrl + 'VarientImages/';
   }
 
   cancelDelete(): void {
+      this.loader=false
     this.showDeleteConfirmation = false;
     this.itemToDelete = null;
   }

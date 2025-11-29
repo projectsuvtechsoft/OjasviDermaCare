@@ -112,7 +112,7 @@
         class="lg:col-span-5 lg:sticky lg:top-24 lg:self-start space-y-3 md:space-y-4 order-1"
       >
         <!-- Thumbnail Navigation -->
-        <div
+        <!-- <div
           class="flex gap-2 mb-2 md:mb-3 px-3 md:px-0 overflow-x-auto pb-1 scrollbar-hide"
           *ngIf="getImages(data).length > 0 && !convertToarrayVairents(data)"
         >
@@ -129,10 +129,9 @@
               class="w-full h-full object-cover"
             />
           </button>
-        </div>
+        </div> -->
          <div
           class="flex gap-2 mb-2 md:mb-3 px-3 md:px-0 overflow-x-auto pb-1 scrollbar-hide"
-          *ngIf="convertToarrayVairents(data)"
         >
           <button
             [class.ring-2]="selectedImages[0] === convertToarrayVairents(data)"
@@ -146,6 +145,7 @@
             />
           </button>
         </div>
+        
         <!-- Main Image -->
         <div
           class="relative overflow-hidden rounded-xl md:rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 shadow-sm md:shadow-md group"
@@ -1048,10 +1048,9 @@
                   class="w-full h-48 bg-white flex items-center justify-center overflow-hidden"
                 >
                   <img
-                    *ngIf="getImageArray(product).length > 0"
                     [src]="
-                      producctImageurl1 +
-                      getImageArray(product)[imageIndices[product.ID] || 0]
+                      vareintImageUrl +
+                      convertToarrayVairents2(product)
                     "
                     [alt]="product.NAME"
                     class="rounded-lg object-cover w-full h-full"
@@ -1096,13 +1095,18 @@
                 </div>
               </div>
 
-              <div class="text-danger text-sm text-center pt-1 h-2 mb-2">
+             <div class="text-danger text-sm text-center pt-1 h-2">
                 <small
                   *ngIf="
                     product.IS_UPCOMING == 1 ||
-                    product.CURRENT_STOCK_VARIENT <= 0 ||
+                    product.VARIENTS == null ||
+                    product.VARIENTS == undefined ||
+                    product.VARIENTS.length == 0 ||
+                    !hasActiveVariantsSimilar(product.ID) ||
                     currentStockMap[product.ID] <= 0
                   "
+
+                   
                 >
                   Out of stock
                 </small>

@@ -98,7 +98,8 @@ export class CartService {
         this.currentProduct.VERIENT_SIZE = item.VERIENT_SIZE;
         this.currentProduct.SIZE = item.SIZE;
         this.currentProduct.PRODUCT_ID = item.PRODUCT_ID;
-        this.currentProduct.PRODUCT_UNIT_ID = item.UNIT_ID;
+        this.currentProduct.PRODUCT_UNIT_ID = item.VARIENT_UNIT_ID;
+        this.currentProduct.UNIT_ID=item.VARIENT_UNIT_ID ?? item.UNIT_ID ?? item.PRODUCT_UNIT_ID
         this.updateCartToServer();
       });
   }
@@ -152,6 +153,7 @@ export class CartService {
           // console.log(cartData.cartItemDetails)
           this.cartItems = [];
           this.cartCountSubject.next(0);
+          this.loaderUpdate.next(true)
           if (!cartData?.data || cartData.data.length === 0) {
             // this.toastr.info('Cart is empty or not found');
           } else {
@@ -179,6 +181,7 @@ export class CartService {
             });
             // console.log(this.cartItems);
             this.cartUpdated.next(this.cartItems);
+            this.loaderUpdate.next(false)
             this.updateCartCount();
           }
         },
@@ -237,7 +240,7 @@ export class CartService {
       this.currentProduct = this.cartItems[index];
       if (this.currentProduct.CART_ID && this.currentProduct.CART_ITEM_ID) {
         this.removeItemforServer();
-        this.cartUpdated.next(this.cartItems);
+        // this.cartUpdated.next(this.cartItems);
       } else {
         this.cartItems.splice(index, 1);
         this.currentProduct.CART_ID = productId.CART_ID;
@@ -377,7 +380,7 @@ export class CartService {
       decypted = '';
     }
     // console.log(this.currentProduct);
-
+    this.loaderUpdate.next(true)
     const payload = {
       // userId: userId,
       // items: this.cartItems.map((item) => ({
@@ -393,7 +396,7 @@ export class CartService {
       SIZE: this.currentProduct.VERIENT_SIZE,
       COUNTRY_NAME: sessionStorage.getItem('address'),
       PINCODE: sessionStorage.getItem('pincode'),
-      UNIT_ID: this.currentProduct.PRODUCT_UNIT_ID,
+      UNIT_ID: this.currentProduct.VARIENT_UNIT_ID ?? this.currentProduct.UNIT_ID ?? this.currentProduct.PRODUCT_UNIT_ID,
       CART_ID: this.currentProduct.CART_ID ? this.currentProduct.CART_ID : null,
       CART_ITEM_ID: this.currentProduct.CART_ITEM_ID
         ? this.currentProduct.CART_ITEM_ID
@@ -415,13 +418,16 @@ export class CartService {
             this.toastr.success('Cart updated successfully');
             this.fetchCartFromServer(this.userID, this.etoken);
           } else if (response.code === 400) {
+            this.loaderUpdate.next(false)
             this.toastr.error('Not Enough Stock');
             // this.fetchCartFromServer(this.userID, this.etoken);
           } else {
+            this.loaderUpdate.next(false)
             this.toastr.error('Failed to update cart:', '');
           }
         },
         (error) => {
+            this.loaderUpdate.next(false)
           this.toastr.error(
             'Something went wrong please try again later',
             error
@@ -455,7 +461,7 @@ export class CartService {
       SIZE: this.currentProduct.VERIENT_SIZE,
       COUNTRY_NAME: sessionStorage.getItem('address'),
       PINCODE: sessionStorage.getItem('pincode'),
-      UNIT_ID: this.currentProduct.PRODUCT_UNIT_ID,
+      UNIT_ID: this.currentProduct.VARIENT_UNIT_ID ?? this.currentProduct.UNIT_ID ?? this.currentProduct.PRODUCT_UNIT_ID,
       CART_ID: this.currentProduct.CART_ID ? this.currentProduct.CART_ID : null,
       CART_ITEM_ID: this.currentProduct.CART_ITEM_ID
         ? this.currentProduct.CART_ITEM_ID
@@ -669,7 +675,7 @@ export class CartService {
       COUNTRY_NAME: sessionStorage.getItem('address'),
       PINCODE: sessionStorage.getItem('pincode'),
       UNIT_ID:
-        sessionCartItems[0].UNIT_ID || sessionCartItems[0].PRODUCT_UNIT_ID,
+        sessionCartItems[0].VARIENT_UNIT_ID || sessionCartItems[0].VARIENT_UNIT_ID,
     };
 
     // console.log('Adding first item to create cart:', firstItemPayload);
@@ -713,7 +719,7 @@ export class CartService {
                 SIZE: item.SIZE || item.VERIENT_SIZE,
                 COUNTRY_NAME: sessionStorage.getItem('address'),
                 PINCODE: sessionStorage.getItem('pincode'),
-                UNIT_ID: item.UNIT_ID || item.PRODUCT_UNIT_ID,
+                UNIT_ID: item.VARIENT_UNIT_ID || item.VARIENT_UNIT_ID,
                 CART_ID: cartId, // ✅ Use the same CART_ID from first item
               };
 

@@ -94,7 +94,7 @@ export class CheckoutComponent {
     LOCALITY: '',
     ADDRESS_TYPE: 'R',
     AREA: '',
-    IS_DEFAULT: false,
+    // IS_DEFAULT: false,
     IS_DEFUALT_ADDRESS: false,
     SESSION_KEY: '',
     COUNTRY_CODE: '+1',
@@ -120,6 +120,7 @@ export class CheckoutComponent {
   cartIcon!: SafeHtml;
   addressIcon!: SafeHtml;
   paymentIcon!: SafeHtml;
+  updatingStatus=true
   constructor(
     private api: ApiServiceService,
     private toastr: ToastrService,
@@ -132,35 +133,42 @@ export class CheckoutComponent {
   ) {
     this.cartService.cartUpdated$.subscribe((cartItems) => {
       this.cartDetails.cartDetails = cartItems;
-
+      this.deliveryCharges=(this.cartDetails?.cartDetails?.[0]?.["DATA"].NET_AMOUNT-this.cartDetails?.cartDetails?.[0]?.["DATA"].TOTAL_DISCOUNT_AMOUNT)
+      
       // this.toastr.success('Item Added to cart', 'Success')
       // this.loadingProducts = false;
       // this.cd.detectChanges(); // Optional but ensures view update
     });
-    this.cartIcon = this.sanitizer.bypassSecurityTrustHtml(`
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-        class="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6">
-        <circle cx="9" cy="21" r="1"></circle>
-        <circle cx="20" cy="21" r="1"></circle>
-        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-      </svg>`);
+    // this.cartIcon = this.sanitizer.bypassSecurityTrustHtml(`
+    //   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    //     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    //     class="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6">
+    //     <circle cx="9" cy="21" r="1"></circle>
+    //     <circle cx="20" cy="21" r="1"></circle>
+    //     <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+    //   </svg>`);
 
-    this.addressIcon = this.sanitizer.bypassSecurityTrustHtml(`
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-        class="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6">
-        <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"></path>
-        <circle cx="12" cy="10" r="3"></circle>
-      </svg>`);
+    // this.addressIcon = this.sanitizer.bypassSecurityTrustHtml(`
+    //   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    //     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    //     class="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6">
+    //     <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"></path>
+    //     <circle cx="12" cy="10" r="3"></circle>
+    //   </svg>`);
 
-    this.paymentIcon = this.sanitizer.bypassSecurityTrustHtml(`
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-        class="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6">
-        <rect x="2" y="5" width="20" height="14" rx="2" ry="2"></rect>
-        <line x1="2" y1="10" x2="22" y2="10"></line>
-      </svg>`);
+    // this.paymentIcon = this.sanitizer.bypassSecurityTrustHtml(`
+    //   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    //     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    //     class="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6">
+    //     <rect x="2" y="5" width="20" height="14" rx="2" ry="2"></rect>
+    //     <line x1="2" y1="10" x2="22" y2="10"></line>
+    //   </svg>`);
+    
+    this.cartService.loaderUpdate$.subscribe(res=>{
+       this.updatingStatus=res
+      //  console.log(this.loadingScreen,'loadingScreen');
+       
+    })
   }
 
   showOrderSummaryModal: boolean = false;
@@ -301,7 +309,7 @@ export class CheckoutComponent {
       this.stateSearch = stateMatch.NAME;
 
       // Load cities for this state
-      //this.fetchCities(stateMatch.ID);
+      this.fetchCities(stateMatch.ID);
     }
 
     // 3. CITY (after fetchCities)
@@ -341,7 +349,9 @@ export class CheckoutComponent {
         if (addressToEdit.EMAIL_ID) {
           this.verificationStatus = 'verified';
         }
-
+ if (addressToEdit.STATE_ID) {
+        this.fetchCities(addressToEdit.STATE_ID);
+      }
         // this.verificationStatus = 'initial';
         // }
       } else {
@@ -370,7 +380,8 @@ export class CheckoutComponent {
   }
 
   // --- Address Management Core Functions ---
-  loadingScreen = true;
+  loadingScreen = true; 
+  deliveryCharges=0
   fetchSavedAddresses() {
     let euid = sessionStorage.getItem('userId');
     let duid = euid ? this.commonFunction.decryptdata(euid) : null;
@@ -384,7 +395,9 @@ export class CheckoutComponent {
       (response: any) => {
         if (response['code'] === 200) {
           this.loadingScreen = false;
-
+          setTimeout(()=>{
+            this.updatingStatus=false
+          },2300)
           if (response['count'] == 0) {
             this.hasAddresses = false;
             // if (sessionStorage.getItem('IS_GUEST')) {
@@ -410,7 +423,7 @@ export class CheckoutComponent {
             LANDMARK: addr.LANDMARK,
             LOCALITY: addr.LOCALITY,
             ADDRESS_TYPE: addr.ADDRESS_TYPE,
-            IS_DEFAULT: addr.IS_DEFUALT_ADDRESS == 1 ? true : false,
+            // IS_DEFAULT: addr.IS_DEFUALT_ADDRESS == 1 ? true : false,
             IS_DEFUALT_ADDRESS: addr.IS_DEFUALT_ADDRESS == 1 ? true : false,
             CUST_ID: addr.CUST_ID,
             SESSION_KEY: addr.SESSION_KEY,
@@ -537,7 +550,7 @@ export class CheckoutComponent {
       LANDMARK: '',
       LOCALITY: '',
       ADDRESS_TYPE: undefined,
-      IS_DEFAULT: false,
+      // IS_DEFAULT: false,
       AREA: '',
       SESSION_KEY: '',
       CITY_ID: 0,
@@ -594,8 +607,8 @@ export class CheckoutComponent {
         this.addressForm.PINCODE == null ||
         this.addressForm.PINCODE == undefined) &&
       (!this.addressForm.ADDRESS_TYPE ||
-        !this.addressForm.ADDRESS_TYPE.trim()) &&
-      this.addressForm.IS_DEFAULT === false
+        !this.addressForm.ADDRESS_TYPE.trim()) 
+        // && this.addressForm.IS_DEFAULT === false
     ) {
       // this.isOk = false;
       this.toastr.error(' Please Fill All Required Fields ', '');
@@ -696,9 +709,7 @@ export class CheckoutComponent {
     sessionStorage.setItem('pincode', String(this.addressForm.PINCODE));
     if (this.isEditingAddress && this.currentAddressId) {
       this.addressForm.IS_DEFAULT = Boolean(this.addressForm.IS_DEFAULT);
-      this.addressForm.IS_DEFUALT_ADDRESS = Boolean(
-        this.addressForm.IS_DEFAULT
-      );
+      this.addressForm.IS_DEFUALT_ADDRESS 
       this.isSavingAddress = true;
 
       this.api.updateAddressMaster(this.addressForm).subscribe({
@@ -729,9 +740,9 @@ export class CheckoutComponent {
         },
       });
     } else {
-      this.addressForm.IS_DEFUALT_ADDRESS = Boolean(
-        this.addressForm.IS_DEFAULT
-      );
+      // this.addressForm.IS_DEFUALT_ADDRESS = Boolean(
+      //   this.addressForm.IS_DEFAULT
+      // );
       this.isSavingAddress = true;
 
       this.api.createAddressMaster(this.addressForm).subscribe({
@@ -992,6 +1003,9 @@ export class CheckoutComponent {
     );
   }
 
+  calculateDeliveryCharges(val1: any,val2: any):number{
+    return Number(val1) - Number(val2)
+  }
   // Don't forget to declare the property in your component class:
   // paymentConfiguration: string | null = null;
   fetchPincodes(status: string) {
@@ -1581,11 +1595,10 @@ vareintImageUrl: string = this.api.retriveimgUrl + 'VarientImages/';
     this.addressForm.CITY_NAME = city.NAME ?? this.citySearch;
     // this.addressForm.CITY_ID = city.ID ?? 0;
     this.citySearch = city.NAME;
-    this.filteredCities = [];
     // 1. Store the city's unique ID
     //    (Use the correct property from your city object, e.g., city.ID, city.cityId)
-    this.addressForm.CITY_ID = city.ID ?? 0; // <-- IMPORTANT
-
+    this.addressForm.CITY_ID = city.ID // <-- IMPORTANT
+    this.filteredCities = [];
     // 2. If the user changes the city, reset the pickup location
     // this.clearPickupLocation();
 
@@ -1636,7 +1649,8 @@ vareintImageUrl: string = this.api.retriveimgUrl + 'VarientImages/';
               : this.citySearch;
             // console.log('citySearch', this.citySearch);
           } else {
-            this.cityList = [];
+            this.citySearch = this.citySearch;
+            this.cityList=[]
           }
         },
         (error: any) => {
@@ -2593,36 +2607,65 @@ vareintImageUrl: string = this.api.retriveimgUrl + 'VarientImages/';
   onStateInputChange() {
   const typed = this.stateSearch?.trim();
 
-  // Empty → clear
   if (!typed) {
     this.addressForm.STATE_NAME = null;
     this.addressForm.STATE_ID = null;
+    
+    this.addressForm.CITY_NAME = null;
+    this.addressForm.CITY_ID = null;
+    this.citySearch = '';
+    this.cityList = [];
     this.filteredStates = [];
     return;
   }
 
-  // Try exact match
   const exactMatch = this.stateList.find(
     (s) => s.NAME.toLowerCase() === typed.toLowerCase()
   );
 
   if (exactMatch) {
-    // Load cities using state ID
     this.selectState(exactMatch);
     return;
   }
 
-  // No match → free text, but DO NOT remove ID
+  // Free text typed
   this.addressForm.STATE_NAME = typed;
   this.addressForm.STATE_ID = null;
 
-  
-    // if (!this.stateSearch || this.stateSearch.trim() === '') {
-    //   this.addressForm.STATE_NAME = null;
-    //   this.filteredStates = [];
-    // }
-    // this.addressForm.STATE_NAME = this.stateSearch;
+  this.cityList = [];
+  this.addressForm.CITY_NAME = null;
+  this.addressForm.CITY_ID = null;
+}
+
+  onCityInputChange() {
+  const typed = this.citySearch?.trim();
+
+  if (!typed) {
+    this.addressForm.CITY_NAME = null;
+    this.addressForm.CITY_ID = null;
+    this.filteredCities = [];
+    return;
   }
+
+  // Exact match
+  const exactMatch = this.cityList.find(
+    (c) => c.NAME.toLowerCase() === typed.toLowerCase()
+  );
+
+  if (exactMatch) {
+    this.selectCity(exactMatch);
+    return;
+  }
+
+  // Free text
+  this.addressForm.CITY_NAME = typed;
+  this.addressForm.CITY_ID = null;
+
+  // ⭐ IMPORTANT FIX: reload city list based on existing STATE_ID
+  if (this.addressForm.STATE_ID) {
+    this.fetchCities(this.addressForm.STATE_ID);
+  }
+}
 
   // by sanju
 

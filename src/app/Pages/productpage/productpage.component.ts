@@ -488,8 +488,21 @@ export class ProductpageComponent {
       .subscribe((data) => {
         if (data && data.data && Array.isArray(data.data)) {
           this.propertyyData = data.data;
+          this.varients=data.varient
           this.loadingProducts = false;
-
+          let product = (sessionStorage.getItem('selectedProduct') || '');
+          let productJson = product ? JSON.parse(product) : {}
+          this.isLiked = productJson?.isLiked
+          let favProducts=(sessionStorage.getItem('favoriteProducts') || '')
+          let findIndex=this.propertyyData.findIndex((dat:any)=>dat.ID === productJson.ID)
+          if(findIndex>=0){
+            this.propertyyData[findIndex].isLiked=this.isLiked 
+          }
+          else{
+            if(favProducts.includes(data.data[0]['ID'])){
+              this.propertyyData[0]['isLiked']=true
+            }
+          }
           // this.propertyyData.forEach((product: any) => {
           this.loadProductVariantsFromData(this.propertyyData[0]);
           let variants = this.propertyyData[0].VARIENTS;
@@ -658,6 +671,9 @@ export class ProductpageComponent {
         this.selectedVariantStock = selected.CURRENT_STOCK || 0;
         this.selectedPrice = selected.RATE || 0;
         this.selectedVarientrecent[productId] = selected;
+          this.currentStockMap[productId] = selected.CURRENT_STOCK
+          ? selected.CURRENT_STOCK
+          : 0;
         this.updateTotalPrice();
       }
     } else {
@@ -888,7 +904,7 @@ getImageArray(product: any): string[] {
       (data: any) => data.ID === Number(productId)
     );
     // console.log(data,'data');
-    if (data.IS_VERIENT_AVAILABLE === 1 && data.VARIENTS) {
+    if (data?.IS_VERIENT_AVAILABLE === 1 && data?.VARIENTS) {
       const varients = JSON.parse(data.VARIENTS);
       // console.log(varients,'varients');
       const selectedVarientdata = varients.find(
@@ -1047,10 +1063,10 @@ getImageArray(product: any): string[] {
 
     convertToarrayVairents(data: any) {
     // console.log(data,this.selectedVariantMap)
-    let varients = JSON.parse(data?.VARIENTS);
+    // let varients = JSON.parse(data?.VARIENTS);
     let name = '';
-    const varientData = varients.find(
-      (varient: any) => varient.VARIENT_ID === this.selectedVariantMap[data.ID]
+    const varientData = this.varients.find(
+      (varient: any) => varient.ID === this.selectedVariantMap[data.ID]
     );
     if (varientData) {
       // console.log(varientData)
@@ -1417,12 +1433,18 @@ showShareToast(message: string): void {
       .subscribe((res: any) => {
         if (res && res.data && Array.isArray(res.data)) {
           this.similarProducts = res.data.slice(0, 4);
+          let favorite=sessionStorage.getItem('favoriteProducts') || ''
+          
           // prepare variant maps for price/stock display
           this.similarProducts.forEach((product: any) => {
             let variants = product.VARIENTS;
+            if(favorite.includes(product.ID)){
+              product.isLiked=true
+            }
             if (typeof variants === 'string') {
               try {
                 variants = JSON.parse(variants);
+                this.varientMapsimilar[product.ID] = variants
               } catch (e) {
                 variants = [];
               }
@@ -1433,8 +1455,10 @@ showShareToast(message: string): void {
               const activeVariants = variants.filter((v: any) => v.STATUS === true || v.STATUS === 1) || [];
               this.variantMap1[product.ID] = activeVariants;
               this.selectedVarientrecent[product.ID] = variants[0];
+              this.currentStockMap[product.ID] = variants[0].CURRENT_STOCK;
             } else {
               this.variantRateMap1[product.ID] = 0;
+              this.currentStockMap[product.ID] = 0;
             }
             // ensure an image index exists per product for safe access
             if (!(product.ID in this.imageIndices)) {
@@ -1466,6 +1490,34 @@ hasItemsInCart(productId: number, productData: any): boolean {
     )
   );
 }
+varients:any=[]
+  convertToarrayVairents2(data: any) {
+    // console.log(data,this.varients)
+    // let varients = JSON.parse(data?.VARIENTS);
+    let name = '';
+    const varientData = this.varients.find(
+      (varient: any) => varient.ID === this.selectedVariantMap1[data.ID]
+    );
+    if (varientData) {
+      // console.log(varientData)
+      name = varientData.VARIENT_IMAGE_URL;
+    }
+    return name;
+  }
+  // getImageArrayvareint(vareintId:any):string{
+  //   let foundVareint=this.varients.find((data:any)=>data.ID===vareintId)
+  //   if(foundVareint){
+  //     // console.log(foundVareint);
+  //     return foundVareint['VARIENT_IMAGE_URL']
+  //   }
+  //   return ''
+  // }
+   varientMapsimilar: any = []
 
+  hasActiveVariantsSimilar(productId: number): boolean {
+    const variants = this.varientMapsimilar[productId] || [];
+    //console.log(variants,'vars');
 
+    return variants.some((v: any) => v.STATUS === 1);
+  }
 }

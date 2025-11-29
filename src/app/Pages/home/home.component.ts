@@ -72,7 +72,9 @@ export class HomeComponent {
 
   categories: any[] = [];
   products: any[] = [];
+  allProducts: any[] = [];
   selectedCategories: any = [];
+searchText: string = '';
   selectedDiscounts: any = [];
   ingredients: any[] = [];
 
@@ -104,7 +106,7 @@ export class HomeComponent {
         0,
         'SEQUENCE_NO',
         'asc',
-        ' AND STATUS = 1 AND IS_VERIENT_AVAILABLE = 1'
+        ' AND STATUS = 1 AND CATEGORY_STATUS=1 AND IS_VERIENT_AVAILABLE = 1'
       )
       .subscribe(
         (res: any) => {
@@ -181,23 +183,30 @@ export class HomeComponent {
     this.selectedCategories = [];
     this.selectedIngredient = [];
     this.selectedDiscounts = [];
+    this.priceRangeBetween = ""
     this.minRange = 0;
     this.maxRange = 40;
     this.priceRange = 0;
     this.rangeQuery = '';
     // this.selectedSubCategory = null;
-    this.priceRangeBetween =
-      ' AND (MIN_DISCOUNTED_PRICE BETWEEN ' +
-      this.minRange +
-      ' AND ' +
-      this.maxRange +
-      ') OR (MAX_DISCOUNTED_PRICE BETWEEN ' +
-      this.minRange +
-      ' AND ' +
-      this.maxRange +
-      '))';
-    this.getProducts();
+this.getProducts();
+    // this.priceRangeBetween =
+    //   ' AND (MIN_DISCOUNTED_PRICE BETWEEN ' +
+    //   this.minRange +
+    //   ' AND ' +
+    //   this.maxRange +
+    //   ') OR (MAX_DISCOUNTED_PRICE BETWEEN ' +
+    //   this.minRange +
+    //   ' AND ' +
+    //   this.maxRange +
+    //   '))';
+
+    
   }
+
+  onSearch() {
+ this.applySearchFilter();
+}
 
   onDiscountChange(event: any, discount: number) {
     if (event.target.checked) {
@@ -212,10 +221,19 @@ export class HomeComponent {
 
     this.getProducts();
   }
+  varients:any=[]
   getProducts() {
+    // console.log("1");
+    
     this.loadingProducts = true;
     var filter = '';
 
+    //Filter by selected Product
+  //   if (this.searchText && this.searchText.trim() !== '') {
+  //   this.products += ` AND (NAME LIKE '%${this.searchText}%' 
+  //                   OR DESCRIPTION LIKE '%${this.searchText}%')`;
+  // }
+   
     // Filter by selected categories
     if (this.selectedCategories.length > 0) {
       const selectedCategoryIds = this.selectedCategories.map(
@@ -254,14 +272,19 @@ export class HomeComponent {
         this.sortDirection || 'desc',
         filter +
           this.rangeQuery +
-          ' AND IS_VERIENT_AVAILABLE = 1 AND STATUS = 1' +
+          ' AND IS_VERIENT_AVAILABLE = 1 AND STATUS = 1 AND CATEGORY_STATUS=1' +
           this.priceRangeBetween,
         selectedIngredientIds?.join(',')
       )
       .subscribe(
         (res: any) => {
+             //  console.log(this.priceRangeBetween)
           if (res && res.data && Array.isArray(res.data)) {
             this.products = res.data;
+            this.allProducts = [...res.data]; 
+            //this.allProducts = res.data;  
+            this.varients=res.varient
+            this.applySearchFilter();
             this.getFavoriteProducts();
             this.loadingProducts = false;
             this.totalProducts = res.count;
@@ -303,6 +326,27 @@ export class HomeComponent {
         }
       );
   }
+
+  applySearchFilter() {
+  const text = this.searchText?.toLowerCase().trim();
+
+  if (!text) {
+    // If search cleared → restore original total
+     this.products = [...this.allProducts];
+    this.showTotalProducts = this.totalProducts;
+    return;
+  }// nothing to search
+
+  const filtered = this.products.filter(p =>
+    (p.NAME?.toLowerCase().includes(text)) 
+    // || 
+    // (p.DESCRIPTION?.toLowerCase().includes(text)) ||
+    // (p.CATEGORY_NAME?.toLowerCase().includes(text))
+  );
+
+  this.products = filtered;
+  this.showTotalProducts = filtered.length;
+}
 
   varient: any;
   selectedVariantId: any = null;
@@ -879,7 +923,7 @@ export class HomeComponent {
             ...product,
             isLiked: favouriteProductIds.includes(product.ID),
           }));
-
+          sessionStorage.setItem('favoriteProducts',favouriteProductIds)
           // console.log(this.products, 'isLiked');
         }
       },
@@ -902,9 +946,7 @@ export class HomeComponent {
     this.showPassword = !this.showPassword;
   }
 
-  get currentPageCount(): number {
-    return Math.min(this.productsPerPage, this.totalProducts);
-  }
+ 
   guest = 'false';
   verifylogin() {
     // Refresh the userId from sessionStorage
@@ -995,5 +1037,13 @@ export class HomeComponent {
     const event = { target: { value } } as unknown as Event;
 
     this.onSortChange(event);
+  }
+  getImageArrayvareint(vareintId:any):string{
+    let foundVareint=this.varients.find((data:any)=>data.ID===vareintId)
+    if(foundVareint){
+      // console.log(foundVareint);
+      return foundVareint['VARIENT_IMAGE_URL']
+    }
+    return ''
   }
 }

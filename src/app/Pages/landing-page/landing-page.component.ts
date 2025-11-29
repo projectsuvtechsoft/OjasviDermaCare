@@ -73,6 +73,7 @@ export class LandingPageComponent {
     this.getsession();
     this.IMAGEuRL = this.api.retriveimgUrl2();
     this.Imgurl = this.IMAGEuRL + 'CustomerProfile/';
+    this.userID = this.commonFunction.decryptdata(this.euserID);
     // sessionStorage.setItem('IS_GUEST', 'false');
   }
   sessionkey: string = '';
@@ -164,7 +165,7 @@ getProducts(): void {
           this.loadingRecords = false;
           this.dataList = data.Products;
           this.products[this.activeTab] = this.dataList;
-          
+          this.getFavoriteProducts()
           this.dataList.forEach((product) => {
             this.loadProductVariantsFromData(product);
             let variants = product.VARIENTS;
@@ -802,7 +803,7 @@ prevMobile(tab: string): void {
             (fav: any) => fav.PRODUCT_ID
           );
 
-          this.products = this.products.map((product: any) => ({
+          this.products[this.activeTab] = this.products[this.activeTab].map((product: any) => ({
             ...product,
             isLiked: favouriteProductIds.includes(product.ID),
           }));

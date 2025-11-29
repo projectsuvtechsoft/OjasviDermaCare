@@ -1045,7 +1045,7 @@ export class HeaderComponent {
       }))
     );
   }
-  loginotpverification(form?: NgForm): void {
+   loginotpverification(form?: NgForm): void {
     this.loginSubmitted = true;
     // sessionStorage.clear()
     // console.log(document.body.cla);
@@ -1226,7 +1226,7 @@ export class HeaderComponent {
             } else if (successCode.code == '404') {
               // form?.resetForm();
               this.toastr.error(
-                'Account not found. Please register to continue.',
+                'Please register first! You are not registered yet!.',
                 '',
                 {
                   positionClass: 'toast-center',
@@ -1236,7 +1236,7 @@ export class HeaderComponent {
               // this.stopLoader();
             } else if (successCode.code == '401') {
               // form?.resetForm();
-              this.toastr.error('Incorrect username or password', '', {
+              this.toastr.error('Please enter valid Username or password', '', {
                 positionClass: 'toast-center',
               });
               this.isloginSendOTP = false;

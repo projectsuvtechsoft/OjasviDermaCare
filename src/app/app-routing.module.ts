@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes,Router,NavigationEnd } from '@angular/router';
 import { FavoritesComponent } from './Pages/favorites/favorites.component';
 import { HomeComponent } from './Pages/home/home.component';
 import { LoginComponent } from './Pages/login/login/login.component';
@@ -47,6 +47,24 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
+ 
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule {
+  constructor(private router: Router) {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.scrollToTop();
+      }
+    });
+  }
+
+  scrollToTop() {
+    // For all browsers
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Extra fallback
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  }
+}
