@@ -49,8 +49,8 @@ export class AddressMaster {
   IS_DEFUALT_ADDRESS = false;
   IS_DEFAULT = false;
   COUNTRY_CODE = '+1';
-  STATE_ID:any=0;
-  COUNTRY_ID:any=0
+  STATE_ID: any = 0;
+  COUNTRY_ID: any = 0;
   CITY_ID: any = 0;
   PICKUP_LOCATION_ID!: any;
 }
@@ -178,7 +178,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       this.stream.getTracks().forEach((track) => track.stop());
     }
   }
-  
 
   @HostListener('window:resize', ['$event'])
   onResize(): void {
@@ -257,7 +256,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     private datePipe: DatePipe,
     private cartService: CartService,
     private route: ActivatedRoute
-  ) {}
+  ) { }
   public commonFunction = new CommonFunctionService();
   proceedLogout(): void {
     const customerId = this.commonFunction.decryptdata(
@@ -316,35 +315,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.editField = null;
     this.editValue = '';
   }
-
-  onCityInputChange(){
-  const typed = this.citySearch?.trim();
- 
-    // Empty → clear
-    if (!typed) {
-      this.addressForm.CITY_NAME == null;
-      this.addressForm.CITY_ID == null;
-      this.filteredCities = [];
-      return;
-    }
- 
-    // Try exact match
-    const exactMatch = this.cityList.find(
-      (s) => s.NAME.toLowerCase() === typed.toLowerCase()
-    );
- 
-    if (exactMatch) {
-      // Load cities using state ID
-      this.selectCity(exactMatch);
-      return;
-    }
- 
-    // No match → free text, but DO NOT remove ID
-    this.addressForm.CITY_NAME = typed;
-    this.addressForm.CITY_ID = null;
- 
-}
- 
 
   // User details modal methods
   openUserDetailsModal() {
@@ -481,7 +451,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   packagingDoneOrders = 0;
   dispatchingOrders = 0;
   dispatched = 0;
-  rejected =0
+  rejected = 0
   getUserData() {
     // this.IMAGEuRL = this.api.retriveimgUrl2();
     // this.loadData();
@@ -501,8 +471,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           this.dispatchingOrders = this.statastics[1][0].D;
           this.dispatched = this.statastics[1][0].READY_FOR_DELIVERY;
           this.pendingOrders = this.statastics[1][0].PENDING + this.packagingOrders + this.packagingDoneOrders
-          +this.dispatchingOrders + this.dispatched;
-          this.rejected=this.statastics[1][0].REJECTED
+            + this.dispatchingOrders + this.dispatched;
+          this.rejected = this.statastics[1][0].REJECTED
           this.deliveredOrders = this.statastics[1][0].DELIVERED;
 
           // Bind user data dynamically
@@ -624,6 +594,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.citySearch = address?.CITY_NAME;
     this.stateSearch = address?.STATE_NAME;
     this.countrySearch = address?.COUNTRY_NAME;
+    
     if (this.addressForm.ID) {
       this.onCountryChange(this.addressForm.COUNTRY_NAME);
       if (this.addressForm.EMAIL_ID) {
@@ -1110,7 +1081,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
     this.step = stageMap[data.CURRENT_STAGE] || 1;
   }
-  handleProjectCancel() {}
+  handleProjectCancel() { }
 
   getImageArray(product: any): string[] {
     try {
@@ -1579,7 +1550,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   euserID: string = sessionStorage.getItem('userId') || '';
   decyptedsessionKey: any;
   userID: any;
-  favoriteProductIds: any = [];
+  favoriteProductIds: any[] = [];
   isLiked: boolean = false;
 
   toggleLike(product: any) {
@@ -1664,8 +1635,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
             ...product,
             isLiked: this.favoriteProductIds.includes(product.ID),
           }));
-          // this.products?.forEach((product: any) => {});
-          sessionStorage.setItem('favoriteProducts',this.favoriteProductIds)
+          this.products?.forEach((product: any) => { });
         } else {
           this.loadingProducts = false;
         }
@@ -1712,7 +1682,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   variantRateMap: { [productId: number]: number } = {};
-  varients:any=[]
+varients:any=[]
   getProducts() {
     this.loadingProducts = true;
     if (this.favoriteProductIds.length > 0) {
@@ -1734,9 +1704,9 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         (res: any) => {
           if (res && res.data && Array.isArray(res.data)) {
             this.products = res.data;
-            this.varients=res.varient
             this.loadingProducts = false;
             this.totalProducts = res.count;
+            this.varients=res.varient
             this.showTotalProducts = res.count;
             this.products.forEach((product: any) => {
               this.loadProductVariantsFromData(product);
@@ -1904,8 +1874,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     const total = this.totalPages;
     return total > 0
       ? Array(total)
-          .fill(0)
-          .map((_, i) => i + 1)
+        .fill(0)
+        .map((_, i) => i + 1)
       : [];
   }
 
@@ -3038,13 +3008,17 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     // Set the selected value
     this.addressForm.COUNTRY_NAME = country.NAME ?? this.countrySearch;
     this.countrySearch = country.NAME;
+    this.addressForm.COUNTRY_ID = country.ID ?? 0;
     this.filteredCountries = [];
     this.fetchStates(country.ID);
   }
+  
+  
 
   selectState(state: any) {
     this.addressForm.STATE_NAME = state.NAME ?? this.stateSearch;
     this.stateSearch = state.NAME;
+    this.addressForm.STATE_ID = state.ID ?? 0;
     this.fetchCities(state.ID);
     this.filteredStates = [];
   }
@@ -3123,21 +3097,87 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   // Called on input change for country
-  onCountryInputChange() {
-    // console.log(this.countrySearch)
-    // If country input is empty, clear selection
-    if (!this.countrySearch || this.countrySearch?.trim() === '') {
-      this.addressForm.COUNTRY_NAME = null; // clear selected ID
-      this.filteredCountries = [];
+//   onCountryInputChange() {
+ 
+//   const typed = this.countrySearch?.trim();
+ 
+//   // If empty → clear all
+//   if (!typed) {
+//     this.addressForm.COUNTRY_NAME = null;
+//     this.addressForm.COUNTRY_ID = null;
+ 
+//     this.addressForm.STATE_NAME = null;
+//     this.addressForm.STATE_ID = null;
+//     this.stateSearch = '';
+//     this.stateList = [];
+//     this.filteredCountries = [];
+//     this.filteredStates = [];
+//     return;
+//   }
+ 
+//   // 🔥 Filter match for dropdown suggestions
+//   this.filteredCountries = this.countryList.filter((c) =>
+//     c.NAME.toLowerCase().includes(typed.toLowerCase())
+//   );
+ 
+//   // Try to find exact country match
+//   const exactMatch = this.countryList.find(
+//     (c) => c.NAME.toLowerCase() === typed.toLowerCase()
+//   );
+ 
+//   if (exactMatch) {
+//     // Use selectCountry to load the states list
+//     this.selectCountry(exactMatch);
+//     return;
+//   }
+ 
+//   // No exact match → treat as plain text
+//   this.addressForm.COUNTRY_NAME = typed;
+//   this.addressForm.COUNTRY_ID = null;
+ 
+//   // Reset states if country is not valid
+//   this.stateList = [];
+//   this.addressForm.STATE_NAME = null;
+//   this.addressForm.STATE_ID = null;
+// }
 
-      // Clear state too
-      this.addressForm.STATE_NAME = null;
-      this.stateSearch = '';
-      this.filteredStates = [];
-      this.stateList = []; // optional: reset state list
-    }
-    this.addressForm.COUNTRY_NAME = this.countrySearch;
+onCountryInputChange() {
+  const typed = this.countrySearch?.trim();
+
+  // 1️⃣ Empty → clear everything
+  if (!typed) {
+    this.addressForm.COUNTRY_NAME = null;
+    this.addressForm.COUNTRY_ID = null;
+
+    this.addressForm.STATE_NAME = null;
+    this.addressForm.STATE_ID = null;
+    this.stateSearch = '';
+    this.stateList = [];
+    this.filteredStates = [];
+
+    this.addressForm.CITY_NAME = '';
+    this.addressForm.CITY_ID = null;
+    this.citySearch = '';
+    this.filteredCities = [];
+    return;
   }
+
+  // 2️⃣ User is typing → text only (no select!)
+  this.addressForm.COUNTRY_NAME = typed;
+  this.addressForm.COUNTRY_ID = null;
+
+  // 3️⃣ Reset dependent fields
+  this.addressForm.STATE_NAME = null;
+  this.addressForm.STATE_ID = null;
+  this.stateSearch = '';
+  this.stateList = [];
+  this.filteredStates = [];
+
+  this.addressForm.CITY_NAME = '';
+  this.addressForm.CITY_ID = null;
+  this.citySearch = '';
+  this.filteredCities = [];
+}
   loadingButton = false;
   verifyEmail(): void {
     if (!this.isEmailValid()) {
@@ -3185,41 +3225,97 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       }
     );
   }
- onStateInputChange() {
-    const typed = this.stateSearch?.trim();
- 
+onCityInputChange(){
+  const typed = this.citySearch?.trim();
+
     // Empty → clear
     if (!typed) {
-      this.addressForm.STATE_NAME = null;
-      this.addressForm.STATE_ID = null;
-      this.filteredStates = [];
       this.addressForm.CITY_NAME == null;
-      this.addressForm.CITY_ID = null;
-      this.citySearch = '';
-      this.cityList = [];
+      this.addressForm.CITY_ID == null;
+      this.filteredCities = [];
       return;
     }
- 
+
     // Try exact match
-    const exactMatch = this.stateList.find(
+    const exactMatch = this.cityList.find(
       (s) => s.NAME.toLowerCase() === typed.toLowerCase()
     );
- 
+
     if (exactMatch) {
       // Load cities using state ID
-      this.selectState(exactMatch);
+      this.selectCity(exactMatch);
       return;
     }
- 
+
     // No match → free text, but DO NOT remove ID
-    this.addressForm.STATE_NAME = typed;
-    this.addressForm.STATE_ID = null;
- 
-    this.cityList = [];
-    this.addressForm.CITY_NAME == null;
+    this.addressForm.CITY_NAME = typed;
     this.addressForm.CITY_ID = null;
- 
+
+}
+
+  // onStateInputChange() {
+  //   const typed = this.stateSearch?.trim();
+
+  //   // Empty → clear
+  //   if (!typed) {
+  //     this.addressForm.STATE_NAME = null;
+  //     this.addressForm.STATE_ID = null;
+  //     this.filteredStates = [];
+  //     this.addressForm.CITY_NAME == null;
+  //     this.addressForm.CITY_ID = null;
+  //     this.citySearch = '';
+  //     this.cityList = [];
+  //     return;
+  //   }
+
+  //   // Try exact match
+  //   const exactMatch = this.stateList.find(
+  //     (s) => s.NAME.toLowerCase() === typed.toLowerCase()
+  //   );
+
+  //   if (exactMatch) {
+  //     // Load cities using state ID
+  //     this.selectState(exactMatch);
+  //     return;
+  //   }
+
+  //   // No match → free text, but DO NOT remove ID
+  //   this.addressForm.STATE_NAME = typed;
+  //   this.addressForm.STATE_ID = null;
+
+  //   this.cityList = [];
+  //   this.addressForm.CITY_NAME == null;
+  //   this.addressForm.CITY_ID = null;
+
+  // }
+
+  onStateInputChange() {
+  const typed = this.stateSearch?.trim();
+
+  // 1️⃣ Empty → clear everything below
+  if (!typed) {
+    this.addressForm.STATE_NAME = null;
+    this.addressForm.STATE_ID = null;
+
+    this.citySearch = '';
+    this.cityList = [];
+    this.filteredCities = [];
+    this.addressForm.CITY_NAME = '';
+    this.addressForm.CITY_ID = null;
+    return;
   }
+
+  // 2️⃣ User typing → text only
+  this.addressForm.STATE_NAME = typed;
+  this.addressForm.STATE_ID = null;
+
+  // 3️⃣ Reset city
+  this.citySearch = '';
+  this.cityList = [];
+  this.filteredCities = [];
+  this.addressForm.CITY_NAME = '';
+  this.addressForm.CITY_ID = null;
+}
   filterCities() {
     const term = this.citySearch?.trim().toLowerCase();
     if (!term) {
@@ -3388,6 +3484,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       EMAIL_ID: this.user.email,
       CUSTOMER_ID: this.user.ID,
       OLD_PASSWORD: this.newPasswordForm.oldPassword,
+      NEW_PASSWORD:this.newPasswordForm.password,
+      COUNTRY_CODE:this.user.code
     };
     this.api.getChangePasswordOtp(payload).subscribe(
       (res) => {
@@ -3400,7 +3498,13 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           this.isChangingPassword = false;
           // this.openPasswordOTPModal();
           // this.startPasswordTimer(); // Start the 60-second countdown
-        } else {
+        }else if (res.code == 403) {
+          this.toastr.error('Your new password is same as old password');
+          this.isChangingPassword = false;
+          // this.openPasswordOTPModal();
+          // this.startPasswordTimer(); // Start the 60-second countdown
+        }
+         else {
           this.isChangingPassword = false;
 
           this.toastr.error('Failed to send otp');
@@ -3450,6 +3554,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       OTP: this.passwordOTP.join(''),
       PASSWORD: this.newPasswordForm.confirmPassword,
       CUSTOMER_ID: this.user.ID,
+      COUNTRY_CODE:this.user.code
     };
     this.api.verifyChangePasswordOtp(payload).subscribe((res) => {
       if (res.code == 200) {
@@ -3689,17 +3794,9 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     },
   ];
   convertStringtoArray(str: string) {
-  return JSON.parse(str);
-}
- // getImageArrayvareint(vareintId:any):string{
-  //   let foundVareint=this.varients.find((data:any)=>data.ID===vareintId)
-  //   if(foundVareint){
-  //     // console.log(foundVareint);
-  //     return foundVareint['VARIENT_IMAGE_URL']
-  //   }
-  //   return ''
-  // }
-  convertToarrayVairents2(data: any) {
+    return JSON.parse(str);
+  }
+ convertToarrayVairents2(data: any) {
     // console.log(data,this.varients)
     // let varients = JSON.parse(data?.VARIENTS);
     let name = '';
@@ -3712,4 +3809,5 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     }
     return name;
   }
+
 }

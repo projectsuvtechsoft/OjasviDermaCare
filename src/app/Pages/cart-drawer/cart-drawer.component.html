@@ -18,10 +18,10 @@
 
   <!-- Scrollable Main Area -->
   <div
-    class="flex-1 flex flex-col lg:flex-row gap-4 p-4 sm:p-5 overflow-y-auto"
-    style="max-height: calc(100vh - 12rem)"
+    class="flex-1 flex gap-4 p-4 sm:p-5 overflow-y-auto"
+  style="max-height: calc(100vh - 12rem)"
   >
-    <div class="flex-1 flex flex-col lg:max-w-3xl">
+    <div class="flex-1 flex flex-col h-full">
       <ng-container *ngIf="!loader; else loadingState">
         <ng-container *ngIf="cartItems.length > 0; else emptyCart">
           <div
@@ -133,27 +133,30 @@
           </div>
         </ng-container>
 
-        <ng-template #emptyCart>
-          <div
-            class="flex flex-col items-center justify-center text-center py-2 text-gray-500"
-          >
-            <img
-              src="assets/img/empty-cart.png"
-              alt="Empty Cart"
-              class="w-32 h-32 mb-4"
-            />
-            <h2 class="text-base font-semibold mb-2">Your cart is empty</h2>
-            <p class="text-sm mb-5">
-              Looks like you haven't added anything to your cart yet.
-            </p>
-            <button
-              (click)="close()"
-              class="bg-[#5a8f69] text-white px-3 py-1.5 rounded-md hover:bg-[#4a7f59] transition text-sm"
-            >
-              Continue Shopping
-            </button>
-          </div>
-        </ng-template>
+       <ng-template #emptyCart>
+  <div class="flex flex-1 items-center justify-center w-full">
+    <div class="text-center">
+      <img
+        src="assets/img/empty-cart.png"
+        alt="Empty Cart"
+        class="w-36 h-36 mx-auto mb-4"
+      />
+      <h2 class="text-lg font-semibold text-gray-700 mb-2">
+        Your cart is empty
+      </h2>
+      <p class="text-sm text-gray-500 mb-6">
+        Looks like you haven't added anything to your cart yet.
+      </p>
+      <button
+        (click)="close()"
+        class="bg-[#5a8f69] text-white px-5 py-2 rounded-full hover:bg-[#4a7f59] transition"
+      >
+        Continue Shopping
+      </button>
+    </div>
+  </div>
+</ng-template>
+
       </ng-container>
 
       <ng-template #loadingState>
@@ -173,7 +176,7 @@
     </div>
 
     <div
-      *ngIf="cartItems.length > 0 && !loader"
+      *ngIf="cartItems?.length && cartItems.length > 0 && !loader"
       class="w-full lg:w-72 border border-gray-200 rounded-lg p-3 flex flex-col space-y-3 flex-shrink-0 lg:self-start bg-white sticky top-4"
     >
       <h3 class="text-base font-semibold text-gray-900">Order Summary</h3>

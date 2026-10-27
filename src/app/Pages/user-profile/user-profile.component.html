@@ -2,34 +2,22 @@
 
 <head>
   ...
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
-  />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" />
   ...
 </head>
 
 <!-- Sidebar for mobile -->
-<div
-  *ngIf="sidebarOpen"
-  (click)="closeSidebar()"
-  class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
-></div>
+<div *ngIf="sidebarOpen" (click)="closeSidebar()" class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"></div>
 
 <!-- Main Content Responsive Wrapper -->
 <div class="main-content-responsive flex flex-col md:flex-row min-h-screen">
   <!-- Sidebar (overlays on mobile, static on md+) -->
   <div class="md:block">
-    <div
-      [class.open]="sidebarOpen"
-      class="sidebar-responsive md:static md:w-64 bg-white border-r border-gray-200 flex flex-col md:h-auto h-full z-10"
-    >
+    <div [class.open]="sidebarOpen"
+      class="sidebar-responsive md:static md:w-64 bg-white border-r border-gray-200 flex flex-col md:h-auto h-full z-10">
       <!-- User Profile -->
       <div class="flex flex-col items-center p-6 border-b border-gray-200">
-        <div
-          class="d-flex justify-content-center align-items-center"
-          style="height: 100%; width: 100%"
-        >
+        <div class="d-flex justify-content-center align-items-center" style="height: 100%; width: 100%">
           <!-- <div
             class="profile-photo-container position-relative d-flex justify-content-center align-items-center profile-image"
           >
@@ -86,14 +74,11 @@
         <h2 class="text-base sm:text-lg font-semibold">
           {{ user.NAME || "User" }}
         </h2>
-        <p
-          class="text-xs sm:text-sm text-gray-500"
-          *ngIf="
+        <p class="text-xs sm:text-sm text-gray-500" *ngIf="
             user.email != '' &&
             user.email != undefined &&
             user.email != undefined
-          "
-        >
+          ">
           {{ user.email || "No email provided" }}
         </p>
       </div>
@@ -101,16 +86,12 @@
       <div class="flex-1 overflow-y-auto py-4">
         <nav class="px-2 space-y-1">
           <!-- Section: My Profile -->
-          <a
-            href="#"
-            (click)="showSection('dashboard-section'); $event.preventDefault()"
-            [class]="
+          <a href="#" (click)="showSection('dashboard-section'); $event.preventDefault()" [class]="
               'sidebar-link flex items-center px-4 py-3 text-xs sm:text-sm font-medium rounded-md ' +
               (isSectionActive('dashboard-section')
                 ? 'active text-gray-800'
                 : 'text-gray-600')
-            "
-          >
+            ">
             <div class="w-5 h-5 mr-3 flex items-center justify-center">
               <i class="ri-dashboard-line"></i>
             </div>
@@ -137,61 +118,45 @@
               >3</span
             >
           </a> -->
-          <a
-            href="#"
-            (click)="showSection('addresses-section'); $event.preventDefault()"
-            [class]="
+          <a href="#" (click)="showSection('addresses-section'); $event.preventDefault()" [class]="
               'sidebar-link flex items-center px-4 py-3 text-xs sm:text-sm font-medium rounded-md ' +
               (isSectionActive('addresses-section')
                 ? 'active text-gray-800'
                 : 'text-gray-600')
-            "
-          >
+            ">
             <div class="w-5 h-5 mr-3 flex items-center justify-center">
               <i class="ri-map-pin-line"></i>
             </div>
             Saved Shipping Addresses
           </a>
-          <a
-            href="#"
-            (click)="showSection('orders-section'); $event.preventDefault()"
-            [class]="
+          <a href="#" (click)="showSection('orders-section'); $event.preventDefault()" [class]="
               'sidebar-link flex items-center px-4 py-3 text-xs sm:text-sm font-medium rounded-md ' +
               (isSectionActive('orders-section')
                 ? 'active text-gray-800'
                 : 'text-gray-600')
-            "
-          >
+            ">
             <div class="w-5 h-5 mr-3 flex items-center justify-center">
               <i class="ri-shopping-bag-line"></i>
             </div>
             Orders
           </a>
-          <a
-            href="#"
-            (click)="showSection('wishlist-section'); $event.preventDefault()"
-            [class]="
+          <a href="#" (click)="showSection('wishlist-section'); $event.preventDefault()" [class]="
               'sidebar-link flex items-center px-4 py-3 text-xs sm:text-sm font-medium rounded-md ' +
               (isSectionActive('wishlist-section')
                 ? 'active text-gray-800'
                 : 'text-gray-600')
-            "
-          >
+            ">
             <div class="w-5 h-5 mr-3 flex items-center justify-center">
               <i class="ri-heart-line"></i>
             </div>
-           Favourites
+            Favourites
           </a>
-           <a
-            href="#"
-            (click)="showSection('changepass-section'); $event.preventDefault()"
-            [class]="
+          <a href="#" (click)="showSection('changepass-section'); $event.preventDefault()" [class]="
               'sidebar-link flex items-center px-4 py-3 text-xs sm:text-sm font-medium rounded-md ' +
               (isSectionActive('changepass-section')
                 ? 'active text-gray-800'
                 : 'text-gray-600')
-            "
-          >
+            ">
             <div class="w-5 h-5 mr-3 flex items-center justify-center">
               <i class="ri-edit-box-line"></i>
             </div>
@@ -228,10 +193,8 @@
       </div>
       <!-- Logout Button -->
       <div class="p-3 border-t border-gray-200">
-        <button
-          (click)="openModal()"
-          class="w-full bg-[#5a8f69] text-white py-2.5 px-4 rounded-button flex items-start justify-start font-medium hover:bg-opacity-90 transition-all whitespace-nowrap text-xs sm:text-base"
-        >
+        <button (click)="openModal()"
+          class="w-full bg-[#5a8f69] text-white py-2.5 px-4 rounded-button flex items-start justify-start font-medium hover:bg-opacity-90 transition-all whitespace-nowrap text-xs sm:text-base">
           <div class="w-5 h-5 mr-2 flex items-start justify-start">
             <i class="ri-logout-box-line"></i>
           </div>
@@ -243,11 +206,7 @@
   <!-- Main Content -->
   <div class="flex-1 w-full max-w-full">
     <div class="max-w-6xl mx-auto px-2 sm:px-6" style="margin-top: 1rem">
-      <div
-        id="dashboard-section"
-        class="page-section"
-        *ngIf="isSectionActive('dashboard-section')"
-      >
+      <div id="dashboard-section" class="page-section" *ngIf="isSectionActive('dashboard-section')">
         <!-- Page Header -->
         <div class="bg-white rounded-lg shadow-sm p-4 mb-2">
           <div class="border-l-4 border-[#5a8f69] pl-3">
@@ -259,12 +218,8 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2">
           <!-- Total Orders Card -->
           <div class="bg-white rounded-lg shadow-sm p-3 flex items-center">
-            <div
-              class="w-10 h-10 rounded-full bg-[#5a8f69] bg-opacity-10 flex items-center justify-center mr-3"
-            >
-              <div
-                class="w-5 h-5 flex items-center justify-center text-[#5a8f69]"
-              >
+            <div class="w-10 h-10 rounded-full bg-[#5a8f69] bg-opacity-10 flex items-center justify-center mr-3">
+              <div class="w-5 h-5 flex items-center justify-center text-[#5a8f69]">
                 <i class="ri-shopping-bag-line"></i>
               </div>
             </div>
@@ -276,12 +231,8 @@
 
           <!-- Pending Orders Card -->
           <div class="bg-white rounded-lg shadow-sm p-3 flex items-center">
-            <div
-              class="w-10 h-10 rounded-full bg-yellow-500 bg-opacity-10 flex items-center justify-center mr-3"
-            >
-              <div
-                class="w-5 h-5 flex items-center justify-center text-yellow-600"
-              >
+            <div class="w-10 h-10 rounded-full bg-yellow-500 bg-opacity-10 flex items-center justify-center mr-3">
+              <div class="w-5 h-5 flex items-center justify-center text-yellow-600">
                 <i class="ri-time-line"></i>
               </div>
             </div>
@@ -290,13 +241,9 @@
               <p class="text-xl font-bold text-gray-800">{{ pendingOrders }}</p>
             </div>
           </div>
- <div class="bg-white rounded-lg shadow-sm p-3 flex items-center">
-            <div
-              class="w-10 h-10 rounded-full bg-yellow-500 bg-opacity-10 flex items-center justify-center mr-3"
-            >
-              <div
-                class="w-5 h-5 flex items-center justify-center text-yellow-600"
-              >
+          <div class="bg-white rounded-lg shadow-sm p-3 flex items-center">
+            <div class="w-10 h-10 rounded-full bg-yellow-500 bg-opacity-10 flex items-center justify-center mr-3">
+              <div class="w-5 h-5 flex items-center justify-center text-yellow-600">
                 <i class="ri-time-line"></i>
               </div>
             </div>
@@ -307,12 +254,8 @@
           </div>
           <!-- Delivered Orders Card -->
           <div class="bg-white rounded-lg shadow-sm p-3 flex items-center">
-            <div
-              class="w-10 h-10 rounded-full bg-green-500 bg-opacity-10 flex items-center justify-center mr-3"
-            >
-              <div
-                class="w-5 h-5 flex items-center justify-center text-green-600"
-              >
+            <div class="w-10 h-10 rounded-full bg-green-500 bg-opacity-10 flex items-center justify-center mr-3">
+              <div class="w-5 h-5 flex items-center justify-center text-green-600">
                 <i class="ri-check-double-line"></i>
               </div>
             </div>
@@ -331,20 +274,14 @@
           <div class="lg:col-span-2 space-y-4">
             <div class="bg-white rounded-lg shadow-sm p-4">
               <div class="flex justify-between items-center mb-2">
-                <h2
-                  class="text-lg font-semibold text-gray-800 flex items-center"
-                >
-                  <div
-                    class="w-5 h-5 mr-2 flex items-center justify-center text-[#5a8f69]"
-                  >
+                <h2 class="text-lg font-semibold text-gray-800 flex items-center">
+                  <div class="w-5 h-5 mr-2 flex items-center justify-center text-[#5a8f69]">
                     <i class="ri-user-line"></i>
                   </div>
                   Profile Information
                 </h2>
-                <button
-                  (click)="openUserDetailsModal()"
-                  class="text-[#5a8f69] text-sm hover:underline flex items-center"
-                >
+                <button (click)="openUserDetailsModal()"
+                  class="text-[#5a8f69] text-sm hover:underline flex items-center">
                   <i class="ri-edit-line mr-1"></i>Edit
                 </button>
               </div>
@@ -380,30 +317,20 @@
             <!-- Login Details -->
             <div class="bg-white rounded-lg shadow-sm p-4">
               <div class="flex justify-between items-center mb-2">
-                <h2
-                  class="text-lg font-semibold text-gray-800 mb-2 flex items-center"
-                >
-                  <div
-                    class="w-5 h-5 mr-2 flex items-center justify-center text-[#5a8f69]"
-                  >
+                <h2 class="text-lg font-semibold text-gray-800 mb-2 flex items-center">
+                  <div class="w-5 h-5 mr-2 flex items-center justify-center text-[#5a8f69]">
                     <i class="ri-lock-line"></i>
                   </div>
                   Log in Details
                 </h2>
-                <button
-                  *ngIf="!user.email"
-                  (click)="openUserEmailDetailsModal()"
-                  class="text-[#5a8f69] text-sm hover:underline flex items-center"
-                >
+                <button *ngIf="!user.email" (click)="openUserEmailDetailsModal()"
+                  class="text-[#5a8f69] text-sm hover:underline flex items-center">
                   <i class="fa-solid fa-plus mr-1"></i>
                   Add Email
                 </button>
 
-                <button
-                  *ngIf="user.email"
-                  (click)="openUserEmailDetailsModal()"
-                  class="text-[#5a8f69] text-sm hover:underline flex items-center"
-                >
+                <button *ngIf="user.email" (click)="openUserEmailDetailsModal()"
+                  class="text-[#5a8f69] text-sm hover:underline flex items-center">
                   <i class="ri-edit-line mr-1"></i>
                   Edit Email
                 </button>
@@ -415,7 +342,7 @@
                   <div class="col-span-2 flex items-center">
                     <span class="text-gray-800 mr-2">{{
                       user.email || "Not provided"
-                    }}</span>
+                      }}</span>
                   </div>
                 </div>
               </div>
@@ -444,49 +371,35 @@
           <div class="lg:col-span-1 flex items-center justify-center">
             <img
               src="https://readdy.ai/api/search-image?query=illustration%20of%20a%20person%20sitting%20with%20laptop%2C%20teal%20and%20green%20color%20scheme%2C%20digital%20shopping%2C%20e-commerce%20concept%2C%20modern%20flat%20design%20style%2C%20professional%2C%20clean&width=400&height=400&seq=3&orientation=squarish"
-              alt="Dashboard Illustration"
-              class="max-w-full h-auto rounded-lg"
-            />
+              alt="Dashboard Illustration" class="max-w-full h-auto rounded-lg" />
           </div>
         </div>
       </div>
 
       <!-- Recent Orders -->
-      <div
-        id="orders-section"
-        class="page-section"
-        *ngIf="isSectionActive('orders-section')"
-      >
+      <div id="orders-section" class="page-section" *ngIf="isSectionActive('orders-section')">
         <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
           <!-- Filter Button -->
           <div class="d-flex justify-between align-items-center mb-3">
             <h2 class="text-lg font-semibold text-gray-800 flex items-center">
-              <div
-                class="w-5 h-5 mr-2 flex items-center justify-center text-[#5a8f69]"
-              >
+              <div class="w-5 h-5 mr-2 flex items-center justify-center text-[#5a8f69]">
                 <i class="ri-shopping-bag-line"></i>
               </div>
               Orders
             </h2>
           </div>
 
-          <div
-            class="order-list container-fluid"
-            style="
+          <div class="order-list container-fluid" style="
               font-family: Assistant, -apple-system, BlinkMacSystemFont,
                 Segoe UI, Roboto, Helvetica, Arial, sans-serif !important;
               max-height: 500px;
               overflow-y: auto;
-            "
-            *ngIf="orders && orders.length > 0"
-          >
+            " *ngIf="orders && orders.length > 0">
             <div class="row g-4">
               <div class="col-12" *ngFor="let order of visibleOrders">
                 <div class="shadow-sm rounded-3 py-1 order-wrapper">
                   <!-- Header -->
-                  <div
-                    class="order-cardheader d-flex justify-content-between align-items-start p-2"
-                  >
+                  <div class="order-cardheader d-flex justify-content-between align-items-start p-2">
                     <div class="text-start d-flex gap-4 flex-grow-1">
                       <div>
                         <div class="fw-semibold text-muted">Order Date</div>
@@ -507,12 +420,8 @@
                         Order Id: {{ order.ORDER_NUMBER }}
                       </div>
                       <div class="d-flex gap-2 align-items-center">
-                        <span
-                          class="text-blue-600 cursor-pointer"
-                          (click)="openProjectDetails(order)"
-                          data-bs-toggle="modal"
-                          data-bs-target="#cartModal"
-                        >
+                        <span class="text-blue-600 cursor-pointer" (click)="openProjectDetails(order)"
+                          data-bs-toggle="modal" data-bs-target="#cartModal">
                           View Order Details
                         </span>
                         <!-- <span style="color: #b0b0b0">|</span> -->
@@ -529,67 +438,51 @@
                   <!-- Product List + Status Badge inside main card -->
                   <div class="p-3 mb-1 order-cardList">
                     <div class="text-end mb-2">
-                      <span
-                        class="status-badge d-inline-block px-3 py-1 rounded text-white"
-                        [ngClass]="{
+                      <span class="status-badge d-inline-block px-3 py-1 rounded text-white" [ngClass]="{
                           'bg-yellow-500':
                             order.ORDER_STATUS === 'P' ||
                             order.ORDER_STATUS === 'A',
-                          'bg-orange-500':
-                            order.ORDER_STATUS === 'SP' ||
-                            order.ORDER_STATUS === 'PD',
-                          'bg-blue-500':
-                            order.ORDER_STATUS === 'D' ||
-                            order.ORDER_STATUS === 'DD',
+                          'bg-orange-500': order.ORDER_STATUS === 'PD',
+                          'bg-blue-500': order.ORDER_STATUS === 'DD',
                           'bg-green-600': order.ORDER_STATUS === 'OD',
-                          'bg-red-500': order.ORDER_STATUS === 'OC' || order.ORDER_STATUS === 'R'
-                        }"
-                      >
+                          'bg-red-500':
+                            order.ORDER_STATUS === 'OC' ||
+                            order.ORDER_STATUS === 'R'
+                        }">
                         {{
-                          order.ORDER_STATUS === "P" ||
-                          order.ORDER_STATUS === "A"
-                            ? "Pending"
-                            : order.ORDER_STATUS === "SP" ||
-                              order.ORDER_STATUS === "PD"
-                            ? "Packaging"
-                            : order.ORDER_STATUS === "D" ||
-                              order.ORDER_STATUS === "DD"
-                            ? order.ORDER_STATUS === "D"
-                              ? "Preparing for dispatch"
-                              : (order.IS_LOCAL_PICKUP_SELECTED == 1
-                                ? "Picked Up"
-                                : "Dispatched")
-                            : order.ORDER_STATUS === "OD"
-                            ? "Delivered"
-                            : order.ORDER_STATUS === "OC"
-                            ? "Cancelled"
-                            : order.ORDER_STATUS === "R"
-                            ? "Rejected"
-                            : "Unknown"
+                        order.ORDER_STATUS === "P"
+                        ? "Order Placed"
+                        : order.ORDER_STATUS === "A"
+                        ? "Accepted"
+                        : order.ORDER_STATUS === "PD"
+                        ? "Packaging Done"
+                        : order.ORDER_STATUS === "DD"
+                        ? order.IS_LOCAL_PICKUP_SELECTED == 1
+                        ? "Ready For Pickup"
+                        : "Dispatched"
+                        : order.ORDER_STATUS === "OD"
+                        ? order.IS_LOCAL_PICKUP_SELECTED == 1
+                        ? "Picked Up"
+                        : "Delivered"
+                        : order.ORDER_STATUS === "OC"
+                        ? "Cancelled"
+                        : order.ORDER_STATUS === "R"
+                        ? "Rejected"
+                        : "Unknown"
                         }}
                       </span>
                     </div>
 
-                    <div
-                      class="d-flex align-items-center flex-wrap mb-3 single-product"
-                      *ngFor="let item of cartItemsMap[order.ID]"
-                    >
+                    <div class="d-flex align-items-center flex-wrap mb-3 single-product"
+                      *ngFor="let item of cartItemsMap[order.ID]">
                       <!-- Product Image -->
                       <div class="order-img me-3 flex-shrink-0">
-                        <img
-                          *ngIf="!item?.VARIENT_IMAGE_URL?.trim()"
-                          [src]="producctImageurl + item['PHOTO_URL'][0]"
-                          [alt]="item.PRODUCT_NAME"
-                          class="img-fluid rounded"
-                          style="width: 100px; height: 100px; object-fit: cover"
-                        />
-                        <img
-                          *ngIf="item?.VARIENT_IMAGE_URL?.trim()"
-                          [src]="vareintImageUrl + item.VARIENT_IMAGE_URL"
-                          [alt]="item.VARIENT_IMAGE_URL"
-                          class="img-fluid rounded"
-                          style="width: 100px; height: 100px; object-fit: cover"
-                        />
+                        <img *ngIf="!item?.VARIENT_IMAGE_URL?.trim()" [src]="producctImageurl + item['PHOTO_URL'][0]"
+                          [alt]="item.PRODUCT_NAME" class="img-fluid rounded"
+                          style="width: 100px; height: 100px; object-fit: cover" />
+                        <img *ngIf="item?.VARIENT_IMAGE_URL?.trim()" [src]="vareintImageUrl + item.VARIENT_IMAGE_URL"
+                          [alt]="item.VARIENT_IMAGE_URL" class="img-fluid rounded"
+                          style="width: 100px; height: 100px; object-fit: cover" />
                       </div>
 
                       <!-- Product Info -->
@@ -611,13 +504,8 @@
             </div>
 
             <!-- Load More -->
-            <div
-              class="text-center mt-3"
-              *ngIf="visibleOrders.length < orders.length"
-            >
-              <a class="load-more-link text-gray-500" (click)="loadMore()"
-                >Load More</a
-              >
+            <div class="text-center mt-3" *ngIf="visibleOrders.length < orders.length">
+              <a class="load-more-link text-gray-500" (click)="loadMore()">Load More</a>
             </div>
           </div>
 
@@ -626,11 +514,7 @@
           </div>
         </div>
       </div>
-      <div
-        id="addresses-section"
-        class="page-section"
-        *ngIf="isSectionActive('addresses-section')"
-      >
+      <div id="addresses-section" class="page-section" *ngIf="isSectionActive('addresses-section')">
         <!-- <div class="bg-white rounded-lg shadow-sm p-6 mb-8"> -->
         <div id="saved-addresses-section" class="section-content">
           <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
@@ -639,26 +523,19 @@
                 <i class="ri-map-pin-line text-[#5a8f69] text-xl mr-2"></i>
                 Saved Shipping Addresses
               </h2>
-              <button
-                class="bg-[#5a8f69] text-white px-4 py-2 text-sm rounded hover:bg-[#5a8f69]/90 transition"
-                (click)="openAddressModal(null)"
-              >
+              <button class="bg-[#5a8f69] text-white px-4 py-2 text-sm rounded hover:bg-[#5a8f69]/90 transition"
+                (click)="openAddressModal(null)">
                 + Add New Shipping Address
               </button>
             </div>
 
             <!-- Address Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div
-                *ngFor="let address of dataList1"
-                class="border border-gray-200 rounded-lg p-4 bg-gray-50 relative"
-              >
+              <div *ngFor="let address of dataList1" class="border border-gray-200 rounded-lg p-4 bg-gray-50 relative">
                 <div class="flex justify-between items-start">
                   <div>
                     <p class="font-semibold text-gray-800">
-                      <span *ngIf="address.ADDRESS_TYPE == 'R'"
-                        >Residential</span
-                      >
+                      <span *ngIf="address.ADDRESS_TYPE == 'R'">Residential</span>
                       <span *ngIf="address.ADDRESS_TYPE == 'O'">Office</span>
                     </p>
                     <p class="text-sm text-gray-600 mt-1">
@@ -673,28 +550,18 @@
                       {{ address.COUNTRY_CODE }}
                       {{ address.MOBILE_NO || "Phone not provided" }}
                     </p>
-                    <span
-                      *ngIf="address.IS_DEFUALT_ADDRESS == 1"
-                      class="inline-block text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded mt-2"
-                    >
+                    <span *ngIf="address.IS_DEFUALT_ADDRESS == 1"
+                      class="inline-block text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded mt-2">
                       Default
                     </span>
                   </div>
-                  <div
-                    class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0"
-                  >
-                    <button
-                      class="text-gray-500 hover:text-[#5a8f69] transition"
-                      title="Edit"
-                      (click)="openAddressModal(address)"
-                    >
+                  <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
+                    <button class="text-gray-500 hover:text-[#5a8f69] transition" title="Edit"
+                      (click)="openAddressModal(address)">
                       <i class="ri-edit-2-line"></i>
                     </button>
-                    <button
-                      class="text-gray-500 hover:text-red-500 transition"
-                      title="Delete"
-                      (click)="deleteAddress(address.ID, address.CUST_ID)"
-                    >
+                    <button class="text-gray-500 hover:text-red-500 transition" title="Delete"
+                      (click)="deleteAddress(address.ID, address.CUST_ID)">
                       <i class="ri-delete-bin-line"></i>
                     </button>
                   </div>
@@ -707,11 +574,7 @@
         <div *ngIf="dataList1.length < 1" style="text-align: center">
           <div class="bg-white rounded-lg shadow-sm p-12 text-center">
             <div class="flex justify-center mb-6">
-              <img
-                src="assets/img/no location.png"
-                class="h-48 w-auto"
-                alt="No address"
-              />
+              <img src="assets/img/no location.png" class="h-48 w-auto" alt="No address" />
             </div>
 
             <h1 class="text-xl font-semibold text-gray-900 mb-3">
@@ -723,20 +586,14 @@
 
             <button
               class="bg-[#5a8f69] hover:bg-green-800 text-white font-medium px-8 py-2 rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              (click)="openAddressModal(null)"
-              [disabled]="isTransitioning"
-            >
+              (click)="openAddressModal(null)" [disabled]="isTransitioning">
               <span *ngIf="!isTransitioning">ADD NEW SHIPPING ADDRESS</span>
               <span *ngIf="isTransitioning" class="button-loader"></span>
             </button>
           </div>
         </div>
       </div>
-      <div
-        id="notifications-section"
-        class="page-section"
-        *ngIf="isSectionActive('notifications-section')"
-      >
+      <div id="notifications-section" class="page-section" *ngIf="isSectionActive('notifications-section')">
         <!-- <div class="bg-white rounded-lg shadow-sm p-6 mb-8"> -->
         <div class="p-6 bg-white shadow-sm rounded-lg">
           <h2 class="text-xl font-semibold text-gray-800 mb-4">
@@ -746,9 +603,7 @@
           <!-- Notification Item -->
           <div class="space-y-4">
             <!-- Single Notification -->
-            <div
-              class="flex items-start p-4 bg-gray-50 rounded-lg border border-gray-200 hover:shadow-sm transition"
-            >
+            <div class="flex items-start p-4 bg-gray-50 rounded-lg border border-gray-200 hover:shadow-sm transition">
               <div class="text-green-500 mt-1">
                 <i class="ri-information-line text-xl"></i>
               </div>
@@ -761,9 +616,7 @@
               </div>
             </div>
 
-            <div
-              class="flex items-start p-4 bg-gray-50 rounded-lg border border-gray-200 hover:shadow-sm transition"
-            >
+            <div class="flex items-start p-4 bg-gray-50 rounded-lg border border-gray-200 hover:shadow-sm transition">
               <div class="text-yellow-500 mt-1">
                 <i class="ri-alert-line text-xl"></i>
               </div>
@@ -776,9 +629,7 @@
               </div>
             </div>
 
-            <div
-              class="flex items-start p-4 bg-gray-50 rounded-lg border border-gray-200 hover:shadow-sm transition"
-            >
+            <div class="flex items-start p-4 bg-gray-50 rounded-lg border border-gray-200 hover:shadow-sm transition">
               <div class="text-blue-500 mt-1">
                 <i class="ri-coupon-line text-xl"></i>
               </div>
@@ -796,11 +647,7 @@
       </div>
 
       <!-- Recently Viewed Products -->
-      <div
-        id="recently-viewed-section"
-        class="page-section"
-        *ngIf="isSectionActive('recently-viewed-section')"
-      >
+      <div id="recently-viewed-section" class="page-section" *ngIf="isSectionActive('recently-viewed-section')">
         <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
           <div class="flex justify-between items-center mb-6">
             <h2 class="text-lg font-semibold text-gray-800 flex items-center">
@@ -891,19 +738,14 @@
                 </div> -->
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- Product 1 -->
-            <div
-              class="product-card bg-white rounded-lg shadow-sm overflow-hidden"
-            >
+            <div class="product-card bg-white rounded-lg shadow-sm overflow-hidden">
               <div class="relative">
                 <img
                   src="https://readdy.ai/api/search-image?query=Ayurvedic%20body%20butter%20cream%20in%20elegant%20glass%20jar%2C%20natural%20ingredients%20visible%2C%20professional%20product%20photography%2C%20soft%20lighting%2C%20minimalist%20style%2C%20clean%20background%2C%20high-end%20cosmetic%20product%20presentation&width=400&height=400&seq=product1&orientation=squarish"
-                  alt="Ayurvedic Fusion Body Butter"
-                  class="w-full h-64 object-cover object-top"
-                />
+                  alt="Ayurvedic Fusion Body Butter" class="w-full h-64 object-cover object-top" />
                 <div class="absolute top-3 right-3 flex space-x-2">
                   <button
-                    class="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm text-gray-600 hover:text-[#5a8f69]"
-                  >
+                    class="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm text-gray-600 hover:text-[#5a8f69]">
                     <i class="ri-heart-line"></i>
                   </button>
                   <!-- <button
@@ -914,10 +756,7 @@
                       </button> -->
                 </div>
                 <div class="absolute top-3 left-3">
-                  <span
-                    class="bg-[#5a8f69]/90 text-white text-xs px-2 py-1 rounded"
-                    >New</span
-                  >
+                  <span class="bg-[#5a8f69]/90 text-white text-xs px-2 py-1 rounded">New</span>
                 </div>
               </div>
               <div class="p-4">
@@ -945,39 +784,29 @@
                 <div class="mt-4 flex space-x-2 btn-row">
                   <button
                     class="flex-1 bg-[#5a8f69] text-white py-2 rounded-button font-medium hover:bg-[#5a8f69]/90 transition-colors !rounded-button whitespace-nowrap add-to-cart-btn"
-                    data-product-id="1"
-                    onclick="showToast(
+                    data-product-id="1" onclick="showToast(
 'https://readdy.ai/api/search-image?query=Ayurvedic%20face%20cream%20in%20elegant%20glass%20jar%2C%20natural%20ingredients%20visible%2C%20professional%20product%20photography%2C%20soft%20lighting%2C%20minimalist%20style%2C%20clean%20background%2C%20high-end%20cosmetic%20product%20presentation&width=400&height=400&seq=product2&orientation=squarish',
 'Ayurvedic Fusion Face Cream'
-)"
-                  >
+)">
                     Add to Cart
                   </button>
-                  <a
-                    href="Ayurvedic-Neem-Face-Cream.html"
+                  <a href="Ayurvedic-Neem-Face-Cream.html"
                     class="product-details-link details-btn bg-gray-100 text-gray-800 px-4 py-2 rounded-button font-medium hover:bg-gray-200 transition-colors whitespace-nowrap"
-                    data-product="1"
-                    data-allow-navigation="true"
-                  >
+                    data-product="1" data-allow-navigation="true">
                     Details
                   </a>
                 </div>
               </div>
             </div>
             <!-- Product 2 -->
-            <div
-              class="product-card bg-white rounded-lg shadow-sm overflow-hidden"
-            >
+            <div class="product-card bg-white rounded-lg shadow-sm overflow-hidden">
               <div class="relative">
                 <img
                   src="https://readdy.ai/api/search-image?query=Ayurvedic%20face%20cream%20in%20elegant%20glass%20jar%2C%20natural%20ingredients%20visible%2C%20professional%20product%20photography%2C%20soft%20lighting%2C%20minimalist%20style%2C%20clean%20background%2C%20high-end%20cosmetic%20product%20presentation&width=400&height=400&seq=product2&orientation=squarish"
-                  alt="Ayurvedic Fusion Face Cream"
-                  class="w-full h-64 object-cover object-top"
-                />
+                  alt="Ayurvedic Fusion Face Cream" class="w-full h-64 object-cover object-top" />
                 <div class="absolute top-3 right-3 flex space-x-2">
                   <button
-                    class="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm text-gray-600 hover:text-[#5a8f69]"
-                  >
+                    class="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm text-gray-600 hover:text-[#5a8f69]">
                     <i class="ri-heart-line"></i>
                   </button>
                   <!-- <button
@@ -988,10 +817,7 @@
                       </button> -->
                 </div>
                 <div class="absolute top-3 left-3">
-                  <span
-                    class="bg-secondary/90 text-white text-xs px-2 py-1 rounded"
-                    >Bestseller</span
-                  >
+                  <span class="bg-secondary/90 text-white text-xs px-2 py-1 rounded">Bestseller</span>
                 </div>
               </div>
               <div class="p-4">
@@ -1019,39 +845,29 @@
                 <div class="mt-4 flex space-x-2 btn-row">
                   <button
                     class="flex-1 bg-[#5a8f69] text-white py-2 rounded-button font-medium hover:bg-[#5a8f69]/90 transition-colors !rounded-button whitespace-nowrap add-to-cart-btn"
-                    data-product-id="2"
-                    onclick="showToast(
+                    data-product-id="2" onclick="showToast(
 'https://readdy.ai/api/search-image?query=Ayurvedic%20face%20cream%20in%20elegant%20glass%20jar%2C%20natural%20ingredients%20visible%2C%20professional%20product%20photography%2C%20soft%20lighting%2C%20minimalist%20style%2C%20clean%20background%2C%20high-end%20cosmetic%20product%20presentation&width=400&height=400&seq=product2&orientation=squarish',
 'Ayurvedic Fusion Face Cream'
-)"
-                  >
+)">
                     Add to Cart
                   </button>
-                  <a
-                    href="Ayurvedic-Neem-Face-Cream.html"
+                  <a href="Ayurvedic-Neem-Face-Cream.html"
                     class="product-details-link details-btn bg-gray-100 text-gray-800 px-4 py-2 rounded-button font-medium hover:bg-gray-200 transition-colors whitespace-nowrap"
-                    data-product="1"
-                    data-allow-navigation="true"
-                  >
+                    data-product="1" data-allow-navigation="true">
                     Details
                   </a>
                 </div>
               </div>
             </div>
             <!-- Product 3 -->
-            <div
-              class="product-card bg-white rounded-lg shadow-sm overflow-hidden"
-            >
+            <div class="product-card bg-white rounded-lg shadow-sm overflow-hidden">
               <div class="relative">
                 <img
                   src="https://readdy.ai/api/search-image?query=Calendula%20body%20oil%20in%20elegant%20glass%20bottle%2C%20natural%20ingredients%20visible%2C%20professional%20product%20photography%2C%20soft%20lighting%2C%20minimalist%20style%2C%20clean%20background%2C%20high-end%20cosmetic%20product%20presentation&width=400&height=400&seq=product3&orientation=squarish"
-                  alt="Nourishing Calendula Body Oil"
-                  class="w-full h-64 object-cover object-top"
-                />
+                  alt="Nourishing Calendula Body Oil" class="w-full h-64 object-cover object-top" />
                 <div class="absolute top-3 right-3 flex space-x-2">
                   <button
-                    class="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm text-gray-600 hover:text-[#5a8f69]"
-                  >
+                    class="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm text-gray-600 hover:text-[#5a8f69]">
                     <i class="ri-heart-line"></i>
                   </button>
                   <!-- <button
@@ -1062,10 +878,7 @@
                       </button> -->
                 </div>
                 <div class="absolute top-3 left-3">
-                  <span
-                    class="bg-green-500/90 text-white text-xs px-2 py-1 rounded"
-                    >Organic</span
-                  >
+                  <span class="bg-green-500/90 text-white text-xs px-2 py-1 rounded">Organic</span>
                 </div>
               </div>
               <div class="p-4">
@@ -1093,20 +906,15 @@
                 <div class="mt-4 flex space-x-2 btn-row">
                   <button
                     class="flex-1 bg-[#5a8f69] text-white py-2 rounded-button font-medium hover:bg-[#5a8f69]/90 transition-colors !rounded-button whitespace-nowrap add-to-cart-btn"
-                    data-product-id="3"
-                    onclick="showToast(
+                    data-product-id="3" onclick="showToast(
 'https://readdy.ai/api/search-image?query=Ayurvedic%20face%20cream%20in%20elegant%20glass%20jar%2C%20natural%20ingredients%20visible%2C%20professional%20product%20photography%2C%20soft%20lighting%2C%20minimalist%20style%2C%20clean%20background%2C%20high-end%20cosmetic%20product%20presentation&width=400&height=400&seq=product2&orientation=squarish',
 'Ayurvedic Fusion Face Cream'
-)"
-                  >
+)">
                     Add to Cart
                   </button>
-                  <a
-                    href="Ayurvedic-Neem-Face-Cream.html"
+                  <a href="Ayurvedic-Neem-Face-Cream.html"
                     class="product-details-link details-btn bg-gray-100 text-gray-800 px-4 py-2 rounded-button font-medium hover:bg-gray-200 transition-colors whitespace-nowrap"
-                    data-product="1"
-                    data-allow-navigation="true"
-                  >
+                    data-product="1" data-allow-navigation="true">
                     Details
                   </a>
                 </div>
@@ -1116,11 +924,8 @@
           <!-- </div> -->
         </div>
       </div>
-      <div
-        id="wishlist-section"
-        class="page-section max-w-3xl mx-auto px-2 sm:px-2 lg:px-4"
-        *ngIf="isSectionActive('wishlist-section')"
-      >
+      <div id="wishlist-section" class="page-section max-w-3xl mx-auto px-2 sm:px-2 lg:px-4"
+        *ngIf="isSectionActive('wishlist-section')">
         <div class="bg-white p-2 mb-2">
           <div class="flex justify-between items-center mb-2">
             <h2 class="text-lg font-semibold text-gray-800">
@@ -1136,18 +941,11 @@
             </div>
           </div>
 
-          <ul
-            *ngIf="!loadingProducts"
-            class="divide-y divide-gray-200 grid grid-cols-1 sm:grid-cols-2 gap-1"
-          >
-            <li
-              *ngFor="let product of products; trackBy: trackByProductId"
-              class="flex flex-col sm:flex-row items-start sm:items-center p-3 space-y-4 sm:space-y-0 sm:space-x-4 border border-gray-200 rounded-lg shadow-sm mb-4 bg-white"
-            >
+          <ul *ngIf="!loadingProducts" class="divide-y divide-gray-200 grid grid-cols-1 sm:grid-cols-2 gap-1">
+            <li *ngFor="let product of products; trackBy: trackByProductId"
+              class="flex flex-col sm:flex-row items-start sm:items-center p-3 space-y-4 sm:space-y-0 sm:space-x-4 border border-gray-200 rounded-lg shadow-sm mb-4 bg-white">
               <!-- Thumbnail -->
-              <div
-                class="w-20 h-20 flex-shrink-0 bg-gray-50 rounded overflow-hidden flex items-center justify-center"
-              >
+              <div class="w-20 h-20 flex-shrink-0 bg-gray-50 rounded overflow-hidden flex items-center justify-center">
                 <!-- <img
                   [src]="
                     producctImageurl +
@@ -1156,79 +954,58 @@
                   [alt]="product.NAME"
                   class="object-contain h-full"
                 /> -->
-                <img
-                  [src]="vareintImageUrl + convertToarrayVairents2(product)"
-                  [alt]="product.NAME"
-                  class="object-contain h-full"
-                />
-                <!-- <img
-                  *ngIf="getImageArray(product)"
-                  [src]="producctImageurl + getImageArray(product)[0]"
-                  [alt]="product.NAME"
-                  class="object-contain h-full"
-                /> -->
+                <!-- <img *ngIf="convertStringtoArray(product.VARIENTS).length > 0"
+                  [src]="vareintImageUrl + convertStringtoArray(product.VARIENTS)[0]['VARIENT_IMAGE_URL']"
+                  [alt]="product.NAME" class="object-contain h-full" />
+                <img *ngIf="getImageArray(product)" [src]="producctImageurl + getImageArray(product)[0]"
+                  [alt]="product.NAME" class="object-contain h-full" /> -->
+                <img [src]="vareintImageUrl + convertToarrayVairents2(product)" [alt]="product.NAME"
+                  class="object-contain h-full" />
               </div>
 
               <!-- Info -->
               <div class="flex-1 space-y-0">
-                <h3
-                  class="text-black font-Arial font-apple-system cursor-pointer line-clamp-2"
-                >
+                <h3 class="text-black font-Arial font-apple-system cursor-pointer line-clamp-2">
                   {{ product.NAME }}
                 </h3>
                 <p class="text-gray-600 text-xs line-clamp-1">
                   {{ product.DESCRIPTION }}
                 </p>
-                <a
-                  class="text-blue-600 text-sm hover:underline cursor-pointer"
-                  (click)="
+                <a class="text-blue-600 text-sm hover:underline cursor-pointer" (click)="
                     navigateToProduct(
                       product.ID,
                       selectedVariantMap[product.ID]
                     )
-                  "
-                >
+                  ">
                   View details
                 </a>
 
                 <!-- Rating badge -->
-                <div
-                  *ngIf="product.CUSTOMER_RATINGS"
-                  class="inline-flex items-center bg-[#72BB81E5] text-white text-xs font-medium px-2 py-1 rounded-full"
-                >
+                <div *ngIf="product.CUSTOMER_RATINGS"
+                  class="inline-flex items-center bg-[#72BB81E5] text-white text-xs font-medium px-2 py-1 rounded-full">
                   <span>{{ product.CUSTOMER_RATINGS | number : "1.1-1" }}</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-3 w-3 ml-1"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 ml-1" fill="currentColor" viewBox="0 0 24 24">
                     <path
-                      d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.782 1.4 8.17L12 18.896l-7.334 3.866 1.4-8.17L.132 9.21l8.2-1.192z"
-                    />
+                      d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.782 1.4 8.17L12 18.896l-7.334 3.866 1.4-8.17L.132 9.21l8.2-1.192z" />
                   </svg>
                 </div>
 
                 <p class="text-green-600 font-semibold">
                   {{
-                    product.IS_VERIENT_AVAILABLE == 1
-                      ? "$" + (variantRateMap[product.ID] || "0")
-                      : "$" + product.RATE
+                  product.IS_VERIENT_AVAILABLE == 1
+                  ? "$" + (variantRateMap[product.ID] || "0")
+                  : "$" + product.RATE
                   }}
                 </p>
               </div>
 
               <!-- Actions -->
               <div class="flex flex-col items-stretch gap-2">
-                <button
-                  *ngIf="!hasItemsInCart(product.ID, product)"
-                  (click)="addToCart(product)"
-                  [disabled]="
+                <button *ngIf="!hasItemsInCart(product.ID, product)" (click)="addToCart(product)" [disabled]="
                     product.IS_UPCOMING == 1 ||
                     (product.IS_VERIENT_AVAILABLE == 1 &&
                       !selectedVariantMap[product.ID])
-                  "
-                  [ngClass]="{
+                  " [ngClass]="{
                     'bg-[#5a8f69] hover:bg-green-800 text-white':
                       product.IS_UPCOMING != 1 &&
                       (product.IS_VERIENT_AVAILABLE == 0 ||
@@ -1238,19 +1015,14 @@
                       (product.IS_VERIENT_AVAILABLE == 1 &&
                         !selectedVariantMap[product.ID])
                   }"
-                  class="w-full px-2 py-1 font-sans text-xs md:text-base rounded-full font-medium transition flex items-center justify-center"
-                >
+                  class="w-full px-2 py-1 font-sans text-xs md:text-base rounded-full font-medium transition flex items-center justify-center">
                   <span class="text-white text-xs">Add to Cart</span>
                 </button>
-                <button
-                  *ngIf="hasItemsInCart(product.ID, product)"
-                  (click)="navigateTocart()"
-                  [disabled]="
+                <button *ngIf="hasItemsInCart(product.ID, product)" (click)="navigateTocart()" [disabled]="
                     product.IS_UPCOMING == 1 ||
                     (product.IS_VERIENT_AVAILABLE == 1 &&
                       !selectedVariantMap[product.ID])
-                  "
-                  [ngClass]="{
+                  " [ngClass]="{
                     'bg-[#5a8f69] hover:bg-green-800 text-white':
                       product.IS_UPCOMING != 1 &&
                       (product.IS_VERIENT_AVAILABLE == 0 ||
@@ -1260,15 +1032,11 @@
                       (product.IS_VERIENT_AVAILABLE == 1 &&
                         !selectedVariantMap[product.ID])
                   }"
-                  class="w-full px-2 py-1 font-sans text-xs md:text-base rounded-full font-medium transition flex items-center justify-center"
-                >
+                  class="w-full px-2 py-1 font-sans text-xs md:text-base rounded-full font-medium transition flex items-center justify-center">
                   <span class="text-white text-xs">Go to Cart</span>
                 </button>
-                <button
-                  (click)="removeFromWishlist(product)"
-                  title="Remove"
-                  class="w-full px-2 py-1 text-sm md:text-base font-sans rounded-full bg-red-500 hover:bg-red-600 text-white font-medium transition flex items-center justify-center"
-                >
+                <button (click)="removeFromWishlist(product)" title="Remove"
+                  class="w-full px-2 py-1 text-sm md:text-base font-sans rounded-full bg-red-500 hover:bg-red-600 text-white font-medium transition flex items-center justify-center">
                   <span class="text-white text-xs">Remove</span>
                 </button>
               </div>
@@ -1276,265 +1044,180 @@
           </ul>
 
           <!-- Empty State -->
-          <div
-            *ngIf="!loadingProducts && (!products || products.length === 0)"
-            class="text-center py-16 text-gray-500"
-          >
+          <div *ngIf="!loadingProducts && (!products || products.length === 0)" class="text-center py-16 text-gray-500">
             <i class="ri-heart-line text-6xl mb-4"></i>
-            <h3 class="text-xl font-medium mb-2">Your wishlist is empty</h3>
-            <p>Add items you love to your wishlist!</p>
+            <h3 class="text-xl font-medium mb-2">Your Favourites is empty</h3>
+            <p>Add items you love to your Favourites!</p>
           </div>
         </div>
       </div>
-      <div
-  id="changepass-section"
-  class="page-section"
-  *ngIf="isSectionActive('changepass-section')"
->
-  <!-- Change Password Section -->
-  <div
-    *ngIf="!openPasswordVerify"
-    class="max-w-md mx-auto bg-white rounded-lg shadow-sm p-6"
-  >
-    <h2 class="text-xl font-semibold mb-4 text-gray-800">
-      Change Password
-    </h2>
+      <div id="changepass-section" class="page-section" *ngIf="isSectionActive('changepass-section')">
+        <!-- Change Password Section -->
+        <div *ngIf="!openPasswordVerify" class="max-w-md mx-auto bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-semibold mb-4 text-gray-800">
+            Change Password
+          </h2>
 
-    <form (ngSubmit)="confirmPasswordChange()">
-      <!-- Old Password -->
-      <div class="mb-4">
-        <label
-          for="oldPassword"
-          class="block text-sm font-medium text-gray-700 mb-1"
-        >
-          Old Password
-        </label>
-        <div class="relative">
-          <input
-            [type]="showOldPassword ? 'text' : 'password'"
-            id="oldPassword"
-            [(ngModel)]="newPasswordForm.oldPassword"
-            name="oldPassword"
-            placeholder="Enter your current password"
-            class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm pr-10 focus:outline-none focus:ring-[#5a8f69] focus:border-[#5a8f69]"
-            required
-          />
-          <button
-            type="button"
-            (click)="togglePasswordVisibility('old')"
-            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 focus:outline-none"
-          >
-            <i
-              [class.ri-eye-line]="!showOldPassword"
-              [class.ri-eye-off-line]="showOldPassword"
-              class="text-lg"
-            ></i>
-          </button>
-        </div>
-      </div>
+          <form (ngSubmit)="confirmPasswordChange()">
+            <!-- Old Password -->
+            <div class="mb-4">
+              <label for="oldPassword" class="block text-sm font-medium text-gray-700 mb-1">
+                Old Password
+              </label>
+              <div class="relative">
+                <input [type]="showOldPassword ? 'text' : 'password'" id="oldPassword"
+                  [(ngModel)]="newPasswordForm.oldPassword" name="oldPassword" placeholder="Enter your current password"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm pr-10 focus:outline-none focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                  required />
+                <button type="button" (click)="togglePasswordVisibility('old')"
+                  class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 focus:outline-none">
+                  <i [class.ri-eye-line]="!showOldPassword" [class.ri-eye-off-line]="showOldPassword"
+                    class="text-lg"></i>
+                </button>
+              </div>
+            </div>
 
-      <!-- New Password -->
-      <div class="mb-4">
-        <label
-          for="newPassword"
-          class="block text-sm font-medium text-gray-700 mb-1"
-        >
-          New Password
-        </label>
-        <div class="relative">
-          <input
-            [type]="showNewPassword ? 'text' : 'password'"
-            id="newPassword"
-            [(ngModel)]="newPasswordForm.password"
-            name="newPassword"
-            placeholder="New Password (min 8 chars)"
-            class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm pr-10 focus:outline-none focus:ring-[#5a8f69] focus:border-[#5a8f69]"
-            required
-          />
-          <button
-            type="button"
-            (click)="togglePasswordVisibility('new')"
-            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 focus:outline-none"
-          >
-            <i
-              [class.ri-eye-line]="!showNewPassword"
-              [class.ri-eye-off-line]="showNewPassword"
-              class="text-lg"
-            ></i>
-          </button>
-        </div>
-      </div>
+            <!-- New Password -->
+            <div class="mb-4">
+              <label for="newPassword" class="block text-sm font-medium text-gray-700 mb-1">
+                New Password
+              </label>
+              <div class="relative">
+                <input [type]="showNewPassword ? 'text' : 'password'" id="newPassword"
+                  [(ngModel)]="newPasswordForm.password" name="newPassword" placeholder="New Password (min 8 chars)"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm pr-10 focus:outline-none focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                  required />
+                <button type="button" (click)="togglePasswordVisibility('new')"
+                  class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 focus:outline-none">
+                  <i [class.ri-eye-line]="!showNewPassword" [class.ri-eye-off-line]="showNewPassword"
+                    class="text-lg"></i>
+                </button>
+              </div>
+            </div>
 
-      <!-- Confirm Password -->
-      <div class="mb-6">
-        <label
-          for="confirmPassword"
-          class="block text-sm font-medium text-gray-700 mb-1"
-        >
-          Confirm Password
-        </label>
-        <div class="relative">
-          <input
-            [type]="showConfirmPassword ? 'text' : 'password'"
-            id="confirmPassword"
-            [(ngModel)]="newPasswordForm.confirmPassword"
-            name="confirmPassword"
-            placeholder="Re-enter New Password"
-            class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm pr-10 focus:outline-none focus:ring-[#5a8f69] focus:border-[#5a8f69]"
-            required
-          />
-          <button
-            type="button"
-            (click)="togglePasswordVisibility('confirm')"
-            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 focus:outline-none"
-          >
-            <i
-              [class.ri-eye-line]="!showConfirmPassword"
-              [class.ri-eye-off-line]="showConfirmPassword"
-              class="text-lg"
-            ></i>
-          </button>
+            <!-- Confirm Password -->
+            <div class="mb-6">
+              <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">
+                Confirm Password
+              </label>
+              <div class="relative">
+                <input [type]="showConfirmPassword ? 'text' : 'password'" id="confirmPassword"
+                  [(ngModel)]="newPasswordForm.confirmPassword" name="confirmPassword"
+                  placeholder="Re-enter New Password"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm pr-10 focus:outline-none focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                  required />
+                <button type="button" (click)="togglePasswordVisibility('confirm')"
+                  class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 focus:outline-none">
+                  <i [class.ri-eye-line]="!showConfirmPassword" [class.ri-eye-off-line]="showConfirmPassword"
+                    class="text-lg"></i>
+                </button>
+              </div>
+
+              <p *ngIf="
+                  newPasswordForm.password &&
+                  newPasswordForm.confirmPassword &&
+                  newPasswordForm.password !== newPasswordForm.confirmPassword
+                " class="mt-1 text-xs text-red-600">
+                Passwords do not match.
+              </p>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex justify-end gap-3">
+              <button type="button" (click)="showSection('dashboard-section')"
+                class="bg-gray-200 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-300 transition">
+                Cancel
+              </button>
+              <button type="submit" [disabled]="
+                  isChangingPassword ||
+                  newPasswordForm.password !==
+                    newPasswordForm.confirmPassword ||
+                  !newPasswordForm.password ||
+                  !newPasswordForm.oldPassword
+                "
+                class="bg-[#5a8f69] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1">
+                <span *ngIf="isChangingPassword" class="small-loader"></span>
+                <span>{{
+                  isChangingPassword ? "Verifying..." : "Confirm"
+                  }}</span>
+              </button>
+            </div>
+          </form>
         </div>
 
-        <p
-          *ngIf="
-            newPasswordForm.password &&
-            newPasswordForm.confirmPassword &&
-            newPasswordForm.password !== newPasswordForm.confirmPassword
-          "
-          class="mt-1 text-xs text-red-600"
-        >
-          Passwords do not match.
-        </p>
+        <!-- OTP Verification Section -->
+        <div *ngIf="openPasswordVerify" class="mt-8 max-w-md mx-auto bg-white rounded-lg shadow-sm p-6 animate-fadeIn">
+          <h2 class="text-xl font-bold mb-2 text-center">
+            Verify OTP
+          </h2>
+          <p class="text-sm text-gray-600 text-center mb-4">
+            We’ve sent a 4-digit code to:
+            <br />
+            <span class="font-medium text-gray-800">
+              <span *ngIf="user?.mobile">{{ user.mobile }}</span>
+              <span *ngIf="user?.mobile && user?.email"> / </span>
+              <span *ngIf="user?.email">{{ user.email }}</span>
+            </span>
+          </p>
+
+          <div style="color: red; margin-bottom: 15px" *ngIf="passwordStatusCode != ''">
+            {{ passwordStatusCode }}
+          </div>
+
+          <form (ngSubmit)="verifyPasswordOTPF()" class="text-center">
+            <div class="flex justify-center mb-6">
+              <input *ngFor="let i of [0, 1, 2, 3]"
+                class="otp-input w-12 h-12 text-center text-xl border rounded-md mx-1 focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                type="text" [id]="'password-otp-input-' + i" [(ngModel)]="passwordOTP[i]" [name]="'passwordotpn' + i"
+                maxlength="1" (input)="onOtpInput($event, i)" (keydown)="onOtpKeydown($event, i)"
+                (paste)="onOtpPaste($event)" (keypress)="allowOnlyNumbers($event)" required autocomplete="off" />
+            </div>
+
+            <div class="mb-6">
+              <span *ngIf="passwordRemainingTime > 0" class="text-sm text-gray-600">Resend in {{ passwordRemainingTime
+                }}s</span>
+              <p class="text-sm text-gray-600 mt-2">
+                Didn’t receive the code?
+                <a (click)="
+                    passwordRemainingTime == 0 ? resendPasswordOtp() : ''
+                  " [ngStyle]="{
+                    cursor: passwordRemainingTime > 0 ? 'wait' : 'pointer',
+                    color:
+                      passwordRemainingTime > 0
+                        ? '#636363 !important'
+                        : 'rgb(90, 143, 105) !important'
+                  }" class="font-medium">
+                  Resend
+                </a>
+              </p>
+            </div>
+
+            <div class="flex gap-3 w-full">
+              <button type="button" (click)="openPasswordVerify = false"
+                class="w-1/2 bg-gray-200 text-gray-700 py-2.5 rounded-button font-medium hover:bg-gray-300 transition">
+                Cancel
+              </button>
+              <button type="submit" [disabled]="
+                  isVerifyingPasswordOTP || passwordOTP.join('').length < 4
+                "
+                class="w-1/2 bg-[#5a8f69] text-white py-2.5 rounded-button font-medium hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1">
+                <span *ngIf="isVerifyingPasswordOTP" class="small-loader"></span>
+                <span>{{
+                  isVerifyingPasswordOTP ? "Verifying..." : "Verify"
+                  }}</span>
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-
-      <!-- Buttons -->
-      <div class="flex justify-end gap-3">
-        <button
-          type="button"
-          (click)="showSection('dashboard-section')"
-          class="bg-gray-200 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          [disabled]="
-            isChangingPassword ||
-            newPasswordForm.password !== newPasswordForm.confirmPassword ||
-            !newPasswordForm.password ||
-            !newPasswordForm.oldPassword
-          "
-          class="bg-[#5a8f69] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1"
-        >
-          <span *ngIf="isChangingPassword" class="small-loader"></span>
-          <span>{{ isChangingPassword ? 'Verifying...' : 'Confirm' }}</span>
-        </button>
-      </div>
-    </form>
-  </div>
-
-  <!-- OTP Verification Section -->
-  <div
-    *ngIf="openPasswordVerify"
-    class="mt-8 max-w-md mx-auto bg-white rounded-lg shadow-sm p-6 animate-fadeIn"
-  >
-    <h2 class="text-xl font-bold mb-2 text-center">Verify Password Change</h2>
-    <p class="text-sm text-gray-600 text-center mb-4">
-      We’ve sent a 4-digit code to:
-      <br />
-      <span class="font-medium text-gray-800">
-        <span *ngIf="user?.mobile">{{ user.mobile }}</span>
-        <span *ngIf="user?.mobile && user?.email"> / </span>
-        <span *ngIf="user?.email">{{ user.email }}</span>
-      </span>
-    </p>
-
-    <div
-      style="color: red; margin-bottom: 15px"
-      *ngIf="passwordStatusCode != ''"
-    >
-      {{ passwordStatusCode }}
-    </div>
-
-    <form (ngSubmit)="verifyPasswordOTPF()" class="text-center">
-      <div class="flex justify-center mb-6">
-        <input
-          *ngFor="let i of [0, 1, 2, 3]"
-          class="otp-input w-12 h-12 text-center text-xl border rounded-md mx-1 focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
-          type="text"
-          [id]="'password-otp-input-' + i"
-          [(ngModel)]="passwordOTP[i]"
-          [name]="'passwordotpn' + i"
-          maxlength="1"
-          (input)="onOtpInput($event, i)"
-          (keydown)="onOtpKeydown($event, i)"
-          (paste)="onOtpPaste($event)"
-          (keypress)="allowOnlyNumbers($event)"
-          required
-          autocomplete="off"
-        />
-      </div>
-
-      <div class="mb-6">
-        <span
-          *ngIf="passwordRemainingTime > 0"
-          class="text-sm text-gray-600"
-          >Resend in {{ passwordRemainingTime }}s</span
-        >
-        <p class="text-sm text-gray-600 mt-2">
-          Didn’t receive the code?
-          <a
-            (click)="passwordRemainingTime == 0 ? resendPasswordOtp() : ''"
-            [ngStyle]="{
-              cursor: passwordRemainingTime > 0 ? 'wait' : 'pointer',
-              color:
-                passwordRemainingTime > 0
-                  ? '#636363 !important'
-                  : 'rgb(90, 143, 105) !important'
-            }"
-            class="font-medium"
-          >
-            Resend
-          </a>
-        </p>
-      </div>
-
-      <div class="flex gap-3 w-full">
-        <button
-          type="button"
-          (click)="openPasswordVerify = false"
-          class="w-1/2 bg-gray-200 text-gray-700 py-2.5 rounded-button font-medium hover:bg-gray-300 transition"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          [disabled]="
-            isVerifyingPasswordOTP || passwordOTP.join('').length < 4
-          "
-          class="w-1/2 bg-[#5a8f69] text-white py-2.5 rounded-button font-medium hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1"
-        >
-          <span *ngIf="isVerifyingPasswordOTP" class="small-loader"></span>
-          <span>{{
-            isVerifyingPasswordOTP ? 'Verifying...' : 'Verify'
-          }}</span>
-        </button>
-      </div>
-    </form>
-  </div>
-</div>
-
 
       <!-- > -->
     </div>
   </div>
 </div>
 <!-- Cart Sidebar -->
-<div
-  id="cartSidebar"
-  class="fixed inset-y-0 right-0 w-96 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50"
->
+<div id="cartSidebar"
+  class="fixed inset-y-0 right-0 w-96 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50">
   <div class="flex flex-col h-full">
     <!-- Cart Header -->
     <div class="p-6 border-b border-gray-200">
@@ -1552,29 +1235,18 @@
       <div class="flex items-center py-6 border-b border-gray-200">
         <img
           src="https://readdy.ai/api/search-image?query=Ayurvedic%20body%20butter%20cream%20in%20elegant%20glass%20jar%2C%20natural%20ingredients%20visible%2C%20professional%20product%20photography%2C%20soft%20lighting%2C%20minimalist%20style%2C%20clean%20background%2C%20high-end%20cosmetic%20product%20presentation&width=400&height=400&seq=product1&orientation=squarish"
-          alt="Ayurvedic Fusion Body Butter"
-          class="w-20 h-20 object-cover rounded-lg"
-        />
+          alt="Ayurvedic Fusion Body Butter" class="w-20 h-20 object-cover rounded-lg" />
         <div class="ml-4 flex-1">
           <h3 class="text-sm font-medium text-gray-900">
             Ayurvedic Fusion Body Butter
           </h3>
           <p class="text-sm text-gray-500 mt-1">₹24.99</p>
           <div class="flex items-center mt-2">
-            <button
-              class="text-gray-500 hover:text-[#5a8f69] cart-qty-decrease"
-            >
+            <button class="text-gray-500 hover:text-[#5a8f69] cart-qty-decrease">
               <i class="ri-subtract-line"></i>
             </button>
-            <input
-              type="number"
-              value="1"
-              min="1"
-              class="w-12 text-center border-none text-sm"
-            />
-            <button
-              class="text-gray-500 hover:text-[#5a8f69] cart-qty-increase"
-            >
+            <input type="number" value="1" min="1" class="w-12 text-center border-none text-sm" />
+            <button class="text-gray-500 hover:text-[#5a8f69] cart-qty-increase">
               <i class="ri-add-line"></i>
             </button>
           </div>
@@ -1588,29 +1260,18 @@
       <div class="flex items-center py-6 border-b border-gray-200">
         <img
           src="https://readdy.ai/api/search-image?query=Ayurvedic%20face%20cream%20in%20elegant%20glass%20jar%2C%20natural%20ingredients%20visible%2C%20professional%20product%20photography%2C%20soft%20lighting%2C%20minimalist%20style%2C%20clean%20background%2C%20high-end%20cosmetic%20product%20presentation&width=400&height=400&seq=product2&orientation=squarish"
-          alt="Ayurvedic Fusion Face Cream"
-          class="w-20 h-20 object-cover rounded-lg"
-        />
+          alt="Ayurvedic Fusion Face Cream" class="w-20 h-20 object-cover rounded-lg" />
         <div class="ml-4 flex-1">
           <h3 class="text-sm font-medium text-gray-900">
             Ayurvedic Fusion Face Cream
           </h3>
           <p class="text-sm text-gray-500 mt-1">₹32.99</p>
           <div class="flex items-center mt-2">
-            <button
-              class="text-gray-500 hover:text-[#5a8f69] cart-qty-decrease"
-            >
+            <button class="text-gray-500 hover:text-[#5a8f69] cart-qty-decrease">
               <i class="ri-subtract-line"></i>
             </button>
-            <input
-              type="number"
-              value="1"
-              min="1"
-              class="w-12 text-center border-none text-sm"
-            />
-            <button
-              class="text-gray-500 hover:text-[#5a8f69] cart-qty-increase"
-            >
+            <input type="number" value="1" min="1" class="w-12 text-center border-none text-sm" />
+            <button class="text-gray-500 hover:text-[#5a8f69] cart-qty-increase">
               <i class="ri-add-line"></i>
             </button>
           </div>
@@ -1628,15 +1289,12 @@
         <span class="text-base font-medium text-gray-900">₹57.98</span>
       </div>
       <div class="space-y-3">
-        <button
-          id="continueShopping"
-          class="w-full bg-gray-100 text-gray-800 py-3 rounded-button font-medium hover:bg-gray-200 transition-colors !rounded-button whitespace-nowrap"
-        >
+        <button id="continueShopping"
+          class="w-full bg-gray-100 text-gray-800 py-3 rounded-button font-medium hover:bg-gray-200 transition-colors !rounded-button whitespace-nowrap">
           Continue Shopping
         </button>
         <button
-          class="w-full bg-[#5a8f69] text-white py-3 rounded-button font-medium hover:bg-[#5a8f69]/90 transition-colors !rounded-button whitespace-nowrap"
-        >
+          class="w-full bg-[#5a8f69] text-white py-3 rounded-button font-medium hover:bg-[#5a8f69]/90 transition-colors !rounded-button whitespace-nowrap">
           Proceed to Checkout
         </button>
       </div>
@@ -1644,10 +1302,7 @@
   </div>
 </div>
 <!-- Confirmation Modal -->
-<div
-  *ngIf="showLogoutModal"
-  class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
->
+<div *ngIf="showLogoutModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
   <div class="bg-white rounded-lg p-6 w-[90%] max-w-sm text-center shadow-md">
     <div class="text-green-500 text-4xl mb-2">
       <i class="ri-question-line"></i>
@@ -1655,16 +1310,12 @@
     <h2 class="text-xl font-semibold mb-2">Confirmation</h2>
     <p class="text-sm text-gray-600 mb-6">Are you sure you want to logout ?</p>
     <div class="flex justify-center gap-4">
-      <button
-        (click)="closeLogoutModal()"
-        class="bg-gray-200 px-4 py-2 rounded font-medium hover:bg-gray-300 transition"
-      >
+      <button (click)="closeLogoutModal()"
+        class="bg-gray-200 px-4 py-2 rounded font-medium hover:bg-gray-300 transition">
         No
       </button>
-      <button
-        (click)="proceedLogout()"
-        class="bg-[#5a8f69] text-white px-4 py-2 rounded font-medium hover:bg-opacity-90 transition"
-      >
+      <button (click)="proceedLogout()"
+        class="bg-[#5a8f69] text-white px-4 py-2 rounded font-medium hover:bg-opacity-90 transition">
         Yes
       </button>
     </div>
@@ -1700,48 +1351,25 @@
 </section> -->
 
 <!-- Edit Modal -->
-<div
-  *ngIf="editModalOpen"
-  class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
->
+<div *ngIf="editModalOpen" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
   <div class="bg-white rounded-lg p-4 w-[85%] max-w-xs text-center shadow-md">
     <h2 class="text-lg font-semibold mb-3">
       Update {{ editField | titlecase }}
     </h2>
     <form (ngSubmit)="updateField()">
       <div class="mb-3">
-        <input
-          *ngIf="editField === 'email'"
-          type="email"
-          [(ngModel)]="editValue"
-          name="editEmail"
-          placeholder="Enter new email"
-          class="w-full px-3 py-1.5 border rounded text-sm"
-          required
-        />
-        <input
-          *ngIf="editField === 'password'"
-          type="password"
-          [(ngModel)]="editValue"
-          name="editPassword"
-          placeholder="Enter new password"
-          class="w-full px-3 py-1.5 border rounded text-sm"
-          required
-        />
+        <input *ngIf="editField === 'email'" type="email" [(ngModel)]="editValue" name="editEmail"
+          placeholder="Enter new email" class="w-full px-3 py-1.5 border rounded text-sm" required />
+        <input *ngIf="editField === 'password'" type="password" [(ngModel)]="editValue" name="editPassword"
+          placeholder="Enter new password" class="w-full px-3 py-1.5 border rounded text-sm" required />
       </div>
       <div class="flex justify-center gap-3">
-        <button
-          type="button"
-          (click)="closeEditModal()"
-          class="bg-gray-200 px-3 py-1.5 rounded text-sm font-medium hover:bg-gray-300 transition"
-        >
+        <button type="button" (click)="closeEditModal()"
+          class="bg-gray-200 px-3 py-1.5 rounded text-sm font-medium hover:bg-gray-300 transition">
           Cancel
         </button>
-        <button
-          type="submit"
-          [disabled]="isUpdating"
-          class="bg-[#5a8f69] text-white px-3 py-1.5 rounded text-sm font-medium hover:bg-opacity-90 transition"
-        >
+        <button type="submit" [disabled]="isUpdating"
+          class="bg-[#5a8f69] text-white px-3 py-1.5 rounded text-sm font-medium hover:bg-opacity-90 transition">
           <span *ngIf="isUpdating" class="small-loader me-2">Updating..</span>
           <span *ngIf="!isUpdating">Update</span>
         </button>
@@ -1827,69 +1455,40 @@
 </div> -->
 
 <!-- User Details Edit Modal -->
-<div
-  *ngIf="userDetailsModalOpen"
-  class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
->
+<div *ngIf="userDetailsModalOpen" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
   <div class="bg-white rounded-lg p-4 w-[85%] max-w-xs text-center shadow-md">
     <h2 class="text-base font-semibold mb-3">Update User Details</h2>
     <form (ngSubmit)="updateUserDetails()" class="space-y-2.5">
       <!-- Name -->
-      <input
-        type="text"
-        [(ngModel)]="userDetailsForm.name"
-        name="userName"
-        placeholder="Enter name"
+      <input type="text" [(ngModel)]="userDetailsForm.name" name="userName" placeholder="Enter name"
         class="w-full px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-[#5a8f69]"
-        required
-        maxlength="128"
-      />
+        required maxlength="128" />
 
       <!-- Mobile -->
       <div class="flex w-full">
-        <select
-          name="countryCode"
-          [(ngModel)]="userDetailsForm.code"
+        <select name="countryCode" [(ngModel)]="userDetailsForm.code"
           class="w-24 px-2 py-1.5 border border-gray-300 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#5a8f69] rounded-l"
-          aria-label="Country code"
-        >
+          aria-label="Country code">
           <option value="">Code</option>
           <option *ngFor="let c of countryCodes" [ngValue]="c.value">
             {{ c.value }}
           </option>
         </select>
-        <input
-          style="width: 80%"
-          type="tel"
-          [(ngModel)]="userDetailsForm.mobile"
-          name="userMobile"
-          (keypress)="commonFunction.omit($event)"
-          placeholder="Enter mobile number"
-          maxlength="10"
+        <input style="width: 80%" type="tel" [(ngModel)]="userDetailsForm.mobile" name="userMobile"
+          (keypress)="commonFunction.omit($event)" placeholder="Enter mobile number" maxlength="10"
           class="flex-1 px-3 py-1.5 border border-gray-300 border-l-0 text-sm focus:outline-none focus:ring-1 focus:ring-[#5a8f69] rounded-r"
-          required
-          [pattern]="commonFunction.mobpattern"
-        />
+          required [pattern]="commonFunction.mobpattern" />
       </div>
 
       <!-- Buttons -->
       <div class="flex justify-center gap-2 pt-2">
-        <button
-          type="button"
-          (click)="closeUserDetailsModal()"
-          class="bg-gray-200 px-3 py-1 rounded text-sm font-medium hover:bg-gray-300 transition"
-        >
+        <button type="button" (click)="closeUserDetailsModal()"
+          class="bg-gray-200 px-3 py-1 rounded text-sm font-medium hover:bg-gray-300 transition">
           Cancel
         </button>
-        <button
-          type="button"
-          (click)="IsMobileorEmail()"
-          [disabled]="isUpdatingUserDetails"
-          class="bg-[#5a8f69] text-white px-3 py-1 rounded text-sm font-medium hover:bg-opacity-90 transition flex items-center justify-center gap-1"
-        >
-          <span *ngIf="isUpdatingUserDetails" class="small-loader me-2"
-            >Updating..</span
-          >
+        <button type="button" (click)="IsMobileorEmail()" [disabled]="isUpdatingUserDetails"
+          class="bg-[#5a8f69] text-white px-3 py-1 rounded text-sm font-medium hover:bg-opacity-90 transition flex items-center justify-center gap-1">
+          <span *ngIf="isUpdatingUserDetails" class="small-loader me-2">Updating..</span>
           <span *ngIf="!isUpdatingUserDetails">Update</span>
         </button>
       </div>
@@ -1898,60 +1497,35 @@
 </div>
 
 <div class="auth-card-container fixed inset-0 z-[60]" *ngIf="openVerify">
-  <div
-    class="min-h-screen d-flex justify-content-center align-items-center"
-    style="min-height: 100vh"
-  >
+  <div class="min-h-screen d-flex justify-content-center align-items-center" style="min-height: 100vh">
     <div class="auth-wrapper">
       <div
         class="auth-card frosted-glass shadow-sm p-4 rounded-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-8 relative overflow-hidden"
-        style="width: 380px !important; position: relative"
-      >
+        style="width: 380px !important; position: relative">
         <!-- Close Button (Left Corner) -->
-        <button
-          type="button"
-          class="close-btn"
-          (click)="openVerify = false"
-          aria-label="Close"
-        >
+        <button type="button" class="close-btn" (click)="openVerify = false" aria-label="Close">
           &times;
         </button>
 
-        <div
-          class="d-flex align-items-center justify-content-center mb-3"
-          style="gap: 12px"
-        >
-          <img
-            src="assets/img/logo1.png"
-            alt="Logo"
-            class="img-fluid"
-            style="height: 60px; width: 60px; min-width: 45px; margin-top: 8px"
-          />
-          <div
-            class="d-flex flex-column justify-content-center"
-            style="margin-left: -10px !important"
-          >
-            <div
-              class="fw-bold"
-              style="
+        <div class="d-flex align-items-center justify-content-center mb-3" style="gap: 12px">
+          <img src="assets/img/logo1.png" alt="Logo" class="img-fluid"
+            style="height: 60px; width: 60px; min-width: 45px; margin-top: 8px" />
+          <div class="d-flex flex-column justify-content-center" style="margin-left: -10px !important">
+            <div class="fw-bold" style="
                 font-size: 28px;
                 color: rgb(90, 143, 105);
                 text-align: left;
                 line-height: 1.5;
-              "
-            >
+              ">
               Ojasvi Derma care
             </div>
-            <div
-              class="subtext"
-              style="
+            <div class="subtext" style="
                 font-family: Assistant, -apple-system, BlinkMacSystemFont,
                   Segoe UI, Roboto, Helvetica, Arial, sans-serif;
                 color: #ffc200;
                 line-height: 1;
                 text-align: left;
-              "
-            >
+              ">
               From Garden To Glow
             </div>
           </div>
@@ -1971,52 +1545,30 @@
 
           <form (ngSubmit)="verifyOTPP()" class="otp-form">
             <div class="otp-input-group">
-              <input
-                *ngFor="let i of [0, 1, 2, 3]"
-                class="otp-input"
-                type="text"
-                [(ngModel)]="OTP[i]"
-                [name]="'otpn' + i"
-                maxlength="1"
-                (keydown)="moveToNext($event, i)"
-                (keypress)="allowOnlyNumbers($event)"
-                (ngModelChange)="onChange($event, i)"
-                (paste)="handlePaste($event)"
-                required
-                autocomplete="off"
-              />
+              <input *ngFor="let i of [0, 1, 2, 3]" class="otp-input" type="text" [(ngModel)]="OTP[i]"
+                [name]="'otpn' + i" maxlength="1" (keydown)="moveToNext($event, i)"
+                (keypress)="allowOnlyNumbers($event)" (ngModelChange)="onChange($event, i)"
+                (paste)="handlePaste($event)" required autocomplete="off" />
             </div>
 
             <div class="timer-section">
               <span *ngIf="remainingTime > 0">{{ remainingTime }}</span>
               <p class="resend-text" style="color: #636363">
                 Didn’t receive the code?
-                <a
-                  (click)="remainingTime == 0 ? resendOtp() : ''"
-                  [ngStyle]="{
+                <a (click)="remainingTime == 0 ? resendOtp() : ''" [ngStyle]="{
                     cursor: remainingTime > 0 ? 'wait' : 'pointer',
                     color:
                       remainingTime > 0
                         ? '#636363 !important'
                         : 'rgb(90, 143, 105) !important'
-                  }"
-                  [class.disabled]="remainingTime > 0"
-                  [ngClass]="{ 'finished-time': remainingTime <= 0 }"
-                >
+                  }" [class.disabled]="remainingTime > 0" [ngClass]="{ 'finished-time': remainingTime <= 0 }">
                   <span> Resend </span>
                 </a>
               </p>
             </div>
 
-            <button
-              type="submit"
-              class="verify-button"
-              [disabled]="isverifyOTP"
-            >
-              <span
-                *ngIf="isVerifyOtpSpinning"
-                class="small-loader me-2"
-              ></span>
+            <button type="submit" class="verify-button" [disabled]="isverifyOTP">
+              <span *ngIf="isVerifyOtpSpinning" class="small-loader me-2"></span>
               <!-- Text -->
               <span *ngIf="!isVerifyOtpSpinning">Verify</span>
               <span *ngIf="isVerifyOtpSpinning">Verifying...</span>
@@ -2029,419 +1581,289 @@
 </div>
 
 <!-- Add/Edit Address Modal -->
-<div
-  *ngIf="addressModalOpen"
-  class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
->
-  <div
-    class="bg-white rounded-lg shadow-sm w-full max-w-3xl max-h-[900px] overflow-hidden"
-  >
+<div *ngIf="addressModalOpen" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-lg shadow-sm w-full max-w-3xl max-h-[900px] overflow-hidden">
     <!-- Modal Header with custom close buttons -->
-    <div
-      class="flex items-center justify-between p-2 border-b border-gray-200 bg-white sticky top-0 z-10"
-    >
+    <div class="flex items-center justify-between p-2 border-b border-gray-200 bg-white sticky top-0 z-10">
       <div class="flex items-center gap-0">
-        <button
-          class="text-gray-600 hover:text-gray-800 p-1 rounded-full hover:bg-gray-100 transition-colors"
-          (click)="closeAddressModal()"
-        >
+        <button class="text-gray-600 hover:text-gray-800 p-1 rounded-full hover:bg-gray-100 transition-colors"
+          (click)="closeAddressModal()">
           <span class="text-xl">←</span>
         </button>
         <h2 class="text-lg font-semibold text-gray-900 ml-2">
           {{ isEditingAddress ? "Edit Address" : "Add New Address" }}
         </h2>
       </div>
-      <button
-        class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
-        (click)="closeAddressModal()"
-      >
+      <button class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+        (click)="closeAddressModal()">
         <span class="text-xl">×</span>
       </button>
     </div>
 
     <div class="overflow-y-scroll max-h-[calc(90vh-100px)] rounded-b-lg">
-  <div class="px-4 pb-4">
-    <form
-      #addressFormTemp="ngForm"
-      (ngSubmit)="saveAddress(false, addressFormTemp)"
-      class="space-y-0"
-    >
-      <!-- CONTACT DETAILS -->
-      <div>
-        <h3 class="text-lg font-semibold text-[#5a8f69] mb-2">
-          Contact Details
-        </h3>
-
-        <div class="space-y-4">
-          <!-- FULL NAME -->
+      <div class="px-4 pb-4">
+        <form #addressFormTemp="ngForm" (ngSubmit)="saveAddress(false, addressFormTemp)" class="space-y-0">
+          <!-- CONTACT DETAILS -->
           <div>
-            <label
-              for="fullName"
-              class="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Full Name
-            </label>
-            <input
-              type="text"
-              id="fullName"
-              [(ngModel)]="addressForm.NAME"
-              name="customerName"
-              placeholder="Enter Name"
-              minlength="3"
-              maxlength="512"
-              required
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
-              focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
-            />
-          </div>
+            <h3 class="text-lg font-semibold text-[#5a8f69] mb-2">
+              Contact Details
+            </h3>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- MOBILE NUMBER -->
-            <div>
-              <label
-                for="mobileNumber"
-                class="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Mobile Number
-              </label>
+            <div class="space-y-4">
+              <!-- FULL NAME -->
+              <div>
+                <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">
+                  Full Name
+                </label>
+                <input type="text" id="fullName" [(ngModel)]="addressForm.NAME" name="customerName"
+                  placeholder="Enter Name" required minlength="3" maxlength="512"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]" />
+              </div>
 
-              <div class="flex items-stretch relative">
-                <!-- COUNTRY CODE DROPDOWN -->
-                <div class="relative min-w-[5.5rem]">
-                  <div
-                    class="unique-country-code-selector flex items-center cursor-pointer px-3 h-10 border border-gray-300 rounded-l-md bg-white text-sm focus:outline-none w-full shadow-sm"
-                    (click)="toggleCountryDropdown($event)"
-                    aria-label="Country code selector"
-                    [ngClass]="{
-                      '!border-r-0': !showCountryDropdown,
-                      'rounded-r-none': showCountryDropdown
-                    }"
-                  >
-                    <span class="text-gray-700 font-medium">{{
-                      addressForm.COUNTRY_CODE || '+1'
-                    }}</span>
-                    <svg
-                      class="ml-auto transform transition-transform"
-                      [class.rotate-180]="showCountryDropdown"
-                      width="10"
-                      height="6"
-                      viewBox="0 0 10 6"
-                      fill="none"
-                    >
-                      <path
-                        d="M1 1L5 5L9 1"
-                        stroke="#666"
-                        stroke-width="1.5"
-                      />
-                    </svg>
-                  </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- MOBILE NUMBER -->
+                <div>
+                  <label for="mobileNumber" class="block text-sm font-medium text-gray-700 mb-1">
+                    Mobile Number
+                  </label>
 
-                  <div
-                    class="absolute z-10 top-full left-0 mt-1 w-80"
-                    *ngIf="showCountryDropdown"
-                  >
-                    <div
-                      class="unique-country-dropdown bg-white shadow-lg ring-1 ring-black ring-opacity-5 rounded-md p-2"
-                      style="max-height: 300px; overflow-y: auto; min-width: 100%;"
-                    >
-                      <div class="unique-search-box mb-2">
-                        <input
-                          type="text"
-                          class="w-full px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-[#5a8f69] focus:border-[#5a8f69]"
-                          placeholder="Search country..."
-                          [(ngModel)]="searchQuery"
-                          (input)="filterCountriesd($event)"
-                          (click)="$event.stopPropagation()"
-                          autocomplete="off"
-                          name="searchCountry"
-                        />
+                  <div class="flex items-stretch relative">
+                    <!-- COUNTRY CODE DROPDOWN -->
+                    <div class="relative min-w-[5.5rem]">
+                      <div
+                        class="unique-country-code-selector flex items-center cursor-pointer px-3 h-10 border border-gray-300 rounded-l-md bg-white text-sm focus:outline-none w-full shadow-sm"
+                        (click)="toggleCountryDropdown($event)" aria-label="Country code selector" [ngClass]="{
+                          '!border-r-0': !showCountryDropdown,
+                          'rounded-r-none': showCountryDropdown
+                        }">
+                        <span class="text-gray-700 font-medium">{{
+                          addressForm.COUNTRY_CODE || "+1"
+                          }}</span>
+                        <svg class="ml-auto transform transition-transform" [class.rotate-180]="showCountryDropdown"
+                          width="10" height="6" viewBox="0 0 10 6" fill="none">
+                          <path d="M1 1L5 5L9 1" stroke="#666" stroke-width="1.5" />
+                        </svg>
                       </div>
 
-                      <div class="unique-country-list">
+                      <div class="absolute z-10 top-full left-0 mt-1 w-80" *ngIf="showCountryDropdown">
                         <div
-                          class="unique-country-item px-3 py-2 cursor-pointer hover:bg-gray-100 rounded-sm text-base"
-                          *ngFor="let country of filteredCountryCodes"
-                          (click)="
-                            selectCountrycode(country.value);
-                            $event.stopPropagation()
-                          "
-                        >
-                          {{ country.label }}
+                          class="unique-country-dropdown bg-white shadow-lg ring-1 ring-black ring-opacity-5 rounded-md p-2"
+                          style="
+                            max-height: 300px;
+                            overflow-y: auto;
+                            min-width: 100%;
+                          ">
+                          <div class="unique-search-box mb-2">
+                            <input type="text"
+                              class="w-full px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                              placeholder="Search country..." [(ngModel)]="searchQuery" minlength="3" maxlength="16"
+                              (input)="filterCountriesd($event)" (click)="$event.stopPropagation()" autocomplete="off"
+                              name="searchCountry" />
+                          </div>
+
+                          <div class="unique-country-list">
+                            <div
+                              class="unique-country-item px-3 py-2 cursor-pointer hover:bg-gray-100 rounded-sm text-base"
+                              *ngFor="let country of filteredCountryCodes" (click)="
+                                selectCountrycode(country.value);
+                                $event.stopPropagation()
+                              ">
+                              {{ country.label }}
+                            </div>
+                          </div>
                         </div>
                       </div>
+                    </div>
+
+                    <input type="tel" id="mobileNumber" [(ngModel)]="addressForm.MOBILE_NO" name="Mobile_number"
+                      placeholder="Enter Mobile no" (keypress)="commonFunction.omit($event)" minlength="3"
+                     [pattern]="commonFunction.internationalmobpattern" maxlength="10" required
+                      class="flex-1 px-3 h-10 border border-gray-300 rounded-r-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                      [ngClass]="{
+                        '!border-l-0 rounded-l-none': !showCountryDropdown,
+                        'border-l-0 rounded-l-none': showCountryDropdown
+                      }" />
+                  </div>
+                </div>
+
+                <!-- EMAIL FIELD WITH VERIFY BUTTON -->
+                <div>
+                  <label for="emailId" class="block text-sm font-medium text-gray-700 mb-1">
+                    Email
+                  </label>
+
+                  <div class="flex w-full">
+                    <input type="text" id="emailId" [(ngModel)]="addressForm.EMAIL_ID" name="Email"
+                      placeholder="Enter Email" maxlength="256" [pattern]="commonFunction.emailpattern" required
+                      class="flex-1 px-3 py-2 border border-gray-300 border-r-0 rounded-l-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
+                      (ngModelChange)="onEmailChange()" />
+
+                    <button *ngIf="addressForm.EMAIL_ID" type="button"
+                      class="px-4 py-2 bg-[#5a8f69] hover:bg-green-800 rounded-r-md text-white disabled:opacity-50 text-sm font-medium transition-colors whitespace-nowrap flex items-center justify-center gap-2"
+                      (click)="verifyEmail()" [disabled]="
+                        !isEmailValid() ||
+                        verificationStatus == 'verified' ||
+                        loadingButton
+                      ">
+                      <ng-container *ngIf="!loadingButton">
+                        {{
+                        verificationStatus === "verified"
+                        ? "✓ Verified"
+                        : "Verify"
+                        }}
+                      </ng-container>
+                      <ng-container *ngIf="loadingButton">
+                        <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                          viewBox="0 0 24 24">
+                          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                          </circle>
+                          <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"></path>
+                        </svg>
+                        <span>Sending OTP...</span>
+                      </ng-container>
+                    </button>
+                  </div>
+
+                  <small *ngIf="verificationStatus === 'verified'" class="block mt-1 text-xs text-green-600">
+                    Email verified successfully!
+                  </small>
+
+                  <small *ngIf="verificationStatus === 'failed'" class="block mt-1 text-xs text-red-600">
+                    Verification failed. Please try again.
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ADDRESS SECTION -->
+          <div class="border-gray-200 pt-2">
+            <h3 class="text-lg font-semibold text-[#5a8f69] mb-2">Address</h3>
+
+            <div class="space-y-4">
+              <!-- Address Type -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Address Type
+                </label>
+                <div class="flex flex-wrap gap-4">
+                  <label class="flex items-center cursor-pointer">
+                    <input type="radio" name="addressType" value="R" [(ngModel)]="addressForm.ADDRESS_TYPE"
+                      class="w-4 h-4 text-[#5a8f69] border-gray-300 focus:ring-[#5a8f69]" />
+                    <span class="ml-2 text-sm text-gray-700">Residential</span>
+                  </label>
+                  <label class="flex items-center cursor-pointer">
+                    <input type="radio" name="addressType" value="O" [(ngModel)]="addressForm.ADDRESS_TYPE"
+                      class="w-4 h-4 text-[#5a8f69] border-gray-300 focus:ring-[#5a8f69]" />
+                    <span class="ml-2 text-sm text-gray-700">Office</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Address Inputs -->
+              <div>
+                <label for="streetAddress" class="block text-sm font-medium text-gray-700 mb-1">
+                  Flat, House no., Building, Company, Apartment
+                </label>
+                <textarea type="text" id="streetAddress" [(ngModel)]="addressForm.ADDRESS" name="streetAddress"
+                  placeholder="Enter Address" minlength="3" maxlength="512"
+                  [required]="addressForm.ADDRESS_TYPE !== 'P'"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"></textarea>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label for="landmark" class="block text-sm font-medium text-gray-700 mb-1">
+                    Landmark
+                  </label>
+                  <input type="text" id="landmark" [(ngModel)]="addressForm.LANDMARK" name="landmark"
+                    placeholder="Enter Landmark" minlength="3" maxlength="256"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]" />
+                </div>
+
+                <div>
+                  <label for="area" class="block text-sm font-medium text-gray-700 mb-1">
+                    Area
+                  </label>
+                  <input type="text" id="area" [(ngModel)]="addressForm.LOCALITY" name="area" placeholder="Enter Area"
+                    minlength="3" maxlength="256"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]" />
+                </div>
+              </div>
+
+              <!-- Country, State, City, Zip -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="relative">
+                  <label for="country" class="block text-sm font-medium text-gray-700 mb-1">
+                    Country/Region
+                  </label>
+                  <input id="country" type="text" [(ngModel)]="countrySearch"
+                    (input)="filterCountries(); onCountryInputChange()" (blur)="onCountryBlur()" name="COUNTRY_NAME"
+                    placeholder="Enter Country/Region" minlength="3" maxlength="32" required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none" />
+                  <div *ngIf="
+                      filteredCountries.length ||
+                      showAddCountryOption ||
+                      isLoadingCountries
+                    " class="absolute z-20 w-full bg-white mt-1 rounded-md shadow-md max-h-48 overflow-y-auto">
+                    <div *ngIf="isLoadingCountries" class="p-3 text-center text-gray-500 text-sm">
+                      Loading countries...
+                    </div>
+                    <div *ngFor="let c of filteredCountries" (mousedown)="selectCountry(c)"
+                      class="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm">
+                      {{ c.NAME }}
                     </div>
                   </div>
                 </div>
 
-                <input
-                  type="tel"
-                  id="mobileNumber"
-                  [(ngModel)]="addressForm.MOBILE_NO"
-                  name="Mobile_number"
-                  placeholder="Enter Mobile no"
-                  (keypress)="commonFunction.omit($event)"
-                  [pattern]="commonFunction.internationalmobpattern"
-                  minlength="3"
-              maxlength="16"
-                  required
-                  class="flex-1 px-3 h-10 border border-gray-300 rounded-r-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
-                  [ngClass]="{
-                    '!border-l-0 rounded-l-none': !showCountryDropdown,
-                    'border-l-0 rounded-l-none': showCountryDropdown
-                  }"
-                />
-              </div>
-            </div>
-
-            <!-- EMAIL FIELD WITH VERIFY BUTTON -->
-            <div>
-              <label
-                for="emailId"
-                class="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Email
-              </label>
-
-              <div class="flex w-full">
-                <input
-                  type="text"
-                  id="emailId"
-                  [(ngModel)]="addressForm.EMAIL_ID"
-                  name="Email"
-                  placeholder="Enter Email"
-                 minlength="3"
-              maxlength="256"
-                  [pattern]="commonFunction.emailpattern"
-                  required
-                  class="flex-1 px-3 py-2 border border-gray-300 border-r-0 rounded-l-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
-                  (ngModelChange)="onEmailChange()"
-                />
-
-                <button
-                  *ngIf="addressForm.EMAIL_ID"
-                  type="button"
-                  class="px-4 py-2 bg-[#5a8f69] hover:bg-green-800 rounded-r-md text-white disabled:opacity-50 text-sm font-medium transition-colors whitespace-nowrap flex items-center justify-center gap-2"
-                  (click)="verifyEmail()"
-                  [disabled]="
-                    !isEmailValid() ||
-                    verificationStatus == 'verified' ||
-                    loadingButton
-                  "
-                >
-                  <ng-container *ngIf="!loadingButton">
-                    {{
-                      verificationStatus === 'verified' ? '✓ Verified' : 'Verify'
-                    }}
-                  </ng-container>
-                  <ng-container *ngIf="loadingButton">
-                    <svg
-                      class="animate-spin h-4 w-4 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        class="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        stroke-width="4"
-                      ></circle>
-                      <path
-                        class="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"
-                      ></path>
-                    </svg>
-                    <span>Sending OTP...</span>
-                  </ng-container>
-                </button>
+                <div class="relative">
+                  <label for="state" class="block text-sm font-medium text-gray-700 mb-1">
+                    State/Province
+                  </label>
+                  <input id="state" type="text" [(ngModel)]="stateSearch" (input)="filterStates(); onStateInputChange()"
+                    (blur)="onStateBlur()" name="STATE_NAME" placeholder="Enter State/Province" minlength="3"
+                    maxlength="64" required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none" />
+                  <div *ngIf="
+                      filteredStates.length ||
+                      showAddStateOption ||
+                      isLoadingStates
+                    " class="absolute z-20 w-full bg-white mt-1 rounded-md shadow-md max-h-48 overflow-y-auto">
+                    <div *ngIf="isLoadingStates" class="p-3 text-center text-gray-500 text-sm">
+                      Loading states...
+                    </div>
+                    <div *ngFor="let s of filteredStates" (mousedown)="selectState(s)"
+                      class="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm">
+                      {{ s.NAME }}
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <small
-                *ngIf="verificationStatus === 'verified'"
-                class="block mt-1 text-xs text-green-600"
-              >
-                Email verified successfully!
-              </small>
-
-              <small
-                *ngIf="verificationStatus === 'failed'"
-                class="block mt-1 text-xs text-red-600"
-              >
-                Verification failed. Please try again.
-              </small>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ADDRESS SECTION -->
-      <div class="border-gray-200 pt-2">
-        <h3 class="text-lg font-semibold text-[#5a8f69] mb-2">Address</h3>
-
-        <div class="space-y-4">
-          <!-- Address Type -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Address Type
-            </label>
-            <div class="flex flex-wrap gap-4">
-              <label class="flex items-center cursor-pointer">
-                <input
-                  type="radio"
-                  name="addressType"
-                  value="R"
-                  [(ngModel)]="addressForm.ADDRESS_TYPE"
-                  class="w-4 h-4 text-[#5a8f69] border-gray-300 focus:ring-[#5a8f69]"
-                />
-                <span class="ml-2 text-sm text-gray-700">Residential</span>
-              </label>
-              <label class="flex items-center cursor-pointer">
-                <input
-                  type="radio"
-                  name="addressType"
-                  value="O"
-                  [(ngModel)]="addressForm.ADDRESS_TYPE"
-                  class="w-4 h-4 text-[#5a8f69] border-gray-300 focus:ring-[#5a8f69]"
-                />
-                <span class="ml-2 text-sm text-gray-700">Office</span>
-              </label>
-            </div>
-          </div>
-
-          <!-- Address Inputs -->
-          <div>
-            <label
-              for="streetAddress"
-              class="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Flat, House no., Building, Company, Apartment
-            </label>
-            <textarea
-              type="text"
-              id="streetAddress"
-              [(ngModel)]="addressForm.ADDRESS"
-              name="streetAddress"
-              minlength="3"
-              maxlength="512"
-              placeholder="Enter Address"
-              [required]="addressForm.ADDRESS_TYPE !== 'P'"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
-            ></textarea>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label
-                for="landmark"
-                class="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Landmark
-              </label>
-              <input
-                type="text"
-                id="landmark"
-                [(ngModel)]="addressForm.LANDMARK"
-                name="landmark"
-                minlength="3"
-              maxlength="256"
-                placeholder="Enter Landmark"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
-              />
-            </div>
-
-            <div>
-              <label
-                for="area"
-                class="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Area
-              </label>
-              <input
-                type="text"
-                id="area"
-                [(ngModel)]="addressForm.LOCALITY"
-                name="area"
-                minlength="3"
-              maxlength="256"
-                placeholder="Enter Area"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
-              />
-            </div>
-          </div>
-
-          <!-- Country, State, City, Zip -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="relative">
-              <label
-                for="country"
-                class="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Country/Region
-              </label>
-              <input
-                id="country"
-                type="text"
-                [(ngModel)]="countrySearch"
-                (input)="filterCountries(); onCountryInputChange()"
-                (blur)="onCountryBlur()"
-                name="COUNTRY_NAME"
-                minlength="3"
-              maxlength="32"
-                placeholder="Enter Country/Region"
-                required
-                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-              />
-            </div>
-
-            <div class="relative">
-              <label
-                for="state"
-                class="block text-sm font-medium text-gray-700 mb-1"
-              >
-                State/Province
-              </label>
-              <input
-                id="state"
-                type="text"
-                [(ngModel)]="stateSearch"
-                (input)="filterStates(); onStateInputChange()"
-                (blur)="onStateBlur()"
-                name="STATE_NAME"
-                minlength="3"
-              maxlength="64"
-                placeholder="Enter State/Province"
-                required
-                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-              />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="relative">
                   <label for="city" class="block text-sm font-medium text-gray-700 mb-1">
                     Town/City
                   </label>
-                  <input id="city" type="text" [(ngModel)]="citySearch" (input)="filterCities();onCityInputChange()" (blur)="onCityBlur()"
-                    name="CITY" placeholder="Enter Town/City" minlength="3" maxlength="256" required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none" />
-                    <div *ngIf="
-                            filteredCities.length ||
-                            showAddCityOption ||
-                            isLoadingCities
-                          " class="absolute z-20 w-full bg-white mt-1 rounded-md shadow-md max-h-48 overflow-y-auto">
-                          <div *ngIf="isLoadingCities" class="p-3 text-center text-gray-500 text-sm">
-                            Loading cities...
-                          </div>
-                          <div *ngFor="let c of filteredCities" (mousedown)="selectCity(c)"
-                            class="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm">
-                            {{ c.NAME }}
-                          </div>
-                        </div>
+                  <input id="city" type="text" [(ngModel)]="citySearch" (input)="filterCities(); onCityInputChange()"
+                    (blur)="onCityBlur()" name="CITY" placeholder="Enter Town/City" minlength="3" maxlength="256"
+                    required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none" />
+                  <div *ngIf="
+                      filteredCities.length ||
+                      showAddCityOption ||
+                      isLoadingCities
+                    " class="absolute z-20 w-full bg-white mt-1 rounded-md shadow-md max-h-48 overflow-y-auto">
+                    <div *ngIf="isLoadingCities" class="p-3 text-center text-gray-500 text-sm">
+                      Loading cities...
+                    </div>
+                    <div *ngFor="let c of filteredCities" (mousedown)="selectCity(c)"
+                      class="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm">
+                      {{ c.NAME }}
+                    </div>
+                  </div>
                 </div>
- 
+
                 <div>
                   <label for="zipcode" class="block text-sm font-medium text-gray-700 mb-1">
                     Pincode/ZIP
@@ -2451,79 +1873,60 @@
                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none" />
                 </div>
               </div>
- 
 
-          <!-- Default checkbox -->
-          <div class="flex items-start">
-            <div class="flex items-center h-5">
-              <input
-                id="isDefault"
-                type="checkbox"
-                name="isDefault"
-                [(ngModel)]="addressForm.IS_DEFUALT_ADDRESS"
-                class="w-4 h-4 text-[#5a8f69] border-gray-300 rounded focus:ring-[#5a8f69]"
-              />
-            </div>
-            <div class="ml-3">
-              <label
-                for="isDefault"
-                class="text-sm font-medium text-gray-700"
-              >
-                Make this my default address
-              </label>
+              <!-- Default checkbox -->
+              <div class="flex items-start">
+                <div class="flex items-center h-5">
+                  <input id="isDefault" type="checkbox" name="isDefault" [(ngModel)]="addressForm.IS_DEFUALT_ADDRESS"
+                    class="w-4 h-4 text-[#5a8f69] border-gray-300 rounded focus:ring-[#5a8f69]" />
+                </div>
+                <div class="ml-3">
+                  <label for="isDefault" class="text-sm font-medium text-gray-700">
+                    Make this my default address
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+
+          <!-- FOOTER BUTTONS -->
+          <div class="border-t border-gray-200 pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="flex-1">
+              <p *ngIf="
+                  verificationStatus !== 'verified' && addressForm.EMAIL_ID
+                " class="text-sm text-orange-600 flex items-center gap-1">
+                <i class="ri-alert-line"></i>
+                Email not verified. We recommend verifying your email for order
+                updates.
+              </p>
+            </div>
+
+            <div class="flex gap-3">
+              <button type="button"
+                class="px-6 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
+                (click)="closeAddressModal()">
+                Cancel
+              </button>
+
+              <button *ngIf="
+                  verificationStatus === 'verified' && addressForm.EMAIL_ID
+                " type="submit"
+                class="bg-[#5a8f69] hover:bg-green-800 text-white font-medium px-6 py-2 rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                [disabled]="isSavingAddress || addressFormTemp.invalid">
+                <span *ngIf="!isSavingAddress">Save Address</span>
+                <span *ngIf="isSavingAddress">SAVING...</span>
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
-
-      <!-- FOOTER BUTTONS -->
-      <div
-        class="border-t border-gray-200 pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
-      >
-        <div class="flex-1">
-          <p
-            *ngIf="verificationStatus !== 'verified' && addressForm.EMAIL_ID"
-            class="text-sm text-orange-600 flex items-center gap-1"
-          >
-            <i class="ri-alert-line"></i>
-            Email not verified. We recommend verifying your email for order
-            updates.
-          </p>
-        </div>
-
-        <div class="flex gap-3">
-          <button
-            type="button"
-            class="px-6 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
-            (click)="closeAddressModal()"
-          >
-            Cancel
-          </button>
-
-          <button
-            *ngIf="verificationStatus === 'verified' && addressForm.EMAIL_ID"
-            type="submit"
-            class="bg-[#5a8f69] hover:bg-green-800 text-white font-medium px-6 py-2 rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            [disabled]="isSavingAddress || addressFormTemp.invalid"
-          >
-            <span *ngIf="!isSavingAddress">Save Address</span>
-            <span *ngIf="isSavingAddress">SAVING...</span>
-          </button>
-        </div>
-      </div>
-    </form>
-  </div>
-</div>
-
+    </div>
   </div>
 </div>
 
 <!-- by sanju -->
 <!-- user Email Details -->
-<div
-  *ngIf="userEmailDetailsModalOpen"
-  class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
->
+<div *ngIf="userEmailDetailsModalOpen" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
   <div class="bg-white rounded-lg p-4 w-[85%] max-w-xs text-center shadow-md">
     <!-- <h2 class="text-lg font-semibold mb-3">Add Email</h2> -->
     <h2 class="text-lg font-semibold mb-3">
@@ -2531,42 +1934,28 @@
     </h2>
     <form>
       <div class="mb-3">
-        <input
-          type="text"
-          [(ngModel)]="email"
-          name="emaill"
-          placeholder="Enter Email"
-          class="w-full px-3 py-1.5 border rounded text-sm"
-          [pattern]="emailPattern"
-          required
-          maxlength="128"
-        />
+        <input type="text" [(ngModel)]="email" name="emaill" placeholder="Enter Email"
+          class="w-full px-3 py-1.5 border rounded text-sm" [pattern]="emailPattern" required maxlength="128" />
       </div>
 
       <div class="flex justify-center gap-3">
-        <button
-          type="button"
-          (click)="closeUserEmailDetailsModal()"
-          class="bg-gray-200 px-3 py-1.5 rounded text-sm font-medium hover:bg-gray-300 transition"
-        >
+        <button type="button" (click)="closeUserEmailDetailsModal()"
+          class="bg-gray-200 px-3 py-1.5 rounded text-sm font-medium hover:bg-gray-300 transition">
           Cancel
         </button>
-        <button
-          type="button"
-          (click)="sendOTPEmail()"
-          class="bg-[#5a8f69] text-white px-3 py-1.5 rounded text-sm font-medium hover:bg-opacity-90 transition"
-        >
+        <button type="button" (click)="sendOTPEmail()"
+          class="bg-[#5a8f69] text-white px-3 py-1.5 rounded text-sm font-medium hover:bg-opacity-90 transition">
           <span *ngIf="isSendOtpEmailSpinning" class="small-loader"></span>
 
           <span>
             {{
-              isSendOtpEmailSpinning
-                ? user.email
-                  ? "Verifying Email"
-                  : "Adding Email"
-                : user.email
-                ? "Verify Email"
-                : "Add Email"
+            isSendOtpEmailSpinning
+            ? user.email
+            ? "Verifying Email"
+            : "Adding Email"
+            : user.email
+            ? "Verify Email"
+            : "Add Email"
             }}
           </span>
         </button>
@@ -2575,13 +1964,7 @@
   </div>
 </div>
 
-<div
-  class="modal fade"
-  id="cartModal"
-  tabindex="-1"
-  aria-labelledby="cartModalLabel"
-  aria-hidden="true"
->
+<div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable modal-lg">
     <div class="modal-content">
       <!-- HEADER -->
@@ -2589,12 +1972,7 @@
         <h5 class="modal-title" id="cartModalLabel">
           Order Details of {{ orderNo }}
         </h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
       <!-- BODY -->
@@ -2603,24 +1981,13 @@
           <!-- LEFT COLUMN: Product + Tracker -->
           <div class="left-column" style="flex: 1.3">
             <!-- PRODUCT DETAILS -->
-            <div
-              *ngFor="let order of cartitemDataList; let i = index"
-              class="order-cardList mb-4"
-            >
+            <div *ngFor="let order of cartitemDataList; let i = index" class="order-cardList mb-4">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                  <img 
-                    *ngIf="!order?.VARIENT_IMAGE_URL?.trim()"
-                    [src]="producctImageurl + photoUrls[i]"
-                    [alt]="order.PRODUCT_NAME"
-                    class="product-img"
-                  />
-                  <img 
-                    *ngIf="order?.VARIENT_IMAGE_URL?.trim()"
-                    [src]="vareintImageUrl + order.VARIENT_IMAGE_URL"
-                    [alt]="order.VARIENT_IMAGE_URL"
-                    class="product-img"
-                  />
+                  <img *ngIf="!order?.VARIENT_IMAGE_URL?.trim()" [src]="producctImageurl + photoUrls[i]"
+                    [alt]="order.PRODUCT_NAME" class="product-img" />
+                  <img *ngIf="order?.VARIENT_IMAGE_URL?.trim()" [src]="vareintImageUrl + order.VARIENT_IMAGE_URL"
+                    [alt]="order.VARIENT_IMAGE_URL" class="product-img" />
                   <div>
                     <div class="font-semibold text-gray-900">
                       {{ order.PRODUCT_NAME }}
@@ -2635,10 +2002,10 @@
                 </div>
                 <div class="text-lg font-semibold text-gray-900">
                   ${{
-                    order.ITEM_DISCOUNT_AMOUNT &&
-                    order.ITEM_DISCOUNT_AMOUNT !== 0
-                      ? (order.ITEM_DISCOUNT_AMOUNT).toFixed(2)
-                      : (order.PRICE * order.QUANTITY).toFixed(2)
+                  order.ITEM_DISCOUNT_AMOUNT &&
+                  order.ITEM_DISCOUNT_AMOUNT !== 0
+                  ? order.ITEM_DISCOUNT_AMOUNT.toFixed(2)
+                  : (order.PRICE * order.QUANTITY).toFixed(2)
                   }}
                 </div>
               </div>
@@ -2648,152 +2015,165 @@
             <div class="order-tracker" *ngFor="let order of viewdetail">
               <div class="timeline-container">
                 <div class="timeline">
-                  <div
-                    class="timeline-step"
-                    [class.active]="order.ORDER_DATETIME"
-                  >
+
+                  <!-- STEP 1: ORDER PLACED -->
+                  <div class="timeline-step"
+                    [class.active]="order.ORDER_STATUS == 'P' || order.ORDER_STATUS === 'A' || order.ORDER_STATUS === 'PD' || order.ORDER_STATUS === 'DD' || order.ORDER_STATUS === 'OD'">
                     <div class="circle">1</div>
                     <div class="line"></div>
                   </div>
 
-                  <div
-                    class="timeline-step"
-                    [class.active]="order.ORDER_CONFIRMED_DATETIME && order.ORDER_STATUS!=='R'"
-                    [style.color]="order.ORDER_STATUS =='R'?'red':''"
-                  >
-                    <div class="circle" *ngIf="order.ORDER_STATUS !='R'">2</div>
-                    <div class="circle" style="color:red" *ngIf="order.ORDER_STATUS =='R'">2</div>
-                    <div class="line" *ngIf="order.ORDER_STATUS !='R'"></div>
-                    <!-- <div class="line" style="color:red" *ngIf="order.ORDER_STATUS =='R'"></div> -->
+                  <!-- STEP 2: ACCEPTED / REJECTED -->
+                  <div class="timeline-step"
+                    [class.active]="order.ORDER_STATUS === 'A' || order.ORDER_STATUS === 'PD' || order.ORDER_STATUS === 'DD' || order.ORDER_STATUS === 'OD'">
+                    <div class="circle" [style.color]="order.ORDER_STATUS === 'R' ? 'red' : ''">2</div>
+                    <div class="line" *ngIf="order.ORDER_STATUS !== 'R'"></div>
                   </div>
-                  <!-- <div
-                    class="timeline-step"
-                    style="colour:red"
-                    [class.active]="order.ORDER_CONFIRMED_DATETIME && order.ORDER_STATUS!='R'"
-                  >
-                    <div class="circle" style="colour:red">3</div>
-                    <div class="line"></div>
-                  </div> -->
 
-                  <div
-                    *ngIf="order.ORDER_STATUS !='R'"
-                    class="timeline-step"
-                    [class.active]="order.ACTUAL_PREPARE_PACKAGING_DATETIME || order.EXPECTED_DISPATCH_DATETIME || (order.ORDER_STATUS === 'DD' && order.EXPECTED_DISPATCH_DATETIME && order.IS_LOCAL_PICKUP_SELECTED == 1)"
-                  >
+                  <!-- STEP 3: PACKAGING DONE -->
+                  <div *ngIf="order.ORDER_STATUS !== 'R'" class="timeline-step"
+                    [class.active]="order.ORDER_STATUS === 'PD' || order.ORDER_STATUS === 'DD' || order.ORDER_STATUS === 'OD'">
                     <div class="circle">3</div>
                     <div class="line"></div>
                   </div>
 
-                  <div
-                  *ngIf="order.ORDER_STATUS !='R'"
-                    class="timeline-step"
-                    [class.active]="order.ACTUAL_DISPATCH_DATETIME || (order.ORDER_STATUS === 'DD' && order.EXPECTED_DISPATCH_DATETIME && order.IS_LOCAL_PICKUP_SELECTED == 1)"
-                  >
+                  <!-- STEP 4: DISPATCHED / READY FOR PICKUP -->
+                  <div *ngIf="order.ORDER_STATUS !== 'R'" class="timeline-step"
+                    [class.active]="order.ORDER_STATUS === 'DD' || order.ORDER_STATUS === 'OD'">
                     <div class="circle">4</div>
                     <div class="line"></div>
                   </div>
 
-                  <div
-                  *ngIf="order.ORDER_STATUS !='R'"
-                    class="timeline-step"
-                    [class.active]="order.ACTUAL_DELIVERY_DATETIME || (order.ORDER_STATUS === 'DD' && order.EXPECTED_DISPATCH_DATETIME && order.IS_LOCAL_PICKUP_SELECTED == 1)"
-                  >
+                  <!-- STEP 5: DELIVERED / PICKED UP -->
+                  <div *ngIf="order.ORDER_STATUS !== 'R'" class="timeline-step"
+                    [class.active]="order.ORDER_STATUS === 'OD'">
                     <div class="circle">5</div>
                   </div>
+
                 </div>
 
+                <!-- RIGHT-SIDE LABELS -->
                 <div class="timeline-details">
+
+                  <!-- ORDER PLACED -->
                   <div class="detail-item">
                     <div class="status-header">Order Placed</div>
-                    <small class="status-subtitle">{{
-                      order.ORDER_DATETIME
-                        ? (order.ORDER_DATETIME | date : "dd-MM-yyyy")
-                        : "Pending"
-                    }}</small>
+                    <small class="status-subtitle">
+                      <ng-container *ngIf="order.ORDER_STATUS === 'P'; else completedBlock">
+                        In Progress
+                      </ng-container>
+
+                      <!-- Completed + Date -->
+                      <ng-template #completedBlock>
+                        ({{ order.ORDER_DATETIME | date:'dd-MM-yyyy' }})
+                      </ng-template>
+                    </small>
                   </div>
 
-                  <div class="detail-item" *ngIf="order.ORDER_STATUS !=='R'">
+                  <!-- ACCEPTED -->
+                  <div class="detail-item" *ngIf="order.ORDER_STATUS !== 'R'">
                     <div class="status-header">Order Accepted</div>
-                    <small class="status-subtitle">{{
-                      order.ORDER_CONFIRMED_DATETIME 
-                        ? (order.ORDER_CONFIRMED_DATETIME
-                          | date : "dd-MM-yyyy")
-                        : "Pending"
-                    }}</small>
+                    <small class="status-subtitle">
+                      <ng-container *ngIf="order.ORDER_STATUS === 'A' 
+        || order.ORDER_STATUS === 'PD' 
+        || order.ORDER_STATUS === 'DD' 
+        || order.ORDER_STATUS === 'OD'; 
+        else pendingBlock">
+                        ({{ order.ORDER_CONFIRMED_DATETIME | date:'dd-MM-yyyy' }})
+
+                      </ng-container>
+                      <ng-template #pendingBlock>
+                        Pending
+                      </ng-template>
+
+                    </small>
+
                   </div>
-                   <div class="detail-item" *ngIf="order.ORDER_STATUS =='R'" style="color:red">
+
+                  <!-- REJECTED -->
+                  <div class="detail-item" *ngIf="order.ORDER_STATUS === 'R'" style="color:red">
                     <div class="status-header">Order Rejected</div>
-                    <small class="status-subtitle">{{
-                      order.ORDER_CONFIRMED_DATETIME 
-                        ? (order.ORDER_CONFIRMED_DATETIME
-                          | date : "dd-MM-yyyy")
-                        : "Pending"
-                    }}</small>
+                    <small class="status-subtitle">Rejected</small>
                   </div>
 
-                  <div class="detail-item" *ngIf="order.ORDER_STATUS !='R'">
+                  <!-- PACKAGING DONE -->
+                  <div class="detail-item" *ngIf="order.ORDER_STATUS !== 'R'">
                     <div class="status-header">Packaging Done</div>
-                    <small class="status-subtitle">{{
-                      order.ACTUAL_PREPARE_PACKAGING_DATETIME || order.EXPECTED_DISPATCH_DATETIME
-                        ? (order.ACTUAL_PREPARE_PACKAGING_DATETIME || order.EXPECTED_DISPATCH_DATETIME
-                          | date : "dd-MM-yyyy")
-                        : "Pending"
-                    }}</small>
+                    <small class="status-subtitle">
+                      <ng-container *ngIf="order.ORDER_STATUS === 'PD' 
+          || order.ORDER_STATUS === 'DD' 
+          || order.ORDER_STATUS === 'OD'; 
+          else packagingPending">
+
+                        ({{ order.ACTUAL_PREPARE_PACKAGING_DATETIME | date:'dd-MM-yyyy' }})
+
+                      </ng-container>
+
+                      <!-- Pending -->
+                      <ng-template #packagingPending>
+                        Pending
+                      </ng-template>
+                    </small>
                   </div>
 
-                  <div class="detail-item" *ngIf="order.ORDER_STATUS !='R'">
-                    <div class="status-header" *ngIf="order.IS_LOCAL_PICKUP_SELECTED == 0">Dispatched</div>
-                    <div class="status-header" *ngIf="order.IS_LOCAL_PICKUP_SELECTED == 1">Ready For Pickup</div>
-                    <small class="status-subtitle">{{
-                      order.ACTUAL_DISPATCH_DATETIME
-                        ? (order.ACTUAL_DISPATCH_DATETIME
-                          | date : "dd-MM-yyyy")
-                        : "Pending"
-                    }}</small>
-                  </div>
-
-                  <div class="detail-item" *ngIf="order.ORDER_STATUS !='R'">
-                    <div class="status-header" *ngIf="order.IS_LOCAL_PICKUP_SELECTED == 0">Delivered</div>
-                    <div class="status-header" *ngIf="order.IS_LOCAL_PICKUP_SELECTED == 1">Picked Up</div>
-                    <small class="status-subtitle">{{
-                      order.ACTUAL_DELIVERY_DATETIME
-                        ? (order.ACTUAL_DELIVERY_DATETIME
-                          | date : "dd-MM-yyyy")
-                        : (order.ORDER_STATUS === 'DD' && order.EXPECTED_DISPATCH_DATETIME && order.IS_LOCAL_PICKUP_SELECTED == 1
-                          ? (order.EXPECTED_DISPATCH_DATETIME | date : "dd-MM-yyyy")
-                          : "Pending")
-                    }}</small>
-                  </div>
-
-                  <div
-                    *ngIf="order.ACTUAL_CANCELLED_DATETIME && order.ORDER_STATUS!='R'"
-                    class="detail-item detail-cancelled"
-                    style="padding-top: 10px; margin-top: 10px"
-                  >
-                    <div class="status-header" style="color: #c62828">
-                      Order Canceled
+                  <!-- DISPATCHED / READY FOR PICKUP -->
+                  <div class="detail-item" *ngIf="order.ORDER_STATUS !== 'R'">
+                    <div class="status-header">
+                      {{ order.IS_LOCAL_PICKUP_SELECTED == 1 ? 'Ready For Pickup' : 'Dispatched' }}
                     </div>
-                    <small class="status-subtitle" style="color: #c62828">{{
-                      order.ACTUAL_CANCELLED_DATETIME
-                        | date : "dd-MM-yyyy"
-                    }}</small>
+                    <small class="status-subtitle">
+                      <ng-container
+                        *ngIf="order.ORDER_STATUS === 'DD' || order.ORDER_STATUS === 'OD'; else dispatchPending">
+                        ({{ order.ACTUAL_DISPATCH_DATETIME | date:'dd-MM-yyyy' }})
+                      </ng-container>
+
+                      <!-- Pending -->
+                      <ng-template #dispatchPending>
+                        Pending
+                      </ng-template>
+                    </small>
                   </div>
+
+                  <!-- DELIVERED / PICKED UP -->
+                  <div class="detail-item" *ngIf="order.ORDER_STATUS !== 'R'">
+                    <div class="status-header">
+                      {{ order.IS_LOCAL_PICKUP_SELECTED == 1 ? 'Picked Up' : 'Delivered' }}
+                    </div>
+                    <small class="status-subtitle">
+                      <ng-container *ngIf="order.ORDER_STATUS === 'OD'; else deliveryPending">
+                        ({{ order.ACTUAL_DELIVERY_DATETIME | date:'dd-MM-yyyy' }})
+                      </ng-container>
+
+                      <!-- Pending -->
+                      <ng-template #deliveryPending>
+                        Pending
+                      </ng-template>
+                    </small>
+                  </div>
+
+                  <!-- CANCELLED -->
+                  <div *ngIf="order.ORDER_STATUS === 'OC'" class="detail-item detail-cancelled"
+                    style="padding-top:10px; margin-top:10px; color:#c62828">
+                    <div class="status-header">Order Cancelled</div>
+                    <small class="status-subtitle">Cancelled</small>
+                  </div>
+
                 </div>
               </div>
             </div>
+
           </div>
 
           <!-- RIGHT COLUMN: Address + Price -->
-          <div
-            class="right-column"
-            style="flex: 1; display: flex; flex-direction: column; gap: 8px"
-          >
+          <div class="right-column" style="flex: 1; display: flex; flex-direction: column; gap: 8px">
             <!-- ADDRESS CARD -->
             <div *ngFor="let order of viewdetail" class="order-card">
               <div class="order-heading">
                 Shipping Address
                 <span class="address-type">
-                  ({{ order.ADDRESS_TYPE == "R" ? "Residential" : "Office" }})
+                  ({{ order.IS_LOCAL_PICKUP_SELECTED == 1 ?"Local Pickup": order.ADDRESS_TYPE == "R" ? "Residential" :
+                  "Office" }})
+
                 </span>
               </div>
               <div class="order-address">{{ order.CUSTOMER_ADDRESS_NAME }}</div>
@@ -2813,12 +2193,9 @@
                   <span class="text-gray-900">${{ totalPrice }}</span>
                 </div>
                 <div class="flex justify-between gap-4">
-                  <span class="font-semibold text-gray-700"
-                    >Shipping and Handling
+                  <span class="font-semibold text-gray-700">Shipping and Handling
                   </span>
-                  <span class="text-gray-900"
-                    >${{ (NET_AMOUNT - totalPrice).toFixed(2) || 0 }}</span
-                  >
+                  <span class="text-gray-900">${{ (NET_AMOUNT - totalPrice).toFixed(2) || 0 }}</span>
                 </div>
                 <hr />
                 <!-- <div class="flex justify-between gap-4">
@@ -2826,12 +2203,9 @@
                   <span class="text-gray-900">$.{{ PACKAGING_CHARGES ? PACKAGING_CHARGES : 0 }}</span>
                 </div> -->
                 <div class="flex justify-between gap-4">
-                  <span class="font-semibold text-green-600"
-                    >Total Amount
+                  <span class="font-semibold text-green-600">Total Amount
                   </span>
-                  <span class="text-green-600 font-semibold"
-                    >${{ NET_AMOUNT ? NET_AMOUNT : 0 }}</span
-                  >
+                  <span class="text-green-600 font-semibold">${{ NET_AMOUNT ? NET_AMOUNT : 0 }}</span>
                 </div>
               </div>
             </div>
@@ -2861,13 +2235,7 @@
         <div class="photo-option" (click)="fileInput.click()">
           <i class="ri-image-line"></i>
           <span>Upload File</span>
-          <input
-            type="file"
-            #fileInput
-            accept=".png, .jpg, .jpeg"
-            (change)="fileChangeEvent($event)"
-            hidden
-          />
+          <input type="file" #fileInput accept=".png, .jpg, .jpeg" (change)="fileChangeEvent($event)" hidden />
         </div>
       </div>
     </div>
@@ -2913,24 +2281,13 @@
   </div>
 </div> -->
 
-<div
-  class="modal fade"
-  id="CapturePhotoModal"
-  tabindex="-1"
-  data-bs-backdrop="static"
-  data-bs-keyboard="false"
->
+<div class="modal fade" id="CapturePhotoModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Take a Picture</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-          (click)="closeCapturePhotoModal()"
-        ></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+          (click)="closeCapturePhotoModal()"></button>
       </div>
       <div class="modal-body text-center">
         <video #videoElement autoplay playsinline muted></video>
@@ -2943,10 +2300,7 @@
 </div>
 
 <div *ngIf="viewCart">
-  <app-cart-drawer
-    [visible]="viewCart"
-    (visibleChange)="onCartDrawerClose($event)"
-  ></app-cart-drawer>
+  <app-cart-drawer [visible]="viewCart" (visibleChange)="onCartDrawerClose($event)"></app-cart-drawer>
 </div>
 <div class="modal-backdrop" *ngIf="visible" (click)="dismiss()"></div>
 
@@ -2971,52 +2325,26 @@
 
     <form (ngSubmit)="VerifyOTP2()" class="otp-form">
       <div class="otp-input-group">
-        <input
-          *ngFor="let i of [0, 1, 2, 3]; let last = last"
-          class="otp-input"
-          type="text"
-          [(ngModel)]="otp[i]"
-          [name]="'otp-' + i"
-          maxlength="1"
-          (keydown)="moveToNext($event, i)"
-          (keypress)="allowOnlyNumbers($event)"
-          (ngModelChange)="onChange($event, i)"
-          (paste)="handlePaste($event)"
-          required
-          autocomplete="off"
-        />
+        <input *ngFor="let i of [0, 1, 2, 3]; let last = last" class="otp-input" type="text" [(ngModel)]="otp[i]"
+          [name]="'otp-' + i" maxlength="1" (keydown)="moveToNext($event, i)" (keypress)="allowOnlyNumbers($event)"
+          (ngModelChange)="onChange($event, i)" (paste)="handlePaste($event)" required autocomplete="off" />
       </div>
 
       <div class="timer-section">
-        <span *ngIf="remainingTime > 0" class="timer-display"
-          >{{ remainingTime }}s</span
-        >
+        <span *ngIf="remainingTime > 0" class="timer-display">{{ remainingTime }}s</span>
         <p class="resend-text">
           Didn’t receive the code?
-          <a
-            (click)="resendOtp()"
-            [ngStyle]="{
+          <a (click)="resendOtp()" [ngStyle]="{
               cursor: remainingTime > 0 ? 'default' : 'pointer',
               color: remainingTime > 0 ? '#636363' : '#5a8f69'
-            }"
-            [class.disabled]="remainingTime > 0"
-            >Resend</a
-          >
+            }" [class.disabled]="remainingTime > 0">Resend</a>
         </p>
       </div>
 
-      <button
-        type="submit"
-        class="verify-button"
-        [disabled]="isverifyOTP || otp.join('').length < 4"
-      >
-        <span
-          *ngIf="isverifyOTP"
-          class="spinner-border spinner-border-sm me-2"
-        ></span>
+      <button type="submit" class="verify-button" [disabled]="isverifyOTP || otp.join('').length < 4">
+        <span *ngIf="isverifyOTP" class="spinner-border spinner-border-sm me-2"></span>
         Verify
       </button>
     </form>
   </div>
 </div>
-

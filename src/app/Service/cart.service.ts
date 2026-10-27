@@ -20,12 +20,12 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class CartService {
   //Testing
-  commonapikey = 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY';
-  commonapplicationkey = 'awlcQRwoZxAJQm7b';
+  // commonapikey = 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY';
+  // commonapplicationkey = 'awlcQRwoZxAJQm7b';
 
   //Live
-  // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
-  // commonapplicationkey = '26lLNSmaKlcFziHH';
+  commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
+  commonapplicationkey = '26lLNSmaKlcFziHH';
   // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
   // commonapplicationkey = '26lLNSmaKlcFziHH';
   // private cartCountSource = new BehaviorSubject<number>(0);
@@ -99,7 +99,7 @@ export class CartService {
         this.currentProduct.SIZE = item.SIZE;
         this.currentProduct.PRODUCT_ID = item.PRODUCT_ID;
         this.currentProduct.PRODUCT_UNIT_ID = item.VARIENT_UNIT_ID;
-        this.currentProduct.UNIT_ID=item.VARIENT_UNIT_ID ?? item.UNIT_ID ?? item.PRODUCT_UNIT_ID
+        this.currentProduct.UNIT_ID = item.VARIENT_UNIT_ID ?? item.UNIT_ID ?? item.PRODUCT_UNIT_ID
         this.updateCartToServer();
       });
   }
@@ -167,6 +167,7 @@ export class CartService {
               const category = cartData.categoryDetails?.find(
                 (cat: any) => cat.NAME === item.PRODUCT_NAME
               );
+              this.loaderUpdate.next(false)
 
               return {
                 ...item,
@@ -181,7 +182,6 @@ export class CartService {
             });
             // console.log(this.cartItems);
             this.cartUpdated.next(this.cartItems);
-            this.loaderUpdate.next(false)
             this.updateCartCount();
           }
         },
@@ -327,7 +327,7 @@ export class CartService {
       SIZE: this.currentProduct.SIZE,
       COUNTRY_NAME: sessionStorage.getItem('address'),
       PINCODE: sessionStorage.getItem('pincode'),
-      UNIT_ID: this.currentProduct.UNIT_ID,
+      UNIT_ID: this.currentProduct.VARIENT_UNIT_ID ?? this.currentProduct.UNIT_ID,
       CART_ID: this.currentProduct.CART_ID ? this.currentProduct.CART_ID : null,
       CART_ITEM_ID: this.currentProduct.CART_ITEM_ID
         ? this.currentProduct.CART_ITEM_ID
@@ -427,7 +427,7 @@ export class CartService {
           }
         },
         (error) => {
-            this.loaderUpdate.next(false)
+          this.loaderUpdate.next(false)
           this.toastr.error(
             'Something went wrong please try again later',
             error
@@ -461,7 +461,7 @@ export class CartService {
       SIZE: this.currentProduct.VERIENT_SIZE,
       COUNTRY_NAME: sessionStorage.getItem('address'),
       PINCODE: sessionStorage.getItem('pincode'),
-      UNIT_ID: this.currentProduct.VARIENT_UNIT_ID ?? this.currentProduct.UNIT_ID ?? this.currentProduct.PRODUCT_UNIT_ID,
+      UNIT_ID: this.currentProduct.VARIENT_UNIT_ID ?? this.currentProduct.UNIT_ID,
       CART_ID: this.currentProduct.CART_ID ? this.currentProduct.CART_ID : null,
       CART_ITEM_ID: this.currentProduct.CART_ITEM_ID
         ? this.currentProduct.CART_ITEM_ID
@@ -542,8 +542,8 @@ export class CartService {
       );
   }
   private removeItemforServerwithouttoast(): void {
-    const encryptedId=sessionStorage.getItem('userId')
-    const decryptedId=encryptedId?this.commonFunction.decryptdata(encryptedId):''
+    const encryptedId = sessionStorage.getItem('userId')
+    const decryptedId = encryptedId ? this.commonFunction.decryptdata(encryptedId) : ''
     // this.userID = this.commonFunction.decryptdata(this.euserID);
     // if (!this.userID) return;
 
@@ -576,7 +576,7 @@ export class CartService {
             // this.toastr.info('Cart item removed successfully');
             sessionStorage.removeItem('sessionCart');
             this.fetchCartFromServer(decryptedId, this.etoken);
-             // Refresh cart after removal
+            // Refresh cart after removal
           } else {
             // this.toastr.error('Failed to update cart:', '');
           }
@@ -662,6 +662,7 @@ export class CartService {
       });
     }
 
+    // console.log(sessionCartItems)
     // Prepare first item payload
     const firstItemPayload = {
       CUSTOMER_ID: customerId,
@@ -675,7 +676,7 @@ export class CartService {
       COUNTRY_NAME: sessionStorage.getItem('address'),
       PINCODE: sessionStorage.getItem('pincode'),
       UNIT_ID:
-        sessionCartItems[0].VARIENT_UNIT_ID || sessionCartItems[0].VARIENT_UNIT_ID,
+        sessionCartItems[0].VERIENT_UNIT_ID || sessionCartItems[0].UNIT_ID,
     };
 
     // console.log('Adding first item to create cart:', firstItemPayload);
@@ -719,7 +720,7 @@ export class CartService {
                 SIZE: item.SIZE || item.VERIENT_SIZE,
                 COUNTRY_NAME: sessionStorage.getItem('address'),
                 PINCODE: sessionStorage.getItem('pincode'),
-                UNIT_ID: item.VARIENT_UNIT_ID || item.VARIENT_UNIT_ID,
+                UNIT_ID: item.VERIENT_UNIT_ID || item.UNIT_ID,
                 CART_ID: cartId, // ✅ Use the same CART_ID from first item
               };
 
@@ -766,5 +767,148 @@ export class CartService {
           });
         })
       );
+  }
+
+  //  getCartDetails(userId: any, token: string): void {
+  //   // let data={
+  //   //   SESSION_KEY:token,
+  //   //   CUSTOMER_ID:userId
+  //   // }
+  //   let sessionKey = sessionStorage.getItem('SESSION_KEYS') || '';
+  //   let decypted = this.commonFunction.decryptdata(sessionKey);
+  //   const headers = new HttpHeaders({
+  //     'Content-Type': 'application/json',
+  //     applicationkey: this.commonapplicationkey,
+  //     apikey: this.commonapikey,
+  //     token: this.etoken,
+  //   });
+  //   if (userId) {
+  //     decypted = '';
+  //   }
+  //   this.http
+  //     .post<any[]>(
+  //       this.api.baseUrl + 'web/cartDetails/get',
+  //       {
+  //         SESSION_KEY: decypted,
+  //         CUSTOMER_ID: userId,
+  //       },
+  //       {
+  //         headers,
+  //       }
+  //     )
+  //     .subscribe(
+  //       (cartData: any) => {
+  //         // console.log(cartData.cartItemDetails)
+  //         // this.cartItems = [];
+  //         // this.cartCountSubject.next(0);
+  //         this.loaderUpdate.next(true)
+  //         if (!cartData?.data || cartData.data.length === 0) {
+  //           // this.toastr.info('Cart is empty or not found');
+  //         } else {
+  //           var PACKAGING_CHARGES = cartData.data[0]['PACKAGING_CHARGES'];
+  //           var DELIVERY_CHARGES = cartData.data[0]['ADDON_AMOUNT'];
+  //           var TOTAL_PRICE = cartData.data[0]['TOTAL_PRICE'];
+  //           var NET_AMOUNT = cartData.data[0]['NET_AMOUNT'];
+  //           // console.log(cartData);
+  //           var DATA = cartData.data[0];
+  //           return cartData.cartItemDetails.map((item: any) => {
+  //             const category = cartData.categoryDetails?.find(
+  //               (cat: any) => cat.NAME === item.PRODUCT_NAME
+  //             );
+  //             this.loaderUpdate.next(false)
+
+  //             return {
+  //               ...item,
+  //               CATEGORY_NAME: category ? category.CATEGORY_NAME : 'Unknown',
+  //               quantity: item.QUANTITY || 1,
+  //               PACKAGING_CHARGES,
+  //               DELIVERY_CHARGES,
+  //               NET_AMOUNT,
+  //               TOTAL_PRICE,
+  //               DATA,
+  //             };
+  //           });
+  //           // console.log(this.cartItems);
+  //           // this.cartUpdated.next(this.cartItems);
+  //           // this.updateCartCount();
+  //         }
+  //       },
+  //       (err) => this.toastr.error('Error fetching cart:', '')
+  //     );
+  // }
+
+  getCartDetails(userId: any, token: string): Observable<any[]> {
+
+    let sessionKey = sessionStorage.getItem('SESSION_KEYS') || '';
+    let decrypted = this.commonFunction.decryptdata(sessionKey);
+
+    if (userId) {
+      decrypted = '';
+    }
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      applicationkey: this.commonapplicationkey,
+      apikey: this.commonapikey,
+      token: this.etoken,
+    });
+
+    return this.http.post<any>(
+      this.api.baseUrl + 'web/cartDetails/get',
+      {
+        SESSION_KEY: decrypted,
+        CUSTOMER_ID: userId,
+      },
+      { headers }
+    ).pipe(
+      map((cartData: any) => {
+
+        if (!cartData?.data || cartData.data.length === 0) {
+          return [];
+        }
+
+        const PACKAGING_CHARGES = cartData.data[0]['PACKAGING_CHARGES'];
+        const DELIVERY_CHARGES = cartData.data[0]['ADDON_AMOUNT'];
+        const TOTAL_PRICE = cartData.data[0]['TOTAL_PRICE'];
+        const NET_AMOUNT = cartData.data[0]['NET_AMOUNT'];
+        const DATA = cartData.data[0];
+
+        return cartData.cartItemDetails.map((item: any) => {
+          const category = cartData.categoryDetails?.find(
+            (cat: any) => cat.NAME === item.PRODUCT_NAME
+          );
+
+          return {
+            ...item,
+            CATEGORY_NAME: category ? category.CATEGORY_NAME : 'Unknown',
+            quantity: item.QUANTITY || 1,
+            PACKAGING_CHARGES,
+            DELIVERY_CHARGES,
+            NET_AMOUNT,
+            TOTAL_PRICE,
+            DATA,
+          };
+        });
+      })
+    );
+  }
+  removeItemforServerwithouttoast2(CART_ID: any, CART_ITEM_ID: any): any {
+    const payload = {
+      CART_ID,
+      CART_ITEM_ID,
+    };
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      applicationkey: this.commonapplicationkey,
+      apikey: this.commonapikey,
+      token: this.etoken,
+    });
+
+    return this.http.post(
+      this.api.baseUrl + 'web/removeItem',
+      payload,
+      { headers }
+    );
   }
 }

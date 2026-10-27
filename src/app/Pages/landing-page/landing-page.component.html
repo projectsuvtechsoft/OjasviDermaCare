@@ -2,11 +2,7 @@
   <div class="loader"></div>
 </div>
 
-<section
-  *ngIf="!isBannerLoading"
-  id="hero"
-  class="hero section relative"
-  style="
+<section *ngIf="!isBannerLoading" id="hero" class="hero section relative" style="
     margin: 0px;
     border-radius: 17px;
     padding: 0px;
@@ -14,59 +10,39 @@
     width: 100% !important;
     max-width: 100% !important;
     min-width: 100% !important;
-  "
->
+  ">
   <div *ngIf="carouselItems.length > 0" class="relative">
-    <div
-      class="owl-carousel owl-theme hero-carousel-container h-full"
-      style="height: auto !important; min-height: auto"
-    >
+    <div class="owl-carousel owl-theme hero-carousel-container h-full"
+      style="height: auto !important; min-height: auto">
       <div class="carousel-item relative" *ngFor="let item of carouselItems">
-        <img
-          [src]="IMAGEuRL + 'websiteBanner/' + item.IMG_URL"
-          [alt]="item.NAME"
-          style="
+        <img [src]="IMAGEuRL + 'websiteBanner/' + item.IMG_URL" [alt]="item.NAME" style="
             width: 100%;
             height: auto;
             display: block;
             background-size: 100% 100%;
-          "
-        />
+          " />
 
-        <div
-          class="absolute top-0 left-0 w-full h-full flex flex-col justify-center items-start p-10 z-10"
-        >
-          <h3
-            class="text-red-600 text-2xl font-bold mb-3 widths-50 leading-tight fontsizee"
-            *ngIf="
+        <div class="absolute top-0 left-0 w-full h-full flex flex-col justify-center items-start p-10 z-10">
+          <h3 class="text-red-600 text-2xl font-bold mb-3 widths-50 leading-tight fontsizee" *ngIf="
               carouselItems != undefined &&
               item?.NAME !== undefined &&
               item?.NAME !== null &&
               item?.NAME !== ''
-            "
-            [style.color]="item?.COLOR_CODE_NAME"
-          >
+            " [style.color]="item?.COLOR_CODE_NAME">
             {{ item?.NAME }}
           </h3>
 
-          <h6
-            class="text-lg widths-50 fontsizee1 hidesubtitle"
-            *ngIf="
+          <h6 class="text-lg widths-50 fontsizee1 hidesubtitle" *ngIf="
               carouselItems != undefined &&
               item?.SUB_TITLE !== undefined &&
               item?.SUB_TITLE !== null &&
               item?.SUB_TITLE !== ''
-            "
-            [style.color]="item?.COLOR_CODE_T1 ? item.COLOR_CODE_T1 : '#ffffff'"
-            style="margin-top: 10px !important"
-          >
+            " [style.color]="item?.COLOR_CODE_T1 ? item.COLOR_CODE_T1 : '#ffffff'" style="margin-top: 10px !important">
             {{ item?.SUB_TITLE }}
           </h6>
 
-          <button
-            (click)="goToProductList()"
-            class="bg-[#5a8f69] hover:bg-opacity-90 text-white px-8 py-4 rounded-lg text-lg font-semibold mb-4 buttonwidd"
-          >
+          <button (click)="goToProductList()"
+            class="bg-[#5a8f69] hover:bg-opacity-90 text-white px-8 py-4 rounded-lg text-lg font-semibold mb-4 buttonwidd">
             Explore Products
           </button>
         </div>
@@ -77,40 +53,30 @@
 
 <!-- Welcome Message -->
 <section class="bg-white">
-  <div
-    class="max-w-6xl mx-auto px-4 text-center"
-    style="
+  <div class="max-w-6xl mx-auto px-4 text-center" style="
       font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI,
         Roboto, Helvetica, Arial, sans-serif !important;
       padding-top: 30px;
       padding-bottom: 30px;
-    "
-  >
+    ">
     <h3 class="text-2xl md:text-2xl font-bold text-gray-800 mb-6">
       From Garden To Glow
     </h3>
 
-    <p
-      class="text-medium text-gray-600 max-w-4xl mx-auto leading-relaxed"
-      style="margin-bottom: 10px; line-height: 1.5rem !important"
-    >
+    <p class="text-medium text-gray-600 max-w-4xl mx-auto leading-relaxed"
+      style="margin-bottom: 10px; line-height: 1.5rem !important">
       Welcome to the home of Ojasvi - a place to find skin/hair care products
       crafted with care from the finest of the ingredients sourced from nature
       to heal, soothe and rejuvenate.
     </p>
 
-    <p
-      class="text-medium text-gray-600 max-w-4xl mx-auto leading-relaxed"
-      style="margin-bottom: 10px; line-height: 1.5rem !important"
-    >
+    <p class="text-medium text-gray-600 max-w-4xl mx-auto leading-relaxed"
+      style="margin-bottom: 10px; line-height: 1.5rem !important">
       Years of using chemical based cosmetics are known to disrupt body
       functions due to its hormone disrupting nature.
     </p>
 
-    <p
-      class="text-medium text-gray-600 max-w-4xl mx-auto leading-relaxed"
-      style="line-height: 1.5rem !important"
-    >
+    <p class="text-medium text-gray-600 max-w-4xl mx-auto leading-relaxed" style="line-height: 1.5rem !important">
       At Ojasvi, our luxurious products incorporate flowers, herbs, oils known
       to ancient cultures from around the world - from Ayurvedic practices of
       India to the native herbal medicines practiced in the western hemisphere.
@@ -120,13 +86,10 @@
   </div>
 </section>
 
-<section
-  class="ojasvi-philosophy"
-  style="
+<section class="ojasvi-philosophy" style="
     font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
       Helvetica, Arial, sans-serif !important;
-  "
->
+  ">
   <h3 class="text-2xl md:text-2xl font-bold text-gray-800 mb-6">
     The Ojasvi Philosophy
   </h3>
@@ -144,38 +107,33 @@
     <br />
 
     <p class="text-base text-gray-700 leading-relaxed">
-      Herbs have the strength and vitality to bestow your body, mind and soul
-      with the wealth of health. The radiate out on like the rays of light at
-      dawn
+      Herbs have the strength and vitality to bestow wealth of health upon your body, mind, and soul. They radiate
+      outward like the first rays of light at dawn.
     </p>
   </blockquote>
 
   <ul class="testimonials-track flex bg-green-50">
     <li
-      class="testimonial-card flex-shrink-0 w-[400px] bg-white rounded-lg shadow-md p-6 mx-3 hover:shadow-md transition-shadow"
-    >
+      class="testimonial-card flex-shrink-0 w-[400px] bg-white rounded-lg shadow-md p-6 mx-3 hover:shadow-md transition-shadow">
       <strong>East Meets West</strong><br />
       Our formulations blend Ayurvedic principles with Western herbal wisdom.
     </li>
 
     <li
-      class="testimonial-card flex-shrink-0 w-[400px] bg-white rounded-lg shadow-md p-6 mx-3 hover:shadow-md transition-shadow"
-    >
+      class="testimonial-card flex-shrink-0 w-[400px] bg-white rounded-lg shadow-md p-6 mx-3 hover:shadow-md transition-shadow">
       <strong>Handcrafted Quality:</strong><br />Made in small batches to ensure
       exceptional quality, potency and integrity.
     </li>
 
     <li
-      class="testimonial-card flex-shrink-0 w-[400px] bg-white rounded-lg shadow-md p-6 mx-3 hover:shadow-md transition-shadow"
-    >
-      <strong>Rooted in Tradition, Designed for Modern Life:</strong
-      ><br />Drawing on collective ancestral knowledge to address today's
+      class="testimonial-card flex-shrink-0 w-[400px] bg-white rounded-lg shadow-md p-6 mx-3 hover:shadow-md transition-shadow">
+      <strong>Rooted in Tradition, Designed for Modern Life:</strong><br />Drawing on collective ancestral knowledge to
+      address today's
       skincare challenges.
     </li>
 
     <li
-      class="testimonial-card flex-shrink-0 w-[400px] bg-white rounded-lg shadow-md p-6 mx-3 hover:shadow-md transition-shadow"
-    >
+      class="testimonial-card flex-shrink-0 w-[400px] bg-white rounded-lg shadow-md p-6 mx-3 hover:shadow-md transition-shadow">
       <strong>Naturally Clean:</strong><br />
       No additives. No preservatives. Just what pure botanical nourishment your
       skin needs - nothing more.
@@ -183,52 +141,37 @@
   </ul>
 
   <div class="text-right pr-6 mt-2">
-    <a
-      href="/product-list"
-      class="text-green-700 font-semibold hover:underline"
-    >
+    <a href="/product-list" class="text-green-700 font-semibold hover:underline">
       Explore Our Products →
     </a>
   </div>
 </section>
 
-<section
-  class="bg-white"
-  style="
+<section class="bg-white" style="
     font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
       Helvetica, Arial, sans-serif !important;
     margin-top: 30px;
-  "
->
+  ">
   <div class="max-w-6xl mx-auto px-4">
     <div class="text-center mb-12" style="margin-bottom: 8px !important">
-      <h3
-        class="text-2xl md:text-2xl font-bold text-gray-800 mb-6"
-        style="margin-bottom: 8px !important"
-      >
+      <h3 class="text-2xl md:text-2xl font-bold text-gray-800 mb-6" style="margin-bottom: 8px !important">
         Featured Categories
       </h3>
     </div>
 
     <!-- Tab Navigation -->
     <div class="flex justify-center mb-6">
-      <div
-        class="flex space-x-5 border-b border-gray-200 overflow-x-auto sm:overflow-x-hidden"
-      >
-        <button
-          *ngFor="
-            let tab of ['popular', 'bestseller', 'newarrival', 'upcoming']
-          "
-          (click)="switchTab(tab)"
-          [ngClass]="{
+      <div class="flex space-x-5 border-b border-gray-200 overflow-x-auto sm:overflow-x-hidden">
+        <button *ngFor="
+            let tab of ['popular', 'newarrival', 'upcoming']
+          " (click)="switchTab(tab)" [ngClass]="{
             'tab-button px-2 py-2 text-sm font-medium transition-colors border-b-2': true,
             'text-[#5a8f69] border-[#5a8f69]': activeTab === tab,
             'text-gray-600 border-transparent hover:text-[#5a8f69]':
               activeTab !== tab
-          }"
-        >
+          }">
           <span *ngIf="tab == 'popular'">Popular</span>
-          <span *ngIf="tab == 'bestseller'">Best Seller</span>
+          <!-- <span *ngIf="tab == 'bestseller'">Best Seller</span> -->
           <span *ngIf="tab == 'newarrival'">New Arrival</span>
           <span *ngIf="tab == 'upcoming'">Upcoming</span>
         </button>
@@ -236,33 +179,24 @@
     </div>
 
     <!-- Tab Content -->
-    <div
-      *ngFor="let tab of ['popular', 'bestseller', 'newarrival', 'upcoming']"
-    >
+    <div *ngFor="let tab of ['popular',  'newarrival', 'upcoming']">
       <div *ngIf="activeTab === tab" class="relative">
-        
+
         <div class="carousel-container" id="product-grids">
-          
+
           <!-- Mobile View - Single Card Carousel -->
           <div class="block-mobile">
             <div class="relative px-2">
               <div class="overflow-hidden">
-                <div
-                  class="flex transition-transform duration-300 ease-in-out"
-                  [style.transform]="'translateX(-' + (carouselIndex[tab] || 0) * 100 + '%)'"
-                >
-                  <div
-                    class="product-card bg-white rounded-lg shadow-md overflow-hidden p-0 w-full flex-shrink-0"
-                    style="cursor: pointer; min-width: 100%;"
-                    *ngFor="
+                <div class="flex transition-transform duration-300 ease-in-out"
+                  [style.transform]="'translateX(-' + (carouselIndex[tab] || 0) * 100 + '%)'">
+                  <div class="product-card bg-white rounded-lg shadow-md overflow-hidden p-0 w-full flex-shrink-0"
+                    style="cursor: pointer; min-width: 100%;" *ngFor="
                       let product of products[tab];
                       trackBy: trackByProductId;
                       let i = index
-                    "
-                >
-                  <span
-                    (click)="addtodetail(product)"
-                    [routerLink]="
+                    ">
+                    <span (click)="addtodetail(product)" [routerLink]="
                       selectedVariantMap[product.ID]
                         ? [
                             '/product_details',
@@ -270,190 +204,141 @@
                             selectedVariantMap[product.ID]
                           ]
                         : ['/product_details', product.ID]
-                    "
-                  >
-                    <div class="relative">
-                      <div
-                        class="w-full h-48 bg-white flex items-center justify-center overflow-hidden"
-                      >
-                        <ng-container
-                          *ngIf="initImageIndex(product.ID) === undefined"
-                        ></ng-container>
-                        <img
-                          *ngIf="getImageArray(product).length > 0"
-                          [src]="
+                    ">
+                      <div class="relative">
+                        <div class="w-full h-48 bg-white flex items-center justify-center overflow-hidden">
+                          <ng-container *ngIf="initImageIndex(product.ID) === undefined"></ng-container>
+                          <img *ngIf="getImageArray(product).length > 0" [src]="
                             productImageUrl +
                             getImageArray(product)[imageIndices[product.ID]]
-                          "
-                          [alt]="product.NAME"
-                          class="rounded-lg object-cover w-full h-full"
-                        />
-                      </div>
+                          " [alt]="product.NAME" class="rounded-lg object-cover w-full h-full" />
+                        </div>
 
-                      <div class="absolute top-3 right-3 flex space-x-2">
-                        <button
-                          class="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm"
-                          [ngClass]="{
+                        <div class="absolute top-3 right-3 flex space-x-2">
+                          <button class="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm"
+                            [ngClass]="{
                             'text-green-500': product.isLiked,
                             'text-gray-600 hover:text-[#5a8f69]': !product.isLiked
-                          }"
-                          (click)="toggleLike(product, $event)"
-                        >
-                          <i
-                            [class]="
+                          }" (click)="toggleLike(product, $event)">
+                            <i [class]="
                               product.isLiked ? 'ri-heart-fill' : 'ri-heart-line'
-                            "
-                          >
-                          </i>
-                        </button>
-                      </div>
+                            ">
+                            </i>
+                          </button>
+                        </div>
 
-                      <div class="absolute top-3 left-3">
-                        <span
-                          class="text-white text-xs px-2 py-1 rounded-full"
-                          [ngClass]="{
+                        <div class="absolute top-3 left-3">
+                          <!-- 'bg-secondary/100': product.IS_BEST_SELLER === 1,
+                          : product.IS_BEST_SELLER == "1"
+                              ? "Best Seller" -->
+                          <span class="text-white text-xs px-2 py-1 rounded-full" [ngClass]="{
                             'bg-[#5a8f69]/100': product.IS_NEW_ARRIVAL === 1,
-                            'bg-secondary/100': product.IS_BEST_SELLER === 1,
+                            
                             'bg-green-500/100': product.IS_POPULAR === 1
-                          }"
-                          >{{
+                          }">{{
                             product.IS_NEW_ARRIVAL == "1"
-                              ? "New"
-                              : product.IS_BEST_SELLER == "1"
-                              ? "Best Seller"
-                              : product.IS_POPULAR == "1"
-                              ? "Popular"
-                              : ""
-                          }}
-                        </span>
-                      </div>
-                    </div>
+                            ? "New"
 
-                    <div class="text-danger text-sm text-center pt-1 h-2">
-                      <small
-                        *ngIf="
+                            : product.IS_POPULAR == "1"
+                            ? "Popular"
+                            : ""
+                            }}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div class="text-danger text-sm text-center pt-1 h-2">
+                        <small *ngIf="
                           product.IS_UPCOMING == 1 ||
                           product.VARIENTS == null ||
                           product.VARIENTS == undefined ||
                           product.VARIENTS.length == 0 ||
                           !hasActiveVariants(product.ID) ||
                           currentStockMap[product.ID] <= 0
-                        "
-                      >
-                        Out of stock
-                      </small>
-                    </div>
-
-                    <div class="pt-1 px-3">
-                      <span
-                        class="text-xs text-gray-500 rounded-full bg-[rgb(233,180,76)] text-white text-xs font-small px-2 py-1"
-                      >
-                        {{ product.CATEGORY_NAME }}
-                      </span>
-
-                      <div
-                        *ngIf="product.CUSTOMER_RATINGS"
-                        class="inline-flex justify-center items-center bg-[#72BB81E5] text-white text-xs font-small px-2 py-1 rounded-full float-right"
-                        style="width: 58.67px"
-                      >
-                        <span>{{
-                          product.CUSTOMER_RATINGS | number : "1.1-1"
-                        }}</span>
-
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-3 w-3 ml-1"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.782 1.4 8.17L12 18.896l-7.334 3.866 1.4-8.17L.132 9.21l8.2-1.192z"
-                          />
-                        </svg>
+                        ">
+                          Out of stock
+                        </small>
                       </div>
 
-                      <h3
-                        class="font-medium text-gray-900 mt-2 hover:text-[#5a8f69] truncate"
-                        [title]="product.NAME"
-                      >
-                        {{ product.NAME }}
-                      </h3>
+                      <div class="pt-1 px-3">
+                        <span
+                          class="text-xs text-gray-500 rounded-full bg-[rgb(233,180,76)] text-white text-xs font-small px-2 py-1">
+                          {{ product.CATEGORY_NAME }}
+                        </span>
 
-                      <small
-                        class="text-gray-600 mt-2 line-clamp-2"
-                        [title]="product.DESCRIPTION"
-                      >
-                        {{ product.DESCRIPTION }}
-                      </small>
+                        <div *ngIf="product.CUSTOMER_RATINGS"
+                          class="inline-flex justify-center items-center bg-[#72BB81E5] text-white text-xs font-small px-2 py-1 rounded-full float-right"
+                          style="width: 58.67px">
+                          <span>{{
+                            product.CUSTOMER_RATINGS | number : "1.1-1"
+                            }}</span>
 
-                      <span
-                        class="text-black font-medium me-1"
-                        *ngIf="product.IS_VERIENT_AVAILABLE == 0"
-                      >
-                        ${{ product.RATE || 0 }}
-                      </span>
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 ml-1" fill="currentColor"
+                            viewBox="0 0 24 24">
+                            <path
+                              d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.782 1.4 8.17L12 18.896l-7.334 3.866 1.4-8.17L.132 9.21l8.2-1.192z" />
+                          </svg>
+                        </div>
 
-                      <span
-                        class="text-black font-medium me-1"
-                        *ngIf="product.IS_VERIENT_AVAILABLE == 1 && product.VARIENTS"
-                      >
-                        ${{convertStringtoArray(product.VARIENTS)[0].RATE || 0}}
-                      </span>
-                    </div>
-                  </span>
+                        <h3 class="font-medium text-gray-900 mt-2 hover:text-[#5a8f69] truncate" [title]="product.NAME">
+                          {{ product.NAME }}
+                        </h3>
 
-                  <div class="px-3 mb-3">
-                    <div class="mt-2">
-                      <div class="flex flex-wrap gap-2 mt-2">
-                        <ng-container
-                          *ngFor="let item of variantMap[product.ID] || []"
-                        >
-                          <small
-                            [ngClass]="{
+                        <small class="text-gray-600 mt-2 line-clamp-2" [title]="product.DESCRIPTION">
+                          {{ product.DESCRIPTION }}
+                        </small>
+
+                        <span class="text-black font-medium me-1" *ngIf="product.IS_VERIENT_AVAILABLE == 0">
+                          ${{ product.RATE || 0 }}
+                        </span>
+
+                        <span class="text-black font-medium me-1"
+                          *ngIf="product.IS_VERIENT_AVAILABLE == 1 && product.VARIENTS">
+                          ${{variantRateMap[product.ID] || 0}}
+                        </span>
+                      </div>
+                    </span>
+
+                    <div class="px-3 mb-3">
+                      <div class="mt-2">
+                        <div class="flex flex-wrap gap-2 mt-2">
+                          <ng-container *ngFor="let item of variantMap[product.ID] || []">
+                            <small [ngClass]="{
                               'border border-black bg-gray-100':
                                 selectedVariantMap[product.ID] == item.VARIENT_ID,
                               'bg-white border border-gray-300 hover:border-black':
                                 selectedVariantMap[product.ID] != item.VARIENT_ID
                             }"
-                            class="cursor-pointer text-gray-800 text-xs font-medium px-3 py-1 rounded-full transition-all duration-150"
-                            (click)="change(item.VARIENT_ID, product.ID)"
-                          >
-                            {{ item.SIZE }} {{ item.UNIT_NAME }}
-                          </small>
-                        </ng-container>
+                              class="cursor-pointer text-gray-800 text-xs font-medium px-3 py-1 rounded-full transition-all duration-150"
+                              (click)="change(item.VARIENT_ID, product.ID)">
+                              {{ item.SIZE }} {{ item.UNIT_NAME }}
+                            </small>
+                          </ng-container>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-              </div>
 
               <!-- Mobile Carousel Controls -->
-              <button
-                (click)="prevMobile(tab)"
-                class="block-mobile-arrow absolute left-0 top-1/3 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors"
-              >
+              <button (click)="prevMobile(tab)"
+                class="block-mobile-arrow absolute left-0 top-1/3 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors">
                 <i class="ri-arrow-left-s-line text-gray-600"></i>
               </button>
 
-              <button
-                (click)="nextMobile(tab)"
-                class="block-mobile-arrow absolute right-0 top-1/3 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors"
-              >
+              <button (click)="nextMobile(tab)"
+                class="block-mobile-arrow absolute right-0 top-1/3 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors">
                 <i class="ri-arrow-right-s-line text-gray-600"></i>
               </button>
 
               <!-- Mobile Dots Indicator -->
               <div class="flex justify-center gap-2 mt-4">
-                <button
-                  *ngFor="let item of products[tab]; let i = index"
-                  class="w-2 h-2 rounded-full transition-colors"
+                <button *ngFor="let item of products[tab]; let i = index" class="w-2 h-2 rounded-full transition-colors"
                   [ngClass]="{
                     'bg-[#5a8f69]': (carouselIndex[tab] || 0) === i,
                     'bg-gray-300': (carouselIndex[tab] || 0) !== i
-                  }"
-                  (click)="carouselIndex[tab] = i"
-                ></button>
+                  }" (click)="carouselIndex[tab] = i"></button>
               </div>
             </div>
           </div>
@@ -461,33 +346,24 @@
           <!-- Desktop View - Grid with Carousel -->
           <div class="block-desktop">
             <!-- Desktop Navigation Buttons -->
-            <button
-              (click)="prev(tab)"
-              class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors"
-            >
+            <button (click)="prev(tab)"
+              class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors">
               <i class="ri-arrow-left-s-line text-gray-600"></i>
             </button>
 
-            <button
-              (click)="next(tab)"
-              class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors"
-            >
+            <button (click)="next(tab)"
+              class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors">
               <i class="ri-arrow-right-s-line text-gray-600"></i>
             </button>
 
             <div style="display: grid; gap: 1.5rem; margin: 0.5rem; grid-template-columns: repeat(4, 1fr);">
-              <div
-                class="product-card bg-white rounded-lg shadow-md overflow-hidden p-0"
-                style="cursor: pointer"
+              <div class="product-card bg-white rounded-lg shadow-md overflow-hidden p-0" style="cursor: pointer"
                 *ngFor="
                   let product of getVisibleProducts(tab);
                   trackBy: trackByProductId;
                   let i = index
-                "
-              >
-                <span
-                  (click)="addtodetail(product)"
-                  [routerLink]="
+                ">
+                <span (click)="addtodetail(product)" [routerLink]="
                     selectedVariantMap[product.ID]
                       ? [
                           '/product_details',
@@ -495,132 +371,94 @@
                           selectedVariantMap[product.ID]
                         ]
                       : ['/product_details', product.ID]
-                  "
-                >
+                  ">
                   <div class="relative">
-                    <div
-                      class="w-full bg-white flex items-center justify-center overflow-hidden"
-                      style="height: 15rem;"
-                    >
-                      <img
-                        *ngIf="getImageArray(product).length > 0"
-                        [src]="
+                    <div class="w-full bg-white flex items-center justify-center overflow-hidden"
+                      style="height: 15rem;">
+                      <img *ngIf="getImageArray(product).length > 0" [src]="
                           productImageUrl +
                           getImageArray(product)[imageIndices[product.ID]]
-                        "
-                        [alt]="product.NAME"
-                        class="rounded-lg object-cover w-full h-full"
-                      />
+                        " [alt]="product.NAME" class="rounded-lg object-cover w-full h-full" />
                     </div>
 
                     <div class="absolute top-3 right-3 flex space-x-2">
-                      <button
-                        class="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm"
+                      <button class="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm"
                         [ngClass]="{
                           'text-green-500': product.isLiked,
                           'text-gray-600 hover:text-[#5a8f69]': !product.isLiked
-                        }"
-                        (click)="toggleLike(product, $event)"
-                      >
-                        <i
-                          [class]="
+                        }" (click)="toggleLike(product, $event)">
+                        <i [class]="
                             product.isLiked ? 'ri-heart-fill' : 'ri-heart-line'
-                          "
-                        >
+                          ">
                         </i>
                       </button>
                     </div>
 
                     <div class="absolute top-3 left-3">
-                      <span
-                        class="text-white text-xs px-2 py-1 rounded-full"
-                        [ngClass]="{
+                      <span class="text-white text-xs px-2 py-1 rounded-full" [ngClass]="{
                           'bg-[#5a8f69]/100': product.IS_NEW_ARRIVAL === 1,
-                          'bg-secondary/100': product.IS_BEST_SELLER === 1,
+                          
                           'bg-green-500/100': product.IS_POPULAR === 1
-                        }"
-                        >{{
-                          product.IS_NEW_ARRIVAL == "1"
-                            ? "New"
-                            : product.IS_BEST_SELLER == "1"
-                            ? "Best Seller"
-                            : product.IS_POPULAR == "1"
-                            ? "Popular"
-                            : ""
+                        }">{{
+                        product.IS_NEW_ARRIVAL == "1"
+                        ? "New"
+
+                        : product.IS_POPULAR == "1"
+                        ? "Popular"
+                        : ""
                         }}
                       </span>
                     </div>
                   </div>
 
                   <div class="text-danger text-sm text-center pt-1 h-2">
-                    <small
-                      *ngIf="
+                    <small *ngIf="
                         product.IS_UPCOMING == 1 ||
                         product.VARIENTS == null ||
                         product.VARIENTS == undefined ||
                         product.VARIENTS.length == 0 ||
                         !hasActiveVariants(product.ID) ||
                         currentStockMap[product.ID] <= 0
-                      "
-                    >
+                      ">
                       Out of stock
                     </small>
                   </div>
 
                   <div class="pt-1 px-3">
                     <span
-                      class="text-xs text-gray-500 rounded-full bg-[rgb(233,180,76)] text-white text-xs font-small px-2 py-1"
-                    >
+                      class="text-xs text-gray-500 rounded-full bg-[rgb(233,180,76)] text-white text-xs font-small px-2 py-1">
                       {{ product.CATEGORY_NAME }}
                     </span>
 
-                    <div
-                      *ngIf="product.CUSTOMER_RATINGS"
+                    <div *ngIf="product.CUSTOMER_RATINGS"
                       class="inline-flex justify-center items-center bg-[#72BB81E5] text-white text-xs font-small px-2 py-1 rounded-full float-right"
-                      style="width: 58.67px"
-                    >
+                      style="width: 58.67px">
                       <span>{{
                         product.CUSTOMER_RATINGS | number : "1.1-1"
-                      }}</span>
+                        }}</span>
 
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-3 w-3 ml-1"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 ml-1" fill="currentColor"
+                        viewBox="0 0 24 24">
                         <path
-                          d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.782 1.4 8.17L12 18.896l-7.334 3.866 1.4-8.17L.132 9.21l8.2-1.192z"
-                        />
+                          d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.782 1.4 8.17L12 18.896l-7.334 3.866 1.4-8.17L.132 9.21l8.2-1.192z" />
                       </svg>
                     </div>
 
-                    <h3
-                      class="font-medium text-gray-900 mt-2 hover:text-[#5a8f69] truncate"
-                      [title]="product.NAME"
-                    >
+                    <h3 class="font-medium text-gray-900 mt-2 hover:text-[#5a8f69] truncate" [title]="product.NAME">
                       {{ product.NAME }}
                     </h3>
 
-                    <small
-                      class="text-gray-600 mt-2 line-clamp-2"
-                      [title]="product.DESCRIPTION"
-                    >
+                    <small class="text-gray-600 mt-2 line-clamp-2" [title]="product.DESCRIPTION">
                       {{ product.DESCRIPTION }}
                     </small>
 
-                    <span
-                      class="text-black font-medium me-1"
-                      *ngIf="product.IS_VERIENT_AVAILABLE == 0"
-                    >
+                    <span class="text-black font-medium me-1" *ngIf="product.IS_VERIENT_AVAILABLE == 0">
                       ${{ product.RATE || 0 }}
                     </span>
 
-                    <span
-                      class="text-black font-medium me-1"
-                      *ngIf="product.IS_VERIENT_AVAILABLE == 1 && product.VARIENTS"
-                    >
-                      ${{convertStringtoArray(product.VARIENTS)[0].RATE || 0}}
+                    <span class="text-black font-medium me-1"
+                      *ngIf="product.IS_VERIENT_AVAILABLE == 1 && product.VARIENTS">
+                      ${{variantRateMap[product.ID] || 0}}
                     </span>
                   </div>
                 </span>
@@ -628,19 +466,15 @@
                 <div class="px-3 mb-3">
                   <div class="mt-2">
                     <div class="flex flex-wrap gap-2 mt-2">
-                      <ng-container
-                        *ngFor="let item of variantMap[product.ID] || []"
-                      >
-                        <small
-                          [ngClass]="{
+                      <ng-container *ngFor="let item of variantMap[product.ID] || []">
+                        <small [ngClass]="{
                             'border border-black bg-gray-100':
                               selectedVariantMap[product.ID] == item.VARIENT_ID,
                             'bg-white border border-gray-300 hover:border-black':
                               selectedVariantMap[product.ID] != item.VARIENT_ID
                           }"
                           class="cursor-pointer text-gray-800 text-xs font-medium px-3 py-1 rounded-full transition-all duration-150"
-                          (click)="change(item.VARIENT_ID, product.ID)"
-                        >
+                          (click)="change(item.VARIENT_ID, product.ID)">
                           {{ item.SIZE }} {{ item.UNIT_NAME }}
                         </small>
                       </ng-container>
@@ -660,22 +494,24 @@
     .block-mobile {
       display: block;
     }
-    
+
     .block-desktop {
       display: none;
     }
-    
+
     .block-mobile-arrow {
       display: flex;
     }
-    
+
     @media (min-width: 640px) {
       .block-mobile {
         display: none !important;
       }
+
       .block-desktop {
         display: block !important;
       }
+
       .block-mobile-arrow {
         display: none !important;
       }
@@ -684,23 +520,14 @@
 </section>
 
 <!-- What Our Customers Say -->
-<section
-  class="bg-white"
-  style="
+<section class="bg-white" style="
     font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
       Helvetica, Arial, sans-serif;
     margin-top: 30px;
-  "
->
-  <div
-    class="max-w-7xl mx-auto px-6"
-    style="background-color: #f5fdf7; padding-bottom: 30px; padding-top: 30px"
-  >
+  ">
+  <div class="max-w-7xl mx-auto px-6" style="background-color: #f5fdf7; padding-bottom: 30px; padding-top: 30px">
     <div class="text-center mb-4">
-      <h3
-        class="text-2xl md:text-2xl font-bold text-gray-800 mb-6"
-        style="margin-bottom: 8px !important"
-      >
+      <h3 class="text-2xl md:text-2xl font-bold text-gray-800 mb-6" style="margin-bottom: 8px !important">
         What Our Customers Say
       </h3>
 
@@ -708,12 +535,8 @@
         Real experiences from our wellness community
       </p>
 
-      <div *ngIf="euserID" class="text-center py-2">
-        <span
-          class="text-sm font-medium text-white btn bg-[#5a8f69] hover:bg-[#5a7a5a]"
-          data-bs-toggle="modal"
-          data-bs-target="#reviewModal"
-        >
+      <div class="text-center py-2">
+        <span class="text-sm font-medium text-white btn bg-[#5a8f69] hover:bg-[#5a7a5a]" (click)="onWriteReviewClick()">
           Write a Review
         </span>
       </div>
@@ -727,31 +550,17 @@
     </div> -->
 
     <div class="carousel-container overflow-hidden relative">
-      <div
-        class="flex transition-transform duration-500 ease-in-out"
-        [style.transform]="'translateX(-' + currentSlide * 100 + '%)'"
-      >
-        <div
-          *ngFor="let data of ReviewData; let index = index"
-          class="testimonial-card flex-shrink-0 w-full sm:w-1/2 md:w-1/2 lg:w-1/3 px-3"
-        >
+      <div class="flex transition-transform duration-500 ease-in-out"
+        [style.transform]="'translateX(-' + currentSlide * 100 + '%)'">
+        <div *ngFor="let data of ReviewData; let index = index"
+          class="testimonial-card flex-shrink-0 w-full sm:w-1/2 md:w-1/2 lg:w-1/3 px-3">
           <div class="bg-white rounded-lg shadow-none p-6 h-full">
             <div class="flex items-center mb-1">
-              <div
-                class="w-12 h-12 bg-gray-300 rounded-full mr-4 overflow-hidden"
-              >
-                <img
-                  *ngIf="data.PROFILE_URL; else defaultImg"
-                  [src]="Imgurl + data.PROFILE_URL"
-                  alt="User"
-                  class="w-full h-full object-cover"
-                />
+              <div class="w-12 h-12 bg-gray-300 rounded-full mr-4 overflow-hidden">
+                <img *ngIf="data.PROFILE_URL; else defaultImg" [src]="Imgurl + data.PROFILE_URL" alt="User"
+                  class="w-full h-full object-cover" />
                 <ng-template #defaultImg>
-                  <img
-                    src="assets/img/user.jpg"
-                    alt="User"
-                    class="w-full h-full object-cover"
-                  />
+                  <img src="assets/img/user.jpg" alt="User" class="w-full h-full object-cover" />
                 </ng-template>
               </div>
 
@@ -760,10 +569,7 @@
                   {{ data.CUSTOMER_NAME }}
                 </h4>
 
-                <p
-                  class="text-gray-600 text-sm"
-                  *ngIf="data.COUNTRY_NAME && data.STATE_NAME"
-                >
+                <p class="text-gray-600 text-sm" *ngIf="data.COUNTRY_NAME && data.STATE_NAME">
                   {{ data.COUNTRY_NAME }}, {{ data.STATE_NAME }}
                 </p>
               </div>
@@ -771,19 +577,12 @@
 
             <div class="flex mb-1">
               <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
-                <i
-                  class="ri-star-fill text-yellow-400 text-base mr-1"
-                  *ngIf="star <= data.RATINGS"
-                ></i>
+                <i class="ri-star-fill text-yellow-400 text-base mr-1" *ngIf="star <= data.RATINGS"></i>
               </ng-container>
             </div>
 
             <div class="tooltip-container" #tooltipContainer>
-              <small
-                [title]="data.REVIEW"
-                #reviewText
-                class="text-sm text-gray-700 line-clamp-5 text-justify"
-              >
+              <small [title]="data.REVIEW" #reviewText class="text-sm text-gray-700 line-clamp-5 text-justify">
                 {{ data.REVIEW }}
               </small>
 
@@ -795,19 +594,13 @@
         </div>
       </div>
 
-      <button
-        *ngIf="showNavigation"
-        (click)="prevSlide()"
-        class="absolute left-0 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-gray-100 p-2 rounded-full shadow hover:bg-gray-200 z-10"
-      >
+      <button *ngIf="showNavigation" (click)="prevSlide()"
+        class="absolute left-0 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-gray-100 p-2 rounded-full shadow hover:bg-gray-200 z-10">
         <i class="ri-arrow-left-s-line text-gray-600"></i>
       </button>
 
-      <button
-        *ngIf="showNavigation"
-        (click)="nextSlide()"
-        class="absolute right-0 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-gray-100 p-2 rounded-full shadow hover:bg-gray-200 z-10"
-      >
+      <button *ngIf="showNavigation" (click)="nextSlide()"
+        class="absolute right-0 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-gray-100 p-2 rounded-full shadow hover:bg-gray-200 z-10">
         <i class="ri-arrow-right-s-line text-gray-600"></i>
       </button>
     </div>
@@ -815,24 +608,12 @@
 </section>
 
 <!-- Review Modal -->
-<div
-  class="modal fade"
-  id="reviewModal"
-  tabindex="-1"
-  aria-labelledby="reviewModalLabel"
-  aria-hidden="true"
->
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content" style="width: 100%">
       <div class="modal-header">
         <h5 class="modal-title" id="reviewModalLabel">Add Your Review</h5>
-        <button
-          type="button"
-          #closeBtn
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <button type="button" #closeBtn class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
       <div class="modal-body">
@@ -841,45 +622,27 @@
             <label class="form-label">Ratings</label>
 
             <div>
-              <i
-                *ngFor="let star of [1, 2, 3, 4, 5]"
-                class="bi bi-star-fill fs-4"
-                [ngClass]="{
+              <i *ngFor="let star of [1, 2, 3, 4, 5]" class="bi bi-star-fill fs-4" [ngClass]="{
                   'text-warning': reviewForm.rating >= star,
                   'text-secondary': reviewForm.rating < star
-                }"
-                (click)="setRating(star)"
-                style="cursor: pointer; padding-right: 5px"
-              ></i>
+                }" (click)="setRating(star)" style="cursor: pointer; padding-right: 5px"></i>
             </div>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Review</label>
 
-            <textarea
-              class="form-control"
-              rows="3"
-              placeholder="Write your review here..."
-              [(ngModel)]="reviewForm.text"
-              name="reviewText"
-              required
-            ></textarea>
+            <textarea class="form-control" rows="3" placeholder="Write your review here..."
+              [(ngModel)]="reviewForm.text" name="reviewText" required></textarea>
           </div>
 
           <div class="modal-footer" style="padding-bottom: 0px">
-            <button
-              type="submit"
-              class="bg-[#4c7c5b] hover:bg-opacity-90 transition-colors text-white px-3 py-1.5 rounded shadow-md flex items-center space-x-1 cursor-pointer"
-            >
+            <button type="submit"
+              class="bg-[#4c7c5b] hover:bg-opacity-90 transition-colors text-white px-3 py-1.5 rounded shadow-md flex items-center space-x-1 cursor-pointer">
               Submit
             </button>
 
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
               Cancel
             </button>
           </div>

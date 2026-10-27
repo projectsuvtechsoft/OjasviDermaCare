@@ -274,141 +274,85 @@
   [class.opacity-0]="!addressDrawerOpen"
   (click)="closeAddressDrawer()"
 > -->
-<div
-  class="drawer-overlay"
-  [class.open]="addressDrawerOpen"
-  (click)="closeAddressDrawer()"
->
+<div class="drawer-overlay" [class.open]="addressDrawerOpen" (click)="closeAddressDrawer()">
   <div *ngIf="loadingScreen || updatingStatus">
     <app-common-loader></app-common-loader>
   </div>
   <div class="drawer-content" (click)="$event.stopPropagation()">
-    <header
-      class="sticky top-0 z-50 bg-white shadow-sm bg-gray-50 overflow-x-hidden"
-    >
+    <header class="sticky top-0 z-50 bg-white shadow-sm bg-gray-50 overflow-x-hidden">
       <div class="container mx-auto px-3 sm:px-4 py-1.5">
-        <div
-          class="flex flex-col md:flex-row md:items-center md:justify-between gap-2 sm:gap-3"
-        >
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2 sm:gap-3">
           <!-- ✅ Logo -->
-          <a
-            href="/"
-            class="flex items-center justify-center md:justify-start gap-2 flex-shrink-0 text-center md:text-left"
-          >
-            <img
-              src="assets/img/logo1.png"
-              alt="Ojasvi Logo"
-              class="h-[2.3rem] sm:h-[3rem] md:h-[3.5rem] w-auto object-contain"
-            />
+          <a href="/"
+            class="flex items-center justify-center md:justify-start gap-2 flex-shrink-0 text-center md:text-left">
+            <img src="assets/img/logo1.png" alt="Ojasvi Logo"
+              class="h-[2.3rem] sm:h-[3rem] md:h-[3.5rem] w-auto object-contain" />
             <div class="flex flex-col leading-tight">
-              <span
-                class="text-base sm:text-lg md:text-2xl text-[#5a8f69] font-semibold"
-                >Ojasvi Derma Care</span
-              >
-              <span
-                class="text-[10px] sm:text-xs md:text-sm font-[Pacifico,sans-serif] text-[#ffc200]"
-                >From Garden To Glow</span
-              >
+              <span class="text-base sm:text-lg md:text-2xl text-[#5a8f69] font-semibold">Ojasvi Derma Care</span>
+              <span class="text-[10px] sm:text-xs md:text-sm font-[Pacifico,sans-serif] text-[#ffc200]">From Garden To
+                Glow</span>
             </div>
           </a>
 
           <!-- ✅ Progress Bar -->
           <!-- Progress Bar -->
-          <div
-            class="progress-bar flex flex-wrap items-center justify-center gap-3 sm:gap-5 mt-2 md:mt-0"
-          >
+          <div class="progress-bar flex flex-wrap items-center justify-center gap-3 sm:gap-5 mt-2 md:mt-0">
             <!-- 🛒 CART -->
-            <div
-              class="text-center cursor-pointer flex flex-col items-center"
-              (click)="goToStep('cart')"
-            >
+            <div class="text-center cursor-pointer flex flex-col items-center" (click)="goToStep('cart')">
               <div
                 class="circle flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-all duration-300 hover:scale-110"
                 [ngClass]="{
                   'bg-[#5a8f69]': isStepActive('cart'),
                   'bg-gray-300': !isStepActive('cart')
-                }"
-              >
-                <i
-                  class="bi bi-cart3 text-lg sm:text-xl transition-colors duration-300"
-                  [ngClass]="{
+                }">
+                <i class="bi bi-cart3 text-lg sm:text-xl transition-colors duration-300" [ngClass]="{
                     'text-white': isStepActive('cart'),
                     'text-gray-700': !isStepActive('cart')
-                  }"
-                ></i>
+                  }"></i>
               </div>
-              <span
-                class="block mt-1 text-[10px] sm:text-xs font-medium text-gray-700"
-                >CART</span
-              >
+              <span class="block mt-1 text-[10px] sm:text-xs font-medium text-gray-700">CART</span>
             </div>
 
-            <div
-              class="line h-[2px] flex-shrink-0 w-8 sm:w-10 md:w-12 transition-all duration-300"
-              [ngClass]="{
+            <div class="line h-[2px] flex-shrink-0 w-8 sm:w-10 md:w-12 transition-all duration-300" [ngClass]="{
                 'bg-[#5a8f69]': currentStep >= 2,
                 'bg-gray-300': currentStep < 2
-              }"
-            ></div>
+              }"></div>
 
             <!-- 📍 ADDRESS -->
-            <div
-              class="text-center cursor-pointer flex flex-col items-center"
-              (click)="goToStep('address')"
-            >
+            <div class="text-center cursor-pointer flex flex-col items-center" (click)="goToStep('address')">
               <div
                 class="circle flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-all duration-300 hover:scale-110"
                 [ngClass]="{
                   'bg-[#5a8f69]': isStepActive('address'),
                   'bg-gray-300': !isStepActive('address')
-                }"
-              >
-                <i
-                  class="bi bi-geo-alt text-lg sm:text-xl transition-colors duration-300"
-                  [ngClass]="{
+                }">
+                <i class="bi bi-geo-alt text-lg sm:text-xl transition-colors duration-300" [ngClass]="{
                     'text-white': isStepActive('address'),
                     'text-gray-700': !isStepActive('address')
-                  }"
-                ></i>
+                  }"></i>
               </div>
-              <span
-                class="block mt-1 text-[10px] sm:text-xs font-medium text-gray-700"
-                >ADDRESS</span
-              >
+              <span class="block mt-1 text-[10px] sm:text-xs font-medium text-gray-700">ADDRESS</span>
             </div>
 
-            <div
-              class="line h-[2px] flex-shrink-0 w-8 sm:w-10 md:w-12 transition-all duration-300"
-              [ngClass]="{
+            <div class="line h-[2px] flex-shrink-0 w-8 sm:w-10 md:w-12 transition-all duration-300" [ngClass]="{
                 'bg-[#5a8f69]': currentStep >= 3,
                 'bg-gray-300': currentStep < 3
-              }"
-            ></div>
+              }"></div>
 
             <!-- 💳 PAYMENT -->
-            <div
-              class="text-center cursor-pointer flex flex-col items-center"
-              (click)="goToStep('payment')"
-            >
+            <div class="text-center cursor-pointer flex flex-col items-center" (click)="goToStep('payment')">
               <div
                 class="circle flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-all duration-300 hover:scale-110"
                 [ngClass]="{
                   'bg-[#5a8f69]': isStepActive('payment'),
                   'bg-gray-300': !isStepActive('payment')
-                }"
-              >
-                <i
-                  class="bi bi-credit-card-2-front text-lg sm:text-xl transition-colors duration-300"
-                  [ngClass]="{
+                }">
+                <i class="bi bi-credit-card-2-front text-lg sm:text-xl transition-colors duration-300" [ngClass]="{
                     'text-white': isStepActive('payment'),
                     'text-gray-700': !isStepActive('payment')
-                  }"
-                ></i>
+                  }"></i>
               </div>
-              <span
-                class="block mt-1 text-[10px] sm:text-xs font-medium text-gray-700"
-                >PAYMENT</span
-              >
+              <span class="block mt-1 text-[10px] sm:text-xs font-medium text-gray-700">PAYMENT</span>
             </div>
           </div>
         </div>
@@ -417,17 +361,10 @@
 
     <main class="bg-gray-100">
       <!-- No Address State -->
-      <div
-        *ngIf="!hasAddresses && !showAddressForm && !showOrderSummaryInDrawer"
-        class="max-w-7xl mx-auto px-4 py-8"
-      >
+      <div *ngIf="!hasAddresses && !showAddressForm && !showOrderSummaryInDrawer" class="max-w-7xl mx-auto px-4 py-8">
         <div class="bg-white rounded-lg shadow-sm p-12 text-center">
           <div class="flex justify-center mb-6">
-            <img
-              src="assets/img/no location.png"
-              class="h-48 w-auto"
-              alt="No address"
-            />
+            <img src="assets/img/no location.png" class="h-48 w-auto" alt="No address" />
           </div>
 
           <h1 class="text-xl font-semibold text-gray-900 mb-3">
@@ -439,37 +376,26 @@
 
           <button
             class="bg-[#5a8f69] hover:bg-green-800 text-gray-900 font-medium px-6 py-2 rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            (click)="showAddressForm = true; openr()"
-            [disabled]="isTransitioning"
-          >
-            <span *ngIf="!isTransitioning" class="text-white"
-              >ADD NEW SHIPPING ADDRESS</span
-            >
+            (click)="showAddressForm = true; openr()" [disabled]="isTransitioning">
+            <span *ngIf="!isTransitioning" class="text-white">ADD NEW SHIPPING ADDRESS</span>
             <span *ngIf="isTransitioning" class="button-loader"></span>
           </button>
         </div>
       </div>
 
       <!-- Has Addresses State -->
-      <div
-        *ngIf="hasAddresses && !showAddressForm && !showOrderSummaryInDrawer"
-        class="max-w-7xl mx-auto px-4 py-6"
-      >
+      <div *ngIf="hasAddresses && !showAddressForm && !showOrderSummaryInDrawer" class="max-w-7xl mx-auto px-4 py-6">
         <div class="flex flex-col lg:flex-row gap-6">
           <!-- Left Section - Address Selection -->
           <div class="flex-1">
             <div class="bg-white rounded-lg shadow-sm">
               <!-- Header -->
-              <div
-                class="border-b border-gray-200 px-3 py-3 flex items-center justify-between"
-              >
+              <div class="border-b border-gray-200 px-3 py-3 flex items-center justify-between">
                 <h2 class="text-2xl font-semibold text-gray-900">
                   Select Shipping Address
                 </h2>
-                <button
-                  class="text-sm text-blue-600 hover:text-blue-700 hover:underline flex items-center gap-1"
-                  (click)="showAddressForm = true; openr()"
-                >
+                <button class="text-sm text-blue-600 hover:text-blue-700 hover:underline flex items-center gap-1"
+                  (click)="showAddressForm = true; openr()">
                   <span> + Add New Shipping Address</span>
                 </button>
               </div>
@@ -481,27 +407,16 @@
                 </h3>
 
                 <div class="space-y-4">
-                  <div
-                    *ngFor="let address of savedAddresses; let i = index"
+                  <div *ngFor="let address of savedAddresses; let i = index"
                     class="border cursor-pointer transition-all hover:border-gray-400 rounded-lg p-2 mb-2 h-auto md:h-40"
                     [class.border-orange-500]="
                       address.ID === selectedAddress?.ID
-                    "
-                    [class.bg-orange-50]="address.ID === selectedAddress?.ID"
-                    (click)="onSelectAddress(address)"
-                  >
-                    <div
-                      class="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-2"
-                    >
+                    " [class.bg-orange-50]="address.ID === selectedAddress?.ID" (click)="onSelectAddress(address)">
+                    <div class="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-2">
                       <!-- Radio Button -->
                       <div class="pt-0.5 flex-shrink-0">
-                        <input
-                          type="radio"
-                          name="addressSelect"
-                          [value]="address"
-                          [(ngModel)]="selectedAddress"
-                          class="w-4 h-4 text-orange-500 border-gray-300 focus:ring-orange-500"
-                        />
+                        <input type="radio" name="addressSelect" [value]="address" [(ngModel)]="selectedAddress"
+                          class="w-4 h-4 text-orange-500 border-gray-300 focus:ring-orange-500" />
                       </div>
 
                       <!-- Address Content -->
@@ -509,34 +424,26 @@
                         <div class="flex flex-wrap items-center gap-2 mb-1">
                           <span class="font-semibold text-gray-900">{{
                             address.NAME
-                          }}</span>
-                          <span
-                            *ngIf="address.IS_DEFUALT_ADDRESS == 1"
-                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-200 text-gray-800"
-                            >Default</span
-                          >
-                          <span
-                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
+                            }}</span>
+                          <span *ngIf="address.IS_DEFUALT_ADDRESS == 1"
+                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-200 text-gray-800">Default</span>
+                          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
                             [class.bg-blue-100]="address.ADDRESS_TYPE === 'O'"
                             [class.text-blue-800]="address.ADDRESS_TYPE === 'O'"
-                            [class.bg-green-100]="address.ADDRESS_TYPE === 'R'"
-                            [class.text-green-800]="
+                            [class.bg-green-100]="address.ADDRESS_TYPE === 'R'" [class.text-green-800]="
                               address.ADDRESS_TYPE === 'R'
-                            "
-                          >
+                            ">
                             {{
-                              address.ADDRESS_TYPE === "R"
-                                ? "Residential"
-                                : "Office"
+                            address.ADDRESS_TYPE === "R"
+                            ? "Residential"
+                            : "Office"
                             }}
                           </span>
                         </div>
 
                         <p class="text-sm text-gray-700 mb-1 break-words">
                           {{ address.ADDRESS }}
-                          <span *ngIf="address.LANDMARK"
-                            >, {{ address.LANDMARK }}</span
-                          >
+                          <span *ngIf="address.LANDMARK">, {{ address.LANDMARK }}</span>
                           <br />
                           {{ address.CITY_NAME }}, {{ address.STATE_NAME }},
                           {{ address.PINCODE }}
@@ -551,27 +458,18 @@
                         </p>
 
                         <!-- Action Links -->
-                        <div
-                          class="flex flex-wrap items-center gap-4 mt-1 text-sm"
-                        >
-                          <button
-                            class="text-blue-600 hover:text-blue-700 hover:underline"
-                            (click)="
+                        <div class="flex flex-wrap items-center gap-4 mt-1 text-sm">
+                          <button class="text-blue-600 hover:text-blue-700 hover:underline" (click)="
                               $event.stopPropagation();
                               openAddressForm(address.ID)
-                            "
-                          >
+                            ">
                             Edit address
                           </button>
                           <span class="text-gray-300">|</span>
-                          <button
-                            *ngIf="userId"
-                            class="text-blue-600 hover:text-blue-700 hover:underline"
-                            (click)="
+                          <button *ngIf="userId" class="text-blue-600 hover:text-blue-700 hover:underline" (click)="
                               $event.stopPropagation();
                               deleteAddress(address.ID, address.CUST_ID)
-                            "
-                          >
+                            ">
                             Delete
                           </button>
                         </div>
@@ -610,28 +508,22 @@
                     <span class="text-gray-700">Items</span>
                     <span class="text-gray-900">
                       {{
-                        selectedPrice - selectedDiscount
-                          | currency : "USD" : "symbol" : "1.2-2"
+                      selectedPrice - selectedDiscount
+                      | currency : "USD" : "symbol" : "1.2-2"
                       }}
                     </span>
                   </div>
 
                   <div class="flex justify-between">
                     <span class="text-gray-700">Delivery</span>
-                    <span
-                      class="text-gray-900"
-                      *ngIf="
+                    <span class="text-gray-900" *ngIf="
                         IS_LOCAL_PICKUP != 1 || deliveryOption == 'delivery'
-                      "
-                    >
+                      ">
                       {{
-                        deliveryCharges | currency : "USD" : "symbol" : "1.2-2"
+                      deliveryCharges | currency : "USD" : "symbol" : "1.2-2"
                       }}
                     </span>
-                    <span
-                      class="text-gray-900"
-                      *ngIf="IS_LOCAL_PICKUP == 1 && deliveryOption == 'pickup'"
-                    >
+                    <span class="text-gray-900" *ngIf="IS_LOCAL_PICKUP == 1 && deliveryOption == 'pickup'">
                       0
                     </span>
                   </div>
@@ -640,132 +532,93 @@
                 <div class="border-t border-gray-200 my-2"></div>
 
                 <div class="flex justify-between items-center">
+                  <span class="text-lg font-semibold text-red-700">Order Total</span>
                   <span class="text-lg font-semibold text-red-700"
-                    >Order Total</span
-                  >
-                  <span
-                    class="text-lg font-semibold text-red-700"
-                    *ngIf="IS_LOCAL_PICKUP != 1 || deliveryOption == 'delivery'"
-                  >
+                    *ngIf="IS_LOCAL_PICKUP != 1 || deliveryOption == 'delivery'">
                     {{
-            selectedPrice -
-              selectedDiscount +
-              (cartDetails?.cartDetails?.[0]?.["DATA"].NET_AMOUNT -
-                cartDetails?.cartDetails?.[0]?.["DATA"].TOTAL_DISCOUNT_AMOUNT)
-              | number : "1.2-2"
-              | currency : "USD"
+                    selectedPrice -
+                    selectedDiscount +
+                    (cartDetails?.cartDetails?.[0]?.["DATA"].NET_AMOUNT -
+                    cartDetails?.cartDetails?.[0]?.["DATA"].TOTAL_DISCOUNT_AMOUNT)
+                    | number : "1.2-2"
+                    | currency : "USD"
                     }}
                   </span>
-                  <span
-                    class="text-lg font-semibold text-red-700"
-                    *ngIf="IS_LOCAL_PICKUP == 1 && deliveryOption == 'pickup'"
-                  >
+                  <span class="text-lg font-semibold text-red-700"
+                    *ngIf="IS_LOCAL_PICKUP == 1 && deliveryOption == 'pickup'">
                     {{
-                      selectedPrice - selectedDiscount
-                        | number : "1.2-2"
-                        | currency : "USD"
+                    selectedPrice - selectedDiscount
+                    | number : "1.2-2"
+                    | currency : "USD"
                     }}
                   </span>
                 </div>
               </div>
 
               <!-- Delivery Options block (unchanged) -->
-              <div
-                *ngIf="selectedAddress?.IS_LOCAL_PICKUP == 1"
-                class="mt-2 border-t border-gray-200 pt-4"
-              >
+              <div *ngIf="selectedAddress?.IS_LOCAL_PICKUP == 1" class="mt-2 border-t border-gray-200 pt-4">
                 <h4 class="text-sm font-semibold text-gray-900 mb-3">
                   Delivery Options
                 </h4>
 
                 <div class="flex items-center space-x-6 text-sm text-gray-800">
                   <label class="flex items-center space-x-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="deliveryOption"
-                      [(ngModel)]="deliveryOption"
-                      (ngModelChange)="onDeliveryOptionChange($event)"
-                      value="delivery"
-                      class="text-green-600 focus:ring-green-500"
-                    />
+                    <input type="radio" name="deliveryOption" [(ngModel)]="deliveryOption"
+                      (ngModelChange)="onDeliveryOptionChange($event)" value="delivery"
+                      class="text-green-600 focus:ring-green-500" />
                     <span>Home Delivery</span>
                   </label>
 
                   <label class="flex items-center space-x-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="deliveryOption"
-                      [(ngModel)]="deliveryOption"
-                      (ngModelChange)="onDeliveryOptionChange($event)"
-                      value="pickup"
-                      class="text-green-600 focus:ring-green-500"
-                    />
+                    <input type="radio" name="deliveryOption" [(ngModel)]="deliveryOption"
+                      (ngModelChange)="onDeliveryOptionChange($event)" value="pickup"
+                      class="text-green-600 focus:ring-green-500" />
                     <span>Local Pickup</span>
                   </label>
                 </div>
 
                 <!-- Modern Custom Pickup Dropdown -->
                 <div *ngIf="deliveryOption === 'pickup'" class="mt-4 relative">
-                  <label class="block text-xs font-semibold text-gray-700 mb-2"
-                    >Select Pickup Location</label
-                  >
+                  <label class="block text-xs font-semibold text-gray-700 mb-2">Select Pickup Location</label>
 
                   <!-- Trigger Button -->
-                  <button
-                    type="button"
+                  <button type="button"
                     class="w-full flex justify-between items-center border border-gray-300 bg-white rounded-lg px-4 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-600 hover:border-green-500 transition"
-                    (click)="togglePickupDropdown()"
-                  >
+                    (click)="togglePickupDropdown()">
                     <span>
                       {{ selectedPickupName || "Select a location" }}
                     </span>
-                    <svg
-                      class="w-4 h-4 text-gray-500 transform transition-transform duration-200"
-                      [class.rotate-180]="pickupDropdownOpen"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M19 9l-7 7-7-7"
-                      />
+                    <svg class="w-4 h-4 text-gray-500 transform transition-transform duration-200"
+                      [class.rotate-180]="pickupDropdownOpen" xmlns="http://www.w3.org/2000/svg" fill="none"
+                      viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
 
                   <!-- Dropdown Menu -->
-                  <div
-                    *ngIf="pickupDropdownOpen"
-                    class="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto animate-fadeIn"
-                  >
-                    <div
-                      *ngFor="let location of pickupLocations"
-                      (click)="selectPickupLocation(location)"
-                      class="p-3 cursor-pointer hover:bg-green-50 transition rounded-md"
-                      [class.bg-green-100]="
+                  <div *ngIf="pickupDropdownOpen"
+                    class="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto animate-fadeIn">
+                    <div *ngFor="let location of pickupLocations" (click)="selectPickupLocation(location)"
+                      class="p-3 cursor-pointer hover:bg-green-50 transition rounded-md" [class.bg-green-100]="
                         selectedPickupLocation === location.ID
-                      "
-                      [class.border-l-4]="
+                      " [class.border-l-4]="
                         selectedPickupLocation === location.ID
-                      "
-                      [class.border-green-600]="
+                      " [class.border-green-600]="
                         selectedPickupLocation === location.ID
-                      "
-                    >
+                      ">
                       <div class="font-medium text-gray-900 text-sm">
                         {{ location.ADDRESS }}
                       </div>
 
-                      <div class="text-xs text-gray-600">
-                        {{ location.LOCALITY }}
-                      </div>
+
 
                       <div class="text-[11px] text-gray-500 mt-0.5 italic">
                         {{ location.CITY_NAME }} {{ location.STATE_NAME }}
                         {{ location.COUNTRY_NAME }}
+                      </div>
+
+                      <div class="text-xs text-black-600">
+                        <span class="text-red-600">Remark:-</span> {{ location.LANDMARK }}
                       </div>
 
                       <!-- ⭐ Store Timing Added Here -->
@@ -787,9 +640,7 @@
 
               <button
                 class="w-full bg-[#5a8f69] hover:bg-green-800 text-gray-900 font-medium px-6 py-2 mt-3 rounded-lg shadow-sm transition-colors mb-4"
-                (click)="steped()"
-                [disabled]="!selectedAddress"
-              >
+                (click)="steped()" [disabled]="!selectedAddress">
                 <span class="text-white">Use This Address</span>
               </button>
             </div>
@@ -1210,35 +1061,25 @@
         </div>
       </div> -->
       <!-- Modal Backdrop -->
-      <div
-        *ngIf="showAddressForm"
-        class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
-      >
-        <div
-          class="bg-white rounded-lg shadow-sm w-full max-w-3xl max-h-[900px] overflow-hidden"
-          (click)="$event.stopPropagation()"
-        >
-          <div
-            class="flex items-center justify-between p-2 border-b border-gray-200 bg-white sticky top-0 z-10"
-          >
+      <div *ngIf="showAddressForm"
+        class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-sm w-full max-w-3xl max-h-[900px] overflow-hidden"
+          (click)="$event.stopPropagation()">
+          <div class="flex items-center justify-between p-2 border-b border-gray-200 bg-white sticky top-0 z-10">
             <div class="flex items-center gap-0">
-              <button
-                class="text-gray-600 hover:text-gray-800 p-1 rounded-full hover:bg-gray-100 transition-colors"
-                (click)="closeModal()"
-              >
+              <button class="text-gray-600 hover:text-gray-800 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                (click)="closeModal()">
                 <span class="text-xl">←</span>
               </button>
               <h2 class="text-lg font-semibold text-gray-900">
                 {{
-                  isEditingAddress ? "Edit Address" : "Add New Shipping Address"
+                isEditingAddress ? "Edit Address" : "Add New Shipping Address"
                 }}
               </h2>
             </div>
-            <button
-              class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
-              (click)="closeModal()"
-            >
-              <span class="text-xl">×</span>
+            <button class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+              (click)="closeModal()">
+              <span class="text-xl" (click)="dismiss()">×</span>
             </button>
           </div>
 
@@ -1254,8 +1095,8 @@
                       <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">
                         Full Name
                       </label>
-                      <input type="text" id="fullName" [(ngModel)]="addressForm.NAME" minlength="3" maxlength="512" name="customerName"
-                        placeholder="Enter Name" required 
+                      <input type="text" id="fullName" [(ngModel)]="addressForm.NAME" minlength="3" maxlength="512"
+                        name="customerName" placeholder="Enter Name" required
                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]" />
                     </div>
 
@@ -1314,7 +1155,7 @@
 
                           <input type="tel" id="mobileNumber" [(ngModel)]="addressForm.MOBILE_NO" name="Mobile_number"
                             placeholder="Enter Mobile no" (keypress)="commonFunction.omit($event)"
-                            [pattern]="commonFunction.internationalmobpattern" minlength="10"  maxlength="16" required
+                            [pattern]="commonFunction.internationalmobpattern" minlength="10" maxlength="16" required
                             class="flex-1 px-3 **h-10** border border-gray-300 rounded-r-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
                             [ngClass]="{
                               '!border-l-0 rounded-l-none':
@@ -1331,7 +1172,8 @@
 
                         <div class="flex w-full">
                           <input type="text" id="emailId" [(ngModel)]="addressForm.EMAIL_ID" name="Email"
-                            placeholder="Enter Email" minlength="3" maxlength="256" [pattern]="commonFunction.emailpattern" required
+                            placeholder="Enter Email" minlength="3" maxlength="256"
+                            [pattern]="commonFunction.emailpattern" required
                             class="flex-1 px-3 py-2 border border-gray-300 border-r-0 rounded-l-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
                             (ngModelChange)="onEmailChange()" />
 
@@ -1416,7 +1258,8 @@
                         Flat, House no., Building, Company, Apartment
                       </label>
                       <textarea type="text" id="streetAddress" [(ngModel)]="addressForm.ADDRESS" name="streetAddress"
-                        placeholder="Enter Address" [required]="addressForm.ADDRESS_TYPE !== 'P'" minlength="3" maxlength="512"
+                        placeholder="Enter Address" [required]="addressForm.ADDRESS_TYPE !== 'P'" minlength="3"
+                        maxlength="512"
                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"></textarea>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1445,8 +1288,9 @@
                           Country/Region
                         </label>
                         <input id="country" type="text" [(ngModel)]="countrySearch"
-                          (input)="filterCountries(); onCountryInputChange()" (blur)="onCountryBlur()" minlength="3" maxlength="32"
-                          name="COUNTRY_NAME" #COUNTRY_NAME="ngModel" placeholder="Enter Country/Region" required
+                          (input)="filterCountries(); onCountryInputChange()" (blur)="onCountryBlur()" minlength="3"
+                          maxlength="32" name="COUNTRY_NAME" #COUNTRY_NAME="ngModel" placeholder="Enter Country/Region"
+                          required
                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none" />
                         <div *ngIf="
                             filteredCountries.length ||
@@ -1487,14 +1331,15 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="relative">
-                  <label for="city" class="block text-sm font-medium text-gray-700 mb-1">
-                    Town/City
-                  </label>
-                  <input id="city" type="text" [(ngModel)]="citySearch" (input)="filterCities();onCityInputChange()" (blur)="onCityBlur()"
-                    name="CITY" placeholder="Enter Town/City" minlength="3" maxlength="256" required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none" />
-                    <div *ngIf="
+                      <div class="relative">
+                        <label for="city" class="block text-sm font-medium text-gray-700 mb-1">
+                          Town/City
+                        </label>
+                        <input id="city" type="text" [(ngModel)]="citySearch"
+                          (input)="filterCities();onCityInputChange()" (blur)="onCityBlur()" name="CITY"
+                          placeholder="Enter Town/City" minlength="3" maxlength="256" required
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none" />
+                        <div *ngIf="
                             filteredCities.length ||
                             showAddCityOption ||
                             isLoadingCities
@@ -1507,17 +1352,17 @@
                             {{ c.NAME }}
                           </div>
                         </div>
-                </div>
+                      </div>
 
-                <div>
-                  <label for="zipcode" class="block text-sm font-medium text-gray-700 mb-1">
-                    Pincode/ZIP
-                  </label>
-                  <input type="text" id="zipcode" maxlength="8" [(ngModel)]="addressForm.PINCODE" name="pincode"
-                    placeholder="Enter PIN/ZIP code" required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none" />
-                </div>
-              </div>
+                      <div>
+                        <label for="zipcode" class="block text-sm font-medium text-gray-700 mb-1">
+                          Pincode/ZIP
+                        </label>
+                        <input type="text" id="zipcode" maxlength="8" [(ngModel)]="addressForm.PINCODE" name="pincode"
+                          placeholder="Enter PIN/ZIP code" required
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none" />
+                      </div>
+                    </div>
 
                     <!-- <ng-container *ngIf="addressForm.ADDRESS_TYPE === 'P'">
                       <div class="space-y-2">
@@ -1708,10 +1553,7 @@
         </div>
       </div>
       <!-- Order Summary Page -->
-      <div
-        *ngIf="showOrderSummaryInDrawer"
-        class="w-full max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6"
-      >
+      <div *ngIf="showOrderSummaryInDrawer" class="w-full max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
         <div class="flex flex-col lg:flex-row gap-6">
           <!-- Left Section -->
           <div class="flex-1 min-w-0">
@@ -1721,12 +1563,8 @@
               </h2>
 
               <!-- Address Card -->
-              <div
-                class="border border-gray-200 rounded-lg p-3 sm:p-4 mb-5 bg-gray-50"
-              >
-                <div
-                  class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3"
-                >
+              <div class="border border-gray-200 rounded-lg p-3 sm:p-4 mb-5 bg-gray-50">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
                   <div class="text-sm text-gray-800 break-words">
                     <h3 class="font-semibold text-gray-900">
                       Delivery Address
@@ -1742,10 +1580,8 @@
                     <p>{{ selectedAddress?.MOBILE_NO }}</p>
                   </div>
 
-                  <button
-                    class="text-sm text-blue-600 hover:text-blue-700 underline self-start sm:self-auto"
-                    (click)="showOrderSummaryInDrawer = false"
-                  >
+                  <button class="text-sm text-blue-600 hover:text-blue-700 underline self-start sm:self-auto"
+                    (click)="showOrderSummaryInDrawer = false">
                     Change
                   </button>
                 </div>
@@ -1753,31 +1589,15 @@
 
               <!-- Cart Items -->
               <div class="space-y-4">
-                <div
-                  *ngFor="let item of cartDetails.cartDetails"
-                  class="flex gap-4 pb-4 border-b border-gray-200"
-                >
-                  <ng-container
-                    *ngIf="initImageIndex(item.ID) === undefined"
-                  ></ng-container>
-                  <img
-                    *ngIf="!item.VARIENT_IMAGE_URL"
-                    [src]="
+                <div *ngFor="let item of cartDetails.cartDetails" class="flex gap-4 pb-4 border-b border-gray-200">
+                  <ng-container *ngIf="initImageIndex(item.ID) === undefined"></ng-container>
+                  <img *ngIf="!item.VARIENT_IMAGE_URL" [src]="
                       photoURL + getImageArray(item)[imageIndices[item.ID]]
-                    "
-                    alt="{{ item.PRODUCT_NAME }}"
-                    class="w-24 h-24 object-cover rounded"
-                  />
-                  <img
-                    *ngIf="item.VARIENT_IMAGE_URL"
-                    [src]="vareintImageUrl + item.VARIENT_IMAGE_URL"
-                    alt="{{ item.VARIENT_IMAGE_URL }}"
-                    class="w-24 h-24 object-cover rounded"
-                  />
+                    " alt="{{ item.PRODUCT_NAME }}" class="w-24 h-24 object-cover rounded" />
+                  <img *ngIf="item.VARIENT_IMAGE_URL" [src]="vareintImageUrl + item.VARIENT_IMAGE_URL"
+                    alt="{{ item.VARIENT_IMAGE_URL }}" class="w-24 h-24 object-cover rounded" />
                   <div class="flex-1 min-w-0">
-                    <h4
-                      class="font-semibold text-gray-900 text-base leading-tight"
-                    >
+                    <h4 class="font-semibold text-gray-900 text-base leading-tight">
                       {{ item.PRODUCT_NAME }}
                     </h4>
                     <p class="text-sm text-gray-600 mt-1">
@@ -1786,34 +1606,32 @@
                     </p>
                     <p class="text-sm text-gray-900 font-semibold mt-1">
                       ${{
-                        item.DISCOUNT_TYPE == "Amount"
-                          ? item.ITEM_DISCOUNT_AMOUNT == 0
-                            ? item.VERIENT_RATE
-                            : (item.ITEM_DISCOUNT_AMOUNT / item.QUANTITY
-                              | number : "1.2-2")
-                          : item.DISCOUNT_TYPE == "Percentage"
-                          ? (item.VERIENT_RATE -
-                              (item.VERIENT_RATE * item.DISCOUNT) / 100
-                            | number : "1.2-2")
-                          : item.VERIENT_RATE
+                      item.DISCOUNT_TYPE == "Amount"
+                      ? item.ITEM_DISCOUNT_AMOUNT == 0
+                      ? item.VERIENT_RATE
+                      : (item.ITEM_DISCOUNT_AMOUNT / item.QUANTITY
+                      | number : "1.2-2")
+                      : item.DISCOUNT_TYPE == "Percentage"
+                      ? (item.VERIENT_RATE -
+                      (item.VERIENT_RATE * item.DISCOUNT) / 100
+                      | number : "1.2-2")
+                      : item.VERIENT_RATE
                       }}
                       ×
                       {{ item.QUANTITY }}
-                      <span
-                        class="text-sm text-gray-900 font-semibold mt-1 float-end"
-                      >
+                      <span class="text-sm text-gray-900 font-semibold mt-1 float-end">
                         Total Price $
                         {{
-                          (item.DISCOUNT_TYPE == "Amount"
-                            ? item.ITEM_DISCOUNT_AMOUNT == 0
-                              ? item.VERIENT_RATE * item.QUANTITY
-                              : item.ITEM_DISCOUNT_AMOUNT
-                            : item.DISCOUNT_TYPE == "Percentage"
-                            ? (item.VERIENT_RATE -
-                                (item.VERIENT_RATE * item.DISCOUNT) / 100) *
-                              item.QUANTITY
-                            : item.VERIENT_RATE * item.QUANTITY
-                          ).toFixed(2)
+                        (item.DISCOUNT_TYPE == "Amount"
+                        ? item.ITEM_DISCOUNT_AMOUNT == 0
+                        ? item.VERIENT_RATE * item.QUANTITY
+                        : item.ITEM_DISCOUNT_AMOUNT
+                        : item.DISCOUNT_TYPE == "Percentage"
+                        ? (item.VERIENT_RATE -
+                        (item.VERIENT_RATE * item.DISCOUNT) / 100) *
+                        item.QUANTITY
+                        : item.VERIENT_RATE * item.QUANTITY
+                        ).toFixed(2)
                         }}
                       </span>
                     </p>
@@ -1826,8 +1644,7 @@
           <!-- Right Section (Order Summary) -->
           <div class="w-full lg:w-80 xl:w-96">
             <div
-              class="bg-white rounded-xl shadow-sm p-4 sm:p-6 mt-4 lg:mt-0 border border-gray-100 lg:sticky lg:top-4"
-            >
+              class="bg-white rounded-xl shadow-sm p-4 sm:p-6 mt-4 lg:mt-0 border border-gray-100 lg:sticky lg:top-4">
               <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-3">
                 Order Summary
               </h3>
@@ -1837,29 +1654,23 @@
                   <span class="text-gray-700">Items</span>
                   <span class="text-gray-900">
                     {{
-                      selectedPrice - selectedDiscount
-                        | number : "1.2-2"
-                        | currency : "USD"
+                    selectedPrice - selectedDiscount
+                    | number : "1.2-2"
+                    | currency : "USD"
                     }}
                   </span>
                 </div>
 
                 <div class="flex justify-between">
                   <span class="text-gray-700">Shipping & handling:</span>
-                  <span
-                    class="text-gray-900"
-                    *ngIf="IS_LOCAL_PICKUP != 1 || deliveryOption == 'delivery'"
-                  >
+                  <span class="text-gray-900" *ngIf="IS_LOCAL_PICKUP != 1 || deliveryOption == 'delivery'">
                     {{
-                      cartDetails?.cartDetails?.[0]?.["DATA"]?.NET_AMOUNT -
-                        cartDetails?.cartDetails?.[0]?.["DATA"]?.TOTAL_DISCOUNT_AMOUNT
-                        | currency : "USD" : "symbol" : "1.2-2"
+                    cartDetails?.cartDetails?.[0]?.["DATA"]?.NET_AMOUNT -
+                    cartDetails?.cartDetails?.[0]?.["DATA"]?.TOTAL_DISCOUNT_AMOUNT
+                    | currency : "USD" : "symbol" : "1.2-2"
                     }}
                   </span>
-                  <span
-                    class="text-gray-900"
-                    *ngIf="IS_LOCAL_PICKUP == 1 && deliveryOption == 'pickup'"
-                  >
+                  <span class="text-gray-900" *ngIf="IS_LOCAL_PICKUP == 1 && deliveryOption == 'pickup'">
                     0
                   </span>
                 </div>
@@ -1872,34 +1683,28 @@
                   Order total:
                 </span>
 
-                <span
-                  class="text-lg font-semibold text-red-700"
-                  *ngIf="IS_LOCAL_PICKUP != 1 || deliveryOption == 'delivery'"
-                >
+                <span class="text-lg font-semibold text-red-700"
+                  *ngIf="IS_LOCAL_PICKUP != 1 || deliveryOption == 'delivery'">
                   {{
-                    selectedPrice -
-                      selectedDiscount +
-                      (cartDetails?.cartDetails?.[0]?.["DATA"]?.NET_AMOUNT -
-                        cartDetails?.cartDetails?.[0]?.["DATA"]?.TOTAL_DISCOUNT_AMOUNT)
-                      | number : "1.2-2"
-                      | currency : "USD"
+                  selectedPrice -
+                  selectedDiscount +
+                  (cartDetails?.cartDetails?.[0]?.["DATA"]?.NET_AMOUNT -
+                  cartDetails?.cartDetails?.[0]?.["DATA"]?.TOTAL_DISCOUNT_AMOUNT)
+                  | number : "1.2-2"
+                  | currency : "USD"
                   }}
                 </span>
-                <span
-                  class="text-lg font-semibold text-red-700"
-                  *ngIf="IS_LOCAL_PICKUP == 1 && deliveryOption == 'pickup'"
-                >
+                <span class="text-lg font-semibold text-red-700"
+                  *ngIf="IS_LOCAL_PICKUP == 1 && deliveryOption == 'pickup'">
                   {{
-                    selectedPrice - selectedDiscount
-                      | number : "1.2-2"
-                      | currency : "USD"
+                  selectedPrice - selectedDiscount
+                  | number : "1.2-2"
+                  | currency : "USD"
                   }}
                 </span>
               </div>
 
-              <div
-                class="mt-3 p-3 bg-blue-50 rounded text-xs text-gray-700 leading-snug"
-              >
+              <div class="mt-3 p-3 bg-blue-50 rounded text-xs text-gray-700 leading-snug">
                 <p class="font-semibold mb-1">Note</p>
                 <p>
                   Delivery costs are based on the delivery address you provided
@@ -1908,8 +1713,7 @@
 
               <button
                 class="w-full bg-[#5a8f69] hover:bg-green-800 text-white font-medium px-5 py-2 mt-4 rounded-lg shadow-sm transition-colors"
-                (click)="proceedToPayment()"
-              >
+                (click)="proceedToPayment()">
                 Proceed To Payment
               </button>
             </div>
@@ -1944,51 +1748,27 @@
     <form (ngSubmit)="VerifyOTP()" class="otp-form">
       <div class="otp-input-group">
         <div class="flex gap-2 justify-center mt-4">
-          <input
-            *ngFor="let i of [0, 1, 2, 3]; let last = last"
+          <input *ngFor="let i of [0, 1, 2, 3]; let last = last"
             class="otp-input w-10 h-10 text-center border border-gray-300 rounded-md focus:ring-2 focus:ring-[#5a8f69] focus:border-[#5a8f69]"
-            type="text"
-            inputmode="numeric"
-            pattern="[0-9]*"
-            maxlength="1"
-            [(ngModel)]="otp[i]"
-            [name]="'otp-' + i"
-            (keydown)="moveToNext($event, i)"
-            (input)="onOtpInput($event, i)"
-            (paste)="handlePaste($event)"
-            required
-            autocomplete="off"
-          />
+            type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" [(ngModel)]="otp[i]" [name]="'otp-' + i"
+            (keydown)="moveToNext($event, i)" (input)="onOtpInput($event, i)" (paste)="handlePaste($event)" required
+            autocomplete="off" />
         </div>
       </div>
 
       <div class="timer-section">
-        <span *ngIf="remainingTime > 0" class="timer-display"
-          >{{ remainingTime }}s</span
-        >
+        <span *ngIf="remainingTime > 0" class="timer-display">{{ remainingTime }}s</span>
         <p class="resend-text">
           Didn’t receive the code?
-          <a
-            (click)="resendOtp()"
-            [ngStyle]="{
+          <a (click)="resendOtp()" [ngStyle]="{
               cursor: remainingTime > 0 ? 'default' : 'pointer',
               color: remainingTime > 0 ? '#636363' : '#5a8f69'
-            }"
-            [class.disabled]="remainingTime > 0"
-            >Resend</a
-          >
+            }" [class.disabled]="remainingTime > 0">Resend</a>
         </p>
       </div>
 
-      <button
-        type="submit"
-        class="verify-button"
-        [disabled]="isverifyOTP || otp.join('').length < 4"
-      >
-        <span
-          *ngIf="isverifyOTP"
-          class="spinner-border spinner-border-sm me-2"
-        ></span>
+      <button type="submit" class="verify-button" [disabled]="isverifyOTP || otp.join('').length < 4">
+        <span *ngIf="isverifyOTP" class="spinner-border spinner-border-sm me-2"></span>
         Verify
       </button>
     </form>
@@ -2649,29 +2429,18 @@
     </button>
   </div>
 </div> -->
-<div
-  *ngIf="showPaymentModal"
+<div *ngIf="showPaymentModal"
   class="fixed inset-0 z-[1001] flex items-center justify-center bg-black/50 backdrop-blur-sm"
-  (click)="closePaymentModal()"
->
-  <div
-    class="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] flex flex-col relative"
-    (click)="$event.stopPropagation()"
-  >
+  (click)="closePaymentModal()">
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] flex flex-col relative"
+    (click)="$event.stopPropagation()">
     <!-- Header -->
     <div class="flex justify-between items-center border-b p-4">
       <h3 class="text-xl font-semibold text-gray-800 flex items-center gap-2">
-        <img
-          src="https://www.paypalobjects.com/webstatic/icon/pp258.png"
-          alt="PayPal"
-          class="h-6 w-6"
-        />
+        <img src="https://www.paypalobjects.com/webstatic/icon/pp258.png" alt="PayPal" class="h-6 w-6" />
         Pay with PayPal
       </h3>
-      <button
-        class="text-gray-400 hover:text-gray-600 transition"
-        (click)="closePaymentModal()"
-      >
+      <button class="text-gray-400 hover:text-gray-600 transition" (click)="closePaymentModal()">
         ✕
       </button>
     </div>
@@ -2688,10 +2457,8 @@
 
     <!-- Footer -->
     <div class="border-t p-4 flex justify-center">
-      <button
-        (click)="closePaymentModal()"
-        class="px-6 py-2 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
-      >
+      <button (click)="closePaymentModal()"
+        class="px-6 py-2 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-100 transition">
         Cancel
       </button>
     </div>
@@ -2700,15 +2467,9 @@
 
 <!-- <div id="card-container" class="my-4"></div> -->
 
-<div
-  *ngIf="showOrderSummaryModal"
-  class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
->
+<div *ngIf="showOrderSummaryModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
   <div class="bg-white p-6 rounded-lg shadow-sm w-full max-w-lg relative">
-    <button
-      (click)="showOrderSummaryModal = false"
-      class="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-    >
+    <button (click)="showOrderSummaryModal = false" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
       <i class="ri-close-line text-xl" (click)="desteper()"></i>
     </button>
     <h3 class="text-lg font-semibold mb-4 text-gray-800">Order Summary</h3>
@@ -2736,70 +2497,53 @@
         <span class="font-semibold text-gray-700">Price </span>
         <span class="text-gray-900">{{
           (cartDetails.cartDetails[0].TOTAL_PRICE
-            ? cartDetails.cartDetails[0].TOTAL_PRICE
-            : 0
+          ? cartDetails.cartDetails[0].TOTAL_PRICE
+          : 0
           ) | currency : "USD" : "symbol" : "1.2-2"
-        }}</span>
+          }}</span>
       </div>
       <div class="flex justify-between gap-4">
-        <span class="font-semibold text-gray-700"
-          >Shipping and Handling Charges</span
-        >
+        <span class="font-semibold text-gray-700">Shipping and Handling Charges</span>
 
         <span class="text-gray-900">
           {{
-            cartDetails.cartDetails[0].NET_AMOUNT -
-              cartDetails.cartDetails[0].TOTAL_PRICE || 0
-              | currency : "USD" : "symbol" : "1.2-2"
+          cartDetails.cartDetails[0].NET_AMOUNT -
+          cartDetails.cartDetails[0].TOTAL_PRICE || 0
+          | currency : "USD" : "symbol" : "1.2-2"
           }}
         </span>
       </div>
 
       <div class="flex justify-between gap-4">
         <span class="font-semibold text-green-600">Total Amount</span>
-        <span
-          class="text-green-600 font-semibold"
-          *ngIf="IS_LOCAL_PICKUP != 1 || deliveryOption == 'delivery'"
-          >{{
-            (cartDetails.cartDetails[0].NET_AMOUNT
-              ? cartDetails.cartDetails[0].NET_AMOUNT
-              : 0
-            ) | currency : "USD" : "symbol" : "1.2-2"
-          }}</span
-        >
-        <span
-          class="text-green-600 font-semibold"
-          *ngIf="IS_LOCAL_PICKUP == 1 && deliveryOption == 'pickup'"
-          >{{
-            (cartDetails.cartDetails[0].TOTAL_PRICE
-              ? cartDetails.cartDetails[0].TOTAL_PRICE
-              : 0
-            ) | currency : "USD" : "symbol" : "1.2-2"
-          }}</span
-        >
+        <span class="text-green-600 font-semibold" *ngIf="IS_LOCAL_PICKUP != 1 || deliveryOption == 'delivery'">{{
+          (cartDetails.cartDetails[0].NET_AMOUNT
+          ? cartDetails.cartDetails[0].NET_AMOUNT
+          : 0
+          ) | currency : "USD" : "symbol" : "1.2-2"
+          }}</span>
+        <span class="text-green-600 font-semibold" *ngIf="IS_LOCAL_PICKUP == 1 && deliveryOption == 'pickup'">{{
+          (cartDetails.cartDetails[0].TOTAL_PRICE
+          ? cartDetails.cartDetails[0].TOTAL_PRICE
+          : 0
+          ) | currency : "USD" : "symbol" : "1.2-2"
+          }}</span>
       </div>
     </div>
     <div class="mt-4 text-right">
-      <button
-        (click)="proceedToPayment()"
-        class="bg-[#5a8f69] text-white px-6 py-2 rounded-md text-sm hover:bg-[#4a7a58] transition"
-      >
+      <button (click)="proceedToPayment()"
+        class="bg-[#5a8f69] text-white px-6 py-2 rounded-md text-sm hover:bg-[#4a7a58] transition">
         Proceed to Pay
       </button>
     </div>
   </div>
 </div>
 
-<div
-  *ngIf="paymentSuccessModalVisible"
-  class="fixed inset-0 flex items-center justify-center bg-black/50"
-  style="z-index: 1001"
->
+<div *ngIf="paymentSuccessModalVisible" class="fixed inset-0 flex items-center justify-center bg-black/50"
+  style="z-index: 1001">
   <div class="bg-white p-6 rounded-lg shadow-sm w-full max-w-sm relative">
-    <button
-      (click)="paymentSuccessModalVisible = false"
-      class="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-    >
+    <button (click)="paymentSuccessModalVisible = false"
+      class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
       <i class="ri-close-line text-xl" (click)="goToProductListing()"></i>
     </button>
     <h3 class="text-lg font-semibold mb-4 text-green-700 flex items-center">
@@ -2810,17 +2554,12 @@
       Your order has been placed successfully.
     </p>
     <div class="flex justify-between">
-      <button
-        *ngIf="userId"
-        (click)="goToProfileSection('orders-section'); $event.preventDefault()"
-        class="bg-emerald-600 text-white px-4 py-2 rounded-md text-sm"
-      >
+      <button *ngIf="userId" (click)="goToProfileSection('orders-section'); $event.preventDefault()"
+        class="bg-emerald-600 text-white px-4 py-2 rounded-md text-sm">
         View Order Details
       </button>
-      <button
-        (click)="goToProductListing()"
-        class="bg-gray-200 px-4 py-2 rounded-md text-sm hover:bg-gray-300 transition"
-      >
+      <button (click)="goToProductListing()"
+        class="bg-gray-200 px-4 py-2 rounded-md text-sm hover:bg-gray-300 transition">
         Back to Shop
       </button>
     </div>
@@ -3121,25 +2860,19 @@
     </div>
   </div>
 </div> -->
-<div
-  *ngIf="showReceiptModal"
+<div *ngIf="showReceiptModal"
   class="fixed inset-0 flex items-center justify-center bg-gray-50/70 backdrop-blur-sm p-2 md:p-3"
-  style="z-index: 1001"
->
+  style="z-index: 1001">
   <div
     class="bg-white rounded-xl shadow-2xl w-full max-w-5xl relative p-3 md:p-4 border border-gray-100 grid grid-cols-1 lg:grid-cols-3 gap-3 max-h-[95vh] overflow-y-auto"
-    (click)="$event.stopPropagation()"
-  >
+    (click)="$event.stopPropagation()">
     <!-- Header -->
     <div class="lg:col-span-3 flex justify-between items-center mb-2">
       <h2 class="text-lg md:text-xl font-bold text-gray-800">
         Order Confirmation
       </h2>
-      <button
-        (click)="closeReceiptModal()"
-        class="text-gray-400 hover:text-gray-600 transition"
-        aria-label="Close receipt modal"
-      >
+      <button (click)="closeReceiptModal()" class="text-gray-400 hover:text-gray-600 transition"
+        aria-label="Close receipt modal">
         <i class="ri-close-line text-xl"></i>
       </button>
     </div>
@@ -3150,70 +2883,56 @@
         Thank you for ordering our
         <span class="font-semibold">{{
           cartDetails.cartDetails.length > 1 ? "products" : "product"
-        }}</span
-        >! Your order has been successfully placed.
+          }}</span>! Your order has been successfully placed.
       </p>
 
       <!-- Product Details -->
-      <div
-        class="bg-white rounded-lg p-2 border border-gray-200 shadow-sm space-y-2"
-      >
+      <div class="bg-white rounded-lg p-2 border border-gray-200 shadow-sm space-y-2">
         <div class="flex justify-between items-center pb-1 border-b">
-          <span class="text-base font-semibold text-gray-800"
-            >Product Details</span
-          >
+          <span class="text-base font-semibold text-gray-800">Product Details</span>
         </div>
 
         <ul class="text-sm text-gray-700 divide-y divide-gray-100">
-          <li
-            *ngFor="let item of cartDetails.cartDetails; trackBy: trackByItemId"
-            class="flex justify-between items-start py-2"
-          >
+          <li *ngFor="let item of cartDetails.cartDetails; trackBy: trackByItemId"
+            class="flex justify-between items-start py-2">
             <div class="flex items-start gap-2 w-2/3">
-              <img
-                *ngIf="getImageArray(item) && getImageArray(item).length"
-                [src]="photoURL + getImageArray(item)[imageIndices[item.ID]]"
-                alt="{{ item.PRODUCT_NAME }}"
-                class="w-10 h-10 rounded-md object-cover border border-gray-200"
-              />
+              <img *ngIf="getImageArray(item) && getImageArray(item).length"
+                [src]="photoURL + getImageArray(item)[imageIndices[item.ID]]" alt="{{ item.PRODUCT_NAME }}"
+                class="w-10 h-10 rounded-md object-cover border border-gray-200" />
               <div class="flex-grow leading-tight">
                 <span class="font-medium text-gray-800 block text-sm">{{
                   item.PRODUCT_NAME
-                }}</span>
-                <span class="text-gray-500 text-xs block"
-                  >{{
-                    item.DISCOUNT_TYPE == "Amount"
-                      ? item.ITEM_DISCOUNT_AMOUNT == 0
-                        ? item.VERIENT_RATE
-                        : (item.ITEM_DISCOUNT_AMOUNT / item.QUANTITY
-                          | number : "1.2-2")
-                      : item.DISCOUNT_TYPE == "Percentage"
-                      ? (item.VERIENT_RATE -
-                          (item.VERIENT_RATE * item.DISCOUNT) / 100
-                        | number : "1.2-2")
-                      : item.VERIENT_RATE
+                  }}</span>
+                <span class="text-gray-500 text-xs block">{{
+                  item.DISCOUNT_TYPE == "Amount"
+                  ? item.ITEM_DISCOUNT_AMOUNT == 0
+                  ? item.VERIENT_RATE
+                  : (item.ITEM_DISCOUNT_AMOUNT / item.QUANTITY
+                  | number : "1.2-2")
+                  : item.DISCOUNT_TYPE == "Percentage"
+                  ? (item.VERIENT_RATE -
+                  (item.VERIENT_RATE * item.DISCOUNT) / 100
+                  | number : "1.2-2")
+                  : item.VERIENT_RATE
                   }}
-                  x {{ item.QUANTITY }} Qty</span
-                >
-                <span class="text-gray-500 text-xs block"
-                  >{{ item.VERIENT_SIZE }}
-                  {{ item.VERIENT_UNIT_NAME }} Varient</span
-                >
+                  x {{ item.QUANTITY }} Qty</span>
+                <span class="text-gray-500 text-xs block">{{ item.VERIENT_SIZE }}
+                  {{ item.VERIENT_UNIT_NAME }} Varient</span>
               </div>
             </div>
 
             <span class="text-gray-900 font-semibold text-right w-1/3 text-sm">
               $
               {{
-                item.DISCOUNT_TYPE == "Amount"
-                  ? item.ITEM_DISCOUNT_AMOUNT == 0
-                    ? item.VERIENT_RATE * item.QUANTITY
-                    : item.ITEM_DISCOUNT_AMOUNT
-                  : item.DISCOUNT_TYPE == "Percentage"
-                  ? (item.VERIENT_RATE -
-                      (item.VERIENT_RATE * item.DISCOUNT) / 100) *
-                    item.QUANTITY
-                  : item.VERIENT_RATE * item.QUANTITY
+              item.DISCOUNT_TYPE == "Amount"
+              ? item.ITEM_DISCOUNT_AMOUNT == 0
+              ? item.VERIENT_RATE * item.QUANTITY
+              : item.ITEM_DISCOUNT_AMOUNT
+              : item.DISCOUNT_TYPE == "Percentage"
+              ? (item.VERIENT_RATE -
+              (item.VERIENT_RATE * item.DISCOUNT) / 100) *
+              item.QUANTITY
+              : item.VERIENT_RATE * item.QUANTITY
               }}
             </span>
           </li>
@@ -3221,12 +2940,8 @@
       </div>
 
       <!-- Order Progress -->
-      <div
-        class="bg-white rounded-lg p-2 border border-gray-200 shadow-sm space-y-2"
-      >
-        <span class="text-base font-semibold text-gray-800"
-          >Order Progress</span
-        >
+      <div class="bg-white rounded-lg p-2 border border-gray-200 shadow-sm space-y-2">
+        <span class="text-base font-semibold text-gray-800">Order Progress</span>
 
         <div class="flex items-center justify-between text-center pt-3">
           <!-- Step 1 -->
@@ -3237,27 +2952,17 @@
                 'bg-green-500': orderStatus !== 'A' && orderStatus !== 'DC',
                 'bg-yellow-500': orderStatus === 'A',
                 'bg-gray-400': orderStatus === 'DC'
-              }"
-            >
-              <i
-                *ngIf="orderStatus !== 'A' && orderStatus !== 'DC'"
-                class="ri-check-line text-sm"
-              ></i>
+              }">
+              <i *ngIf="orderStatus !== 'A' && orderStatus !== 'DC'" class="ri-check-line text-sm"></i>
               <span *ngIf="orderStatus === 'A' || orderStatus === 'DC'">1</span>
             </div>
-            <span class="text-[11px] mt-1 text-gray-800 font-medium"
-              >Placed</span
-            >
+            <span class="text-[11px] mt-1 text-gray-800 font-medium">Placed</span>
           </div>
 
-          <div
-            class="h-1 mx-1 flex-1"
-            [ngClass]="{
+          <div class="h-1 mx-1 flex-1" [ngClass]="{
               'bg-green-500': orderStatus !== 'A' && orderStatus !== 'DC',
               'bg-gray-200': orderStatus === 'A' || orderStatus === 'DC'
-            }"
-            style="margin-top: -20px"
-          ></div>
+            }" style="margin-top: -20px"></div>
 
           <!-- Step 2 -->
           <div class="flex flex-col items-center">
@@ -3268,27 +2973,17 @@
                 'bg-yellow-500': orderStatus === 'BP' || orderStatus === 'SP',
                 'bg-gray-400':
                   isStatusPending(orderStatus, 'BP') || orderStatus === 'DC'
-              }"
-            >
-              <i
-                *ngIf="isStatusComplete(orderStatus, 'D')"
-                class="ri-check-line text-sm"
-              ></i>
+              }">
+              <i *ngIf="isStatusComplete(orderStatus, 'D')" class="ri-check-line text-sm"></i>
               <span *ngIf="!isStatusComplete(orderStatus, 'D')">2</span>
             </div>
-            <span class="text-[11px] mt-1 text-gray-800 font-medium"
-              >Preparing</span
-            >
+            <span class="text-[11px] mt-1 text-gray-800 font-medium">Preparing</span>
           </div>
 
-          <div
-            class="h-1 mx-1 flex-1"
-            [ngClass]="{
+          <div class="h-1 mx-1 flex-1" [ngClass]="{
               'bg-green-500': isStatusComplete(orderStatus, 'D'),
               'bg-gray-200': isStatusPending(orderStatus, 'D')
-            }"
-            style="margin-top: -20px"
-          ></div>
+            }" style="margin-top: -20px"></div>
 
           <!-- Step 3 -->
           <div class="flex flex-col items-center">
@@ -3299,27 +2994,17 @@
                 'bg-yellow-500': orderStatus === 'D',
                 'bg-gray-400':
                   isStatusPending(orderStatus, 'D') || orderStatus === 'DC'
-              }"
-            >
-              <i
-                *ngIf="isStatusComplete(orderStatus, 'DD')"
-                class="ri-check-line text-sm"
-              ></i>
+              }">
+              <i *ngIf="isStatusComplete(orderStatus, 'DD')" class="ri-check-line text-sm"></i>
               <span *ngIf="!isStatusComplete(orderStatus, 'DD')">3</span>
             </div>
-            <span class="text-[11px] mt-1 text-gray-800 font-medium"
-              >Shipped</span
-            >
+            <span class="text-[11px] mt-1 text-gray-800 font-medium">Shipped</span>
           </div>
 
-          <div
-            class="h-1 mx-1 flex-1"
-            [ngClass]="{
+          <div class="h-1 mx-1 flex-1" [ngClass]="{
               'bg-green-500': orderStatus === 'DD',
               'bg-gray-200': orderStatus !== 'DD'
-            }"
-            style="margin-top: -20px"
-          ></div>
+            }" style="margin-top: -20px"></div>
 
           <!-- Step 4 -->
           <div class="flex flex-col items-center">
@@ -3328,14 +3013,11 @@
               [ngClass]="{
                 'bg-green-500': orderStatus === 'DD',
                 'bg-gray-400': orderStatus !== 'DD' && orderStatus !== 'DC'
-              }"
-            >
+              }">
               <i *ngIf="orderStatus === 'DD'" class="ri-check-line text-sm"></i>
               <span *ngIf="orderStatus !== 'DD'">4</span>
             </div>
-            <span class="text-[11px] mt-1 text-gray-800 font-medium"
-              >Delivered</span
-            >
+            <span class="text-[11px] mt-1 text-gray-800 font-medium">Delivered</span>
           </div>
         </div>
 
@@ -3373,8 +3055,8 @@
             <span class="text-gray-600">Subtotal</span>
             <span class="text-gray-900 font-medium">
               {{
-                selectedPrice - selectedDiscount
-                  | currency : "USD" : "symbol" : "1.2-2"
+              selectedPrice - selectedDiscount
+              | currency : "USD" : "symbol" : "1.2-2"
               }}
             </span>
           </div>
@@ -3382,28 +3064,25 @@
             <span class="text-gray-600">Shipping</span>
             <span class="text-yellow-600 font-medium">
               {{
-                cartDetails?.cartDetails?.[0]?.["DATA"].NET_AMOUNT -
-                  cartDetails?.cartDetails?.[0]?.["DATA"].TOTAL_DISCOUNT_AMOUNT
-                  | currency : "USD" : "symbol" : "1.2-2"
+              cartDetails?.cartDetails?.[0]?.["DATA"].NET_AMOUNT -
+              cartDetails?.cartDetails?.[0]?.["DATA"].TOTAL_DISCOUNT_AMOUNT
+              | currency : "USD" : "symbol" : "1.2-2"
               }}
             </span>
           </div>
         </div>
 
-        <div
-          class="flex justify-between border-t border-gray-300 pt-2 text-sm font-bold text-gray-800"
-        >
+        <div class="flex justify-between border-t border-gray-300 pt-2 text-sm font-bold text-gray-800">
           <span>Total:</span>
           <span class="text-green-600">
             {{
-              selectedPrice -
-                selectedDiscount +
-                (cartDetails?.cartDetails?.[0]?.["DATA"].NET_AMOUNT -
-                  cartDetails?.cartDetails?.[0]?.["DATA"].TOTAL_DISCOUNT_AMOUNT)
-                | number : "1.2-2"
-                | currency : "USD"
-            }}</span
-          >
+            selectedPrice -
+            selectedDiscount +
+            (cartDetails?.cartDetails?.[0]?.["DATA"].NET_AMOUNT -
+            cartDetails?.cartDetails?.[0]?.["DATA"].TOTAL_DISCOUNT_AMOUNT)
+            | number : "1.2-2"
+            | currency : "USD"
+            }}</span>
         </div>
       </div>
 
@@ -3429,19 +3108,13 @@
       </div> -->
 
       <div class="text-center pt-1">
-        <a
-          (click)="goToProductListing()"
-          class="text-blue-600 hover:text-blue-800 font-medium underline text-xs cursor-pointer"
-        >
+        <a (click)="goToProductListing()"
+          class="text-blue-600 hover:text-blue-800 font-medium underline text-xs cursor-pointer">
           Continue Shopping
         </a>
         <p class="mt-2 text-[11px] text-gray-400">
           Any questions? Email us at
-          <a
-            href="mailto:ojasvidermacare@gmail.com"
-            class="text-blue-500 hover:underline"
-            >ojasvidermacare@gmail.com</a
-          >
+          <a href="mailto:ojasvidermacare@gmail.com" class="text-blue-500 hover:underline">ojasvidermacare@gmail.com</a>
         </p>
       </div>
     </div>

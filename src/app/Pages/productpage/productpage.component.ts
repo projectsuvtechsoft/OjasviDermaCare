@@ -12,6 +12,9 @@ import { ApiServiceService } from 'src/app/Service/api-service.service';
 import { CartService } from 'src/app/Service/cart.service';
 import { CommonFunctionService } from 'src/app/Service/CommonFunctionService';
 import { ProductDataService } from 'src/app/Service/ProductData.service ';
+declare var bootstrap: any;
+
+declare var $: any;
 interface Product {
   name: string;
   category: string;
@@ -36,16 +39,16 @@ export class ProductpageComponent {
     private productService: ProductDataService,
     private vps: ViewportScroller
   ) {
-     this.cartService.cartUpdated$.subscribe((cartItems) => {
+    this.cartService.cartUpdated$.subscribe((cartItems) => {
       this.items = cartItems;
-      
+
       // this.toastr.success('Item Added to cart', 'Success')
       // this.loadingProducts = false;
       // this.cd.detectChanges(); // Optional but ensures view update
     });
-    this.cartService.loaderUpdate$.subscribe((isLoading) => { 
-      this.isLoading = isLoading;
-    });
+    // this.cartService.loaderUpdate$.subscribe((isLoading) => { 
+    //   this.isLoading = isLoading;
+    // });
   }
   selectedPrice: any;
   totalPrice: any;
@@ -53,14 +56,14 @@ export class ProductpageComponent {
   Imgurl: any;
   varientId: any;
   similarProducts: any[] = [];
-  items:any=[]
+  items: any = []
   //  vaishnavi
   ngOnInit() {
     this.Imgurl = this.IMAGEuRL + 'CustomerProfile/';
     this.productId = Number(this.route.snapshot.paramMap.get('id'));
     this.varientId = Number(this.route.snapshot.paramMap.get('variantId'));
     // this.scrollToSection('top')
-    this.items=this.cartService.getCartItems();
+    this.items = this.cartService.getCartItems();
     // if(this.productId && this.varientId){
     //   // console.log(this.hasItemsInCart(this.productId,this.varientId))
     // }
@@ -106,10 +109,10 @@ export class ProductpageComponent {
     // 1) window/html/body
     try {
       window.scrollTo(0, 0);
-    } catch {}
+    } catch { }
     try {
       this.vps.scrollToPosition([0, 0]);
-    } catch {}
+    } catch { }
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
 
@@ -132,7 +135,7 @@ export class ProductpageComponent {
   euserID: string = sessionStorage.getItem('userId') || '';
   decyptedsessionKey: any;
   isLoading: boolean = false;
-  redirecttoCart(){
+  redirecttoCart() {
     this.router.navigate(['/cart'])
   }
   setRating(value: number) {
@@ -149,6 +152,10 @@ export class ProductpageComponent {
       return;
     }
 
+    if (!this.reviewForm.text || this.reviewForm.text.trim().length < 10) {
+      this.toastr.error('Please enter at least 10 characters in review', '');
+      return;
+    }
     this.userID = this.commonFunction.decryptdata(this.euserID);
     let sessionKey = sessionStorage.getItem('SESSION_KEYS') || '';
     this.decyptedsessionKey = this.commonFunction.decryptdata(sessionKey);
@@ -294,6 +301,47 @@ export class ProductpageComponent {
   //     this.currentSlide--;
   //   }
   // }
+  onWriteReviewClick() {
+    const token = sessionStorage.getItem('token');
+    const userId = sessionStorage.getItem('userId');
+
+    if (!token || !userId) {
+      this.showLoginModal1()
+      return;
+
+    }
+
+    // ✅ User is logged in → open modal
+    const modalEl = document.getElementById('reviewModal');
+    if (modalEl) {
+      const modal =
+        bootstrap.Modal.getInstance(modalEl) ||
+        new bootstrap.Modal(modalEl);
+      modal.show();
+    }
+  }
+
+  showLoginModal1() {
+
+    this.openLoginModal()
+  }
+  openFromReview: boolean = false;
+  openLoginModal() {
+    //this.activeTab = 'login';
+    this.openFromReview = true;
+    const modalEl = document.getElementById('loginmodal');
+    const modalInstance =
+      bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+
+    // Remove any leftover backdrops
+    document.querySelectorAll('.modal-backdrop').forEach((el) => el.remove());
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+
+
+    modalInstance.show();
+  }
 
   getcustomerProductReviews() {
     this.api
@@ -461,7 +509,7 @@ export class ProductpageComponent {
     icon?.classList.toggle('ri-arrow-down-s-line', isOpen);
     icon?.classList.toggle('ri-arrow-up-s-line', !isOpen);
   }
- 
+
 
   collapseAllAccordionsOnLoad(): void {
     window.addEventListener('load', () => {
@@ -471,7 +519,7 @@ export class ProductpageComponent {
       });
     });
   }
-   hasActiveVariants(productId: number): boolean {
+  hasActiveVariants(productId: number): boolean {
     const variants = this.variantMap[productId] || [];
     return variants.some((v) => v.STATUS === 1);
   }
@@ -488,19 +536,19 @@ export class ProductpageComponent {
       .subscribe((data) => {
         if (data && data.data && Array.isArray(data.data)) {
           this.propertyyData = data.data;
-          this.varients=data.varient
+          this.varients = data.varient
           this.loadingProducts = false;
           let product = (sessionStorage.getItem('selectedProduct') || '');
           let productJson = product ? JSON.parse(product) : {}
           this.isLiked = productJson?.isLiked
-          let favProducts=(sessionStorage.getItem('favoriteProducts') || '')
-          let findIndex=this.propertyyData.findIndex((dat:any)=>dat.ID === productJson.ID)
-          if(findIndex>=0){
-            this.propertyyData[findIndex].isLiked=this.isLiked 
+          let favProducts = (sessionStorage.getItem('favoriteProducts') || '')
+          let findIndex = this.propertyyData.findIndex((dat: any) => dat.ID === productJson.ID)
+          if (findIndex >= 0) {
+            this.propertyyData[findIndex].isLiked = this.isLiked
           }
-          else{
-            if(favProducts.includes(data.data[0]['ID'])){
-              this.propertyyData[0]['isLiked']=true
+          else {
+            if (favProducts.includes(data.data[0]['ID'])) {
+              this.propertyyData[0]['isLiked'] = true
             }
           }
           // this.propertyyData.forEach((product: any) => {
@@ -513,6 +561,17 @@ export class ProductpageComponent {
             } catch (e) {
               variants = [];
             }
+          }
+
+          if (this.propertyyData[0]?.BENIFITS) {
+            // Split comma-separated benefits into array
+            this.benefitsArray = this.propertyyData[0]?.BENIFITS.split(',').map((b: string) =>
+              b.trim()
+            );
+            // console.log(this.benefitsArray, 'this.benefitsArray');
+          } else {
+            // No benefits found
+            this.benefitsArray = [];
           }
 
           if (Array.isArray(variants) && variants.length > 0) {
@@ -650,7 +709,7 @@ export class ProductpageComponent {
             this.variantStockMap[product.ID] =
               firstAvailable.OPENING_STOCK || 0;
             this.selectedVariantStock = firstAvailable.CURRENT_STOCK || 0;
-            // console.log('first Available', firstAvailable);
+            console.log('first Available', firstAvailable);
           }
         }
       }
@@ -671,7 +730,7 @@ export class ProductpageComponent {
         this.selectedVariantStock = selected.CURRENT_STOCK || 0;
         this.selectedPrice = selected.RATE || 0;
         this.selectedVarientrecent[productId] = selected;
-          this.currentStockMap[productId] = selected.CURRENT_STOCK
+        this.currentStockMap[productId] = selected.CURRENT_STOCK
           ? selected.CURRENT_STOCK
           : 0;
         this.updateTotalPrice();
@@ -841,22 +900,22 @@ export class ProductpageComponent {
   }
   imageIndices: { [productId: string]: number } = {};
 
-getImageArray(product: any): string[] {
-  try {
-    if (!product?.Images) return [];
+  getImageArray(product: any): string[] {
+    try {
+      if (!product?.Images) return [];
 
-    const images = JSON.parse(product.Images);
+      const images = JSON.parse(product.Images);
 
-    // Make sure images is an array
-    if (!Array.isArray(images)) return [];
+      // Make sure images is an array
+      if (!Array.isArray(images)) return [];
 
-    return images
-      .map((img: any) => img?.PHOTO_URL)
-      .filter((url: string) => !!url);
-  } catch (e) {
-    return [];
+      return images
+        .map((img: any) => img?.PHOTO_URL)
+        .filter((url: string) => !!url);
+    } catch (e) {
+      return [];
+    }
   }
-}
 
 
   producctImageurl: string = this.api.retriveimgUrl;
@@ -885,7 +944,7 @@ getImageArray(product: any): string[] {
 
       return JSON.parse(data.Images || '[]');
     } catch (e) {
-      console.error('Invalid image JSON:', e);
+      // console.error('Invalid image JSON:', e);
       return [];
     }
   }
@@ -913,15 +972,15 @@ getImageArray(product: any): string[] {
       // console.log(selectedVarientdata,'selectedVarientdata');
       if (selectedVarientdata) {
         const nextQuantity = this.quantity + 1; // simulate the next step
-        const nextTotalSize = selectedVarientdata.CURRENT_STOCK/(selectedVarientdata.SIZE * nextQuantity);
+        const nextTotalSize = selectedVarientdata.CURRENT_STOCK / (selectedVarientdata.SIZE * nextQuantity);
         // const varientStock = selectedVarientdata.CURRENT_STOCK;
         // console.log(nextQuantity, nextTotalSize);
 
-        if (nextTotalSize>=1) {
-        this.quantity++;
-        // item.QUANTITY++;
-        this.updateTotalPrice();
-          } else {
+        if (nextTotalSize >= 1) {
+          this.quantity++;
+          // item.QUANTITY++;
+          this.updateTotalPrice();
+        } else {
           this.toastr.info('Stock Not Available', 'Info');
         }
       }
@@ -966,20 +1025,21 @@ getImageArray(product: any): string[] {
   userID = this.commonFunction.decryptdata(this.userId);
   currentStockMap: { [productId: number]: number } = {};
   addToCart(product: any, isdetailschange: boolean): void {
-    this.isLoading=true
-  
+    this.isLoading = true
+
+
     // console.log(product);
     // console.log(product.COUNTRY_ID);
     // console.log(product.ADDRESS_ID);
     // if (!this.userID) {
     //   this.showLoginModal();
     // } else {
-    
+
     product.quantity = this.quantity;
     product.QUANTITY = this.quantity;
     // console.log(product)
     // this.hasItemsInCart(product.ID,product.VARIENT_ID)
-    
+
     const existingProductIndex = this.productsArray.findIndex(
       (p: any) => p.ID === product.ID
     );
@@ -1024,15 +1084,15 @@ getImageArray(product: any): string[] {
       // this.toastr.success(`${product.NAME} updated in cart`, '');
       setTimeout(() => {
         this.isLoading = false;
-      },300)
+      }, 300)
       this.viewCart = true;
     } else {
       // this.productsArray = [...this.productsArray, productWithTotal];
       this.cartService.addToCart(productWithTotal);
       // this.toastr.success(`${product.NAME} added to cart`);
-          setTimeout(() => {
+      setTimeout(() => {
         this.isLoading = false;
-      },300)
+      }, 300)
       this.viewCart = true;
     }
     this.quantity = 1; // or 0 depending on your default
@@ -1056,12 +1116,12 @@ getImageArray(product: any): string[] {
       const images = JSON.parse(product.Images);
       return images.map((img: any) => img.PHOTO_URL);
     } catch (e) {
-      console.error('Invalid image format', e);
+      // console.error('Invalid image format', e);
       return [];
     }
   }
 
-    convertToarrayVairents(data: any) {
+  convertToarrayVairents(data: any) {
     // console.log(data,this.selectedVariantMap)
     // let varients = JSON.parse(data?.VARIENTS);
     let name = '';
@@ -1233,7 +1293,7 @@ getImageArray(product: any): string[] {
           this.loadSimilarProductsByCategory(categoryId);
         }
       }
-      
+
     } else {
       this.getpropertyDetails(this.propertyId);
     }
@@ -1302,7 +1362,7 @@ getImageArray(product: any): string[] {
     return (count / this.ReviewData.length) * 100;
   }
 
-   toggleLike(product: any, event: any) {
+  toggleLike(product: any, event: any) {
     event.preventDefault(); // stop link navigation
     event.stopPropagation();
     // Gate behind login: if not logged in or logged in as guest, show login modal
@@ -1363,36 +1423,36 @@ getImageArray(product: any): string[] {
 
 
 
-shareProduct(product: any): void {
-  const productUrl = `${window.location.origin}/product_details/${product.ID}`;
+  shareProduct(product: any): void {
+    const productUrl = `${window.location.origin}/product_details/${product.ID}`;
 
-  if (navigator.share) {
-    navigator.share({
-      title: product.NAME,
-      text: `Check out ${product.NAME}!`,
-      url: productUrl
-    }).then(() => {
-      // console.log('Product shared successfully');
-    }).catch((error) => {
-      // console.log('Error sharing:', error);
+    if (navigator.share) {
+      navigator.share({
+        title: product.NAME,
+        text: `Check out ${product.NAME}!`,
+        url: productUrl
+      }).then(() => {
+        // console.log('Product shared successfully');
+      }).catch((error) => {
+        // console.log('Error sharing:', error);
+        this.fallbackShare(productUrl);
+      });
+    } else {
       this.fallbackShare(productUrl);
-    });
-  } else {
-    this.fallbackShare(productUrl);
+    }
   }
-}
-fallbackShare(url: string): void {
-  navigator.clipboard.writeText(url).then(() => {
-    this.showShareToast('Link copied to clipboard!');
-  }).catch(err => {
-    console.error('Failed to copy:', err);
-    alert('Failed to copy link. Please copy manually: ' + url);
-  });
-}
+  fallbackShare(url: string): void {
+    navigator.clipboard.writeText(url).then(() => {
+      this.showShareToast('Link copied to clipboard!');
+    }).catch(err => {
+      // console.error('Failed to copy:', err);
+      alert('Failed to copy link. Please copy manually: ' + url);
+    });
+  }
 
-showShareToast(message: string): void {
-  const toast = document.createElement('div');
-  toast.style.cssText = `
+  showShareToast(message: string): void {
+    const toast = document.createElement('div');
+    toast.style.cssText = `
     position: fixed;
     top: 20px;
     right: 20px;
@@ -1406,91 +1466,124 @@ showShareToast(message: string): void {
     font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
     animation: slideInRight 0.4s ease;
   `;
-  toast.innerHTML = `
+    toast.innerHTML = `
     <div style="display: flex; align-items: center; gap: 12px;">
       <i class="ri-share-line" style="font-size: 20px;"></i>
       <span style="font-weight: 600; font-size: 14px;">${message}</span>
     </div>
   `;
-  document.body.appendChild(toast);
+    document.body.appendChild(toast);
 
-  setTimeout(() => {
-    toast.style.opacity = '0';
-    toast.style.transform = 'translateX(100%)';
-    toast.style.transition = 'all 0.4s ease';
     setTimeout(() => {
-      if (document.body.contains(toast)) {
-        document.body.removeChild(toast);
-      }
-    }, 400);
-  }, 3000);
-}
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(100%)';
+      toast.style.transition = 'all 0.4s ease';
+      setTimeout(() => {
+        if (document.body.contains(toast)) {
+          document.body.removeChild(toast);
+        }
+      }, 400);
+    }, 3000);
+  }
 
- loadSimilarProductsByCategory(categoryId: number) {
+  loadSimilarProductsByCategory(categoryId: number) {
     const filter = `AND STATUS = 1 AND IS_VERIENT_AVAILABLE = 1 AND CATEGORY_ID = ${categoryId} AND ID <> ${this.productId}`;
     this.api
       .getAllProductMaster(0, 0, 'id', 'desc', filter, '')
       .subscribe((res: any) => {
         if (res && res.data && Array.isArray(res.data)) {
-          this.similarProducts = res.data.slice(0, 4);
-          let favorite=sessionStorage.getItem('favoriteProducts') || ''
-          
-          // prepare variant maps for price/stock display
-          this.similarProducts.forEach((product: any) => {
+
+          let favorite = sessionStorage.getItem('favoriteProducts') || '';
+
+          // STEP 1: Filter out out-of-stock products first
+          let filteredProducts = res.data.filter((product: any) => {
             let variants = product.VARIENTS;
-            if(favorite.includes(product.ID)){
-              product.isLiked=true
-            }
+
+            // Parse string variants
             if (typeof variants === 'string') {
               try {
                 variants = JSON.parse(variants);
-                this.varientMapsimilar[product.ID] = variants
-              } catch (e) {
+              } catch {
+                return false; // invalid variants → exclude
+              }
+            }
+
+            // No variants → exclude (out of stock)
+            if (!Array.isArray(variants) || variants.length === 0) {
+              return false;
+            }
+
+            // Has at least one active variant with stock > 0?
+            const activeVariants = variants.filter(
+              (v: any) => (v.STATUS === true || v.STATUS === 1) && v.CURRENT_STOCK > 0
+            );
+
+            return activeVariants.length > 0; // keep only if stock available
+          });
+
+          // show only first 4 after filter
+          this.similarProducts = filteredProducts.slice(0, 4);
+
+          // STEP 2: Build maps for all remaining products
+          this.similarProducts.forEach((product: any) => {
+            let variants = product.VARIENTS;
+
+            if (favorite.includes(product.ID)) {
+              product.isLiked = true;
+            }
+
+            if (typeof variants === 'string') {
+              try {
+                variants = JSON.parse(variants);
+                this.varientMapsimilar[product.ID] = variants;
+              } catch {
                 variants = [];
               }
             }
-            if (Array.isArray(variants) && variants.length > 0) {
-              this.variantRateMap1[product.ID] = variants[0].RATE;
-              this.selectedVariantMap1[product.ID] = variants[0].VARIENT_ID;
-              const activeVariants = variants.filter((v: any) => v.STATUS === true || v.STATUS === 1) || [];
+
+            const activeVariants = variants.filter(
+              (v: any) => (v.STATUS === true || v.STATUS === 1) && v.CURRENT_STOCK > 0
+            );
+
+            if (activeVariants.length > 0) {
+              this.variantRateMap1[product.ID] = activeVariants[0].RATE;
+              this.selectedVariantMap1[product.ID] = activeVariants[0].VARIENT_ID;
               this.variantMap1[product.ID] = activeVariants;
-              this.selectedVarientrecent[product.ID] = variants[0];
-              this.currentStockMap[product.ID] = variants[0].CURRENT_STOCK;
+              this.selectedVarientrecent[product.ID] = activeVariants[0];
+              this.currentStockMap[product.ID] = activeVariants[0].CURRENT_STOCK;
             } else {
               this.variantRateMap1[product.ID] = 0;
               this.currentStockMap[product.ID] = 0;
             }
-            // ensure an image index exists per product for safe access
+
             if (!(product.ID in this.imageIndices)) {
               this.imageIndices[product.ID] = 0;
             }
           });
-        } else {
-          this.similarProducts = [];
         }
       });
   }
-hasItemsInCart(productId: number, productData: any): boolean {
-  const itemsFromService = this.cartService.getCartItems();
-  const items = this.items?.length > 0 ? this.items : itemsFromService;
+  hasItemsInCart(productId: number, productData: any): boolean {
+    const itemsFromService = this.cartService.getCartItems();
+    const items = this.items?.length > 0 ? this.items : itemsFromService;
 
-  if (!items || items.length === 0) return false;
+    if (!items || items.length === 0) return false;
 
-  // Parse product variants (may come as string)
-  const variants =
-    typeof productData?.VARIENTS === 'string'
-      ? JSON.parse(productData?.VARIENTS)
-      : productData?.VARIENTS || [];
+    // Parse product variants (may come as string)
+    const variants =
+      typeof productData?.VARIENTS === 'string'
+        ? JSON.parse(productData?.VARIENTS)
+        : productData?.VARIENTS || [];
 
-  // Check if any variant of the product is already in cart
-  return variants.some((variant: any) =>
-    items.some(
-      (item: any) =>
-        item.PRODUCT_ID === productId && item.VERIENT_ID === variant.VARIENT_ID && this.selectedVariantMap[productId] == variant.VARIENT_ID
-    )
-  );
-}
-varients:any=[]
+    // Check if any variant of the product is already in cart
+    return variants.some((variant: any) =>
+      items.some(
+        (item: any) =>
+          item.PRODUCT_ID === productId && item.VERIENT_ID === variant.VARIENT_ID && this.selectedVariantMap[productId] == variant.VARIENT_ID
+      )
+    );
+  }
+  varients: any = []
   convertToarrayVairents2(data: any) {
     // console.log(data,this.varients)
     // let varients = JSON.parse(data?.VARIENTS);
@@ -1512,7 +1605,7 @@ varients:any=[]
   //   }
   //   return ''
   // }
-   varientMapsimilar: any = []
+  varientMapsimilar: any = []
 
   hasActiveVariantsSimilar(productId: number): boolean {
     const variants = this.varientMapsimilar[productId] || [];

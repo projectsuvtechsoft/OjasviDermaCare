@@ -1,12 +1,7 @@
-<div
-  id="mobileNavOverlay"
-  class="fixed inset-0 bg-black bg-opacity-40 z-50 hidden md:hidden"
-></div>
+<div id="mobileNavOverlay" class="fixed inset-0 bg-black bg-opacity-40 z-50 hidden md:hidden"></div>
 
-<nav
-  id="mobileNavDrawer"
-  class="fixed top-0 left-0 h-full w-4/5 max-w-xs bg-white shadow-md z-50 transform -translate-x-full transition-transform duration-300 md:hidden flex flex-col"
->
+<nav id="mobileNavDrawer"
+  class="fixed top-0 left-0 h-full w-4/5 max-w-xs bg-white shadow-md z-50 transform -translate-x-full transition-transform duration-300 md:hidden flex flex-col">
   <div class="flex items-center justify-between px-6 py-4 border-b">
     <span class="text-2xl font-bold text-primary">Ojasvi</span>
     <button id="closeMobileNav" class="text-gray-500 hover:text-primary">
@@ -15,53 +10,27 @@
   </div>
   <ul class="flex-1 flex flex-col gap-2 px-6 py-4 text-lg">
     <li>
-      <a
-        href="#"
-        class="block py-2 text-gray-800 hover:text-primary font-medium"
-        >Home</a
-      >
+      <a href="#" class="block py-2 text-gray-800 hover:text-primary font-medium">Home</a>
     </li>
     <li>
-      <a
-        href="#"
-        class="block py-2 text-gray-800 hover:text-primary font-medium"
-        >Skin Care</a
-      >
+      <a href="#" class="block py-2 text-gray-800 hover:text-primary font-medium">Skin Care</a>
     </li>
     <li>
-      <a
-        href="#"
-        class="block py-2 text-gray-800 hover:text-primary font-medium"
-        >Hair Care</a
-      >
+      <a href="#" class="block py-2 text-gray-800 hover:text-primary font-medium">Hair Care</a>
     </li>
     <li>
-      <a
-        href="#"
-        class="block py-2 text-gray-800 hover:text-primary font-medium"
-        >New Arrivals</a
-      >
+      <a href="#" class="block py-2 text-gray-800 hover:text-primary font-medium">New Arrivals</a>
     </li>
     <li>
-      <a
-        href="#"
-        class="block py-2 text-gray-800 hover:text-primary font-medium"
-        >Special Offers</a
-      >
+      <a href="#" class="block py-2 text-gray-800 hover:text-primary font-medium">Special Offers</a>
     </li>
     <li>
-      <a
-        href="#"
-        class="block py-2 text-gray-800 hover:text-primary font-medium"
-        >About Us</a
-      >
+      <a href="#" class="block py-2 text-gray-800 hover:text-primary font-medium">About Us</a>
     </li>
   </ul>
 </nav>
 
-<div
-  id="toastMessage"
-  style="
+<div id="toastMessage" style="
     position: fixed;
     top: 40px;
     right: 20px;
@@ -76,20 +45,12 @@
     width: 360px;
     font-family: Assistant, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
       Helvetica, Arial, sans-serif;
-  "
->
+  ">
   <div class="flex items-center space-x-3">
-    <img
-      id="toastImage"
-      src=""
-      alt="Product"
-      style="width: 52px; height: 52px; object-fit: cover; border-radius: 6px"
-    />
+    <img id="toastImage" src="" alt="Product"
+      style="width: 52px; height: 52px; object-fit: cover; border-radius: 6px" />
     <div>
-      <p
-        id="toastProductName"
-        style="font-weight: 600; margin-bottom: 2px; font-size: 16px"
-      >
+      <p id="toastProductName" style="font-weight: 600; margin-bottom: 2px; font-size: 16px">
         Product Name
       </p>
       <p style="font-size: 13px; color: black">Successfully added to cart</p>
@@ -97,13 +58,12 @@
   </div>
 </div>
 
+
 <!-- Hero Section -->
 <section class="hero-section py-16 md:py-24">
   <div class="container mx-auto px-4">
     <div class="w-full md:w-1/2 lg:w-2/5">
-      <h1
-        class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-4 fontsizee"
-      >
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-4 fontsizee">
         Natural Beauty, Ayurvedic Wisdom
       </h1>
       <p class="text-lg text-gray-700 mb-8 fontsizeeAd">
@@ -132,11 +92,7 @@
     <div class="flex flex-col lg:flex-row gap-8">
       <!-- Desktop Filters Sidebar -->
       <div class="hidden lg:block lg:w-1/4 sidebar-filters-desktop">
-        <div
-          class="sticky top-32"
-          style="padding: 0px !important"
-          #desktopFilters
-        >
+        <div class="sticky top-32" style="padding: 0px !important" #desktopFilters>
           <ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
 
           <ng-template #filtersTemplate>
@@ -144,16 +100,11 @@
               <!-- Filters Header -->
               <div class="flex items-center justify-between mb-4 border-b pb-3">
                 <h3 class="text-lg font-semibold text-gray-900">Filters</h3>
-                <button
-                  (click)="clearFilters()"
-                  [disabled]="!isFilterApplied()"
-                  [ngClass]="
+                <button (click)="clearFilters()" [disabled]="!isFilterApplied()" [ngClass]="
                     isFilterApplied()
                       ? 'bg-[rgb(90,143,105)] text-white hover:bg-[rgb(80,130,95)]'
                       : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                  "
-                  class="text-sm px-3 py-1 rounded-md font-medium transition-colors whitespace-nowrap"
-                >
+                  " class="text-sm px-3 py-1 rounded-md font-medium transition-colors whitespace-nowrap">
                   Clear All
                 </button>
               </div>
@@ -164,23 +115,14 @@
                   Categories
                 </h4>
                 <div class="space-y-2 px-3">
-                  <label
-                    class="custom-checkbox flex items-center cursor-pointer"
-                    *ngFor="let category of categories; let i = index"
-                  >
-                    <input
-                      name="checkbox{{ i }}"
-                      [disabled]="loadingCategories"
-                      type="checkbox"
-                      [checked]="selectedCategories.includes(category)"
-                      (change)="onCategoryChange($event, category)"
-                    />
+                  <label class="custom-checkbox flex items-center cursor-pointer"
+                    *ngFor="let category of categories; let i = index">
+                    <input name="checkbox{{ i }}" [disabled]="loadingCategories" type="checkbox"
+                      [checked]="selectedCategories.includes(category)" (change)="onCategoryChange($event, category)" />
                     <span class="checkmark mr-2"></span>
                     <span class="text-[12px]">
                       {{ category?.CATEGORY_NAME }}
-                      <span class="text-[10px] text-gray-500"
-                        >({{ category?.cnt || 0 }})</span
-                      >
+                      <span class="text-[10px] text-gray-500">({{ category?.cnt || 0 }})</span>
                     </span>
                   </label>
                 </div>
@@ -188,21 +130,31 @@
 
               <!-- Discount -->
               <div class="mb-4">
-                <h4 class="text-gray-900 mb-3 font-medium text-sm">Discount</h4>
-                <div class="space-y-2 px-3">
-                  <label
-                    class="custom-checkbox flex items-center cursor-pointer"
-                    *ngFor="let discount of discounts; let i = index"
-                  >
-                    <input
-                      name="discount{{ i }}"
-                      type="checkbox"
-                      [checked]="selectedDiscounts.includes(discount)"
-                      (change)="onDiscountChange($event, discount)"
-                    />
-                    <span class="checkmark mr-2"></span>
-                    <span class="text-[12px]">{{ discount }}% and above</span>
-                  </label>
+                <h4 class="text-gray-900 mb-3 font-medium text-sm">
+                  Discount Range
+                </h4>
+
+                <div class="relative w-full px-3">
+                  <div class="range-container relative w-full h-1 rounded-full bg-gray-300">
+
+                    <!-- Active Selected Range -->
+                    <div class="absolute h-1 bg-[rgb(90,143,105)] rounded-full"
+                      [style.left.%]="(minDiscount / 100) * 100"
+                      [style.width.%]="((maxDiscount - minDiscount) / 100) * 100"></div>
+
+                    <!-- Min Slider -->
+                    <input type="range" min="0" max="100" step="5" [(ngModel)]="minDiscount"
+                      (input)="onMinDiscountChange()" class="range-input" />
+
+                    <!-- Max Slider -->
+                    <input type="range" min="0" max="100" step="5" [(ngModel)]="maxDiscount"
+                      (input)="onMaxDiscountChange()" class="range-input" />
+                  </div>
+
+                  <div class="flex justify-between text-sm text-gray-600 mt-3">
+                    <span>{{ minDiscount }}%</span>
+                    <span>{{ maxDiscount }}%</span>
+                  </div>
                 </div>
               </div>
 
@@ -213,32 +165,13 @@
                 </h4>
 
                 <div class="relative w-full px-3">
-                  <div
-                    class="range-container relative w-full h-1 rounded-full bg-gray-300"
-                  >
-                    <div
-                      class="absolute h-1 bg-[rgb(90,143,105)] rounded-full"
-                      [style.left.%]="(minRange / 40) * 100"
-                      [style.width.%]="((maxRange - minRange) / 40) * 100"
-                    ></div>
-                    <input
-                      type="range"
-                      min="0"
-                      max="40"
-                      step="10"
-                      [(ngModel)]="minRange"
-                      (input)="onMinSliderChange()"
-                      class="range-input"
-                    />
-                    <input
-                      type="range"
-                      min="0"
-                      max="40"
-                      step="10"
-                      [(ngModel)]="maxRange"
-                      (input)="onMaxSliderChange()"
-                      class="range-input"
-                    />
+                  <div class="range-container relative w-full h-1 rounded-full bg-gray-300">
+                    <div class="absolute h-1 bg-[rgb(90,143,105)] rounded-full" [style.left.%]="(minRange / 40) * 100"
+                      [style.width.%]="((maxRange - minRange) / 40) * 100"></div>
+                    <input type="range" min="0" max="40" step="10" [(ngModel)]="minRange" (input)="onMinSliderChange()"
+                      class="range-input" />
+                    <input type="range" min="0" max="40" step="10" [(ngModel)]="maxRange" (input)="onMaxSliderChange()"
+                      class="range-input" />
                   </div>
 
                   <div class="flex justify-between text-sm text-gray-600 mt-3">
@@ -253,29 +186,17 @@
       </div>
 
       <!-- Mobile Filters Drawer -->
-      <div
-        id="mobileFiltersOverlay"
-        [class.hidden]="!isDrawerOpen"
+      <div id="mobileFiltersOverlay" [class.hidden]="!isDrawerOpen"
         class="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden transition-opacity duration-300"
-        (click)="onDrawerClick($event)"
-      ></div>
+        (click)="onDrawerClick($event)"></div>
 
-      <div
-        id="mobileFiltersDrawer"
-        [class.translate-x-0]="isDrawerOpen"
-        [class.-translate-x-full]="!isDrawerOpen"
-        class="fixed top-0 left-0 z-50 w-4/5 max-w-sm h-full bg-white shadow-lg overflow-y-auto transition-transform duration-300 lg:hidden"
-      >
+      <div id="mobileFiltersDrawer" [class.translate-x-0]="isDrawerOpen" [class.-translate-x-full]="!isDrawerOpen"
+        class="fixed top-0 left-0 z-50 w-4/5 max-w-sm h-full bg-white shadow-lg overflow-y-auto transition-transform duration-300 lg:hidden">
         <!-- Mobile Filters Header -->
-        <div
-          class="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between"
-        >
+        <div class="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
           <h3 class="text-lg font-semibold text-gray-900">Filters</h3>
-          <button
-            id="closeFiltersMobile"
-            (click)="closeMobileFilters()"
-            class="text-gray-500 hover:text-gray-700 transition-colors"
-          >
+          <button id="closeFiltersMobile" (click)="closeMobileFilters()"
+            class="text-gray-500 hover:text-gray-700 transition-colors">
             <i class="ri-close-line ri-lg"></i>
           </button>
         </div>
@@ -283,16 +204,11 @@
         <!-- Mobile Filters Content -->
         <div class="p-4 space-y-4">
           <!-- Clear All Button -->
-          <button
-            (click)="clearFilters()"
-            [disabled]="!isFilterApplied()"
-            [ngClass]="
+          <button (click)="clearFilters()" [disabled]="!isFilterApplied()" [ngClass]="
               isFilterApplied()
                 ? 'bg-[rgb(90,143,105)] text-white hover:bg-[rgb(80,130,95)]'
                 : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-            "
-            class="w-full text-sm px-3 py-2 rounded-md font-medium transition-colors"
-          >
+            " class="w-full text-sm px-3 py-2 rounded-md font-medium transition-colors">
             Clear All Filters
           </button>
 
@@ -302,30 +218,21 @@
               Categories
             </h4>
             <div class="space-y-2">
-              <label
-                class="custom-checkbox flex items-center cursor-pointer"
-                *ngFor="let category of categories; let i = index"
-              >
-                <input
-                  name="mobile-checkbox{{ i }}"
-                  [disabled]="loadingCategories"
-                  type="checkbox"
-                  [checked]="selectedCategories.includes(category)"
-                  (change)="onCategoryChange($event, category)"
-                />
+              <label class="custom-checkbox flex items-center cursor-pointer"
+                *ngFor="let category of categories; let i = index">
+                <input name="mobile-checkbox{{ i }}" [disabled]="loadingCategories" type="checkbox"
+                  [checked]="selectedCategories.includes(category)" (change)="onCategoryChange($event, category)" />
                 <span class="checkmark mr-2"></span>
                 <span class="text-[12px]">
                   {{ category?.CATEGORY_NAME }}
-                  <span class="text-[10px] text-gray-500"
-                    >({{ category?.cnt || 0 }})</span
-                  >
+                  <span class="text-[10px] text-gray-500">({{ category?.cnt || 0 }})</span>
                 </span>
               </label>
             </div>
           </div>
 
           <!-- Discount -->
-          <div>
+          <!-- <div>
             <h4 class="text-gray-900 mb-3 font-medium text-sm border-b pb-2">
               Discount
             </h4>
@@ -344,8 +251,32 @@
                 <span class="text-[12px]">{{ discount }}% and above</span>
               </label>
             </div>
-          </div>
+          </div> -->
 
+
+          <div>
+            <h4 class="text-gray-900 mb-3 font-medium text-sm border-b pb-2">
+              Discount Range
+            </h4>
+
+            <div class="relative w-full">
+              <div class="range-container relative w-full h-1 rounded-full bg-gray-300">
+                <div class="absolute h-1 bg-[rgb(90,143,105)] rounded-full" [style.left.%]="(minDiscount / 100) * 100"
+                  [style.width.%]="((maxDiscount - minDiscount) / 100) * 100"></div>
+
+                <input type="range" min="0" max="100" step="5" [(ngModel)]="minDiscount"
+                  (input)="onMinDiscountChange()" class="range-input" />
+
+                <input type="range" min="0" max="100" step="5" [(ngModel)]="maxDiscount"
+                  (input)="onMaxDiscountChange()" class="range-input" />
+              </div>
+
+              <div class="flex justify-between text-sm text-gray-600 mt-3">
+                <span>{{ minDiscount }}%</span>
+                <span>{{ maxDiscount }}%</span>
+              </div>
+            </div>
+          </div>
           <!-- Price Range -->
           <div>
             <h4 class="text-gray-900 mb-3 font-medium text-sm border-b pb-2">
@@ -353,32 +284,13 @@
             </h4>
 
             <div class="relative w-full">
-              <div
-                class="range-container relative w-full h-1 rounded-full bg-gray-300"
-              >
-                <div
-                  class="absolute h-1 bg-[rgb(90,143,105)] rounded-full"
-                  [style.left.%]="(minRange / 400) * 100"
-                  [style.width.%]="((maxRange - minRange) / 400) * 100"
-                ></div>
-                <input
-                  type="range"
-                  min="0"
-                  max="400"
-                  step="10"
-                  [(ngModel)]="minRange"
-                  (input)="onMinSliderChange()"
-                  class="range-input"
-                />
-                <input
-                  type="range"
-                  min="0"
-                  max="400"
-                  step="10"
-                  [(ngModel)]="maxRange"
-                  (input)="onMaxSliderChange()"
-                  class="range-input"
-                />
+              <div class="range-container relative w-full h-1 rounded-full bg-gray-300">
+                <div class="absolute h-1 bg-[rgb(90,143,105)] rounded-full" [style.left.%]="(minRange / 400) * 100"
+                  [style.width.%]="((maxRange - minRange) / 400) * 100"></div>
+                <input type="range" min="0" max="400" step="10" [(ngModel)]="minRange" (input)="onMinSliderChange()"
+                  class="range-input" />
+                <input type="range" min="0" max="400" step="10" [(ngModel)]="maxRange" (input)="onMaxSliderChange()"
+                  class="range-input" />
               </div>
 
               <div class="flex justify-between text-sm text-gray-600 mt-3">
@@ -389,10 +301,8 @@
           </div>
 
           <!-- Apply Filters Button -->
-          <button
-            (click)="closeMobileFilters()"
-            class="w-full bg-[rgb(90,143,105)] text-white py-2 px-4 rounded-md font-medium hover:bg-[rgb(80,130,95)] transition-colors mt-6"
-          >
+          <button (click)="closeMobileFilters()"
+            class="w-full bg-[rgb(90,143,105)] text-white py-2 px-4 rounded-md font-medium hover:bg-[rgb(80,130,95)] transition-colors mt-6">
             Apply Filters
           </button>
         </div>
@@ -402,131 +312,97 @@
       <div class="w-full lg:w-3/4" id="product-grids">
         <!-- Filter & Sort Bar -->
         <div class="bg-white rounded-lg shadow-sm p-3 mb-1 flex flex-col gap-4">
- 
-  <div class="flex flex-col lg:flex-row gap-3 w-full">
- 
-    <!-- SORT + FILTER SECTION -->
-    <div class="flex flex-col sm:flex-row sm:items-center gap-3 w-full lg:w-auto">
- 
-      <h3 class="text-sm font-semibold text-gray-900">Sort</h3>
- 
-      <!-- Dropdown wrapper -->
-      <div class="relative w-full sm:w-40" (clickOutside)="dropdownOpen = false">
- 
-        <!-- Button -->
-        <button
-          (click)="dropdownOpen = !dropdownOpen"
-          class="w-full bg-[#f5f8f6] text-green-700 px-2 py-2 rounded text-xs sm:text-sm flex justify-between items-center hover:bg-[#e9f2ec] transition-colors"
-        >
-          <span class="truncate">{{ selectedOptionLabel || 'Popularity' }}</span>
-          <span>▼</span>
-        </button>
- 
-        <!-- Dropdown -->
-        <ul
-          *ngIf="dropdownOpen"
-          class="absolute w-full bg-white border border-gray-300 rounded shadow mt-1 max-h-60 overflow-auto z-50"
-        >
-          <li
-            (click)="selectOption('RATE:asc','Price: Low to High'); dropdownOpen=false"
-            class="px-3 py-2 hover:bg-[#5a8f69] hover:text-white cursor-pointer text-xs sm:text-sm"
-          >
-            Price: Low to High
-          </li>
-          <li
-            (click)="selectOption('RATE:desc','Price: High to Low'); dropdownOpen=false"
-            class="px-3 py-2 hover:bg-[#5a8f69] hover:text-white cursor-pointer text-xs sm:text-sm"
-          >
-            Price: High to Low
-          </li>
-          <li
-            (click)="selectOption('CREATED_MODIFIED_DATE:desc','Newest First'); dropdownOpen=false"
-            class="px-3 py-2 hover:bg-[#5a8f69] hover:text-white cursor-pointer text-xs sm:text-sm"
-          >
-            Newest First
-          </li>
-          <li
-            (click)="selectOption('IS_POPULAR:desc','Popularity'); dropdownOpen=false"
-            class="px-3 py-2 hover:bg-[#5a8f69] hover:text-white cursor-pointer text-xs sm:text-sm"
-          >
-            Popularity
-          </li>
-        </ul>
-      </div>
- 
-      <!-- Mobile Filters Button -->
-      <button
-        id="openFiltersMobile"
-        (click)="openMobileFilters()"
-        class="lg:hidden bg-[#5a8f69] text-white py-2 px-3 rounded font-medium text-xs sm:text-sm hover:bg-green-700 transition-colors flex items-center gap-1"
-      >
-        <i class="ri-filter-3-line"></i>
-        <span>Filters</span>
-      </button>
-    </div>
- 
-    <!-- SEARCH BAR -->
-    <div class="w-full lg:flex-1">
-      <div class="relative w-full">
- 
-        <input
-          type="text"
-          placeholder="Search products..."
-          [(ngModel)]="searchText"
-          (input)="onSearch()"
-          class="w-full bg-[#f5f8f6] text-gray-700 px-3 py-2 pr-12 text-xs sm:text-sm border border-gray-300 rounded-lg focus:border-[#5a8f69] focus:ring-1 focus:ring-[#5a8f69]"
-        />
- 
-        <button
-          (click)="onSearch()"
-          class="absolute right-0 top-0 h-full w-10 bg-[#5a8f69] hover:bg-green-700 text-white flex items-center justify-center rounded-r"
-        >
-          <i class="ri-search-line text-base"></i>
-        </button>
- 
-      </div>
-    </div>
- 
-  </div>
-</div>
- 
+
+          <div class="flex flex-col lg:flex-row gap-3 w-full">
+
+            <!-- SORT + FILTER SECTION -->
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3 w-full lg:w-auto">
+
+              <h3 class="text-sm font-semibold text-gray-900">Sort</h3>
+
+              <!-- Dropdown wrapper -->
+              <div class="relative w-full sm:w-40" (clickOutside)="dropdownOpen = false">
+
+                <!-- Button -->
+                <button (click)="dropdownOpen = !dropdownOpen"
+                  class="w-full bg-[#f5f8f6] text-green-700 px-2 py-2 rounded text-xs sm:text-sm flex justify-between items-center hover:bg-[#e9f2ec] transition-colors">
+                  <span class="truncate">{{ selectedOptionLabel || 'Popularity' }}</span>
+                  <span>▼</span>
+                </button>
+
+                <!-- Dropdown -->
+                <ul *ngIf="dropdownOpen"
+                  class="absolute w-full bg-white border border-gray-300 rounded shadow mt-1 max-h-60 overflow-auto z-50">
+                  <li (click)="selectOption('RATE:asc','Price: Low to High'); dropdownOpen=false"
+                    class="px-3 py-2 hover:bg-[#5a8f69] hover:text-white cursor-pointer text-xs sm:text-sm">
+                    Price: Low to High
+                  </li>
+                  <li (click)="selectOption('RATE:desc','Price: High to Low'); dropdownOpen=false"
+                    class="px-3 py-2 hover:bg-[#5a8f69] hover:text-white cursor-pointer text-xs sm:text-sm">
+                    Price: High to Low
+                  </li>
+                  <li (click)="selectOption('CREATED_MODIFIED_DATE:desc','Newest First'); dropdownOpen=false"
+                    class="px-3 py-2 hover:bg-[#5a8f69] hover:text-white cursor-pointer text-xs sm:text-sm">
+                    Newest First
+                  </li>
+                  <li (click)="selectOption('IS_POPULAR:desc','Popularity'); dropdownOpen=false"
+                    class="px-3 py-2 hover:bg-[#5a8f69] hover:text-white cursor-pointer text-xs sm:text-sm">
+                    Popularity
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Mobile Filters Button -->
+              <button id="openFiltersMobile" (click)="openMobileFilters()"
+                class="lg:hidden bg-[#5a8f69] text-white py-2 px-3 rounded font-medium text-xs sm:text-sm hover:bg-green-700 transition-colors flex items-center gap-1">
+                <i class="ri-filter-3-line"></i>
+                <span>Filters</span>
+              </button>
+            </div>
+
+            <!-- SEARCH BAR -->
+            <div class="w-full lg:flex-1">
+              <div class="relative w-full">
+
+                <input type="text" placeholder="Search Products..." [(ngModel)]="searchText" (ngModelChange)="onSearchChange($event)"
+                  class="w-full bg-[#f5f8f6] text-gray-700 px-3 py-2 pr-12 text-xs sm:text-sm border border-gray-300 rounded-lg focus:border-[#5a8f69] focus:ring-1 focus:ring-[#5a8f69]" />
+
+                <button (click)="onSearchButton()"
+                  class="absolute right-0 top-0 h-full w-10 bg-[#5a8f69] hover:bg-green-700 text-white flex items-center justify-center rounded-r">
+                  <i class="ri-search-line text-base"></i>
+                </button>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+
         <div class="flex flex-wrap w-full mb-4">
           <span class="font-semibold text-xs sm:text-sm text-gray-600">
             Showing {{ products.length }} of {{ totalProducts }} products
           </span>
         </div>
- 
+
         <!-- Product Grid -->
-        <div
-          class="grid product-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 relative"
-        >
+        <div class="grid product-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 relative">
           <!-- Inline Loader -->
           <div *ngIf="loadingProducts" class="col-span-full loader-container">
             <div class="loader-content text-center">
               <div class="logo-wrapper">
-                <img
-                  src="assets/img/logo1.png"
-                  alt="Ojasvi Logo"
-                  class="ojasvi-logo"
-                />
+                <img src="assets/img/logo1.png" alt="Ojasvi Logo" class="ojasvi-logo" />
                 <div class="processing-ring"></div>
               </div>
             </div>
           </div>
 
           <!-- Product Cards -->
-          <div
-            class="product-card bg-white rounded-lg shadow-md overflow-hidden p-0"
-            style="cursor: pointer"
-            *ngFor="
+          <div class="product-card bg-white rounded-lg shadow-md overflow-hidden p-0" style="cursor: pointer" *ngFor="
               let product of products;
               trackBy: trackByProductId;
               let i = index
-            "
-          >
-            <span
-              (click)="addtodetail(product)"
-              [routerLink]="
+            ">
+            <span (click)="addtodetail(product)" [routerLink]="
                 selectedVariantMap[product.ID]
                   ? [
                       '/product_details',
@@ -534,15 +410,10 @@
                       selectedVariantMap[product.ID]
                     ]
                   : ['/product_details', product.ID]
-              "
-            >
+              ">
               <div class="relative">
-                <div
-                  class="w-full h-48 sm:h-56 md:h-60 bg-white flex items-center justify-center overflow-hidden"
-                >
-                  <ng-container
-                    *ngIf="initImageIndex(product.ID) === undefined"
-                  ></ng-container>
+                <div class="w-full h-48 sm:h-56 md:h-60 bg-white flex items-center justify-center overflow-hidden">
+                  <ng-container *ngIf="initImageIndex(product.ID) === undefined"></ng-container>
                   <!-- <img
                     *ngIf="
                       getImageArray(product) &&
@@ -556,147 +427,106 @@
                     [alt]="product.NAME"
                     class="rounded-lg object-cover w-full h-full"
                   /> -->
-                  <img
-                    *ngIf="
+                  <img *ngIf="
                       selectedVariantMap &&
                       selectedVariantMap[product.ID]
-                    "
-                    [src]="vareintImageUrl + getImageArrayvareint(selectedVariantMap[product.ID])"
-                    [alt]="product.NAME"
-                    class="rounded-lg object-cover w-full h-full"
-                  />
-                  
+                    " [src]="vareintImageUrl + getImageArrayvareint(selectedVariantMap[product.ID])"
+                    [alt]="product.NAME" class="rounded-lg object-cover w-full h-full" />
+
                 </div>
 
                 <div class="absolute top-3 right-3 flex space-x-2">
-                  <button
-                    class="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm"
-                    [ngClass]="{
+                  <button class="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm" [ngClass]="{
                       'text-green-500': product.isLiked,
                       'text-gray-600 hover:text-[#5a8f69]': !product.isLiked
-                    }"
-                    (click)="toggleLike(product, $event)"
-                  >
-                    <i
-                      [class]="
+                    }" (click)="toggleLike(product, $event)">
+                    <i [class]="
                         product.isLiked ? 'ri-heart-fill' : 'ri-heart-line'
-                      "
-                    >
+                      ">
                     </i>
                   </button>
                 </div>
 
                 <div class="absolute top-3 left-3">
-                  <span
-                    class="text-white text-xs px-2 py-1 rounded-full"
-                    [ngClass]="{
+                  <span class="text-white text-xs px-2 py-1 rounded-full" [ngClass]="{
                       'bg-[#5a8f69]/100': product.IS_NEW_ARRIVAL === 1,
-                      'bg-secondary/100': product.IS_BEST_SELLER === 1,
+                      
                       'bg-green-500/100': product.IS_POPULAR === 1
-                    }"
-                    >{{
-                      product.IS_NEW_ARRIVAL == "1"
-                        ? "New"
-                        : product.IS_BEST_SELLER == "1"
-                        ? "Best Seller"
-                        : product.IS_POPULAR == "1"
-                        ? "Popular"
-                        : ""
+                    }">{{
+                    product.IS_NEW_ARRIVAL == "1"
+                    ? "New"
+                  
+                    : product.IS_POPULAR == "1"
+                    ? "Popular"
+                    : ""
                     }}
                   </span>
                 </div>
               </div>
 
               <div class="text-danger text-sm text-center pt-1 h-2">
-                <small
-                  *ngIf="
+                <small *ngIf="
                     product.IS_UPCOMING == 1 ||
                     product.VARIENTS == null ||
                     product.VARIENTS == undefined ||
                     product.VARIENTS.length == 0 ||
                     !hasActiveVariants(product.ID) ||
                     currentStockMap[product.ID] <= 0
-                  "
-                >
+                  ">
                   Out of stock
                 </small>
               </div>
 
               <div class="pt-2 px-3">
                 <span
-                  class="text-xs text-gray-500 rounded-full bg-[rgb(233,180,76)] text-white text-xs font-small px-2 py-1"
-                >
+                  class="text-xs text-gray-500 rounded-full bg-[rgb(233,180,76)] text-white text-xs font-small px-2 py-1">
                   {{ product.CATEGORY_NAME }}
                 </span>
 
-                <div
-                  *ngIf="product.CUSTOMER_RATINGS"
+                <div *ngIf="product.CUSTOMER_RATINGS"
                   class="inline-flex justify-center items-center bg-[#72BB81E5] text-white text-xs font-small px-2 py-1 rounded-full float-right"
-                  style="width: 58.67px"
-                >
+                  style="width: 58.67px">
                   <span>{{ product.CUSTOMER_RATINGS | number : "1.1-1" }}</span>
 
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-3 w-3 ml-1"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 ml-1" fill="currentColor" viewBox="0 0 24 24">
                     <path
-                      d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.782 1.4 8.17L12 18.896l-7.334 3.866 1.4-8.17L.132 9.21l8.2-1.192z"
-                    />
+                      d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.782 1.4 8.17L12 18.896l-7.334 3.866 1.4-8.17L.132 9.21l8.2-1.192z" />
                   </svg>
                 </div>
 
-                <h3
-                  class="font-medium text-gray-900 mt-2 hover:text-[#5a8f69] truncate text-sm"
-                  [title]="product.NAME"
-                >
+                <h3 class="font-medium text-gray-900 mt-2 hover:text-[#5a8f69] truncate text-sm" [title]="product.NAME">
                   {{ product.NAME }}
                 </h3>
 
-                <small
-                  class="text-gray-600 mt-1 line-clamp-2 text-xs"
-                  [title]="product.DESCRIPTION"
-                >
+                <small class="text-gray-600 mt-1 line-clamp-2 text-xs" [title]="product.DESCRIPTION">
                   {{ product.DESCRIPTION }}
                 </small>
 
                 <div class="mt-2">
-                  <span
-                    class="text-black font-medium me-1 text-sm"
-                    *ngIf="product.IS_VERIENT_AVAILABLE == 0"
-                  >
+                  <span class="text-black font-medium me-1 text-sm" *ngIf="product.IS_VERIENT_AVAILABLE == 0">
                     ${{ product.RATE }}
                   </span>
 
-                  <span
-                    class="text-black font-medium me-1 text-sm"
-                    *ngIf="product.IS_VERIENT_AVAILABLE == 1"
-                  >
+                  <span class="text-black font-medium me-1 text-sm" *ngIf="product.IS_VERIENT_AVAILABLE == 1">
                     ${{
-                      product.DISCOUNT_TYPE == "Amount"
-                        ? variantRateMap[product.ID] - product.DISCOUNT
-                        : variantRateMap[product.ID] -
-                          (variantRateMap[product.ID] * product.DISCOUNT) / 100
+                    product.DISCOUNT_TYPE == "Amount"
+                    ? variantRateMap[product.ID] - product.DISCOUNT
+                    : variantRateMap[product.ID] -
+                    (variantRateMap[product.ID] * product.DISCOUNT) / 100
                     }}
                   </span>
 
-                  <span
-                    class="text-xs line-through text-[#D1D5DB] me-1"
-                    *ngIf="product.DISCOUNT && product.DISCOUNT > 0"
-                  >
+                  <span class="text-xs line-through text-[#D1D5DB] me-1"
+                    *ngIf="product.DISCOUNT && product.DISCOUNT > 0">
                     ${{ variantRateMap[product.ID] || 0 }}
                   </span>
 
-                  <span
-                    class="text-xs text-[#5a8f69] whitespace-nowrap"
-                    *ngIf="product.DISCOUNT && product.DISCOUNT > 0"
-                  >
+                  <span class="text-xs text-[#5a8f69] whitespace-nowrap"
+                    *ngIf="product.DISCOUNT && product.DISCOUNT > 0">
                     {{
-                      product.DISCOUNT_TYPE == "Amount"
-                        ? "$" + product.DISCOUNT
-                        : product.DISCOUNT + "%"
+                    product.DISCOUNT_TYPE == "Amount"
+                    ? "$" + product.DISCOUNT
+                    : product.DISCOUNT + "%"
                     }}
                     off
                   </span>
@@ -707,16 +537,14 @@
             <div class="px-3 mb-3 mt-2">
               <div class="flex flex-wrap gap-2">
                 <ng-container *ngFor="let item of variantMap[product.ID] || []">
-                  <small
-                    [ngClass]="{
+                  <small [ngClass]="{
                       'border border-black bg-gray-100':
                         selectedVariantMap[product.ID] == item.VARIENT_ID,
                       'bg-white border border-gray-300 hover:border-black':
                         selectedVariantMap[product.ID] != item.VARIENT_ID
                     }"
                     class="cursor-pointer text-gray-800 text-xs font-medium px-3 py-1 rounded-full transition-all duration-150"
-                    (click)="change(item.VARIENT_ID, product.ID, product)"
-                  >
+                    (click)="change(item.VARIENT_ID, product.ID, product)">
                     {{ item.SIZE }} {{ item.UNIT_NAME }}
                   </small>
                 </ng-container>
@@ -726,53 +554,35 @@
         </div>
 
         <!-- No Data -->
-        <div
-          *ngIf="products.length === 0"
-          class="flex items-center justify-center min-h-[60vh] w-full"
-        >
-          <img
-            src="assets/img/nodata.png"
-            alt="No Data"
-            class="max-w-[200px] w-1/2 md:w-1/3 lg:w-1/4 opacity-80"
-          />
+        <div *ngIf="products.length === 0" class="flex items-center justify-center min-h-[60vh] w-full">
+          <img src="assets/img/nodata.png" alt="No Data" class="max-w-[200px] w-1/2 md:w-1/3 lg:w-1/4 opacity-80" />
         </div>
 
         <!-- Pagination -->
         <div class="mt-10 flex justify-center" *ngIf="totalPages > 0">
           <nav class="flex items-center space-x-2 flex-wrap gap-2">
-            <a
-              class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 text-gray-600 hover:bg-gray-50 cursor-pointer text-sm"
-              [class.pointer-events-none]="currentPage === 1"
-              [class.opacity-50]="currentPage === 1"
-              (click)="
+            <a class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 text-gray-600 hover:bg-gray-50 cursor-pointer text-sm"
+              [class.pointer-events-none]="currentPage === 1" [class.opacity-50]="currentPage === 1" (click)="
                 scrollToSection('product-grids');
                 setCurrentPage(currentPage - 1)
-              "
-            >
+              ">
               <i class="ri-arrow-left-s-line"></i>
             </a>
 
-            <a
-              *ngFor="let page of pagesArray"
-              class="w-10 h-10 flex items-center justify-center rounded-full cursor-pointer text-sm"
-              [ngClass]="{
+            <a *ngFor="let page of pagesArray"
+              class="w-10 h-10 flex items-center justify-center rounded-full cursor-pointer text-sm" [ngClass]="{
                 'bg-[#5a8f69] text-white': page === currentPage,
                 'border border-gray-300 text-gray-600 hover:bg-gray-50':
                   page !== currentPage
-              }"
-              (click)="scrollToSection('product-grids'); setCurrentPage(page)"
-              >{{ page }}
+              }" (click)="scrollToSection('product-grids'); setCurrentPage(page)">{{ page }}
             </a>
 
-            <a
-              class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 text-gray-600 hover:bg-gray-50 cursor-pointer text-sm"
-              [class.pointer-events-none]="currentPage === totalPages"
-              [class.opacity-50]="currentPage === totalPages"
+            <a class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 text-gray-600 hover:bg-gray-50 cursor-pointer text-sm"
+              [class.pointer-events-none]="currentPage === totalPages" [class.opacity-50]="currentPage === totalPages"
               (click)="
                 scrollToSection('product-grids');
                 setCurrentPage(currentPage + 1)
-              "
-            >
+              ">
               <i class="ri-arrow-right-s-line"></i>
             </a>
           </nav>
@@ -843,19 +653,11 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
       <div>
-        <img
-          id="modalProductImage"
-          src=""
-          alt="Product"
-          class="w-full h-auto object-cover rounded-lg"
-        />
+        <img id="modalProductImage" src="" alt="Product" class="w-full h-auto object-cover rounded-lg" />
       </div>
       <div>
         <span id="modalProductCategory" class="text-sm text-gray-500"></span>
-        <h2
-          id="modalProductName"
-          class="text-2xl font-bold text-gray-900 mt-2"
-        ></h2>
+        <h2 id="modalProductName" class="text-2xl font-bold text-gray-900 mt-2"></h2>
         <div class="flex items-center mt-2">
           <div class="flex text-yellow-400">
             <i class="ri-star-fill"></i>
@@ -867,10 +669,7 @@
           <span class="text-sm text-gray-500 ml-2">4.5 (32 reviews)</span>
         </div>
         <div class="mt-4">
-          <span
-            id="modalProductPrice"
-            class="text-2xl font-bold text-primary"
-          ></span>
+          <span id="modalProductPrice" class="text-2xl font-bold text-primary"></span>
         </div>
         <p id="modalProductDescription" class="text-gray-600 mt-4"></p>
         <div class="mt-6">
@@ -884,36 +683,26 @@
         </div>
         <div class="mt-6">
           <h4 class="font-medium text-gray-900 mb-2">Quantity:</h4>
-          <div
-            class="flex items-center border border-gray-300 rounded-button w-32"
-          >
+          <div class="flex items-center border border-gray-300 rounded-button w-32">
             <button
-              class="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-primary quantity-decrease"
-            >
+              class="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-primary quantity-decrease">
               <i class="ri-subtract-line"></i>
             </button>
-            <input
-              type="number"
-              value="1"
-              min="1"
-              class="w-12 h-10 text-center border-none focus:outline-none text-gray-700"
-            />
+            <input type="number" value="1" min="1"
+              class="w-12 h-10 text-center border-none focus:outline-none text-gray-700" />
             <button
-              class="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-primary quantity-increase"
-            >
+              class="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-primary quantity-increase">
               <i class="ri-add-line"></i>
             </button>
           </div>
         </div>
         <div class="mt-8 flex space-x-4">
           <button
-            class="flex-1 bg-primary text-white py-3 rounded-button font-medium hover:bg-primary/90 transition-colors !rounded-button whitespace-nowrap"
-          >
+            class="flex-1 bg-primary text-white py-3 rounded-button font-medium hover:bg-primary/90 transition-colors !rounded-button whitespace-nowrap">
             Add to Cart
           </button>
           <button
-            class="bg-gray-100 text-gray-800 px-4 py-3 rounded-button font-medium hover:bg-gray-200 transition-colors !rounded-button whitespace-nowrap"
-          >
+            class="bg-gray-100 text-gray-800 px-4 py-3 rounded-button font-medium hover:bg-gray-200 transition-colors !rounded-button whitespace-nowrap">
             <i class="ri-heart-line"></i>
           </button>
         </div>
@@ -922,10 +711,8 @@
   </div>
 </div>
 
-<button
-  id="backToTop"
-  class="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-[#5a8f69] text-white shadow-md flex items-center justify-center opacity-0 invisible transition-all duration-300"
->
+<button id="backToTop"
+  class="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-[#5a8f69] text-white shadow-md flex items-center justify-center opacity-0 invisible transition-all duration-300">
   <i class="ri-arrow-up-line ri-lg"></i>
 </button>
 
@@ -940,19 +727,11 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
       <div>
-        <img
-          id="modalProductImage"
-          src=""
-          alt="Product"
-          class="w-full h-auto object-cover rounded-lg"
-        />
+        <img id="modalProductImage" src="" alt="Product" class="w-full h-auto object-cover rounded-lg" />
       </div>
       <div>
         <span id="modalProductCategory" class="text-sm text-gray-500"></span>
-        <h2
-          id="modalProductName"
-          class="text-2xl font-bold text-gray-900 mt-2"
-        ></h2>
+        <h2 id="modalProductName" class="text-2xl font-bold text-gray-900 mt-2"></h2>
         <div class="flex items-center mt-2">
           <div class="flex text-yellow-400">
             <i class="ri-star-fill"></i>
@@ -964,10 +743,7 @@
           <span class="text-sm text-gray-500 ml-2">4.5 (32 reviews)</span>
         </div>
         <div class="mt-4">
-          <span
-            id="modalProductPrice"
-            class="text-2xl font-bold text-[#5a8f69]"
-          ></span>
+          <span id="modalProductPrice" class="text-2xl font-bold text-[#5a8f69]"></span>
         </div>
         <p id="modalProductDescription" class="text-gray-600 mt-4"></p>
         <div class="mt-6">
@@ -981,36 +757,26 @@
         </div>
         <div class="mt-6">
           <h4 class="font-medium text-gray-900 mb-2">Quantity:</h4>
-          <div
-            class="flex items-center border border-gray-300 rounded-button w-32"
-          >
+          <div class="flex items-center border border-gray-300 rounded-button w-32">
             <button
-              class="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-[#5a8f69] quantity-decrease"
-            >
+              class="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-[#5a8f69] quantity-decrease">
               <i class="ri-subtract-line"></i>
             </button>
-            <input
-              type="number"
-              value="1"
-              min="1"
-              class="w-12 h-10 text-center border-none focus:outline-none text-gray-700"
-            />
+            <input type="number" value="1" min="1"
+              class="w-12 h-10 text-center border-none focus:outline-none text-gray-700" />
             <button
-              class="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-[#5a8f69] quantity-increase"
-            >
+              class="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-[#5a8f69] quantity-increase">
               <i class="ri-add-line"></i>
             </button>
           </div>
         </div>
         <div class="mt-8 flex space-x-4">
           <button
-            class="flex-1 bg-[#5a8f69] text-white py-3 rounded-button font-medium hover:bg-[#5a8f69]/90 transition-colors !rounded-button whitespace-nowrap"
-          >
+            class="flex-1 bg-[#5a8f69] text-white py-3 rounded-button font-medium hover:bg-[#5a8f69]/90 transition-colors !rounded-button whitespace-nowrap">
             Add to Cart
           </button>
           <button
-            class="bg-gray-100 text-gray-800 px-4 py-3 rounded-button font-medium hover:bg-gray-200 transition-colors !rounded-button whitespace-nowrap"
-          >
+            class="bg-gray-100 text-gray-800 px-4 py-3 rounded-button font-medium hover:bg-gray-200 transition-colors !rounded-button whitespace-nowrap">
             <i class="ri-heart-line"></i>
           </button>
         </div>
@@ -1020,8 +786,5 @@
 </div>
 
 <div *ngIf="viewCart">
-  <app-cart-drawer
-    [visible]="viewCart"
-    (visibleChange)="onCartDrawerClose($event)"
-  ></app-cart-drawer>
+  <app-cart-drawer [visible]="viewCart" (visibleChange)="onCartDrawerClose($event)"></app-cart-drawer>
 </div>

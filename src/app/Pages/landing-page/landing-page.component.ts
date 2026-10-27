@@ -64,7 +64,7 @@ export class LandingPageComponent {
     private cookie: CookieService,
     private productService: ProductDataService
   ) {}
-
+ custId:any
   Imgurl: any;
   ngOnInit(): void {
     this.getcustomerWebsiteReviews();
@@ -74,6 +74,8 @@ export class LandingPageComponent {
     this.IMAGEuRL = this.api.retriveimgUrl2();
     this.Imgurl = this.IMAGEuRL + 'CustomerProfile/';
     this.userID = this.commonFunction.decryptdata(this.euserID);
+    this.custId = this.commonFunction.decryptdata(this.euserID);
+
     // sessionStorage.setItem('IS_GUEST', 'false');
   }
   sessionkey: string = '';
@@ -113,7 +115,7 @@ filter: any = ' AND IS_POPULAR=1';
 // Desktop carousel indices (shows 4 at a time)
 carousels: any = {
   popular: 0,
-  bestseller: 0,
+  // bestseller: 0,
   newarrival: 0,
   upcoming: 0,  // ADD THIS
 };
@@ -121,14 +123,14 @@ carousels: any = {
 // Mobile carousel indices (shows 1 at a time)
 carouselIndex: any = {
   popular: 0,
-  bestseller: 0,
+  // bestseller: 0,
   newarrival: 0,
   upcoming: 0,
 };
 
 products: any = {
   popular: [],
-  bestseller: [],
+  // bestseller: [],
   newarrival: [],
   upcoming: [],  // ADD THIS
 };
@@ -139,7 +141,7 @@ switchTab(tab: string): void {
   // Reset filter based on tab
   this.filter = '';
   if (tab === 'popular') this.filter = 'AND IS_POPULAR = 1';
-  if (tab === 'bestseller') this.filter = 'AND IS_BEST_SELLER = 1';
+  // if (tab === 'bestseller') this.filter = 'AND IS_BEST_SELLER = 1';
   if (tab === 'newarrival') this.filter = 'AND IS_NEW_ARRIVAL = 1';
   if (tab === 'upcoming') this.filter = 'AND IS_UPCOMING = 1';
 
@@ -148,53 +150,66 @@ switchTab(tab: string): void {
   this.getProducts();
 }
 
+
+
 getProducts(): void {
   this.loadingRecords = true;
+
   this.api
     .getAllProductsData(
       0,
       0,
       'ID',
       'asc',
-      this.filter +
-        ' AND STATUS=1 AND IS_VERIENT_AVAILABLE=1 '
+      this.filter + ' AND STATUS=1 AND IS_VERIENT_AVAILABLE=1'
     )
     .subscribe({
       next: (data) => {
-        if (data['code'] === 200) {
-          this.loadingRecords = false;
-          this.dataList = data.Products;
-          this.products[this.activeTab] = this.dataList;
-          this.getFavoriteProducts()
-          this.dataList.forEach((product) => {
-            this.loadProductVariantsFromData(product);
-            let variants = product.VARIENTS;
+        this.loadingRecords = false;
 
-            if (typeof variants === 'string') {
-              try {
-                variants = JSON.parse(variants);
-              } catch (e) {
-                variants = [];
-              }
-            }
+        if (data?.code !== 200) return;
 
-            if (Array.isArray(variants) && variants.length > 0) {
-              this.variantRateMap[product.ID] = variants[0].RATE;
-              this.currentStockMap[product.ID] = variants[0].CURRENT_STOCK;
-            } else {
-              this.variantRateMap[product.ID] = 0;
-              this.currentStockMap[product.ID] = 0;
+        // ✅ FILTER PRODUCTS
+        const filteredProducts = data.Products.filter((product: any) => {
+          let variants = product.VARIENTS;
+
+          if (typeof variants === 'string') {
+            try {
+              variants = JSON.parse(variants);
+            } catch {
+              return false;
             }
-          });
-        } else {
-          this.loadingRecords = false;
-        }
+          }
+
+          if (!Array.isArray(variants) || variants.length === 0) {
+            return false;
+          }
+
+          // ✅ MUST HAVE AT LEAST ONE ACTIVE + IN-STOCK VARIANT
+          return variants.some(
+            (v: any) =>
+              (v.STATUS === 1 || v.STATUS === true) &&
+              v.CURRENT_STOCK > 0
+          );
+        });
+
+        // ✅ ASSIGN ONLY VALID PRODUCTS
+        this.dataList = filteredProducts;
+        this.products[this.activeTab] = filteredProducts;
+
+        this.getFavoriteProducts();
+
+        // ✅ Load variants safely
+        this.dataList.forEach((product: any) => {
+          this.loadProductVariantsFromData(product);
+        });
       },
-      error: (err) => {
+      error: () => {
         this.loadingRecords = false;
       },
     });
 }
+
 
 // Desktop carousel - show 4 products at a time
 getVisibleProducts(tab: string): any[] {
@@ -508,6 +523,7 @@ prevMobile(tab: string): void {
       REVIEW: this.reviewForm.text,
       RATINGS: this.reviewForm.rating,
       CLIENT_ID: 1,
+      STATUS:1
       // SESSION_KEY: this.decyptedsessionKey,
     };
 
@@ -530,12 +546,58 @@ prevMobile(tab: string): void {
   }
 
   ReviewData: any[] = [];
+//hasReviewed: boolean = false;
+onWriteReviewClick() {
+  const token = sessionStorage.getItem('token');
+  const userId = sessionStorage.getItem('userId');
+
+  if (!token || !userId) {
+    this.showLoginModal1() 
+    return;
+  }
+
+  // ✅ User is logged in → open modal
+  const modalEl = document.getElementById('reviewModal');
+  if (modalEl) {
+    const modal =
+      bootstrap.Modal.getInstance(modalEl) ||
+      new bootstrap.Modal(modalEl);
+    modal.show();
+  }
+}
+
+ showLoginModal1() {
+   
+    this.openLoginModal()
+ }
+  openLoginModal(){
+     this.activeTab = 'login';
+    const modalEl = document.getElementById('loginmodal');
+    const modalInstance =
+      bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+
+    // Remove any leftover backdrops
+    document.querySelectorAll('.modal-backdrop').forEach((el) => el.remove());
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+
+
+    modalInstance.show();
+ }
+
+
+
 
   getcustomerWebsiteReviews() {
-    this.api.getcustomerWebsiteReviews('').subscribe(
+    this.api.getcustomerWebsiteReviews(' AND STATUS=1').subscribe(
       (data) => {
         if (data['code'] === 200) {
           this.ReviewData = data['data'];
+
+          //  this.hasReviewed = this.ReviewData.some(
+          //   (review: any) => review.CUSTOMER_ID === Number(this.custId)
+          // );
           this.updateResponsiveSettings();
           window.addEventListener(
             'resize',
@@ -633,54 +695,47 @@ prevMobile(tab: string): void {
     this.productService.setProduct(product);
     sessionStorage.setItem('selectedProduct', JSON.stringify(product));
   }
-   loadProductVariantsFromData(product: any) {
-    let variants = product.VARIENTS;
-    // console.log(variants);
+   loadProductVariantsFromData(product: any): boolean {
+  let variants = product.VARIENTS;
 
-    if (typeof variants === 'string') {
-      try {
-        variants = JSON.parse(variants);
-      } catch {
-        variants = [];
-      }
-    }
-
-    if (Array.isArray(variants) && variants.length > 0) {
-      let Variants =
-        variants?.filter((v: any) => v.STATUS === true || v.STATUS === 1) || [];
-      this.variantMap[product.ID] = Variants;
-
-      if (!this.selectedVariantMap[product.ID]) {
-        const firstVariant = variants[0];
-        this.selectedVariantMap[product.ID] = firstVariant.VARIENT_ID;
-        this.variantRateMap[product.ID] = firstVariant.RATE || 0;
-        this.variantStockMap[product.ID] = firstVariant.OPENING_STOCK || 0;
-        this.unitIdMap[product.ID] = firstVariant.UNIT_ID;
-        // console.log('this.unitIdMap[product.ID]', this.unitIdMap[product.ID]);
-        let selectedvarientproductId = this.dataList.findIndex(
-          (id) => id.ID === product.ID
-        );
-
-        this.dataList[selectedvarientproductId].CURRENT_STOCK_VARIENT =
-          firstVariant.CURRENT_STOCK ? firstVariant.CURRENT_STOCK : 0;
-        //  console.log('selectedvarientproductId',this.products[selectedvarientproductId])
-      } else {
-        const selectedVariant = Variants.find(
-          (v) => v.VARIENT_ID === this.selectedVariantMap[product.ID]
-        );
-
-        if (selectedVariant) {
-          this.unitIdMap[product.ID] = selectedVariant.UNIT_ID;
-          let selectedvarientproductId = this.dataList.findIndex(
-            (id) => id.ID === product.ID
-          );
-          this.dataList[selectedvarientproductId].CURRENT_STOCK_VARIENT =
-            selectedVariant.CURRENT_STOCK ? selectedVariant.CURRENT_STOCK : 0;
-          //  this.products[selectedvarientproductId].CURRENT_STOCK_VARIENT=firstVariant.CURRENT_STOCK
-        }
-      }
+  if (typeof variants === 'string') {
+    try {
+      variants = JSON.parse(variants);
+    } catch {
+      return false;
     }
   }
+
+  if (!Array.isArray(variants) || variants.length === 0) {
+    return false;
+  }
+
+  // ✅ keep only ACTIVE (+ IN-STOCK if you want)
+  const activeVariants = variants.filter(
+    (v: any) =>
+      (v.STATUS === 1 || v.STATUS === true) &&
+      v.CURRENT_STOCK > 0
+  );
+
+  // ❌ No valid variants → product invalid
+  if (activeVariants.length === 0) {
+    return false;
+  }
+
+  this.variantMap[product.ID] = activeVariants;
+
+  const firstVariant = activeVariants[0];
+
+  this.selectedVariantMap[product.ID] = firstVariant.VARIENT_ID;
+  this.variantRateMap[product.ID] = firstVariant.RATE || 0;
+  this.currentStockMap[product.ID] = firstVariant.CURRENT_STOCK || 0;
+  this.unitIdMap[product.ID] = firstVariant.UNIT_ID;
+
+  product.CURRENT_STOCK_VARIENT = firstVariant.CURRENT_STOCK || 0;
+
+  return true; // ✅ product is valid
+}
+
   trackByProductId(index: number, product: any): number {
     return product.ID;
   }

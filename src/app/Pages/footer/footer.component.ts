@@ -62,7 +62,7 @@ export class FooterComponent {
             this.loadingRecords = false;
             this.emailaddress = '';
           } else if (successCode['code'] === 400) {
-            this.toastr.error('Email ID already exists', '');
+           this.toastr.warning('You are already Subscribed.', '');
             this.loadingRecords = false;
           } else {
             this.loadingRecords = false;

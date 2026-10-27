@@ -5,7 +5,7 @@ import {
   HttpRequest,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, tap, throwError, of, forkJoin } from 'rxjs';
 import { CommonFunctionService } from './CommonFunctionService';
 import { CookieService } from 'ngx-cookie-service';
 // import { Ticketfaqmapping } from '../components/models/TicketingSystem';
@@ -32,12 +32,12 @@ export class ApiServiceService {
     headers: this.httpHeaders1,
   };
 
-  commoncode = 'https://ojasviadmin.uvtechsoft.com:9090';
-  commonimgUrl = 'https://ojasviadmin.uvtechsoft.com:9090/api/upload/';
+  // commoncode = 'https://ojasviadmin.uvtechsoft.com:9090';
+  // commonimgUrl = 'https://ojasviadmin.uvtechsoft.com:9090/api/upload/';
 
   // ojasvi live
-  // commoncode = 'https://admin.ojasvidermacare.com:9092';
-  // commonimgUrl = 'https://admin.ojasvidermacare.com:9092/api/upload/';
+  commoncode = 'https://admin.ojasvidermacare.com:9092';
+  commonimgUrl = 'https://admin.ojasvidermacare.com:9092/api/upload/';
 
   // commoncode = 'https://h10rqczh-9878.inc1.devtunnels.ms';
   // commonimgUrl = 'https://h10rqczh-9878.inc1.devtunnels.ms/api/upload/';
@@ -52,16 +52,16 @@ export class ApiServiceService {
   //  commoncode = 'http://192.168.29.212:9878';
   // commonimgUrl = 'http://192.168.29.212:9878/api/upload/';
 
-  
+
 
   //Testing or local
-  commonapikey = 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY';
-  commonapplicationkey = 'awlcQRwoZxAJQm7b';
+  // commonapikey = 'VnEgKy9sBEXscwr4zs7J18aSjW0YA4fY';
+  // commonapplicationkey = 'awlcQRwoZxAJQm7b';
 
   //Live
-  // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
-  //   commonapplicationkey = '26lLNSmaKlcFziHH';
-  
+  commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla';
+  commonapplicationkey = '26lLNSmaKlcFziHH';
+
   // live ojasvi
   //   APPLICATION_KEY = '26lLNSmaKlcFziHH'
   // commonapikey = 'BEZhBltbyzL11SPV9YFdH4YgYUKZ6Fla'
@@ -1556,6 +1556,23 @@ export class ApiServiceService {
     );
   }
 
+  clearCustomerCartItems(cartItems: any[]): Observable<any> {
+
+    if (!cartItems || cartItems.length === 0) {
+      return of(true);
+    }
+
+    const deleteOperations = cartItems.map(item => {
+      return this.RemoveFromCart({
+        CART_ID: item.CART_ID,
+        CART_ITEM_ID: item.CART_ITEM_ID,
+        PRODUCT_ID: item.PRODUCT_ID
+      });
+    });
+
+    return forkJoin(deleteOperations);
+  }
+
   CreateOrder(data: any): Observable<any> {
     data.CLIENT_ID = this.clientId;
     const headers = new HttpHeaders({
@@ -1751,7 +1768,7 @@ export class ApiServiceService {
     });
     return this.httpClient.post<any>(
       this.url +
-        'api/customertechnicianfeedback/technicianServiceFeedbackByCustomer',
+      'api/customertechnicianfeedback/technicianServiceFeedbackByCustomer',
       JSON.stringify(data),
       { headers }
     );
@@ -2958,7 +2975,7 @@ export class ApiServiceService {
     PASSWORD: any,
     CLIENT_ID: 1,
     STATUS: any,
-    COUNTRY_CODE :any
+    COUNTRY_CODE: any
   ): Observable<any> {
     // data.CLIENT_ID = this.clientId; // Uncomment if needed
     const requestData: any = {
@@ -4230,7 +4247,7 @@ export class ApiServiceService {
 
 
 
-    sendotpp(CEMAIL_ID: string): Observable<any> {
+  sendotpp(CEMAIL_ID: string): Observable<any> {
     const data = {
       username: CEMAIL_ID,
     };
@@ -4269,14 +4286,14 @@ export class ApiServiceService {
 
   verifyotpp(
     MOBILE_NO: string,
-  COUNTRY_CODE:string,
+    COUNTRY_CODE: string,
     EMAIL_ID: string,
     OTP: string,
     CUSTOMER_ID: any
   ): Observable<any> {
     var data = {
       MOBILE_NO: MOBILE_NO,
-      COUNTRY_CODE:COUNTRY_CODE,
+      COUNTRY_CODE: COUNTRY_CODE,
       EMAIL_ID: EMAIL_ID,
       OTP: OTP,
       CUSTOMER_ID: CUSTOMER_ID,
@@ -4295,7 +4312,7 @@ export class ApiServiceService {
       }
     );
   }
-   getChangePasswordOtp(data: any): Observable<any> {
+  getChangePasswordOtp(data: any): Observable<any> {
     // data.CLIENT_ID = this.clientId; // Uncomment if needed
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -4312,7 +4329,7 @@ export class ApiServiceService {
       }
     );
   }
-   verifyChangePasswordOtp(data: any): Observable<any> {
+  verifyChangePasswordOtp(data: any): Observable<any> {
     // data.CLIENT_ID = this.clientId; // Uncomment if needed
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -4342,9 +4359,9 @@ export class ApiServiceService {
       sortKey: sortKey,
       sortValue: sortValue,
       filter: filter,
-      CLIENT_ID:this.clientId
+      CLIENT_ID: this.clientId
     };
-      const headers = new HttpHeaders({
+    const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       applicationkey: this.commonapplicationkey,
       apikey: this.commonapikey,

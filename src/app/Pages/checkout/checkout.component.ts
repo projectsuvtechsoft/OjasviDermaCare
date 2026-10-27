@@ -432,7 +432,7 @@ export class CheckoutComponent {
             IS_LOCAL_PICKUP: addr?.IS_LOCAL_PICKUP,
           }));
           this.selectedAddress =
-            this.savedAddresses.find((a) => a.IS_DEFAULT) ||
+            this.savedAddresses.find((a) => a.IS_DEFUALT_ADDRESS) ||
             this.savedAddresses[0];
 
           this.IS_LOCAL_PICKUP = this.selectedAddress?.IS_LOCAL_PICKUP;
@@ -457,6 +457,7 @@ export class CheckoutComponent {
               'COUNTRY_NAME',
               this.getCountryFromID(this.selectedAddress.COUNTRY_NAME)
             );
+            // console.log(this.cartDetails)
             var CART_ID = this.cartDetails.cartDetails[0].CART_ID;
             var CART_ITEM_ID = this.cartDetails.cartDetails[0].ID;
             var COUNTRY_NAME = this.addressForm.COUNTRY_NAME;
@@ -884,7 +885,7 @@ export class CheckoutComponent {
           if (res.code === 200) {
             this.stateList = res.data;
             const selectedState = this.stateList.find(
-              (s) => s.ID === this.addressForm.STATE_NAME
+              (s) => s.ID === this.addressForm.STATE_ID
             );
             this.addressForm.STATE_ID = selectedState ? selectedState.ID : 0;
 
@@ -1640,8 +1641,9 @@ vareintImageUrl: string = this.api.retriveimgUrl + 'VarientImages/';
           this.isLoadingCities = false;
           if (response.code === 200) {
             this.cityList = response.data;
+            console.log(this.addressForm)
             const selectedCity = this.cityList.find(
-              (c) => c.ID === this.addressForm.CITY_NAME
+              (c) => c.ID === this.addressForm.CITY_ID
             );
             this.addressForm.CITY_ID = selectedCity ? selectedCity.ID : 0;
             this.citySearch = selectedCity
@@ -1726,24 +1728,47 @@ vareintImageUrl: string = this.api.retriveimgUrl + 'VarientImages/';
   // }
 
   // Called on input change for country
+  // onCountryInputChange() {
+  //   const typed = this.countrySearch?.trim();
+
+  // // If empty → clear all
+  // if (!typed) {
+  //   this.addressForm.COUNTRY_NAME = null;
+  //   this.addressForm.COUNTRY_ID = null;
+
+  //   this.addressForm.STATE_NAME = null;
+  //   this.addressForm.STATE_ID = null;
+  //   this.stateSearch = '';
+  //   this.stateList = [];
+  //   this.filteredCountries = [];
+  //   this.filteredStates = [];
+  //   return;
+  // }
+
+  // // Try to find exact country match
+  // const exactMatch = this.countryList.find(
+  //   (c) => c.NAME.toLowerCase() === typed.toLowerCase()
+  // );
+
+  // if (exactMatch) {
+  //   this.selectCountry(exactMatch);
+  //   return;
+  // }
+
+  // // No match → treat as plain text
+  // this.addressForm.COUNTRY_NAME = typed;
+  // this.addressForm.COUNTRY_ID = null;
+
+  // // Reset states if country is not valid
+  // this.stateList = [];
+  // this.addressForm.STATE_NAME = null;
+  // this.addressForm.STATE_ID = null;
+  // }
+
   onCountryInputChange() {
-   // // console.log(this.countrySearch)
-   // // If country input is empty, clear selection
-    // if (!this.countrySearch || this.countrySearch?.trim() === '') {
-    //   this.addressForm.COUNTRY_NAME = null; // clear selected ID
-    //   this.filteredCountries = [];
+  const typed = this.countrySearch?.trim();
 
-   //   // Clear state too
-    //   this.addressForm.STATE_NAME = null;
-    //   this.stateSearch = '';
-    //   this.filteredStates = [];
-    //   this.stateList = []; // optional: reset state list
-    // }
-    // this.addressForm.COUNTRY_NAME = this.countrySearch;
-
-    const typed = this.countrySearch?.trim();
-
-  // If empty → clear all
+  // 1️⃣ Empty → clear everything
   if (!typed) {
     this.addressForm.COUNTRY_NAME = null;
     this.addressForm.COUNTRY_ID = null;
@@ -1752,31 +1777,32 @@ vareintImageUrl: string = this.api.retriveimgUrl + 'VarientImages/';
     this.addressForm.STATE_ID = null;
     this.stateSearch = '';
     this.stateList = [];
-    this.filteredCountries = [];
     this.filteredStates = [];
+
+    this.addressForm.CITY_NAME = null;
+    this.addressForm.CITY_ID = null;
+    this.citySearch = '';
+    this.filteredCities = [];
     return;
   }
 
-  // Try to find exact country match
-  const exactMatch = this.countryList.find(
-    (c) => c.NAME.toLowerCase() === typed.toLowerCase()
-  );
-
-  if (exactMatch) {
-    // Use selectCountry to load the states list
-    this.selectCountry(exactMatch);
-    return;
-  }
-
-  // No match → treat as plain text
+  // 2️⃣ User is typing → text only (no select!)
   this.addressForm.COUNTRY_NAME = typed;
   this.addressForm.COUNTRY_ID = null;
 
-  // Reset states if country is not valid
-  this.stateList = [];
+  // 3️⃣ Reset dependent fields
   this.addressForm.STATE_NAME = null;
   this.addressForm.STATE_ID = null;
-  }
+  this.stateSearch = '';
+  this.stateList = [];
+  this.filteredStates = [];
+
+  this.addressForm.CITY_NAME = null;
+  this.addressForm.CITY_ID = null;
+  this.citySearch = '';
+  this.filteredCities = [];
+}
+
   generateShortCode(name: string): string {
     if (!name) return '';
     // Take the first two letters, uppercase
@@ -2137,6 +2163,7 @@ vareintImageUrl: string = this.api.retriveimgUrl + 'VarientImages/';
   }
 
   startTimer(): void {
+    this.remainingTime = this.countdownTime;
     if (this.timerSubscription) {
       return;
     }
@@ -2604,35 +2631,64 @@ vareintImageUrl: string = this.api.retriveimgUrl + 'VarientImages/';
     { label: 'Uzbekistan (+998)', value: '+998' },
   ];
 
-  onStateInputChange() {
+//   onStateInputChange() {
+//   const typed = this.stateSearch?.trim();
+
+//   if (!typed) {
+//     this.addressForm.STATE_NAME = null;
+//     this.addressForm.STATE_ID = null;
+    
+//     this.addressForm.CITY_NAME = null;
+//     this.addressForm.CITY_ID = null;
+//     this.citySearch = '';
+//     this.cityList = [];
+//     this.filteredStates = [];
+//     return;
+//   }
+
+//   const exactMatch = this.stateList.find(
+//     (s) => s.NAME.toLowerCase() === typed.toLowerCase()
+//   );
+
+//   if (exactMatch) {
+//     this.selectState(exactMatch);
+//     return;
+//   }
+
+//   // Free text typed
+//   this.addressForm.STATE_NAME = typed;
+//   this.addressForm.STATE_ID = null;
+
+//   this.cityList = [];
+//   this.addressForm.CITY_NAME = null;
+//   this.addressForm.CITY_ID = null;
+// }
+
+
+onStateInputChange() {
   const typed = this.stateSearch?.trim();
 
+  // 1️⃣ Empty → clear everything below
   if (!typed) {
     this.addressForm.STATE_NAME = null;
     this.addressForm.STATE_ID = null;
-    
-    this.addressForm.CITY_NAME = null;
-    this.addressForm.CITY_ID = null;
+
     this.citySearch = '';
     this.cityList = [];
-    this.filteredStates = [];
+    this.filteredCities = [];
+    this.addressForm.CITY_NAME = null;
+    this.addressForm.CITY_ID = null;
     return;
   }
 
-  const exactMatch = this.stateList.find(
-    (s) => s.NAME.toLowerCase() === typed.toLowerCase()
-  );
-
-  if (exactMatch) {
-    this.selectState(exactMatch);
-    return;
-  }
-
-  // Free text typed
+  // 2️⃣ User typing → text only
   this.addressForm.STATE_NAME = typed;
   this.addressForm.STATE_ID = null;
 
+  // 3️⃣ Reset city
+  this.citySearch = '';
   this.cityList = [];
+  this.filteredCities = [];
   this.addressForm.CITY_NAME = null;
   this.addressForm.CITY_ID = null;
 }
@@ -2809,21 +2865,22 @@ vareintImageUrl: string = this.api.retriveimgUrl + 'VarientImages/';
     this.pickupDropdownOpen = false;
   }
   onDeliveryOptionChange(event: any) {
-    if (event == 'pickup') {
-      this.getPickupLocationByCity(this.selectedAddress.CITY_ID);
-    } else {
-      this.selectedPickupLocation = null;
-    }
+     if (event == 'pickup') {
+      this.getPickupLocationByCity();
+     } else {
+       this.selectedPickupLocation = null;
+     }
   }
 
-  getPickupLocationByCity(cityID: any) {
+  getPickupLocationByCity() {
     this.api
       .getAllpickupLocation(
         0,
         0,
         'id',
         'desc',
-        ' AND STATUS=1 AND CITY_ID=' + cityID
+        ' AND STATUS=1 '
+        // AND CITY_ID=' + cityID
       )
       .subscribe((res) => {
         if (res.code == 200) {

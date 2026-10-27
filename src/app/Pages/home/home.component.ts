@@ -30,7 +30,7 @@ export class HomeComponent {
   sortDirection: string | null = 'desc';
   variantRateMap: { [productId: number]: number } = {};
   currentStockMap: { [productId: number]: number } = {};
-  discounts: number[] = [70, 60, 50, 40, 30, 20, 10];
+ // discounts: number[] = [70, 60, 50, 40, 30, 20, 10];
 
   constructor(
     private renderer: Renderer2,
@@ -184,8 +184,11 @@ searchText: string = '';
     this.selectedIngredient = [];
     this.selectedDiscounts = [];
     this.priceRangeBetween = ""
+    this.discountRangeBetween = ""
     this.minRange = 0;
     this.maxRange = 40;
+    this.minDiscount = 0;
+    this.maxDiscount =100;
     this.priceRange = 0;
     this.rangeQuery = '';
     // this.selectedSubCategory = null;
@@ -221,6 +224,54 @@ this.getProducts();
 
     this.getProducts();
   }
+
+ buildFilterQuery(): string {
+  let query =
+    this.rangeQuery +
+    ' AND IS_VERIENT_AVAILABLE = 1 AND STATUS = 1 AND CATEGORY_STATUS = 1' +
+    this.priceRangeBetween;
+
+  // 🔍 Search filter
+  if (this.searchText?.trim()) {
+    query += ` AND NAME LIKE '%${this.searchText.trim()}%'`;
+  }
+
+  // ✅ Category filter (THIS WAS MISSING)
+  if (this.selectedCategories.length > 0) {
+    const categoryIds = this.selectedCategories
+      .map((c: any) => c.CATEGORY_ID)
+      .join(',');
+
+    query += ` AND CATEGORY_ID IN (${categoryIds})`;
+  }
+
+  // ✅ Discount filter
+  if (this.discountRangeBetween) {
+    query += this.discountRangeBetween;
+  }
+
+  return query;
+}
+
+
+private searchTimeout: any;
+
+onSearchChange(value: string): void {
+  this.searchText = value;
+
+  clearTimeout(this.searchTimeout);
+
+  this.searchTimeout = setTimeout(() => {
+    this.currentPage = 1;
+    this.getProducts();
+  }, 400); // 400ms debounce
+}
+
+onSearchButton(): void {
+  clearTimeout(this.searchTimeout); // cancel pending debounce
+  this.currentPage = 1;
+  this.getProducts();
+}
   varients:any=[]
   getProducts() {
     // console.log("1");
@@ -228,32 +279,30 @@ this.getProducts();
     this.loadingProducts = true;
     var filter = '';
 
-    //Filter by selected Product
-  //   if (this.searchText && this.searchText.trim() !== '') {
-  //   this.products += ` AND (NAME LIKE '%${this.searchText}%' 
-  //                   OR DESCRIPTION LIKE '%${this.searchText}%')`;
-  // }
-   
-    // Filter by selected categories
-    if (this.selectedCategories.length > 0) {
-      const selectedCategoryIds = this.selectedCategories.map(
-        (category: any) => category.CATEGORY_ID
-      );
+    // // Filter by selected categories
+    // if (this.selectedCategories.length > 0) {
+    //   const selectedCategoryIds = this.selectedCategories.map(
+    //     (category: any) => category.CATEGORY_ID
+    //   );
 
-      filter += ' AND CATEGORY_ID IN (' + selectedCategoryIds.join(',') + ')';
-    }
+    //   filter += ' AND CATEGORY_ID IN (' + selectedCategoryIds.join(',') + ')';
+    // }
 
     // Filter by selected discounts
-  if (this.selectedDiscounts.length > 0) {
-  const discountConditions = this.selectedDiscounts.map(
-    (discount: any) =>
-      `((MIN_DISCOUNT_PERCENT BETWEEN ${discount} AND 95) OR (MAX_DISCOUNT_PERCENT BETWEEN ${discount} AND 95))`
-  );
+  // if (this.selectedDiscounts.length > 0) {
+  // const discountConditions = this.selectedDiscounts.map(
+  //   (discount: any) =>
+  //     `((MIN_DISCOUNT_PERCENT BETWEEN ${discount} AND 95) OR (MAX_DISCOUNT_PERCENT BETWEEN ${discount} AND 95))`
+  // );
 
   // Combine all conditions with OR
-  const discountFilter = discountConditions.join(' OR ');
+  //const discountFilter = discountConditions.join(' OR ');
 
-  filter += ` AND (${discountFilter})`;
+  //filter += ` AND (${discountFilter})`;
+//}
+
+if (this.discountRangeBetween) {
+  filter += this.discountRangeBetween;
 }
 
     let selectedIngredientIds = [];
@@ -270,10 +319,7 @@ this.getProducts();
         this.productsPerPage,
         this.sortKey || 'id',
         this.sortDirection || 'desc',
-        filter +
-          this.rangeQuery +
-          ' AND IS_VERIENT_AVAILABLE = 1 AND STATUS = 1 AND CATEGORY_STATUS=1' +
-          this.priceRangeBetween,
+       this.buildFilterQuery(), 
         selectedIngredientIds?.join(',')
       )
       .subscribe(
@@ -284,7 +330,7 @@ this.getProducts();
             this.allProducts = [...res.data]; 
             //this.allProducts = res.data;  
             this.varients=res.varient
-            this.applySearchFilter();
+            // this.applySearchFilter();
             this.getFavoriteProducts();
             this.loadingProducts = false;
             this.totalProducts = res.count;
@@ -328,24 +374,26 @@ this.getProducts();
   }
 
   applySearchFilter() {
-  const text = this.searchText?.toLowerCase().trim();
+  // const text = this.searchText?.toLowerCase().trim();
 
-  if (!text) {
-    // If search cleared → restore original total
-     this.products = [...this.allProducts];
-    this.showTotalProducts = this.totalProducts;
-    return;
-  }// nothing to search
+  // if (!text) {
+  //   // If search cleared → restore original total
+  //    this.products = [...this.allProducts];
+  //   this.showTotalProducts = this.totalProducts;
+  //   return;
+  // }// nothing to search
 
-  const filtered = this.products.filter(p =>
-    (p.NAME?.toLowerCase().includes(text)) 
-    // || 
-    // (p.DESCRIPTION?.toLowerCase().includes(text)) ||
-    // (p.CATEGORY_NAME?.toLowerCase().includes(text))
-  );
+  // const filtered = this.products.filter(p =>
+  //   (p.NAME?.toLowerCase().includes(text)) 
+  //   // || 
+  //   // (p.DESCRIPTION?.toLowerCase().includes(text)) ||
+  //   // (p.CATEGORY_NAME?.toLowerCase().includes(text))
+  // );
 
-  this.products = filtered;
-  this.showTotalProducts = filtered.length;
+  // this.products = filtered;
+  // this.showTotalProducts = filtered.length;
+  this.currentPage = 1;
+  this.getProducts();
 }
 
   varient: any;
@@ -383,7 +431,7 @@ this.getProducts();
       this.variantMap[product.ID] = Variants;
 
       if (!this.selectedVariantMap[product.ID]) {
-        const firstVariant = variants[0];
+        const firstVariant = Variants[0];
         this.selectedVariantMap[product.ID] = firstVariant.VARIENT_ID;
         this.variantRateMap[product.ID] = firstVariant.RATE || 0;
         this.variantStockMap[product.ID] = firstVariant.OPENING_STOCK || 0;
@@ -392,7 +440,7 @@ this.getProducts();
         let selectedvarientproductId = this.products.findIndex(
           (id) => id.ID === product.ID
         );
-
+        // console.log(firstVariant);
         this.products[selectedvarientproductId].CURRENT_STOCK_VARIENT =
           firstVariant.CURRENT_STOCK ? firstVariant.CURRENT_STOCK : 0;
         //  console.log('selectedvarientproductId',this.products[selectedvarientproductId])
@@ -400,7 +448,7 @@ this.getProducts();
         const selectedVariant = Variants.find(
           (v) => v.VARIENT_ID === this.selectedVariantMap[product.ID]
         );
-
+        console.log(selectedVariant);
         if (selectedVariant) {
           this.unitIdMap[product.ID] = selectedVariant.UNIT_ID;
           let selectedvarientproductId = this.products.findIndex(
@@ -515,9 +563,9 @@ this.getProducts();
   }
 
   setCurrentPage(page: number): void {
-    if (this.totalPages === 0) {
-      return;
-    }
+    // if (this.totalPages === 0) {
+    //   return;
+    // }
 
     if (page < 1 || page > this.totalPages) {
       return;
@@ -650,12 +698,18 @@ this.getProducts();
     if (event.target.checked) {
       if (!this.selectedCategories.includes(category)) {
         this.selectedCategories.push(category);
+         
       }
     } else {
       this.selectedCategories = this.selectedCategories.filter(
         (c: any) => c !== category
       );
     }
+
+    this.currentPage = 1;
+
+  // Optional: reset scroll position
+  this.scrollToSection('product-grids');
 
     this.getProducts();
   }
@@ -968,7 +1022,10 @@ this.getProducts();
       this.priceRange > 0 ||
       this.selectedDiscounts.length > 0 ||
       this.minRange > 0 ||
-      this.maxRange < 40
+      this.maxRange < 40 ||
+      
+      this.minDiscount > 0 ||
+    this.maxDiscount < 100
     );
   }
 
@@ -1029,6 +1086,37 @@ this.getProducts();
   dropdownOpen = false;
   selectedOptionLabel = 'Popularity'; // default selected
 
+
+minDiscount: number = 0;
+maxDiscount: number = 100;
+
+discountRangeBetween: string = '';
+
+onMinDiscountChange() {
+  if (this.minDiscount > this.maxDiscount) {
+    this.minDiscount = this.maxDiscount;
+  }
+  this.applyDiscountRange();
+}
+
+onMaxDiscountChange() {
+  if (this.maxDiscount < this.minDiscount) {
+    this.maxDiscount = this.minDiscount;
+  }
+  this.applyDiscountRange();
+}
+
+applyDiscountRange() {
+  this.onDiscountRangeChange(this.minDiscount, this.maxDiscount);
+}
+
+onDiscountRangeChange(min: number, max: number) {
+  this.discountRangeBetween =
+    ` AND ((MIN_DISCOUNT_PERCENT BETWEEN ${min} AND ${max})` +
+    ` OR (MAX_DISCOUNT_PERCENT BETWEEN ${min} AND ${max}))`;
+
+  this.getProducts();
+}
   selectOption(value: string, label: string) {
     this.selectedOptionLabel = label;
     this.dropdownOpen = false;

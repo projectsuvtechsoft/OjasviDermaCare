@@ -11,6 +11,7 @@ import {
   inject,
 } from '@angular/core';
 import { Router } from '@angular/router';
+
 import { ToastrService } from 'ngx-toastr';
 import { ApiServiceService } from 'src/app/Service/api-service.service';
 import { CommonFunctionService } from 'src/app/Service/CommonFunctionService';
@@ -256,9 +257,16 @@ export class HeaderComponent {
     // Optional: cleanup on load if any stuck backdrop exists
     document.querySelectorAll('.modal-backdrop').forEach((el) => el.remove());
     document.body.classList.remove('modal-open');
+    // console.log(sessionStorage.getItem('openFromReview'))
   }
+
+  
+  openFromReview:boolean=false;
   openLoginModal() {
     this.activeTab = 'login';
+    this.openFromReview = sessionStorage.getItem('openFromReview') === 'true';
+    console.log(this.openFromReview);
+    
     const modalEl = document.getElementById('loginmodal');
     const modalInstance =
       bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
@@ -386,6 +394,9 @@ export class HeaderComponent {
       'favouritesUpdated',
       this.updateFavouritesCount.bind(this)
     );
+
+    sessionStorage.removeItem('openFromReview')
+    this.openFromReview=false
     // this.IMAGEuRL = this.api.retriveimgUrl2();
     // if(this.)
     // const userId = sessionStorage.getItem('userId');
@@ -599,14 +610,17 @@ export class HeaderComponent {
 
   onIdentifierInput(event: any) {
     const value = event.target.value;
-    // console.log(this.mobileNumberorEmail, 'mobileoremail');
-    // console.log(event, 'event');
+
+    // 🔥 If user changes input, allow Send Link button again
+    this.linkSent = false;
+    this.getLinkLoading = false;
+
     if (!value || value.length < 1) {
       this.inputType = 'initial';
       return;
     }
 
-    // Check if input contains letters
+    // Email detection
     if (/[a-zA-Z]/.test(value)) {
       this.inputType = 'email';
     } else {
@@ -701,8 +715,8 @@ export class HeaderComponent {
     return this.inputType === 'email'
       ? 'Enter email address'
       : this.inputType === 'mobile'
-      ? 'Enter mobile number'
-      : 'Enter email or mobile number';
+        ? 'Enter mobile number'
+        : 'Enter email or mobile number';
   }
 
   showRegisterModal() {
@@ -1045,7 +1059,7 @@ export class HeaderComponent {
       }))
     );
   }
-   loginotpverification(form?: NgForm): void {
+  loginotpverification(form?: NgForm): void {
     this.loginSubmitted = true;
     // sessionStorage.clear()
     // console.log(document.body.cla);
@@ -1077,8 +1091,8 @@ export class HeaderComponent {
         this.inputType === 'email'
           ? 'your email address'
           : this.inputType === 'mobile'
-          ? 'your mobile number'
-          : 'email or mobile number';
+            ? 'your mobile number'
+            : 'email or mobile number';
 
       this.toastr.error(`Please enter ${fieldName}.`, '', {
         positionClass: 'toast-center',
@@ -1111,7 +1125,7 @@ export class HeaderComponent {
       this.type = this.isEmail(this.mobileNumberorEmail) ? 'E' : 'M';
       this.isloginSendOTP = true;
       this.statusCode = '';
-      // this.whichOTP = 'login';
+      this.whichOTP = 'login';
       // this.loadData();
 
       this.api
@@ -1191,27 +1205,45 @@ export class HeaderComponent {
 
               // console.log(this.isLoggedIn, 'this.isLoggedIn');
               this.toastr.success('You have login Successfully!', 'success');
+              // if (sessionStorage.getItem('CART_REDIRECT')) {
+
+
+              // }
+
               sessionStorage.removeItem('SESSION_KEYS');
+
               if (sessionStorage.getItem('userId') && sessionStorage.getItem('CART_REDIRECT') === 'true') {
-                this.cartItems = this.cartService.getCartItems();
-                this.senddatatoCheckout = {
-                  cartDetails: this.cartItems, // Send all items
-                  subtotal: this.subtotal,
-                };
+                this.cartService
+                  .getCartDetails(
+                    successCode.data[0]['UserData'][0].ID,
+                    successCode.data[0].token
+                  )
+                  .subscribe(previousCart => {
 
-                if (this.cartItems && this.cartItems.length > 0) {
-                  // this.cartItems.forEach((data:any)=>{
-                  //    this.cartService.addToCart(data)
-                  // })
-                  // this.cartItems = this.cartService.getCartItems();
-                  this.handleCartMigration(
-                    successCode.data[0]['UserData'][0].ID
-                  );
+                    if (!previousCart || previousCart.length === 0) {
+                      this.afterCartClear(successCode.data[0]['UserData'][0].ID);
+                      return;
+                    }
 
-                  this.updateTotals();
-                  
-                  //  console.log(this.migrateCartItems(this.cartItems,successCode.data[0]['UserData'][0].ID))
-                }
+                    const removeRequests = previousCart.map(item =>
+                      this.cartService.removeItemforServerwithouttoast2(
+                        item.CART_ID,
+                        item.ID
+                      )
+                    );
+
+                    forkJoin(removeRequests).subscribe({
+                      next: () => {
+                        // ✅ All remove API calls finished
+                        this.afterCartClear(successCode.data[0]['UserData'][0].ID);
+                      },
+                      error: () => {
+                        // handle error if needed
+                      }
+                    });
+
+                  });
+
                 // console.log(this.cartItems)
                 // setTimeout(() => {
 
@@ -1261,74 +1293,148 @@ export class HeaderComponent {
         });
     }
   }
- private handleCartMigration(customerId: string): void {
-  const cartItems = this.cartService.getCartItems();
-  this.cartService.cartUpdated.next(cartItems);
 
-  const sessionCartItemsStr = sessionStorage.getItem('sessionCart');
-  const sessionCartItems = sessionCartItemsStr ? JSON.parse(sessionCartItemsStr) : [];
-  // console.log(sessionCartItems)
-    
-  if (!cartItems || cartItems.length === 0) {
-    this.toastr.success('You have logged in successfully!', 'Success', {
-      positionClass: 'toast-center',
-    });
-    return;
-  }
+//   afterCartClear(userId: any) {
+//     const guestCart = sessionStorage.getItem('sessionCart');
+// const serverCart = this.cartService.getCartItems(); 
 
-  // 🧹 Step 1: Remove old session cart items (fire and forget)
+//     this.senddatatoCheckout = {
+//       cartDetails: this.cartItems,
+//       subtotal: this.subtotal,
+//     };
 
-if (sessionCartItems && sessionCartItems.length > 0) {
-    // console.log('Removing old session cart items...');
-    sessionCartItems.forEach((item: any) => {
-      try {
-        this.cartService.removeFromCartnotoast(item);
-        // sessionStorage
-      } catch (error) {
-        console.error('Error removing session cart item:', item.PRODUCT_ID, error);
-      }
-    });
-  }
-  // 🧩 Step 2: Proceed with migration
-  this.cartService.migrateSessionCartToCustomer(cartItems, customerId).subscribe({
-    next: (response) => {
-      // console.log(response,'Migration Response')
-      if (response.success) {
-        this.toastr.success(response.message || 'Cart migrated successfully!', '', {
-          positionClass: 'toast-center',
-        });
-        // this.cartService.fetchCartFromServer(customerId,sessionStorage.getItem('token')??'')
-        this.senddatatoCheckout = {
-          cartDetails: this.cartService.getCartItems(),
-          subtotal: this.subtotal,
-        };
-        this.isCheckoutVisible = true;
-        this.updateTotals();
+//     if (this.cartItems && this.cartItems.length > 0) {
+//       this.handleCartMigration(userId);
+//       this.updateTotals();
+//     }
+//   }
 
-        this.toastr.success('You have logged in successfully!', 'Success', {
-          positionClass: 'toast-center',
-        });
-      } else {
-        this.toastr.warning(
-          response.message || 'Some cart items could not be migrated.',
-          '',
-          { positionClass: 'toast-center' }
-        );
-      }
-    },
-    error: (err) => {
-      console.error('Cart migration failed:', err);
-      this.toastr.error('Failed to migrate cart items. Please try again later.', '', {
-        positionClass: 'toast-center',
-      });
-      this.updateTotals();
-    },
+
+afterCartClear(userId: any) {
+
+  const guestCartRaw = sessionStorage.getItem('sessionCart');
+  const guestCart = guestCartRaw ? JSON.parse(guestCartRaw) : [];
+
+  const serverCart = this.cartService.getCartItems() || [];
+
+  const mergedCart = [...serverCart];
+
+  guestCart.forEach((guestItem: any) => {
+
+    // ✅ NORMALIZE FIELD NAMES
+    const normalizedGuestItem = {
+      ...guestItem,
+      VARIENT_ID: guestItem.VERIENT_ID,   // spelling fix
+      quantity: guestItem.QUANTITY        // case fix
+    };
+
+    // ❗ MUST include UNIT_ID
+    const exists = mergedCart.find(
+      (item: any) =>
+        item.PRODUCT_ID === normalizedGuestItem.PRODUCT_ID &&
+        item.VARIENT_ID === normalizedGuestItem.VARIENT_ID &&
+        item.UNIT_ID === normalizedGuestItem.UNIT_ID
+    );
+
+    if (exists) {
+      exists.quantity += normalizedGuestItem.quantity;
+    } else {
+      mergedCart.push(normalizedGuestItem);
+    }
   });
 
-  // 🧽 Cleanup session flags
-  sessionStorage.removeItem('CART_REDIRECT');
-  sessionStorage.removeItem('SESSION_KEYS');
+  // ❗ FINAL SAFETY FILTER
+  this.cartItems = mergedCart.filter(
+    (item: any) =>
+      item.PRODUCT_ID &&
+      item.VARIENT_ID &&
+      item.UNIT_ID &&
+      item.quantity
+  );
+
+  this.senddatatoCheckout = {
+    cartDetails: this.cartItems,
+    subtotal: this.subtotal,
+  };
+
+  if (this.cartItems.length > 0) {
+    this.handleCartMigration(userId);
+    this.updateTotals();
+  }
+
+  sessionStorage.removeItem('sessionCart');
 }
+
+
+  private handleCartMigration(customerId: string): void {
+    const cartItems = this.cartService.getCartItems();
+    // console.log(cartItems, 'SendToMigrate')
+    this.cartService.cartUpdated.next(cartItems);
+
+    const sessionCartItemsStr = sessionStorage.getItem('sessionCart');
+    const sessionCartItems = sessionCartItemsStr ? JSON.parse(sessionCartItemsStr) : [];
+    // console.log(sessionCartItems)
+
+    if (!cartItems || cartItems.length === 0) {
+      // this.toastr.success('You have logged in successfully!', 'Success', {
+      //   positionClass: 'toast-center',
+      // });
+      return;
+    }
+
+    // 🧹 Step 1: Remove old session cart items (fire and forget)
+
+    if (sessionCartItems && sessionCartItems.length > 0) {
+      // console.log('Removing old session cart items...');
+      sessionCartItems.forEach((item: any) => {
+        try {
+          this.cartService.removeFromCartnotoast(item);
+          // sessionStorage
+        } catch (error) {
+          console.error('Error removing session cart item:', item.PRODUCT_ID, error);
+        }
+      });
+    }
+    // 🧩 Step 2: Proceed with migration
+    this.cartService.migrateSessionCartToCustomer(cartItems, customerId).subscribe({
+      next: (response) => {
+        // console.log(response,'Migration Response')
+        if (response.success) {
+          // this.toastr.success(response.message || 'Cart migrated successfully!', '', {
+          //   positionClass: 'toast-center',
+          // });
+          // this.cartService.fetchCartFromServer(customerId,sessionStorage.getItem('token')??'')
+          this.senddatatoCheckout = {
+            cartDetails: this.cartService.getCartItems(),
+            subtotal: this.subtotal,
+          };
+          this.isCheckoutVisible = true;
+          this.updateTotals();
+
+          // this.toastr.success('You have logged in successfully!', 'Success', {
+          //   positionClass: 'toast-center',
+          // });
+        } else {
+          this.toastr.warning(
+            response.message || 'Some cart items could not be migrated.',
+            '',
+            { positionClass: 'toast-center' }
+          );
+        }
+      },
+      error: (err) => {
+        console.error('Cart migration failed:', err);
+        this.toastr.error('Failed to migrate cart items. Please try again later.', '', {
+          positionClass: 'toast-center',
+        });
+        this.updateTotals();
+      },
+    });
+
+    // 🧽 Cleanup session flags
+    sessionStorage.removeItem('CART_REDIRECT');
+    sessionStorage.removeItem('SESSION_KEYS');
+  }
 
   //by sanjana
   goToProductDetails(id: number) {
@@ -1460,7 +1566,7 @@ if (sessionCartItems && sessionCartItems.length > 0) {
           this.cartService.cartItems = [];
           this.cartService.cartUpdated.next(this.cartService.cartItems);
           this.cartService.updateCartCount();
-          this.isCheckoutVisible=false
+          this.isCheckoutVisible = false
 
           this.router.navigate(['/home']);
           this.showLogoutModal = false;
@@ -1481,7 +1587,7 @@ if (sessionCartItems && sessionCartItems.length > 0) {
   showLoginModal() {
     this.mobileNumberorEmail = '';
     this.data.PASSWORD = '';
-    this.inputType='initial'
+    this.inputType = 'initial'
     // const loginModalEl = document.getElementById('loginmodal');
 
     // document.querySelectorAll('.modal-backdrop').forEach((el) => el.remove());
@@ -2085,7 +2191,7 @@ if (sessionCartItems && sessionCartItems.length > 0) {
 
       // this.data.TYPE = 'M';
 
-      this.data.COUNTRY_CODE = this.searchQuery;
+   this.data.COUNTRY_CODE = this.selectedCountryCode?.trim() || '+1';
 
       // this.data.CUSTOMER_CATEGORY_ID = 1;
 
@@ -2097,7 +2203,7 @@ if (sessionCartItems && sessionCartItems.length > 0) {
 
       // this.data.TYPE_VALUE = this.data.CUSTOMER_MOBILE_NO;
 
-      // this.whichOTP = 'register';
+      this.whichOTP = 'register';
 
       // console.log('data in register', this.data);
 
@@ -2133,8 +2239,8 @@ if (sessionCartItems && sessionCartItems.length > 0) {
           this.inputType === 'email'
             ? 'your email addresss'
             : this.inputType === 'mobile'
-            ? 'your mobile number'
-            : 'email or mobile number';
+              ? 'your mobile number'
+              : 'email or mobile number';
 
         this.toastr.error(`Please enter ${fieldName}.`, '', {
           positionClass: 'toast-center',
@@ -2501,8 +2607,8 @@ if (sessionCartItems && sessionCartItems.length > 0) {
         this.inputType === 'email'
           ? 'your email addresss'
           : this.inputType === 'mobile'
-          ? 'your mobile number'
-          : 'email or mobile number';
+            ? 'your mobile number'
+            : 'email or mobile number';
 
       this.toastr.error(`Please enter ${fieldName}.`, '');
       // this.toastr.error('Please enter mobile no. or email', 'Error');
@@ -2555,7 +2661,7 @@ if (sessionCartItems && sessionCartItems.length > 0) {
           this.getLinkLoading = false;
           this.linkSent = false;
           this.toastr.error(
-            'This email or mobile number is not registered.',
+            data.message,
             ''
           );
         }
@@ -2600,8 +2706,20 @@ if (sessionCartItems && sessionCartItems.length > 0) {
     );
   }
 
+  onModalClose() {
+    this.linkSent = false;
+    this.getLinkLoading = false;
+
+    // Close Bootstrap modal by ID
+    const modal: any = document.getElementById('loginmodal');
+    const bsModal = bootstrap.Modal.getInstance(modal);
+    bsModal.hide();
+  }
+
   onGotoLogin() {
     this.activeTab = 'login';
+    this.linkSent = false;
+    this.getLinkLoading = false;
     // window.location.reload();
   }
   onSubmitOtp() {
@@ -3324,9 +3442,9 @@ if (sessionCartItems && sessionCartItems.length > 0) {
         (item.ITEM_DISCOUNT_AMOUNT
           ? item.ITEM_DISCOUNT_AMOUNT
           : item.RATE
-          ? item.RATE
-          : item.VERIENT_RATE) *
-          item.quantity,
+            ? item.RATE
+            : item.VERIENT_RATE) *
+        item.quantity,
       0
     );
   }
